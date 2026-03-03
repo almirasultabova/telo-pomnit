@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Тело помнит — Интегративная терапевтическая группа</title>
+  <meta name="description" content="5 недель работы с автоматической стратегией выживания. Психосоматика, телесные практики, групповая работа." />
+
+  <style>
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg:          #f7f4ef;
+      --bg-white:    #ffffff;
+      --green:       #2a4a38;
+      --green-dark:  #1e3020;
+      --green-light: #e8f0ea;
+      --gold:        #c49a3c;
+      --text:        #1a110a;
+      --muted:       #6b5e54;
+      --border:      rgba(42,74,56,0.12);
+      --card-bg:     #ffffff;
+      --radius:      4px;
+      --transition:  0.35s ease;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.25;
+      color: var(--text);
+    }
+
+    p { margin-bottom: 1rem; }
+    p:last-child { margin-bottom: 0; }
+
+    a {
+      color: var(--green);
+      text-decoration: none;
+      transition: opacity var(--transition);
+    }
+    a:hover { opacity: 0.75; }
+
+    img { display: block; max-width: 100%; }
+
+    /* ============================================================
+       LAYOUT HELPERS
+    ============================================================ */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .container--narrow {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    section {
+      padding: 100px 0;
+    }
+
+    .section-divider {
+      text-align: center;
+      color: var(--muted);
+      letter-spacing: 0.25em;
+      font-size: 0.75rem;
+      margin: 0;
+      padding: 0;
+      line-height: 1;
+      border: none;
+      background: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      display: block;
+      height: 1px;
+      width: 80px;
+      background: var(--border);
+    }
+
+    /* ============================================================
+       SCROLL REVEAL
+    ============================================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       NAV
+    ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 1.25rem 0;
+      transition: background var(--transition), backdrop-filter var(--transition), box-shadow var(--transition);
+    }
+
+    .nav.scrolled {
+      background: rgba(247,244,239,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .nav__logo {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.125rem;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav__links a {
+      font-size: 0.875rem;
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+
+    .nav__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--green);
+      color: #fff !important;
+      padding: 0.55rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      letter-spacing: 0.04em;
+      transition: background var(--transition), opacity var(--transition);
+    }
+    .nav__cta:hover {
+      background: var(--green-dark);
+      opacity: 1;
+    }
+
+    /* Hamburger */
+    .nav__burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .nav__burger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .nav__burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav__burger.open span:nth-child(2) { opacity: 0; }
+    .nav__burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile nav drawer */
+    .nav__mobile {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+    .nav__mobile.open { display: flex; }
+    .nav__mobile a {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.75rem;
+      color: var(--text);
+    }
+    .nav__mobile .nav__cta {
+      font-family: inherit;
+      font-style: normal;
+      font-size: 1rem;
+      padding: 0.75rem 2rem;
+    }
+
+    /* ============================================================
+       TELEGRAM ICON
+    ============================================================ */
+    .tg-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      padding: 140px 2rem 100px;
+    }
+
+    /* Breathing circle */
+    .breath-circle {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(42,74,56,0.06) 0%, transparent 70%);
+      animation: breathe 8s ease-in-out infinite;
+      pointer-events: none;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      margin-left: -300px;
+      margin-top: -300px;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50%       { transform: scale(1.15); opacity: 1; }
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+    }
+
+    .hero__eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .hero__headline {
+      font-size: clamp(2.25rem, 5vw, 3.25rem);
+      font-style: italic;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 2rem;
+      color: var(--text);
+    }
+
+    .hero__sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 2rem;
+      line-height: 1.8;
+    }
+
+    .hero__symptoms {
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      opacity: 0.75;
+    }
+
+    .hero__consequence {
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 2.5rem;
+    }
+
+    .hero__tagline-box {
+      background: var(--green-light);
+      border-left: 3px solid var(--green);
+      padding: 1.25rem 1.75rem;
+      text-align: left;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-bottom: 2rem;
+    }
+    .hero__tagline-box p {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--green);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .hero__flow {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 3rem;
+      letter-spacing: 0.03em;
+    }
+
+    .hero__buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 2rem;
+      border-radius: var(--radius);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: background var(--transition), color var(--transition), border-color var(--transition), opacity var(--transition);
+    }
+
+    .btn--primary {
+      background: var(--green);
+      color: #fff;
+    }
+    .btn--primary:hover { background: var(--green-dark); opacity: 1; }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--green);
+      border: 1px solid var(--green);
+    }
+    .btn--ghost:hover { background: var(--green-light); opacity: 1; }
+
+    .btn--outline-white {
+      background: transparent;
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.55);
+    }
+    .btn--outline-white:hover { background: rgba(255,255,255,0.1); opacity: 1; }
+
+    .btn--full { width: 100%; justify-content: center; }
+
+    /* ============================================================
+       SECTION: RECOGNIZE
+    ============================================================ */
+    .recognize {
+      background: var(--bg-white);
+    }
+
+    .recognize__intro {
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .recognize__prompt {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.25rem;
+      color: var(--text);
+      margin-bottom: 3rem;
+    }
+
+    .recognize__symptoms {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      margin-bottom: 3rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .symptom-block {
+      background: var(--bg);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .symptom-block__num {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .symptom-block__text {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.375rem;
+      color: var(--text);
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    .recognize__bridge {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .pull-quote {
+      border-left: 3px solid var(--green);
+      padding: 0.5rem 0 0.5rem 2rem;
+      margin: 2.5rem 0;
+    }
+    .pull-quote__text {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--text);
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .recognize__close {
+      font-size: 1rem;
+      color: var(--muted);
+    }
+
+    /* ============================================================
+       SECTION: CHANGES
+    ============================================================ */
+    .changes {
+      background: var(--bg);
+    }
+
+    .changes__sub {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+    }
+
+    .changes__list {
+      list-style: none;
+      margin-bottom: 3rem;
+    }
+
+    .changes__list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.875rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 1.05rem;
+    }
+    .changes__list li:last-child { border-bottom: none; }
+
+    .check-icon {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--green-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.15rem;
+    }
+    .check-icon svg {
+      width: 12px;
+      height: 12px;
+      stroke: var(--green);
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .changes__statement {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.25rem;
+      color: var(--green);
+      padding: 1.5rem 2rem;
+      background: var(--green-light);
+      border-radius: var(--radius);
+      text-align: center;
+    }
+
+    /* ============================================================
+       SECTION: PROCESS
+    ============================================================ */
+    .process {
+      background: var(--bg-white);
+    }
+
+    .process__stats {
+      font-size: 1.05rem;
+      color: var(--green);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+    }
+
+    .process__medium {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    /* Method flow */
+    .method-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-bottom: 1.5rem;
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      overflow: hidden;
+    }
+
+    .method-step {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .method-step__label {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 0.9375rem;
+      color: var(--text);
+      white-space: nowrap;
+      padding: 0 0.25rem;
+    }
+
+    .method-step__arrow {
+      color: var(--gold);
+      font-size: 1rem;
+      margin: 0 0.5rem;
+    }
+
+    .process__note {
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 4rem;
+    }
+
+    /* Timeline */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .week-card {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 1.5rem;
+      padding: 0 0 3rem;
+      position: relative;
+    }
+    .week-card:last-child { padding-bottom: 0; }
+
+    .week-card__num {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1rem;
+      position: relative;
+      z-index: 1;
+      margin-top: 0.125rem;
+    }
+
+    .week-card__body {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.75rem;
+    }
+
+    .week-card__title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 0.875rem;
+    }
+
+    .week-card__content {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+
+    .week-card__practical {
+      font-size: 0.9rem;
+      color: var(--text);
+      border-top: 1px solid var(--border);
+      padding-top: 0.875rem;
+      margin-bottom: 0.875rem;
+      line-height: 1.7;
+    }
+
+    .week-card__shift {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 0.9375rem;
+      color: var(--green);
+      display: block;
+    }
+
+    /* ============================================================
+       SECTION: MEETINGS
+    ============================================================ */
+    .meetings {
+      background: var(--bg);
+    }
+
+    .meetings__list {
+      list-style: none;
+      margin: 1.5rem 0 2.5rem;
+    }
+    .meetings__list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 1rem;
+    }
+    .meetings__list li:last-child { border-bottom: none; }
+
+    .meetings__note {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .meetings__subsection-title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      color: var(--text);
+      margin: 3rem 0 1rem;
+    }
+
+    .meetings__between {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .meetings__chat {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* ============================================================
+       SECTION: CASE STUDY
+    ============================================================ */
+    .case {
+      background: var(--bg-white);
+    }
+
+    .case-box {
+      background: var(--bg);
+      border-left: 3px solid var(--green);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 2.5rem 2.5rem 2.5rem 3rem;
+    }
+
+    .case-box__name {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+
+    .case-box__before,
+    .case-box__during,
+    .case-box__result {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      line-height: 1.75;
+    }
+
+    .case-box__scene {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      color: var(--text);
+      margin: 1.5rem 0;
+      line-height: 1.5;
+    }
+
+    .case-box__closing {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--green);
+      margin: 0;
+    }
+
+    /* ============================================================
+       SECTION: PRICING
+    ============================================================ */
+    .pricing {
+      background: var(--bg);
+      text-align: center;
+    }
+
+    .pricing-card {
+      max-width: 480px;
+      margin: 3rem auto 0;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3rem 2.5rem;
+      position: relative;
+      box-shadow: 0 4px 32px rgba(42,74,56,0.07);
+    }
+
+    .pricing-card__accent-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--green);
+      border-radius: 8px 8px 0 0;
+    }
+
+    .pricing-card__title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.375rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .pricing-card__price {
+      font-size: 2.25rem;
+      font-weight: 600;
+      color: var(--green);
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .pricing-card__divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.75rem 0;
+    }
+
+    .pricing-card__list {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 2rem;
+    }
+    .pricing-card__list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.875rem;
+      padding: 0.625rem 0;
+      font-size: 0.9375rem;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+    }
+    .pricing-card__list li:last-child { border-bottom: none; }
+
+    .pricing-card__details {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 1.75rem;
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       SECTION: DISCLAIMER
+    ============================================================ */
+    .disclaimer {
+      background: var(--bg-white);
+      padding: 60px 0;
+    }
+
+    .disclaimer__text {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.7;
+      text-align: center;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    /* ============================================================
+       SECTION: FINAL CTA
+    ============================================================ */
+    .final-cta {
+      background: var(--green-dark);
+      color: #fff;
+      text-align: center;
+      padding: 120px 2rem;
+    }
+
+    .final-cta h2 {
+      color: #fff;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+      font-weight: 400;
+      margin-bottom: 1rem;
+    }
+
+    .final-cta p {
+      color: rgba(255,255,255,0.75);
+      font-size: 1.05rem;
+      max-width: 520px;
+      margin: 0 auto 1rem;
+    }
+
+    .final-cta__question {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.92) !important;
+      margin-bottom: 3rem !important;
+    }
+
+    .final-cta__buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      background: var(--green-dark);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .footer__text {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.8;
+    }
+
+    .footer__text a {
+      color: rgba(255,255,255,0.55);
+    }
+    .footer__text a:hover { color: rgba(255,255,255,0.85); opacity: 1; }
+
+    /* ============================================================
+       SECTION HEADLINE PATTERN
+    ============================================================ */
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.875rem;
+      display: block;
+    }
+
+    .section-headline {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 400;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ============================================================
+       RESPONSIVE — 768px
+    ============================================================ */
+    @media (max-width: 768px) {
+      section { padding: 72px 0; }
+
+      .nav__links { display: none; }
+
+      .nav__burger { display: flex; }
+
+      .hero { padding: 120px 1.5rem 80px; }
+
+      .hero__headline { font-size: 1.875rem; }
+
+      .breath-circle {
+        width: 340px;
+        height: 340px;
+        margin-left: -170px;
+        margin-top: -170px;
+      }
+
+      .hero__buttons { flex-direction: column; align-items: center; }
+      .btn { width: 100%; justify-content: center; max-width: 320px; }
+
+      .recognize__symptoms {
+        grid-template-columns: 1fr;
+      }
+
+      .method-flow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      .method-step__arrow { transform: rotate(90deg); margin: 0; }
+
+      .timeline::before { left: 18px; }
+
+      .week-card { grid-template-columns: 40px 1fr; gap: 1rem; }
+      .week-card__num { width: 40px; height: 40px; font-size: 0.875rem; }
+
+      .case-box { padding: 2rem 1.5rem 2rem 2rem; }
+
+      .pricing-card { padding: 2.5rem 1.75rem; margin: 2rem auto 0; }
+
+      .final-cta { padding: 80px 1.5rem; }
+      .final-cta__buttons { flex-direction: column; align-items: center; }
+
+      .container, .container--narrow { padding: 0 1.25rem; }
+    }
+
+    @media (max-width: 480px) {
+      .hero__headline { font-size: 1.625rem; }
+      .section-headline { font-size: 1.5rem; }
+      .pull-quote__text { font-size: 1.25rem; }
+      .pricing-card__price { font-size: 1.875rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       NAV
+  ============================================================ -->
+  <nav class="nav" id="nav" role="navigation" aria-label="Главное меню">
+    <div class="nav__inner">
+      <a href="#" class="nav__logo">Тело помнит</a>
+
+      <ul class="nav__links">
+        <li><a href="#process">Процесс</a></li>
+        <li><a href="#stoimost">Стоимость</a></li>
+        <li>
+          <a href="https://t.me/akhoroshavtseva" target="_blank" rel="noopener" class="nav__cta">
+            <svg class="tg-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            Записаться
+          </a>
+        </li>
+      </ul>
+
+      <button class="nav__burger" id="burgerBtn" aria-label="Открыть меню" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile nav drawer -->
+  <div class="nav__mobile" id="mobileNav" role="dialog" aria-label="Мобильное меню">
+    <a href="#process" class="mobile-link">Процесс</a>
+    <a href="#stoimost" class="mobile-link">Стоимость</a>
+    <a href="https://t.me/akhoroshavtseva" target="_blank" rel="noopener" class="nav__cta mobile-link">
+      <svg class="tg-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      Записаться
+    </a>
+  </div>
+
+
+  <!-- ============================================================
+       SECTION 1: HERO
+  ============================================================ -->
+  <section class="hero" aria-label="Главный экран">
+    <div class="breath-circle" aria-hidden="true"></div>
+
+    <div class="hero__content">
+      <p class="hero__eyebrow">Интегративная терапевтическая группа</p>
+
+      <h1 class="hero__headline">
+        Тело помнит не только боль.<br>
+        Оно помнит способ выживания.
+      </h1>
+
+      <p class="hero__sub">
+        И пока эта стратегия остаётся бессознательной — вы будете выбирать одно и то же, только в разных декорациях.
+      </p>
+
+      <p class="hero__symptoms">
+        Аллергия &nbsp;·&nbsp; Боль в спине &nbsp;·&nbsp; Давление &nbsp;·&nbsp; ЖКТ &nbsp;·&nbsp; Постоянное напряжение
+      </p>
+
+      <p class="hero__consequence">
+        Вы лечите последствия. Но стратегия остаётся прежней.
+      </p>
+
+      <div class="hero__tagline-box">
+        <p>«Тело помнит» — это 5 недель работы с автоматической стратегией выживания, которая запускается раньше мысли.</p>
+      </div>
+
+      <p class="hero__flow">
+        Мы её осознаём &nbsp;→&nbsp; замечаем, как она включается &nbsp;→&nbsp; учимся выбирать иначе &nbsp;→&nbsp; формируем новый способ жить.
+      </p>
+
+      <div class="hero__buttons">
+        <a href="https://t.me/akhoroshavtseva" target="_blank" rel="noopener" class="btn btn--primary">
+          <svg class="tg-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Забронировать место
+        </a>
+        <a href="https://t.me/AlmiraSultanova_AI" target="_blank" rel="noopener" class="btn btn--ghost">
+          Задать вопрос
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <hr class="section-divider" aria-hidden="true">— — —</hr>
+  </div>
+
+
+  <!-- ============================================================
+       SECTION 2: IF YOU RECOGNIZE YOURSELF
+  ============================================================ -->
+  <section class="recognize">
+    <div class="container--narrow">
+      <span class="section-label reveal">Узнаёте себя?</span>
+      <h2 class="section-headline reveal">Если вы узнаёте себя</h2>
+
+      <p class="recognize__intro reveal">Вы многое понимаете. Вы были в терапии. Вы умеете анализировать.</p>
+      <p class="recognize__prompt reveal">Но в момент давления:</p>
+    </div>
+
+    <div class="container reveal">
+      <div class="recognize__symptoms">
+        <div class="symptom-block">
+          <p class="symptom-block__num">01</p>
+          <p class="symptom-block__text">сжимается грудь</p>
+        </div>
+        <div class="symptom-block">
+          <p class="symptom-block__num">02</p>
+          <p class="symptom-block__text">перехватывает дыхание</p>
+        </div>
+        <div class="symptom-block">
+          <p class="symptom-block__num">03</p>
+          <p class="symptom-block__text">голос становится тише — и вы снова соглашаетесь или замираете</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container--narrow">
+      <p class="recognize__bridge reveal">И тело реагирует быстрее, чем вы успеваете вспомнить инсайты.</p>
+
+      <div class="pull-quote reveal">
+        <p class="pull-quote__text">Проблема не в силе воли. Проблема в закреплённой реакции.</p>
+      </div>
+
+      <p class="recognize__close reveal">Мы работаем в точке её включения. Там появляется пауза. А в паузе — выбор.</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <hr class="section-divider" aria-hidden="true">— — —</hr>
+  </div>
+
+
+  <!-- ============================================================
+       SECTION 3: WHAT CHANGES
+  ============================================================ -->
+  <section class="changes">
+    <div class="container--narrow">
+      <span class="section-label reveal">Результат</span>
+      <h2 class="section-headline reveal">Что меняется через 5 недель</h2>
+
+      <p class="changes__sub reveal">Вы не становитесь «другим человеком».</p>
+
+      <ul class="changes__list reveal">
+        <li>
+          <span class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+          </span>
+          замечать напряжение раньше боли
+        </li>
+        <li>
+          <span class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+          </span>
+          говорить о важном до срыва
+        </li>
+        <li>
+          <span class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+          </span>
+          не доводить себя до перегруза
+        </li>
+        <li>
+          <span class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+          </span>
+          быстрее восстанавливаться
+        </li>
+      </ul>
+
+      <p class="changes__statement reveal">
+        Главное изменение: реакция перестаёт управлять вами.
+      </p>
+    </div>
+  </section>
+
+  <div class="container">
+    <hr class="section-divider" aria-hidden="true">— — —</hr>
+  </div>
+
+
+  <!-- ============================================================
+       SECTION 4: PROCESS
+  ============================================================ -->
+  <section class="process" id="process">
+    <div class="container">
+      <span class="section-label reveal">Структура</span>
+      <h2 class="section-headline reveal">Как устроен процесс</h2>
+
+      <p class="process__stats reveal">5 недель · 9 живых встреч · 2 встречи в неделю</p>
+      <p class="process__medium reveal">Zoom + закрытое Telegram-пространство</p>
+
+      <div class="method-flow reveal" aria-label="Этапы программы">
+        <div class="method-step">
+          <span class="method-step__label">Осознавание</span>
+          <span class="method-step__arrow" aria-hidden="true">→</span>
+        </div>
+        <div class="method-step">
+          <span class="method-step__label">Открытие</span>
+          <span class="method-step__arrow" aria-hidden="true">→</span>
+        </div>
+        <div class="method-step">
+          <span class="method-step__label">Выбор</span>
+          <span class="method-step__arrow" aria-hidden="true">→</span>
+        </div>
+        <div class="method-step">
+          <span class="method-step__label">Внедрение</span>
+          <span class="method-step__arrow" aria-hidden="true">→</span>
+        </div>
+        <div class="method-step">
+          <span class="method-step__label">Закрепление</span>
+        </div>
+      </div>
+
+      <p class="process__note reveal">Это не набор инсайтов. Это маршрут изменений.</p>
+
+      <!-- Timeline -->
+      <div class="timeline" aria-label="Программа по неделям">
+
+        <!-- Week 1 -->
+        <div class="week-card reveal">
+          <div class="week-card__num" aria-label="Неделя 1">1</div>
+          <div class="week-card__body">
+            <h3 class="week-card__title">Вход и калибровка</h3>
+            <p class="week-card__content">
+              Создаём безопасное пространство · Учимся чувствовать телесные сигналы · Фиксируем личные триггеры · Снижаем базовое напряжение
+            </p>
+            <p class="week-card__practical">
+              Вы начинаете замечать, где сжимается грудь, где замирает дыхание, где начинается привычная реакция.
+            </p>
+            <span class="week-card__shift">«Со мной это происходит не случайно.»</span>
+          </div>
+        </div>
+
+        <!-- Week 2 -->
+        <div class="week-card reveal">
+          <div class="week-card__num" aria-label="Неделя 2">2</div>
+          <div class="week-card__body">
+            <h3 class="week-card__title">Подсознательные стратегии</h3>
+            <p class="week-card__content">
+              Выявляем повторяющиеся сценарии · Разбираем связь прошлого опыта и текущих реакций · Находим, что запускает защиту
+            </p>
+            <p class="week-card__practical">
+              Становится ясно, почему вы молчите, берёте лишнее или терпите до перегруза.
+            </p>
+            <span class="week-card__shift">«Я вижу, чем на самом деле живу.»</span>
+          </div>
+        </div>
+
+        <!-- Week 3 -->
+        <div class="week-card reveal">
+          <div class="week-card__num" aria-label="Неделя 3">3</div>
+          <div class="week-card__body">
+            <h3 class="week-card__title">Реакция в моменте</h3>
+            <p class="week-card__content">
+              Работа с реакцией во время разбора · Проживание ситуации без привычного замирания · Формирование точки выбора
+            </p>
+            <p class="week-card__practical">
+              В напряжённой теме вы замечаете сигнал раньше автоматизма. Появляется пауза.
+            </p>
+            <span class="week-card__shift">«Я могу остановиться.»</span>
+          </div>
+        </div>
+
+        <!-- Week 4 -->
+        <div class="week-card reveal">
+          <div class="week-card__num" aria-label="Неделя 4">4</div>
+          <div class="week-card__body">
+            <h3 class="week-card__title">Внедрение в реальную жизнь</h3>
+            <p class="week-card__content">
+              Перенос нового способа реагирования в работу и отношения · Закрепление через конкретные действия · Корректировка стратегии
+            </p>
+            <p class="week-card__practical">
+              Вы говорите раньше. Останавливаетесь до перегруза. Выбираете иначе в знакомых ситуациях.
+            </p>
+            <span class="week-card__shift">«Новое поведение становится реальным.»</span>
+          </div>
+        </div>
+
+        <!-- Week 5 -->
+        <div class="week-card reveal">
+          <div class="week-card__num" aria-label="Неделя 5">5</div>
+          <div class="week-card__body">
+            <h3 class="week-card__title">Интеграция и устойчивость</h3>
+            <p class="week-card__content">
+              Поддерживающая встреча · Сбор результатов · Фиксация изменений · Определение дальнейших шагов
+            </p>
+            <p class="week-card__practical">
+              Без глубинной трансформационной работы.
+            </p>
+            <span class="week-card__shift">«Я больше не живу автоматически.»</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <hr class="section-divider" aria-hidden="true">— — —</hr>
+  </div>
+
+
+  <!-- ============================================================
+       SECTION 5: HOW MEETINGS WORK
+  ============================================================ -->
+  <section class="meetings">
+    <div class="container--narrow">
+      <span class="section-label reveal">Формат</span>
+      <h2 class="section-headline reveal">Как проходят встречи</h2>
+
+      <p class="reveal">Каждая встреча включает:</p>
+
+      <ul class="meetings__list reveal">
+        <li>
+          <span class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+          </span>
+          Психосоматический разбор
+        </li>
+        <li>
+          <span class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+          </span>
+          Телесную практику (воскресенье — обязательно)
+        </li>
+        <li>
+          <span class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+          </span>
+          Интеграцию и рекомендации
+        </li>
+      </ul>
+
+      <p class="meetings__note reveal">Разбор — глубокая работа. За одну встречу невозможно разобрать всех.</p>
+      <p class="meetings__note reveal">Каждый участник попадает в разбор минимум 1–2 раза. Работа одного отражает процессы других.</p>
+
+      <h3 class="meetings__subsection-title reveal">Между встречами — начинается главное</h3>
+
+      <p class="meetings__between reveal">В течение недели вы: отслеживаете триггеры · замечаете телесные сигналы · фиксируете реакции · пробуете новый способ ответа</p>
+
+      <p class="meetings__between reveal">Домашние задания направлены на формирование новой привычки реагирования.</p>
+
+      <p class="meetings__chat reveal">Закрытый чат — пространство поддержки и навигации.</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <hr class="section-divider" aria-hidden="true">— — —</hr>
+  </div>
+
+
+  <!-- ============================================================
+       SECTION 6: CASE STUDY
+  ============================================================ -->
+  <section class="case">
+    <div class="container--narrow">
+      <span class="section-label reveal">Пример из практики</span>
+      <h2 class="section-headline reveal">Пример результата</h2>
+
+      <div class="case-box reveal">
+        <p class="case-box__name">Екатерина, 38 лет, руководитель</p>
+
+        <p class="case-box__before">
+          Раньше автоматически соглашалась на дополнительную нагрузку. Потом — давление и бессонница.
+        </p>
+
+        <p class="case-box__during">
+          В процессе работы научилась замечать напряжение в груди раньше реакции.
+        </p>
+
+        <p class="case-box__scene">
+          «На планёрке спокойно сказала: "Сейчас не готова брать ещё один проект."»
+        </p>
+
+        <p class="case-box__result">
+          Без паники. Без скачка давления.
+        </p>
+
+        <p class="case-box__closing">
+          Она не стала другим человеком. Она перестала жить в режиме выживания.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <hr class="section-divider" aria-hidden="true">— — —</hr>
+  </div>
+
+
+  <!-- ============================================================
+       SECTION 7: PRICING
+  ============================================================ -->
+  <section class="pricing" id="stoimost">
+    <div class="container--narrow">
+      <span class="section-label reveal">Участие</span>
+      <h2 class="section-headline reveal">Участие</h2>
+    </div>
+
+    <div class="container">
+      <div class="pricing-card reveal">
+        <div class="pricing-card__accent-bar" aria-hidden="true"></div>
+
+        <h3 class="pricing-card__title">Полная перезагрузка</h3>
+        <p class="pricing-card__price">12 000 ₽ / месяц</p>
+
+        <div class="pricing-card__divider" aria-hidden="true"></div>
+
+        <ul class="pricing-card__list">
+          <li>
+            <span class="check-icon" aria-hidden="true">
+              <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+            </span>
+            9 живых встреч (18–27 часов работы)
+          </li>
+          <li>
+            <span class="check-icon" aria-hidden="true">
+              <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+            </span>
+            Психосоматические разборы
+          </li>
+          <li>
+            <span class="check-icon" aria-hidden="true">
+              <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+            </span>
+            Телесные практики
+          </li>
+          <li>
+            <span class="check-icon" aria-hidden="true">
+              <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+            </span>
+            Интеграционная неделя
+          </li>
+          <li>
+            <span class="check-icon" aria-hidden="true">
+              <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+            </span>
+            Закрытый чат сопровождения
+          </li>
+          <li>
+            <span class="check-icon" aria-hidden="true">
+              <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+            </span>
+            Домашние задания
+          </li>
+          <li>
+            <span class="check-icon" aria-hidden="true">
+              <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+            </span>
+            Записи (доступ 3 месяца)
+          </li>
+        </ul>
+
+        <p class="pricing-card__details">Группа — до 12 человек. Старт — 12 марта.</p>
+
+        <a href="https://t.me/akhoroshavtseva" target="_blank" rel="noopener" class="btn btn--primary btn--full">
+          <svg class="tg-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Забронировать место
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 8: DISCLAIMER
+  ============================================================ -->
+  <section class="disclaimer">
+    <div class="container--narrow">
+      <div class="section-divider reveal" style="margin-bottom: 2rem;">— — —</div>
+      <p class="disclaimer__text reveal">
+        Мы не даём медицинских обещаний и не заменяем терапию или врачей.<br>
+        Мы работаем с реакцией и способом проживания жизни.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 9: FINAL CTA
+  ============================================================ -->
+  <section class="final-cta" aria-label="Призыв к действию">
+    <h2 class="reveal">Если вы дочитали до этого места</h2>
+    <p class="reveal">Скорее всего, вы уже узнали свою стратегию.</p>
+    <p class="final-cta__question reveal">Вопрос не в информации. Вопрос — готовы ли вы перестать жить автоматически.</p>
+
+    <div class="final-cta__buttons reveal">
+      <a href="https://t.me/akhoroshavtseva" target="_blank" rel="noopener" class="btn btn--outline-white">
+        <svg class="tg-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        Забронировать место
+      </a>
+      <a href="https://t.me/AlmiraSultanova_AI" target="_blank" rel="noopener" class="btn btn--outline-white">
+        Задать вопрос
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <p class="footer__text">
+      © 2025 Тело помнит · Интегративная терапевтическая группа<br>
+      <a href="https://t.me/akhoroshavtseva" target="_blank" rel="noopener">Анастасия (@akhoroshavtseva)</a>
+      &nbsp;·&nbsp;
+      <a href="https://t.me/AlmiraSultanova_AI" target="_blank" rel="noopener">Альмира (@AlmiraSultanova_AI)</a>
+    </p>
+  </footer>
+
+
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script>
+    'use strict';
+
+    // ── NAV: transparent → cream on scroll ────────────────────
+    const nav = document.getElementById('nav');
+
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 40) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    }, { passive: true });
+
+
+    // ── HAMBURGER MENU ────────────────────────────────────────
+    const burgerBtn  = document.getElementById('burgerBtn');
+    const mobileNav  = document.getElementById('mobileNav');
+    const mobileLinks = mobileNav.querySelectorAll('.mobile-link');
+
+    function closeMobileNav() {
+      burgerBtn.classList.remove('open');
+      mobileNav.classList.remove('open');
+      burgerBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    burgerBtn.addEventListener('click', function () {
+      var isOpen = mobileNav.classList.toggle('open');
+      burgerBtn.classList.toggle('open', isOpen);
+      burgerBtn.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    mobileLinks.forEach(function (link) {
+      link.addEventListener('click', closeMobileNav);
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeMobileNav();
+    });
+
+
+    // ── SCROLL REVEAL via IntersectionObserver ────────────────
+    var revealEls = document.querySelectorAll('.reveal');
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    revealEls.forEach(function (el) {
+      observer.observe(el);
+    });
+
+
+    // ── SMOOTH SCROLL for anchor links ────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+      anchor.addEventListener('click', function (e) {
+        var targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        var target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          var navHeight = nav.offsetHeight;
+          var targetTop = target.getBoundingClientRect().top + window.scrollY - navHeight - 24;
+          window.scrollTo({ top: targetTop, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
