@@ -855,12 +855,29 @@
       margin-bottom: 1rem;
     }
 
+    .pricing-card__price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.875rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.25rem;
+    }
+
     .pricing-card__price {
       font-size: 2.25rem;
       font-weight: 600;
       color: var(--green);
-      margin-bottom: 0.25rem;
       letter-spacing: -0.02em;
+      margin-bottom: 0;
+    }
+
+    .pricing-card__price-full {
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--muted);
+      text-decoration: line-through;
+      text-decoration-color: rgba(107,94,84,0.45);
+      letter-spacing: -0.01em;
     }
 
     .pricing-card__divider {
@@ -2111,7 +2128,10 @@
         <div class="pricing-card__accent-bar" aria-hidden="true"></div>
 
         <h3 class="pricing-card__title">Полная перезагрузка</h3>
-        <p class="pricing-card__price" id="priceDisplay">12 000 ₽</p>
+        <div class="pricing-card__price-row">
+          <span class="pricing-card__price-full" id="priceFullDisplay">15 000 ₽</span>
+          <p class="pricing-card__price" id="priceDisplay">12 000 ₽</p>
+        </div>
         <p class="pricing-card__price-note" id="priceNote">ранняя цена — до 15 марта</p>
 
         <div class="countdown-banner" id="countdownBanner">
@@ -2470,9 +2490,10 @@
       var cdSec    = document.getElementById('cd-sec');
       var banner   = document.getElementById('countdownBanner');
       var label    = document.getElementById('countdownLabel');
-      var priceEl  = document.getElementById('priceDisplay');
-      var noteEl   = document.getElementById('priceNote');
-      var heroHint = document.getElementById('heroPriceHint');
+      var priceEl     = document.getElementById('priceDisplay');
+      var priceFullEl = document.getElementById('priceFullDisplay');
+      var noteEl      = document.getElementById('priceNote');
+      var heroHint    = document.getElementById('heroPriceHint');
 
       function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -2480,13 +2501,15 @@
       function updatePrice() {
         var now = new Date();
         if (now < priceDeadline) {
-          if (priceEl)  priceEl.textContent = '12 000 ₽';
-          if (noteEl)   { noteEl.textContent = 'ранняя цена — до 15 марта'; noteEl.className = 'pricing-card__price-note'; }
-          if (heroHint) heroHint.textContent = 'Ранняя цена 12 000 ₽ — до 15 марта · Старт 19 марта';
+          if (priceEl)     priceEl.textContent = '12 000 ₽';
+          if (priceFullEl) priceFullEl.style.display = '';
+          if (noteEl)      { noteEl.textContent = 'ранняя цена — до 15 марта'; noteEl.className = 'pricing-card__price-note'; }
+          if (heroHint)    heroHint.textContent = 'Ранняя цена 12 000 ₽ — до 15 марта · Старт 19 марта';
         } else {
-          if (priceEl)  priceEl.textContent = '15 000 ₽';
-          if (noteEl)   { noteEl.textContent = 'стандартная цена'; noteEl.className = 'pricing-card__price-note pricing-card__price-note--raised'; }
-          if (heroHint) heroHint.textContent = 'Стоимость участия 15 000 ₽ · Старт 19 марта';
+          if (priceEl)     priceEl.textContent = '15 000 ₽';
+          if (priceFullEl) priceFullEl.style.display = 'none';
+          if (noteEl)      { noteEl.textContent = 'стандартная цена'; noteEl.className = 'pricing-card__price-note pricing-card__price-note--raised'; }
+          if (heroHint)    heroHint.textContent = 'Стоимость участия 15 000 ₽ · Старт 19 марта';
         }
       }
 
