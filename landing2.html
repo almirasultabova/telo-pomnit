@@ -865,6 +865,19 @@
     }
     .pricing-card__list li:last-child { border-bottom: none; }
 
+    .pricing-card__price-note {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 0.375rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-card__price-note--raised {
+      color: var(--muted);
+    }
+
     .pricing-card__details {
       font-size: 0.875rem;
       color: var(--muted);
@@ -1987,10 +2000,11 @@
         <div class="pricing-card__accent-bar" aria-hidden="true"></div>
 
         <h3 class="pricing-card__title">Полная перезагрузка</h3>
-        <p class="pricing-card__price">12 000 ₽ / месяц</p>
+        <p class="pricing-card__price" id="priceDisplay">12 000 ₽</p>
+        <p class="pricing-card__price-note" id="priceNote">ранняя цена — до 15 марта</p>
 
         <div class="countdown-banner" id="countdownBanner">
-          <p class="countdown-banner__label">До старта программы</p>
+          <p class="countdown-banner__label" id="countdownLabel">Ранняя цена истекает через</p>
           <div class="countdown-banner__units">
             <div class="countdown-unit">
               <span class="countdown-unit__num" id="cd-days">--</span>
@@ -2058,7 +2072,7 @@
           </li>
         </ul>
 
-        <p class="pricing-card__details">Группа — до 12 человек. Старт — 12 марта.</p>
+        <p class="pricing-card__details">Группа — до 12 человек. Старт — 19 марта.</p>
 
         <a href="https://t.me/akhoroshavtseva" target="_blank" rel="noopener" class="btn btn--primary btn--full">
           <svg class="tg-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
@@ -2272,23 +2286,52 @@
     });
 
 
-    // ── COUNTDOWN TIMER ───────────────────────────────────────
+    // ── PRICING + COUNTDOWN TIMER ─────────────────────────────
     (function () {
-      var launch  = new Date('2026-03-12T00:00:00');
+      var priceDeadline = new Date('2026-03-16T00:00:00'); // после 15.03 цена вырастет
+      var launch        = new Date('2026-03-19T00:00:00');
+
       var cdDays  = document.getElementById('cd-days');
       var cdHours = document.getElementById('cd-hours');
       var cdMin   = document.getElementById('cd-min');
       var cdSec   = document.getElementById('cd-sec');
       var banner  = document.getElementById('countdownBanner');
+      var label   = document.getElementById('countdownLabel');
+      var priceEl = document.getElementById('priceDisplay');
+      var noteEl  = document.getElementById('priceNote');
 
       function pad(n) { return String(n).padStart(2, '0'); }
 
+      // Установить цену по дате
+      function updatePrice() {
+        var now = new Date();
+        if (now < priceDeadline) {
+          if (priceEl) priceEl.textContent = '12 000 ₽';
+          if (noteEl)  { noteEl.textContent = 'ранняя цена — до 15 марта'; noteEl.className = 'pricing-card__price-note'; }
+        } else {
+          if (priceEl) priceEl.textContent = '15 000 ₽';
+          if (noteEl)  { noteEl.textContent = 'стандартная цена'; noteEl.className = 'pricing-card__price-note pricing-card__price-note--raised'; }
+        }
+      }
+
       function tick() {
-        var diff = launch - new Date();
-        if (diff <= 0) {
+        var now  = new Date();
+        var target, labelText;
+
+        if (now < priceDeadline) {
+          target    = priceDeadline;
+          labelText = 'Ранняя цена истекает через';
+        } else if (now < launch) {
+          target    = launch;
+          labelText = 'До старта программы';
+        } else {
           if (banner) banner.innerHTML = '<p class="countdown-banner__label">Программа началась</p>';
           return;
         }
+
+        if (label) label.textContent = labelText;
+
+        var diff = target - now;
         var d = Math.floor(diff / 86400000);
         var h = Math.floor((diff % 86400000) / 3600000);
         var m = Math.floor((diff % 3600000)  / 60000);
@@ -2299,6 +2342,7 @@
         if (cdSec)   cdSec.textContent   = pad(s);
       }
 
+      updatePrice();
       tick();
       setInterval(tick, 1000);
     }());
