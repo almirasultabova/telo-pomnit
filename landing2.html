@@ -361,6 +361,14 @@
       flex-wrap: wrap;
     }
 
+    .hero__price-hint {
+      font-size: 0.8rem;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      margin-top: 1rem;
+      margin-bottom: 0;
+    }
+
     /* ============================================================
        BUTTONS
     ============================================================ */
@@ -1119,15 +1127,18 @@
     }
 
     .faq__answer {
-      display: none;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.38s ease, padding 0.38s ease;
       font-size: 0.9375rem;
       color: var(--muted);
       line-height: 1.75;
-      padding: 0 0 1.25rem;
+      padding: 0;
       max-width: 640px;
     }
     .faq__item.open .faq__answer {
-      display: block;
+      max-height: 500px;
+      padding: 0 0 1.25rem;
     }
 
     /* ============================================================
@@ -1494,6 +1505,7 @@
           Задать вопрос
         </a>
       </div>
+      <p class="hero__price-hint" id="heroPriceHint">Ранняя цена 12 000 ₽ — до 15 марта · Старт 19 марта</p>
     </div>
   </section>
 
@@ -1793,7 +1805,7 @@
               Поддерживающая встреча · Сбор результатов · Фиксация изменений · Определение дальнейших шагов
             </p>
             <p class="week-card__practical">
-              Без глубинной трансформационной работы.
+              Глубинная работа завершена. Теперь важно зафиксировать и сохранить — чтобы изменения остались, а не растворились в привычном ритме жизни.
             </p>
             <span class="week-card__shift">«Я больше не живу автоматически.»</span>
           </div>
@@ -1837,8 +1849,7 @@
         </li>
       </ul>
 
-      <p class="meetings__note reveal">Разбор — глубокая работа. За одну встречу невозможно разобрать всех.</p>
-      <p class="meetings__note reveal">Каждый участник попадает в разбор минимум 1–2 раза. Работа одного отражает процессы других.</p>
+      <p class="meetings__note reveal">Каждый участник попадает в разбор минимум 1–2 раза за поток. Разбор одного человека резонирует на всю группу — участницы узнают в чужом процессе своё.</p>
 
       <h3 class="meetings__subsection-title reveal">Между встречами — начинается главное</h3>
 
@@ -1870,7 +1881,7 @@
           <div>
             <p class="host-card__role">Глубина</p>
             <h3 class="host-card__name">Анастасия Хорошавцева</h3>
-            <p class="host-card__bio">Психосоматика, телесная терапия, работа с бессознательным. Находит механизм, по которому запускается реакция — и разбирает его в точке включения, до симптома и до автоматизма.</p>
+            <p class="host-card__bio">Специалист по психосоматике и телесной терапии. Работает с реакциями нервной системы, паттернами выживания и бессознательными стратегиями. В разборе находит точку, где тело начинает реагировать раньше мысли — и разбирает именно её.</p>
             <div class="host-card__links">
               <a href="https://t.me/akhoroshavtseva" target="_blank" rel="noopener" class="host-card__link">
                 <svg class="tg-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
@@ -1889,7 +1900,7 @@
           <div>
             <p class="host-card__role">Внедрение</p>
             <h3 class="host-card__name">Альмира Султанова</h3>
-            <p class="host-card__bio">Практические инструменты, новые сценарии поведения, перенос изменений в реальную жизнь. Помогает закрепить новый способ реагирования в повседневных ситуациях — на работе, в отношениях, в теле.</p>
+            <p class="host-card__bio">Коуч и специалист по поведенческим изменениям. Переводит глубинные инсайты в конкретные действия. Работает с тем, чтобы новый способ реагирования не остался «на сессии», а закрепился в реальных ситуациях — на работе, в отношениях, в теле.</p>
             <div class="host-card__links">
               <a href="https://t.me/Almira_Sultanova" target="_blank" rel="noopener" class="host-card__link">
                 <svg class="tg-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
@@ -1921,26 +1932,26 @@
       <h2 class="section-headline reveal">Пример результата</h2>
 
       <div class="case-box reveal">
-        <p class="case-box__name">Екатерина, 38 лет, руководитель</p>
+        <p class="case-box__name">Юлия, 40 лет</p>
 
         <p class="case-box__before">
-          Раньше автоматически соглашалась на дополнительную нагрузку. Потом — давление и бессонница.
+          Хронические боли в спине, диагноз — грыжа позвоночника. Врачи настаивали на операции. Параллельно — невозможность попросить о помощи, привычка «держать всё на себе» и не показывать усталость.
         </p>
 
         <p class="case-box__during">
-          В процессе работы научилась замечать напряжение в груди раньше реакции.
+          В разборе обнаружилась прямая связь: тело «несло» то, что невозможно было произнести вслух. Стратегия выживания — не показывать слабость — закрепилась в теле как буквальное напряжение.
         </p>
 
         <p class="case-box__scene">
-          «На планёрке спокойно сказала: "Сейчас не готова брать ещё один проект."»
+          «Первый раз в жизни попросила о помощи. И не умерла.»
         </p>
 
         <p class="case-box__result">
-          Без паники. Без скачка давления.
+          Боли снизились значительно. После повторного обследования врач сам отменил операцию.
         </p>
 
         <p class="case-box__closing">
-          Она не стала другим человеком. Она перестала жить в режиме выживания.
+          Тело перестало нести то, что она наконец сказала словами.
         </p>
       </div>
     </div>
@@ -1990,8 +2001,8 @@
   ============================================================ -->
   <section class="pricing" id="stoimost">
     <div class="container--narrow">
-      <span class="section-label reveal">Участие</span>
-      <h2 class="section-headline reveal">Участие</h2>
+      <span class="section-label reveal">Стоимость</span>
+      <h2 class="section-headline reveal">Участие в программе</h2>
       <p class="pricing__context reveal">9 живых встреч, 2 специалиста, 5 недель сопровождения. Один час индивидуальной работы с психосоматологом стоит от 3 000 ₽. Групповой формат позволяет работать глубоко и получать обратную связь — при этом оставаться в доступном бюджете. Группа не превышает 12 человек.</p>
     </div>
 
@@ -2062,7 +2073,7 @@
             <span class="check-icon" aria-hidden="true">
               <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
             </span>
-            Домашние задания
+            Персональные практики между встречами
           </li>
           <li>
             <span class="check-icon" aria-hidden="true">
@@ -2291,14 +2302,15 @@
       var priceDeadline = new Date('2026-03-16T00:00:00'); // после 15.03 цена вырастет
       var launch        = new Date('2026-03-19T00:00:00');
 
-      var cdDays  = document.getElementById('cd-days');
-      var cdHours = document.getElementById('cd-hours');
-      var cdMin   = document.getElementById('cd-min');
-      var cdSec   = document.getElementById('cd-sec');
-      var banner  = document.getElementById('countdownBanner');
-      var label   = document.getElementById('countdownLabel');
-      var priceEl = document.getElementById('priceDisplay');
-      var noteEl  = document.getElementById('priceNote');
+      var cdDays   = document.getElementById('cd-days');
+      var cdHours  = document.getElementById('cd-hours');
+      var cdMin    = document.getElementById('cd-min');
+      var cdSec    = document.getElementById('cd-sec');
+      var banner   = document.getElementById('countdownBanner');
+      var label    = document.getElementById('countdownLabel');
+      var priceEl  = document.getElementById('priceDisplay');
+      var noteEl   = document.getElementById('priceNote');
+      var heroHint = document.getElementById('heroPriceHint');
 
       function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -2306,11 +2318,13 @@
       function updatePrice() {
         var now = new Date();
         if (now < priceDeadline) {
-          if (priceEl) priceEl.textContent = '12 000 ₽';
-          if (noteEl)  { noteEl.textContent = 'ранняя цена — до 15 марта'; noteEl.className = 'pricing-card__price-note'; }
+          if (priceEl)  priceEl.textContent = '12 000 ₽';
+          if (noteEl)   { noteEl.textContent = 'ранняя цена — до 15 марта'; noteEl.className = 'pricing-card__price-note'; }
+          if (heroHint) heroHint.textContent = 'Ранняя цена 12 000 ₽ — до 15 марта · Старт 19 марта';
         } else {
-          if (priceEl) priceEl.textContent = '15 000 ₽';
-          if (noteEl)  { noteEl.textContent = 'стандартная цена'; noteEl.className = 'pricing-card__price-note pricing-card__price-note--raised'; }
+          if (priceEl)  priceEl.textContent = '15 000 ₽';
+          if (noteEl)   { noteEl.textContent = 'стандартная цена'; noteEl.className = 'pricing-card__price-note pricing-card__price-note--raised'; }
+          if (heroHint) heroHint.textContent = 'Стоимость участия 15 000 ₽ · Старт 19 марта';
         }
       }
 
