@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тело помнит — интегративная терапевтическая группа</title>
+<style>
+:root {
+  --bg: #f7f4ef;
+  --green: #2a4a38;
+  --green-dark: #1e3020;
+  --green-light: #e8f0ea;
+  --gold: #c49a3c;
+  --text: #1a110a;
+  --muted: #5f544c;
+  --white: #ffffff;
+  --radius-card: 24px;
+  --radius-btn: 50px;
+  --shadow: 0 2px 20px rgba(42,74,56,0.08);
+  --shadow-hover: 0 8px 40px rgba(42,74,56,0.16);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+
+h1,h2,h3,h4{font-family:Georgia,'Times New Roman',serif;font-style:italic;line-height:1.2}
+
+.container{max-width:1140px;margin:0 auto;padding:0 24px}
+.section{padding:80px 0}
+.section--white{background:var(--white)}
+.section--bg{background:var(--bg)}
+.section--dark{background:var(--green-dark);color:var(--white)}
+
+.label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:16px}
+.section-title{font-size:clamp(28px,4vw,42px);margin-bottom:20px}
+.section-sub{color:var(--muted);font-size:16px;line-height:1.7}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 32px;border-radius:var(--radius-btn);font-size:15px;font-weight:500;transition:all .25s;cursor:pointer;text-align:center}
+.btn--primary{background:linear-gradient(135deg,#3d6b51,var(--green));color:#fff;box-shadow:0 4px 20px rgba(42,74,56,0.28)}
+.btn--primary:hover{box-shadow:0 8px 32px rgba(42,74,56,0.36);transform:translateY(-1px)}
+.btn--outline{border:1.5px solid rgba(42,74,56,0.25);color:var(--green)}
+.btn--outline:hover{background:rgba(42,74,56,0.05)}
+.btn--white{background:#fff;color:var(--green-dark)}
+.btn--white:hover{background:var(--bg)}
+.btn--ghost{border:1.5px solid rgba(255,255,255,0.2);color:#fff}
+.btn--ghost:hover{background:rgba(255,255,255,0.08)}
+.btn--full{width:100%}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:none}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+
+/* animations */
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.05);opacity:1}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes spin-slow{to{transform:rotate(360deg)}}
+@keyframes ping{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.2);opacity:0}}
+@keyframes progress-fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes slide-in{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes loading-bar{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+
+/* LOADING SCREEN */
+#loading-screen{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease}
+#loading-screen.hidden{opacity:0;pointer-events:none}
+.loading-title{font-family:Georgia,serif;font-style:italic;font-size:clamp(24px,4vw,36px);color:var(--text);margin-bottom:24px}
+.loading-bar-wrap{width:160px;height:1px;background:rgba(42,74,56,.15);overflow:hidden;position:relative}
+.loading-bar-fill{position:absolute;inset:0;background:var(--green);animation:loading-bar 2s linear infinite}
+
+/* SCROLL PROGRESS */
+#scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--green);transform-origin:left;transform:scaleX(0);z-index:100;transition:transform .1s linear}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;width:100%;z-index:90;padding:24px 0;transition:all .3s}
+nav.scrolled{background:rgba(247,244,239,.92);backdrop-filter:blur(12px);padding:12px 0;box-shadow:var(--shadow)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:Georgia,serif;font-style:italic;font-size:20px;color:var(--text)}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{font-size:14px;font-weight:500;color:rgba(26,17,10,.75);transition:color .2s}
+.nav-links a:hover{color:var(--green)}
+.nav-cta{padding:9px 22px;font-size:14px}
+.nav-burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.nav-burger span{display:block;width:22px;height:2px;background:var(--text);transition:.3s}
+.mobile-menu{display:none;background:var(--bg);border-top:1px solid rgba(42,74,56,.1);overflow:hidden;max-height:0;transition:max-height .35s ease}
+.mobile-menu.open{max-height:400px}
+.mobile-menu-inner{padding:24px;display:flex;flex-direction:column;gap:20px}
+.mobile-menu-inner a{font-family:Georgia,serif;font-style:italic;font-size:18px}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 0 80px;overflow:hidden}
+.hero-blobs{position:absolute;inset:0;z-index:0;pointer-events:none}
+.hero-blob{position:absolute;border-radius:50%;filter:blur(80px)}
+.hero-blob-1{width:500px;height:500px;background:rgba(42,74,56,.06);top:-100px;left:-100px}
+.hero-blob-2{width:700px;height:700px;background:rgba(196,154,60,.05);bottom:-200px;right:-150px}
+.hero-silhouette{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:.05;pointer-events:none;z-index:0}
+.hero-silhouette svg{width:100%;height:100%;max-width:1000px;animation:breathe 8s ease-in-out infinite}
+.hero-fade{position:absolute;inset:0;background:linear-gradient(to bottom, var(--bg) 0%, transparent 20%, transparent 80%, var(--bg) 100%);z-index:1}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:800px;margin:0 auto}
+.hero-kicker{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;display:block}
+.hero-title{font-size:clamp(32px,5.5vw,68px);margin-bottom:28px;color:var(--text)}
+.hero-subtitle{font-size:clamp(16px,2vw,20px);color:var(--muted);max-width:560px;margin:0 auto 32px;line-height:1.7}
+.hero-highlight{background:rgba(42,74,56,.08);border-left:4px solid var(--green);padding:20px 24px;text-align:left;border-radius:0 12px 12px 0;margin:0 auto 36px;max-width:580px;animation:breathe 8s ease-in-out infinite}
+.hero-highlight p{font-family:Georgia,serif;font-style:italic;color:var(--green);font-size:17px;line-height:1.6}
+.hero-btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:32px}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:640px;margin:0 auto}
+.hero-stat{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:14px;color:var(--muted)}
+.hero-stat svg{color:var(--gold)}
+.hero-countdown{background:rgba(232,240,234,.6);border:1px solid rgba(42,74,56,.12);border-radius:16px;padding:16px 24px;max-width:340px;margin:24px auto 0;text-align:center}
+.hero-countdown-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:8px;display:block}
+.countdown-nums{display:flex;justify-content:center;gap:24px}
+.countdown-unit{display:flex;flex-direction:column;align-items:center}
+.countdown-n{font-family:Georgia,serif;font-size:28px;color:var(--green);line-height:1}
+.countdown-l{font-size:10px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+
+/* RECOGNIZE */
+.recognize-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bg);border:1px solid var(--bg);border-radius:16px;overflow:hidden;margin-bottom:48px;box-shadow:var(--shadow)}
+.recognize-cell{background:rgba(247,244,239,.4);padding:40px 32px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.recognize-num{font-size:11px;font-family:monospace;color:var(--gold);margin-bottom:12px}
+.recognize-text{font-family:Georgia,serif;font-style:italic;font-size:18px;line-height:1.4}
+.recognize-quote{border-left:4px solid var(--green);padding:16px 28px;margin-bottom:24px}
+.recognize-quote p{font-family:Georgia,serif;font-style:italic;font-size:22px;color:var(--text);line-height:1.4}
+
+/* BODY MAP */
+.bodymap-section{padding:80px 0;background:var(--white);overflow:hidden}
+.bodymap-wrap{display:flex;justify-content:center;align-items:flex-start;gap:48px;flex-wrap:wrap}
+.bodymap-svg-wrap{position:relative;width:280px;flex-shrink:0}
+.bodymap-svg-wrap svg{width:100%;height:auto}
+.body-zone-dot{position:absolute;width:20px;height:20px;cursor:pointer;transform:translate(-50%,-50%)}
+.body-zone-dot .dot-inner{width:16px;height:16px;border-radius:50%;border:2px solid var(--green);background:#fff;transition:all .3s;position:relative;z-index:2}
+.body-zone-dot.active .dot-inner{background:var(--green);transform:scale(1.2)}
+.dot-ping{position:absolute;inset:-4px;border-radius:50%;border:1.5px solid rgba(42,74,56,.3);animation:ping 2s ease-out infinite}
+.bodymap-info{flex:1;min-width:240px;max-width:400px}
+.zone-card{background:var(--bg);border-radius:var(--radius-card);padding:28px 32px;border-left:4px solid var(--green);display:none}
+.zone-card.active{display:block;animation:slide-in .3s ease}
+.zone-card-name{font-family:Georgia,serif;font-style:italic;font-size:22px;color:var(--green);margin-bottom:6px}
+.zone-card-pattern{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px;display:block}
+.zone-card-desc{color:var(--muted);font-size:15px;line-height:1.65}
+.zone-card-default{color:var(--muted);font-style:italic;font-size:15px;padding:16px 0}
+
+/* BREATHING */
+.breathing-section{padding:40px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--white)}
+.breathing-ring-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:120px;height:120px}
+.breathing-glow{position:absolute;width:100px;height:100px;background:var(--green);border-radius:50%;filter:blur(24px);opacity:.2;animation:breathe 6s ease-in-out infinite}
+.breathing-ring{width:88px;height:88px;border-radius:50%;border:1.5px solid rgba(42,74,56,.25);display:flex;align-items:center;justify-content:center;animation:breathe 6s ease-in-out infinite}
+.breathing-ring span{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--green);font-weight:500}
+.breathing-hint{margin-top:20px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+
+/* SELF CHECK */
+.selfcheck-box{background:var(--white);border-radius:32px;padding:clamp(32px,5vw,64px);box-shadow:var(--shadow);border:1px solid rgba(42,74,56,.05);max-width:720px;margin:0 auto}
+.selfcheck-items{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+.selfcheck-item{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;border-radius:16px;border:1.5px solid var(--bg);background:#fff;cursor:pointer;transition:all .2s;text-align:left;width:100%}
+.selfcheck-item.checked{background:rgba(42,74,56,.04);border-color:var(--green)}
+.check-circle{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(95,84,76,.3);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.selfcheck-item.checked .check-circle{background:var(--green);border-color:var(--green)}
+.check-circle svg{display:none;color:#fff}
+.selfcheck-item.checked .check-circle svg{display:block}
+.selfcheck-item span{font-size:15px;line-height:1.5;color:var(--muted)}
+.selfcheck-item.checked span{color:var(--text)}
+.selfcheck-result{background:var(--green-light);border-radius:20px;padding:28px 32px;text-align:center;display:none}
+.selfcheck-result.visible{display:block;animation:slide-in .4s ease}
+.selfcheck-result-title{font-family:Georgia,serif;font-style:italic;font-size:20px;color:var(--green);margin-bottom:10px}
+.selfcheck-result-text{color:var(--muted);font-size:14px;margin-bottom:20px;line-height:1.6}
+
+/* COMPARISON */
+.comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:20px;overflow:hidden;max-width:800px;margin:0 auto}
+.comparison-col{padding:40px 36px}
+.comparison-col--old{background:rgba(247,244,239,.5);border:1px solid var(--bg)}
+.comparison-col--new{background:var(--green-light);border:1px solid rgba(42,74,56,.12);position:relative}
+.comparison-badge{position:absolute;top:-14px;right:20px;background:var(--gold);color:#fff;font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:5px 14px;border-radius:50px;font-weight:600}
+.comparison-head{font-family:Georgia,serif;font-style:italic;font-size:18px;margin-bottom:20px}
+.comparison-col--old .comparison-head{color:var(--muted)}
+.comparison-col--new .comparison-head{color:var(--green)}
+.comparison-list{list-style:none;display:flex;flex-direction:column;gap:14px}
+.comparison-list li{display:flex;gap:10px;font-size:14px;line-height:1.5}
+.comparison-list li svg{flex-shrink:0;margin-top:2px}
+.comparison-note{text-align:center;margin-top:28px;color:var(--muted);font-style:italic;font-size:15px}
+
+/* WISDOM QUOTES */
+.wisdom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.wisdom-card{background:var(--white);border-radius:32px;padding:36px;border:1px solid rgba(42,74,56,.05);box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s}
+.wisdom-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-hover)}
+.wisdom-card-stripe{position:absolute;top:0;left:0;width:4px;height:100%;background:rgba(42,74,56,.08);transition:background .3s}
+.wisdom-card:hover .wisdom-card-stripe{background:var(--green)}
+.wisdom-quote{font-family:Georgia,serif;font-style:italic;font-size:18px;line-height:1.6;margin-bottom:24px;color:var(--text)}
+.wisdom-author{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.wisdom-meaning{margin-top:20px;padding-top:20px;border-top:1px solid var(--bg);font-size:13px;color:var(--muted);line-height:1.6;font-style:italic;max-height:0;overflow:hidden;transition:max-height .4s ease,opacity .4s;opacity:0}
+.wisdom-card:hover .wisdom-meaning{max-height:200px;opacity:1}
+
+/* SAFETY */
+.safety-box{background:var(--green-dark);color:#fff;border-radius:40px;padding:clamp(40px,6vw,80px);position:relative;overflow:hidden;max-width:900px;margin:0 auto}
+.safety-glow{position:absolute;top:0;right:0;width:256px;height:256px;background:rgba(255,255,255,.04);border-radius:50%;transform:translate(30%,-30%);filter:blur(40px)}
+.safety-label{color:var(--gold)}
+.safety-title{color:#fff;margin-bottom:48px;max-width:600px}
+.safety-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+.safety-item-title{font-family:Georgia,serif;font-style:italic;font-size:18px;color:var(--gold);margin-bottom:12px}
+.safety-item-text{font-size:14px;color:rgba(255,255,255,.65);line-height:1.65}
+.safety-divider{margin-top:48px;padding-top:40px;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.safety-quote{font-family:Georgia,serif;font-style:italic;color:rgba(255,255,255,.85);font-size:17px;max-width:440px;line-height:1.5}
+
+/* RESULTS */
+.results-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:64px}
+.stat-card{background:var(--white);padding:36px 28px;border-radius:28px;box-shadow:var(--shadow);border:1px solid rgba(42,74,56,.05);text-align:center;transition:box-shadow .3s,transform .3s}
+.stat-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-4px)}
+.stat-value{display:block;font-family:Georgia,serif;font-style:italic;font-size:52px;color:var(--gold);line-height:1;margin-bottom:12px}
+.stat-label{font-size:14px;color:var(--muted);line-height:1.4}
+.results-two{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;max-width:900px;margin:0 auto}
+.results-list{list-style:none;display:flex;flex-direction:column;gap:16px}
+.results-list li{display:flex;align-items:flex-start;gap:12px;font-size:17px}
+.results-list li svg{flex-shrink:0;margin-top:3px;color:var(--green)}
+.results-callout{background:rgba(232,240,234,.4);padding:40px;border-radius:24px;animation:breathe 8s ease-in-out infinite}
+.results-callout p{font-family:Georgia,serif;font-style:italic;font-size:20px;color:var(--green);line-height:1.55}
+
+/* PROCESS */
+.process-header{max-width:640px;margin:0 auto 80px;text-align:center}
+.process-steps{display:flex;flex-direction:column;gap:72px;max-width:720px;margin:0 auto}
+.week-step{position:relative}
+.week-step-inner{position:relative;z-index:1}
+.week-step-meta{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.week-step-line{width:48px;height:1px;background:rgba(196,154,60,.35)}
+.week-step-tag{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.week-step h3{font-size:clamp(22px,3vw,32px);margin-bottom:16px}
+.week-step p{color:var(--muted);font-size:16px;line-height:1.7;margin-bottom:24px}
+.week-step-shift{background:rgba(42,74,56,.06);border-left:4px solid var(--green);border-radius:0 16px 16px 0;padding:20px 24px;transition:transform .3s}
+.week-step-shift:hover{transform:translateX(8px)}
+.week-step-shift-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(42,74,56,.5);font-weight:700;margin-bottom:8px;display:block}
+.week-step-shift p{font-family:Georgia,serif;font-style:italic;color:var(--green);font-size:18px;line-height:1.45;margin-bottom:0}
+.week-ghost{position:absolute;top:-40px;left:-24px;font-family:Georgia,serif;font-style:italic;font-size:128px;color:rgba(42,74,56,.025);line-height:1;user-select:none;pointer-events:none}
+
+/* GALLERY */
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.gallery-card{background:var(--bg);border-radius:20px;overflow:hidden;border:1px solid rgba(42,74,56,.05);transition:box-shadow .3s}
+.gallery-card:hover{box-shadow:var(--shadow-hover)}
+.gallery-img{width:100%;aspect-ratio:16/9;object-fit:cover;transition:transform .5s}
+.gallery-card:hover .gallery-img{transform:scale(1.08)}
+.gallery-body{padding:20px}
+.gallery-body h3{font-family:Georgia,serif;font-style:italic;font-size:16px;margin-bottom:6px}
+.gallery-body p{font-size:13px;color:var(--muted)}
+
+/* HOSTS */
+.hosts-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px}
+.host-card{display:flex;gap:28px;align-items:flex-start}
+.host-img-wrap{width:160px;flex-shrink:0;border-radius:20px;overflow:hidden;box-shadow:var(--shadow-hover)}
+.host-img-wrap img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.host-role{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}
+.host-name{font-family:Georgia,serif;font-style:italic;font-size:22px;margin-bottom:12px}
+.host-bio{color:var(--muted);font-size:14px;line-height:1.65;margin-bottom:20px}
+.host-links{display:flex;gap:10px;flex-wrap:wrap}
+.host-link{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1.5px solid rgba(42,74,56,.2);border-radius:8px;font-size:12px;color:var(--text);transition:all .2s}
+.host-link:hover{background:rgba(42,74,56,.05)}
+
+/* CASE STUDY */
+.case-box{background:var(--bg);border-left:4px solid var(--green);padding:40px 48px;border-radius:0 24px 24px 0;max-width:760px;margin:0 auto}
+.case-who{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;display:block}
+.case-body{display:flex;flex-direction:column;gap:18px;color:var(--muted);line-height:1.7;font-size:16px}
+.case-body strong{color:var(--text)}
+.case-body .case-quote{font-family:Georgia,serif;font-style:italic;font-size:20px;color:var(--text)}
+.case-body .case-result{font-family:Georgia,serif;font-style:italic;color:var(--green)}
+
+/* TESTIMONIALS */
+.testimonials-slider{position:relative;overflow:hidden}
+.testimonials-track{display:flex;transition:transform .5s ease}
+.testimonial-slide{min-width:100%;padding:0 8px}
+.testimonial-card{background:var(--white);padding:40px 48px;border-radius:28px;border-top:4px solid var(--gold);box-shadow:var(--shadow);max-width:680px;margin:0 auto}
+.testimonial-text{font-family:Georgia,serif;font-style:italic;font-size:18px;line-height:1.65;margin-bottom:20px;color:var(--text)}
+.testimonial-name{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.slider-controls{display:flex;justify-content:center;gap:16px;margin-top:40px;align-items:center}
+.slider-btn{width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(42,74,56,.2);display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .2s;cursor:pointer;background:#fff}
+.slider-btn:hover{background:var(--green);color:#fff;border-color:var(--green)}
+.slider-dots{display:flex;gap:8px}
+.slider-dot{width:6px;height:6px;border-radius:50%;background:rgba(42,74,56,.2);transition:.2s;cursor:pointer}
+.slider-dot.active{background:var(--green);width:20px;border-radius:4px}
+
+/* PRICING */
+.pricing-card{background:var(--white);border-radius:32px;padding:clamp(32px,5vw,64px);box-shadow:0 20px 60px rgba(42,74,56,.12);border:1px solid rgba(42,74,56,.05);max-width:520px;margin:0 auto;position:relative;overflow:hidden}
+.pricing-card-stripe{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold))}
+.pricing-title{font-family:Georgia,serif;font-style:italic;font-size:24px;margin-bottom:20px;text-align:center}
+.pricing-amount{display:flex;align-items:baseline;justify-content:center;gap:16px;margin-bottom:8px}
+.price-main{font-size:42px;font-weight:700;color:var(--green)}
+.price-old{font-size:22px;color:var(--muted);text-decoration:line-through}
+.pricing-hint{text-align:center;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:32px;display:block}
+.pricing-features{list-style:none;display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.pricing-features li{display:flex;align-items:flex-start;gap:10px;font-size:14px}
+.pricing-features li svg{flex-shrink:0;color:var(--green);margin-top:2px}
+.pricing-bonus{background:rgba(42,74,56,.05);border:1px solid rgba(42,74,56,.1);border-radius:16px;padding:20px 24px;margin-bottom:28px}
+.pricing-bonus-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);font-weight:700;margin-bottom:12px;display:block}
+.pricing-bonus-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.pricing-bonus-list li{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text)}
+.pricing-bonus-list li svg{color:var(--gold)}
+.pricing-btns{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.pricing-note{text-align:center;font-size:12px;color:var(--muted);font-style:italic}
+
+/* FAQ */
+.faq-list{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:4px}
+.faq-item{border-bottom:1px solid var(--bg)}
+.faq-q{width:100%;padding:22px 0;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;background:none;border:none;font-family:inherit;font-size:17px;font-weight:500;color:var(--text);gap:16px;transition:color .2s}
+.faq-q:hover{color:var(--green)}
+.faq-icon{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;font-size:18px;transition:transform .3s}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .38s ease}
+.faq-item.open .faq-a{max-height:400px}
+.faq-a-inner{padding-bottom:20px;color:var(--muted);font-size:15px;line-height:1.65}
+
+/* FINAL CTA */
+.final-cta{padding:80px 0;background:var(--green-dark);text-align:center;color:#fff}
+.final-cta h2{color:#fff;max-width:600px;margin:0 auto 16px}
+.final-cta p{color:rgba(255,255,255,.65);max-width:500px;margin:0 auto 40px;font-size:16px}
+.final-cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+
+/* DISCLAIMER */
+.disclaimer{padding:32px 0;border-top:1px solid var(--bg)}
+.disclaimer p{font-size:12px;color:var(--muted);text-align:center;max-width:600px;margin:0 auto;line-height:1.6}
+
+/* FOOTER */
+footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;text-align:center}
+.footer-logo{font-family:Georgia,serif;font-style:italic;font-size:22px;color:#fff;margin-bottom:28px;display:block}
+.footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:40px}
+.footer-links a{font-size:14px;transition:color .2s}
+.footer-links a:hover{color:#fff}
+.footer-copy{font-size:13px;margin-bottom:10px}
+.footer-legal{font-size:11px;max-width:480px;margin:0 auto;line-height:1.5}
+
+/* AUDIO BUTTON */
+.audio-btn{position:fixed;bottom:28px;right:28px;z-index:80;width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(42,74,56,.2);background:#fff;color:var(--green);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);transition:all .2s}
+.audio-btn.playing{background:var(--green);color:#fff;border-color:var(--green)}
+.audio-btn.playing::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:1.5px solid rgba(42,74,56,.3);animation:ping 2s ease-out infinite}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .section{padding:56px 0}
+  .nav-links{display:none}
+  .nav-burger{display:flex}
+  .recognize-grid{grid-template-columns:1fr}
+  .comparison-grid{grid-template-columns:1fr}
+  .comparison-col--new .comparison-badge{top:12px;right:12px}
+  .wisdom-grid{grid-template-columns:1fr}
+  .wisdom-meaning{max-height:200px;opacity:1}
+  .safety-grid{grid-template-columns:1fr;gap:24px}
+  .safety-divider{flex-direction:column;align-items:flex-start}
+  .results-stats{grid-template-columns:1fr}
+  .results-two{grid-template-columns:1fr}
+  .gallery-grid{grid-template-columns:1fr 1fr}
+  .hosts-grid{grid-template-columns:1fr;gap:40px}
+  .host-card{flex-direction:column}
+  .host-img-wrap{width:100%;max-width:200px}
+  .bodymap-wrap{flex-direction:column;align-items:center}
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .hero-title{font-size:28px}
+  .hero-btns .btn{width:100%}
+  .gallery-grid{grid-template-columns:1fr}
+  .case-box{padding:28px 24px}
+  .testimonial-card{padding:28px 24px}
+  .pricing-card{padding:28px 20px}
+  .final-cta-btns .btn{width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loading-screen">
+  <div class="loading-title">Тело помнит</div>
+  <div class="loading-bar-wrap"><div class="loading-bar-fill"></div></div>
+</div>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress"></div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">Тело помнит</a>
+    <div class="nav-links">
+      <a href="#process">Процесс</a>
+      <a href="#results">Результаты</a>
+      <a href="#pricing">Стоимость</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--primary nav-cta">Участвовать</a>
+    </div>
+    <button class="nav-burger" id="burger" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-inner">
+      <a href="#process" class="mobile-link">Процесс</a>
+      <a href="#results" class="mobile-link">Результаты</a>
+      <a href="#pricing" class="mobile-link">Стоимость</a>
+      <a href="#faq" class="mobile-link">FAQ</a>
+      <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--primary btn--full">Участвовать</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blobs">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+  </div>
+  <div class="hero-silhouette">
+    <svg viewBox="0 0 200 400" fill="none">
+      <path fill="#2a4a38" d="M100,20 C88,20 80,30 80,45 C80,60 88,70 100,70 C112,70 120,60 120,45 C120,30 112,20 100,20 M100,75 C85,75 75,82 70,95 C60,110 58,130 48,150 C38,170 28,180 22,190 L18,200 L32,205 L38,195 C42,185 52,175 62,165 L68,160 L68,220 C68,255 72,290 78,320 L82,390 L100,390 L100,285 L115,285 L115,390 L133,390 L137,320 C143,290 147,255 147,220 L147,160 L153,165 C163,175 173,185 177,195 L183,205 L197,200 L193,190 C187,180 177,170 167,150 C157,130 155,110 150,95 C145,82 133,75 115,75 L100,75"/>
+    </svg>
+  </div>
+  <div class="hero-fade"></div>
+  <div class="container hero-content">
+    <span class="hero-kicker reveal">Интегративная терапевтическая группа</span>
+    <h1 class="hero-title reveal reveal-delay-1">Тело помнит не только боль.<br>Оно помнит способ выживания.</h1>
+    <p class="hero-subtitle reveal reveal-delay-2">И пока эта стратегия остаётся бессознательной — вы будете выбирать одно и то же, только в разных декорациях.</p>
+    <div class="hero-highlight reveal reveal-delay-2">
+      <p>«Тело помнит» — это 5 недель работы с автоматической стратегией выживания, которая запускается раньше мысли.</p>
+    </div>
+    <div class="hero-btns reveal reveal-delay-3">
+      <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--primary">Оплатить участие</a>
+      <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--outline">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Забронировать в Telegram
+      </a>
+    </div>
+    <div class="hero-countdown reveal" id="hero-countdown">
+      <span class="hero-countdown-label" id="countdown-label">Ранняя цена действует ещё</span>
+      <div class="countdown-nums">
+        <div class="countdown-unit"><span class="countdown-n" id="c-days">0</span><span class="countdown-l">дней</span></div>
+        <div class="countdown-unit"><span class="countdown-n" id="c-hours">00</span><span class="countdown-l">часов</span></div>
+        <div class="countdown-unit"><span class="countdown-n" id="c-mins">00</span><span class="countdown-l">мин</span></div>
+      </div>
+    </div>
+    <div class="hero-stats reveal reveal-delay-3">
+      <div class="hero-stat">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>5 недель</span>
+      </div>
+      <div class="hero-stat">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>9 встреч</span>
+      </div>
+      <div class="hero-stat">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Старт 19 марта</span>
+      </div>
+      <div class="hero-stat">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>Zoom + Telegram</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECOGNIZE -->
+<section class="section section--white">
+  <div class="container">
+    <div style="max-width:640px;margin:0 auto 48px;text-align:center" class="reveal">
+      <span class="label">Узнаёте себя?</span>
+      <h2 class="section-title">Если вы узнаёте себя</h2>
+      <p class="section-sub">Вы многое понимаете. Вы были в терапии. Вы умеете анализировать. Но в момент давления:</p>
+    </div>
+    <div class="recognize-grid reveal">
+      <div class="recognize-cell">
+        <span class="recognize-num">01</span>
+        <p class="recognize-text">сжимается грудь</p>
+      </div>
+      <div class="recognize-cell">
+        <span class="recognize-num">02</span>
+        <p class="recognize-text">перехватывает дыхание</p>
+      </div>
+      <div class="recognize-cell">
+        <span class="recognize-num">03</span>
+        <p class="recognize-text">голос становится тише — и вы снова соглашаетесь или замираете</p>
+      </div>
+    </div>
+    <div style="max-width:620px;margin:0 auto" class="reveal">
+      <div class="recognize-quote">
+        <p>Проблема не в силе воли. Проблема в закреплённой реакции.</p>
+      </div>
+      <p class="section-sub">Когнитивная работа меняет понимание. Но тело продолжает реагировать по-старому: паттерн закреплён на уровне реакции, не мысли. Мы работаем именно там — в точке включения автоматизма.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BODY MAP -->
+<section class="bodymap-section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px" class="reveal">
+      <span class="label">Исследование тела</span>
+      <h2 class="section-title">Где в теле живёт ваш паттерн?</h2>
+      <p class="section-sub" style="max-width:500px;margin:0 auto">Нажмите на точки на силуэте, чтобы увидеть, как тело хранит стратегии выживания.</p>
+    </div>
+    <div class="bodymap-wrap reveal">
+      <div class="bodymap-svg-wrap" id="bodymap">
+        <svg viewBox="0 0 200 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bm-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#c49a3c" stop-opacity=".5"/>
+              <stop offset="50%" stop-color="#2a4a38" stop-opacity=".7"/>
+              <stop offset="100%" stop-color="#c49a3c" stop-opacity=".5"/>
+            </linearGradient>
+          </defs>
+          <!-- silhouette -->
+          <path fill="#2a4a38" opacity=".07" d="M100,20 C88,20 80,30 80,45 C80,60 88,70 100,70 C112,70 120,60 120,45 C120,30 112,20 100,20 M100,75 C85,75 75,82 70,95 C60,110 58,130 48,150 C38,170 28,180 22,190 L18,200 L32,205 L38,195 C42,185 52,175 62,165 L68,160 L68,220 C68,255 72,290 78,320 L82,390 L100,390 L100,285 L115,285 L115,390 L133,390 L137,320 C143,290 147,255 147,220 L147,160 L153,165 C163,175 173,185 177,195 L183,205 L197,200 L193,190 C187,180 177,170 167,150 C157,130 155,110 150,95 C145,82 133,75 115,75 L100,75"/>
+          <!-- wireframe -->
+          <g stroke="#2a4a38" stroke-width=".3" fill="none" opacity=".35">
+            <path d="M100,75 L80,110 L100,140 L120,110 Z"/>
+            <path d="M80,110 L65,150 L100,170 L135,150 L120,110"/>
+            <path d="M65,150 L68,230 L100,250 L132,230 L135,150"/>
+            <path d="M68,230 L78,320 L100,350 L122,320 L132,230"/>
+            <path d="M100,140 L100,350"/>
+            <path d="M80,110 L120,110"/>
+            <path d="M65,150 L135,150"/>
+            <path d="M68,230 L132,230"/>
+          </g>
+          <!-- energy nodes -->
+          <circle cx="100" cy="80" r="2" fill="#c49a3c" opacity=".5"/>
+          <circle cx="100" cy="130" r="2" fill="#c49a3c" opacity=".4"/>
+          <circle cx="100" cy="175" r="2" fill="#c49a3c" opacity=".45"/>
+          <circle cx="100" cy="230" r="2" fill="#c49a3c" opacity=".4"/>
+          <!-- clickable zone highlights (updated by JS) -->
+          <circle id="bm-glow-jaw" cx="100" cy="58" r="5" fill="#c49a3c" opacity="0" filter="url(#glow-f)"/>
+          <circle id="bm-glow-shoulders" cx="100" cy="88" r="5" fill="#c49a3c" opacity="0"/>
+          <circle id="bm-glow-chest" cx="100" cy="128" r="5" fill="#c49a3c" opacity="0"/>
+          <circle id="bm-glow-belly" cx="100" cy="175" r="5" fill="#c49a3c" opacity="0"/>
+        </svg>
+        <!-- clickable dots -->
+        <button class="body-zone-dot" data-zone="jaw" style="top:14%;left:50%" aria-label="Челюсть">
+          <span class="dot-ping"></span><span class="dot-inner"></span>
+        </button>
+        <button class="body-zone-dot" data-zone="shoulders" style="top:22%;left:50%" aria-label="Плечи">
+          <span class="dot-ping"></span><span class="dot-inner"></span>
+        </button>
+        <button class="body-zone-dot" data-zone="chest" style="top:32%;left:50%" aria-label="Грудь">
+          <span class="dot-ping"></span><span class="dot-inner"></span>
+        </button>
+        <button class="body-zone-dot" data-zone="belly" style="top:44%;left:50%" aria-label="Живот">
+          <span class="dot-ping"></span><span class="dot-inner"></span>
+        </button>
+      </div>
+      <div class="bodymap-info">
+        <div class="zone-card-default" id="zone-default">Нажмите на точку на силуэте, чтобы узнать, как эта зона тела связана с вашими реакциями.</div>
+        <div class="zone-card" id="zone-jaw">
+          <p class="zone-card-name">Челюсть</p>
+          <span class="zone-card-pattern">«Невысказанный гнев»</span>
+          <p class="zone-card-desc">Сжатые зубы — это запрет на голос. Мы учимся разжимать этот замок и звучать.</p>
+        </div>
+        <div class="zone-card" id="zone-shoulders">
+          <p class="zone-card-name">Плечи и шея</p>
+          <span class="zone-card-pattern">«Груз ответственности»</span>
+          <p class="zone-card-desc">Здесь живёт гиперконтроль и страх не справиться. Мы учимся сбрасывать этот груз через осознанное расслабление.</p>
+        </div>
+        <div class="zone-card" id="zone-chest">
+          <p class="zone-card-name">Грудная клетка</p>
+          <span class="zone-card-pattern">«Замирание дыхания»</span>
+          <p class="zone-card-desc">Точка, где мы подавляем эмоции. На группе мы возвращаем себе право дышать полной грудью.</p>
+        </div>
+        <div class="zone-card" id="zone-belly">
+          <p class="zone-card-name">Живот</p>
+          <span class="zone-card-pattern">«Узел тревоги»</span>
+          <p class="zone-card-desc">Центр безопасности. Когда здесь сжато — мир кажется опасным. Мы возвращаем животу мягкость и опору.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BREATHING -->
+<div class="breathing-section reveal">
+  <div class="breathing-ring-wrap">
+    <div class="breathing-glow"></div>
+    <div class="breathing-ring"><span>Дышите</span></div>
+  </div>
+  <p class="breathing-hint">Настройтесь на ритм своего тела</p>
+</div>
+
+<!-- SELF CHECK -->
+<section class="section section--bg">
+  <div class="container">
+    <div class="selfcheck-box reveal">
+      <span class="label" style="text-align:center;display:block">Самодиагностика</span>
+      <h2 class="section-title" style="text-align:center;margin-bottom:12px">Узнайте свой паттерн замирания</h2>
+      <p class="section-sub" style="text-align:center;margin-bottom:36px">Отметьте пункты, которые откликаются вам сейчас:</p>
+      <div class="selfcheck-items" id="selfcheck-items">
+        <button class="selfcheck-item" data-idx="0">
+          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Часто чувствую напряжение в плечах или челюсти, даже когда отдыхаю</span>
+        </button>
+        <button class="selfcheck-item" data-idx="1">
+          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>В стрессовых ситуациях я «замираю» или соглашаюсь, а потом жалею</span>
+        </button>
+        <button class="selfcheck-item" data-idx="2">
+          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Я всё понимаю головой, но тело продолжает реагировать по-старому</span>
+        </button>
+        <button class="selfcheck-item" data-idx="3">
+          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>У меня есть психосоматические симптомы (ЖКТ, спина, давление)</span>
+        </button>
+        <button class="selfcheck-item" data-idx="4">
+          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Мне сложно говорить «нет» без чувства вины или страха</span>
+        </button>
+        <button class="selfcheck-item" data-idx="5">
+          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Я часто чувствую себя уставшей, даже если физически не перегружена</span>
+        </button>
+      </div>
+      <div class="selfcheck-result" id="selfcheck-result">
+        <p class="selfcheck-result-title" id="selfcheck-title">Вы уже начали замечать сигналы тела.</p>
+        <p class="selfcheck-result-text">Это не приговор, а точка входа. На группе мы научимся находить паузу в этих реакциях и выбирать новый способ жизни.</p>
+        <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--primary">Хочу на программу</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="section section--white">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px" class="reveal">
+      <span class="label">Почему это работает</span>
+      <h2 class="section-title">Почему тело, а не просто разговоры</h2>
+    </div>
+    <div class="comparison-grid reveal" style="max-width:800px;margin:0 auto">
+      <div class="comparison-col comparison-col--old">
+        <h3 class="comparison-head">Классическая терапия</h3>
+        <ul class="comparison-list">
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.3;color:var(--muted)"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span style="color:var(--muted)">Работает с осознанием «почему так произошло»</span>
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.3;color:var(--muted)"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span style="color:var(--muted)">Меняет мысли, но реакция в теле остаётся</span>
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.3;color:var(--muted)"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span style="color:var(--muted)">Требует много времени на внедрение изменений</span>
+          </li>
+        </ul>
+      </div>
+      <div class="comparison-col comparison-col--new">
+        <span class="comparison-badge">Наш метод</span>
+        <h3 class="comparison-head">Интегративный подход</h3>
+        <ul class="comparison-list">
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--green)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>Работает с точкой включения автоматизма в теле</span>
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--green)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>Создаёт физическую паузу для нового выбора</span>
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--green)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>Закрепляет результат через действие в моменте</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <p class="comparison-note reveal" style="max-width:600px">Мы не просто «обсуждаем» проблемы. Мы перепрошиваем реакцию вашей нервной системы.</p>
+  </div>
+</section>
+
+<!-- WISDOM QUOTES -->
+<section class="section section--bg">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px" class="reveal">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gold);margin:0 auto 12px;display:block"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      <h2 class="section-title">Смыслы погружения</h2>
+    </div>
+    <div class="wisdom-grid reveal">
+      <div class="wisdom-card">
+        <div class="wisdom-card-stripe"></div>
+        <p class="wisdom-quote">«Тело никогда не лжёт. Если есть конфликт между мыслью и ощущением — верьте ощущению.»</p>
+        <span class="wisdom-author">Телесный принцип</span>
+        <div class="wisdom-meaning">Наш мозг может придумать оправдание любому поведению, но тело всегда выдаёт истинную реакцию через зажим или расслабление.</div>
+      </div>
+      <div class="wisdom-card">
+        <div class="wisdom-card-stripe"></div>
+        <p class="wisdom-quote">«Замирание — это не отсутствие действия. Это действие, направленное внутрь себя.»</p>
+        <span class="wisdom-author">О природе стресса</span>
+        <div class="wisdom-meaning">Когда мы не можем убежать или напасть, мы тратим колоссальную энергию на то, чтобы оставаться неподвижными. Это истощает.</div>
+      </div>
+      <div class="wisdom-card">
+        <div class="wisdom-card-stripe"></div>
+        <p class="wisdom-quote">«Безопасность — это не отсутствие угрозы. Это присутствие связи.»</p>
+        <span class="wisdom-author">Принцип группы</span>
+        <div class="wisdom-meaning">В одиночку мы всегда в режиме выживания. В контакте с другими наша нервная система получает сигнал: «Можно расслабиться».</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAFETY -->
+<section class="section section--white">
+  <div class="container">
+    <div class="safety-box reveal">
+      <div class="safety-glow"></div>
+      <span class="label safety-label">Безопасность</span>
+      <h2 class="section-title safety-title">Почему работать в группе — это безопасно и эффективно</h2>
+      <div class="safety-grid">
+        <div>
+          <p class="safety-item-title">Конфиденциальность</p>
+          <p class="safety-item-text">Всё, что происходит в группе, остаётся внутри. Мы создаём пространство, где можно быть настоящей.</p>
+        </div>
+        <div>
+          <p class="safety-item-title">Бережный темп</p>
+          <p class="safety-item-text">Мы не форсируем глубину. Каждый идёт в своём ритме, регулируя уровень открытости.</p>
+        </div>
+        <div>
+          <p class="safety-item-title">Профессиональная опора</p>
+          <p class="safety-item-text">Два специалиста ведут группу, обеспечивая безопасность и поддержку на каждом этапе.</p>
+        </div>
+      </div>
+      <div class="safety-divider">
+        <p class="safety-quote">«Группа — это зеркало, которое помогает увидеть свои паттерны быстрее, чем в личной терапии.»</p>
+        <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--white">Задать вопрос о формате</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section id="results" class="section section--bg">
+  <div class="container">
+    <div class="results-stats reveal">
+      <div class="stat-card">
+        <span class="stat-value">72%</span>
+        <p class="stat-label">участников заметили снижение напряжения</p>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">68%</span>
+        <p class="stat-label">начали открыто говорить о своих границах</p>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">80%</span>
+        <p class="stat-label">стали быстрее восстанавливаться после стресса</p>
+      </div>
+    </div>
+    <div class="results-two">
+      <div class="reveal">
+        <span class="label">Результат</span>
+        <h2 class="section-title">Что меняется через 5 недель</h2>
+        <p class="section-sub" style="margin-bottom:28px">Вы не становитесь «другим человеком». Вы учитесь управлять своими реакциями.</p>
+        <ul class="results-list">
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            замечать напряжение раньше боли
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            говорить о важном до срыва
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            не доводить себя до перегруза
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            быстрее восстанавливаться
+          </li>
+        </ul>
+      </div>
+      <div class="results-callout reveal reveal-delay-1">
+        <p>Главное изменение: реакция перестаёт управлять вами. Появляется пауза. А в паузе — выбор.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="section section--white" style="overflow:hidden">
+  <div class="container">
+    <div class="process-header reveal">
+      <span class="label">5 недель трансформации</span>
+      <h2 class="section-title">Путь к новому состоянию</h2>
+      <p class="section-sub">Это не просто курс. Это последовательная перепрошивка ваших реакций на уровне нервной системы.</p>
+    </div>
+    <div class="process-steps">
+
+      <div class="week-step reveal">
+        <span class="week-ghost">1</span>
+        <div class="week-step-inner">
+          <div class="week-step-meta">
+            <span class="week-step-line"></span>
+            <span class="week-step-tag">Неделя 1</span>
+          </div>
+          <h3>Тело и безопасность</h3>
+          <p>Мы начинаем с фундамента. Учимся слышать сигналы тела до того, как они станут невыносимой болью. Создаём пространство группы, где ваша нервная система наконец сможет выдохнуть и перестать ждать удара.</p>
+          <div class="week-step-shift">
+            <span class="week-step-shift-label">Shift / Сдвиг</span>
+            <p>«Я в безопасности. Моё тело — мой союзник, а не враг.»</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="week-step reveal">
+        <span class="week-ghost">2</span>
+        <div class="week-step-inner">
+          <div class="week-step-meta">
+            <span class="week-step-line"></span>
+            <span class="week-step-tag">Неделя 2</span>
+          </div>
+          <h3>Паттерны и стратегии</h3>
+          <p>Находим вашу личную «стратегию выживания». Почему вы замираете, нападаете или убегаете в работу? Мы не просто обсуждаем это — мы находим, где этот паттерн «застрял» в мышцах и фасциях.</p>
+          <div class="week-step-shift">
+            <span class="week-step-shift-label">Shift / Сдвиг</span>
+            <p>«Я вижу, как я выживаю, и готов попробовать жить иначе.»</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="week-step reveal">
+        <span class="week-ghost">3</span>
+        <div class="week-step-inner">
+          <div class="week-step-meta">
+            <span class="week-step-line"></span>
+            <span class="week-step-tag">Неделя 3</span>
+          </div>
+          <h3>Точка выбора</h3>
+          <p>Самый важный этап. Мы учимся находить ту самую секунду между триггером и привычной реакцией. Работаем с телом в моменте, чтобы создать физическую паузу для нового решения.</p>
+          <div class="week-step-shift">
+            <span class="week-step-shift-label">Shift / Сдвиг</span>
+            <p>«Между стимулом и реакцией есть зазор. В этом зазоре — моя свобода.»</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="week-step reveal">
+        <span class="week-ghost">4</span>
+        <div class="week-step-inner">
+          <div class="week-step-meta">
+            <span class="week-step-line"></span>
+            <span class="week-step-tag">Неделя 4</span>
+          </div>
+          <h3>Новый телесный опыт</h3>
+          <p>Пробуем действовать из новой опоры. Не из страха или вины, а из ощущения собственного центра. Закрепляем новый отклик через телесные практики и реальные диалоги внутри группы.</p>
+          <div class="week-step-shift">
+            <span class="week-step-shift-label">Shift / Сдвиг</span>
+            <p>«Я могу говорить "нет" и чувствовать силу, а не вину.»</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="week-step reveal">
+        <span class="week-ghost">5</span>
+        <div class="week-step-inner">
+          <div class="week-step-meta">
+            <span class="week-step-line"></span>
+            <span class="week-step-tag">Неделя 5</span>
+          </div>
+          <h3>Интеграция и жизнь</h3>
+          <p>Переносим опыт в реальность. Как оставаться в контакте с собой, когда группа закончится? Фиксируем изменения и простраиваем маршрут, чтобы новые привычки стали вашей новой природой.</p>
+          <div class="week-step-shift">
+            <span class="week-step-shift-label">Shift / Сдвиг</span>
+            <p>«Я больше не живу автоматически. Я выбираю себя каждый день.»</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="section section--white">
+  <div class="container">
+    <div class="reveal" style="margin-bottom:40px">
+      <span class="label">Как это выглядит</span>
+      <h2 class="section-title">Атмосфера и формат</h2>
+    </div>
+    <div class="gallery-grid reveal">
+      <div class="gallery-card">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&q=80&w=600" alt="Телесная практика" referrerpolicy="no-referrer">
+        <div class="gallery-body">
+          <h3>Телесная практика</h3>
+          <p>мягко, безопасно, в своём темпе</p>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?auto=format&fit=crop&q=80&w=600" alt="Живая работа в Zoom" referrerpolicy="no-referrer">
+        <div class="gallery-body">
+          <h3>Живая работа в Zoom</h3>
+          <p>структура + контакт</p>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1499728603263-13726abce5fd?auto=format&fit=crop&q=80&w=600" alt="Наблюдения" referrerpolicy="no-referrer">
+        <div class="gallery-body">
+          <h3>Наблюдения</h3>
+          <p>формируется новая привычка</p>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <img class="gallery-img" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=600" alt="Закрытое пространство" referrerpolicy="no-referrer">
+        <div class="gallery-body">
+          <h3>Закрытое пространство</h3>
+          <p>поддержка и навигация</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOSTS -->
+<section class="section section--bg">
+  <div class="container">
+    <div style="margin-bottom:56px" class="reveal">
+      <span class="label">Кто ведёт</span>
+      <h2 class="section-title">Ведущие программы</h2>
+    </div>
+    <div class="hosts-grid">
+      <div class="host-card reveal">
+        <div class="host-img-wrap">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400" alt="Анастасия Хорошавцева" referrerpolicy="no-referrer">
+        </div>
+        <div>
+          <span class="host-role">Глубина</span>
+          <p class="host-name">Анастасия Хорошавцева</p>
+          <p class="host-bio">Специалист по психосоматике и телесной терапии с 5-летним опытом практики и более 100+ довольных клиентов. В своей работе использует методы регрессии, трансовые состояния, психосоматический анализ и телесно-ориентированные практики.</p>
+          <div class="host-links">
+            <a href="https://t.me/akhoroshavtseva" target="_blank" class="host-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Написать
+            </a>
+            <a href="https://t.me/Anastasiya_v_glubinu" target="_blank" class="host-link">Канал</a>
+          </div>
+        </div>
+      </div>
+      <div class="host-card reveal reveal-delay-1">
+        <div class="host-img-wrap">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=400" alt="Альмира Султанова" referrerpolicy="no-referrer">
+        </div>
+        <div>
+          <span class="host-role">Внедрение</span>
+          <p class="host-name">Альмира Султанова</p>
+          <p class="host-bio">Коуч и специалист по поведенческим изменениям. Переводит глубинные инсайты в конкретные действия. Работает с тем, чтобы новый способ реагирования не остался «на сессии», а закрепился в реальных ситуациях — на работе, в отношениях, в теле.</p>
+          <div class="host-links">
+            <a href="https://t.me/Almira_Sultanova" target="_blank" class="host-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Написать
+            </a>
+            <a href="https://t.me/AlmiraSultanova_AI" target="_blank" class="host-link">Канал</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDY -->
+<section class="section section--white">
+  <div class="container">
+    <div style="max-width:760px;margin:0 auto">
+      <div style="margin-bottom:40px" class="reveal">
+        <span class="label">Пример из практики</span>
+        <h2 class="section-title">Пример результата</h2>
+      </div>
+      <div class="case-box reveal">
+        <span class="case-who">Юлия, 40 лет</span>
+        <div class="case-body">
+          <p><strong>До:</strong> Хронические боли в спине, диагноз — грыжа позвоночника. Врачи настаивали на операции. Параллельно — невозможность попросить о помощи, привычка «держать всё на себе».</p>
+          <p><strong>В процессе:</strong> Обнаружилась прямая связь: тело «несло» то, что невозможно было произнести вслух. Стратегия выживания — не показывать слабость — закрепилась в теле как буквальное напряжение.</p>
+          <p class="case-quote">«Первый раз в жизни попросила о помощи. И не умерла.»</p>
+          <p><strong>Результат:</strong> Боли снизились значительно. После повторного обследования врач сам отменил операцию.</p>
+          <p class="case-result">Тело перестало нести то, что она наконец сказала словами.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section--bg">
+  <div class="container">
+    <div style="margin-bottom:48px" class="reveal">
+      <span class="label">Участницы о программе</span>
+      <h2 class="section-title">Что изменилось</h2>
+    </div>
+    <div class="testimonials-slider reveal">
+      <div class="testimonials-track" id="testimonials-track">
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <p class="testimonial-text">«Спустя месяц стала замечать, что улучшилась интуиция — не могу объяснить как, но работает однозначно. Стала замедлять себя, когда чувствую, что тороплюсь.»</p>
+            <p class="testimonial-name">Алена</p>
+          </div>
+        </div>
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <p class="testimonial-text">«До программы прошла серьёзную психологическую работу. Когнитивно многое было разобрано — тело продолжало держать напряжение. После — ощущение лёгкости.»</p>
+            <p class="testimonial-name">Елена</p>
+          </div>
+        </div>
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <p class="testimonial-text">«После практик — состояние как после глубокого сна. Ощущение восстановленности и лёгкости. Посмотрела на мужа другими глазами.»</p>
+            <p class="testimonial-name">Наталья</p>
+          </div>
+        </div>
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <p class="testimonial-text">«Наполнилась женской энергией, почувствовала как энергия течёт в теле. Снялись старые блоки, зажимы. Смогла вернуться к себе настоящей.»</p>
+            <p class="testimonial-name">Катя</p>
+          </div>
+        </div>
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <p class="testimonial-text">«Всю жизнь подстраивалась. Внутри копилось: зажим в шее, тяжесть в груди. На одной из встреч, когда ведущая спросила: "Что вы сейчас чувствуете?" — я впервые ответила честно. Это было начало.»</p>
+            <p class="testimonial-name">Марина</p>
+          </div>
+        </div>
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <p class="testimonial-text">«Я пришла с хроническим "у меня всё хорошо". Ушла с умением замечать, когда это неправда — прямо в теле, ещё до того, как это становится словами.»</p>
+            <p class="testimonial-name">Регина</p>
+          </div>
+        </div>
+      </div>
+      <div class="slider-controls">
+        <button class="slider-btn" id="slider-prev" aria-label="Назад">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="slider-dots" id="slider-dots"></div>
+        <button class="slider-btn" id="slider-next" aria-label="Вперёд">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="section section--bg">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px" class="reveal">
+      <span class="label">Стоимость</span>
+      <h2 class="section-title">Участие в группе</h2>
+      <p class="section-sub">9 живых встреч, 2 специалиста, 5 недель сопровождения. Группа не превышает 12 человек.</p>
+    </div>
+    <div class="pricing-card reveal">
+      <div class="pricing-card-stripe"></div>
+      <p class="pricing-title">Полная перезагрузка</p>
+      <div class="pricing-amount">
+        <span class="price-main" id="price-main">12 000 ₽</span>
+        <span class="price-old" id="price-old">15 000 ₽</span>
+      </div>
+      <span class="pricing-hint" id="pricing-hint">Ранняя цена — до 15 марта</span>
+      <ul class="pricing-features">
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          9 живых встреч (18–27 часов работы)
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Психосоматические разборы
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Телесные практики
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Интеграционная неделя
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Закрытый чат сопровождения
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Персональные практики
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Записи (доступ 3 месяца)
+        </li>
+      </ul>
+      <div class="pricing-bonus">
+        <span class="pricing-bonus-label">Бонусы при оплате сейчас:</span>
+        <ul class="pricing-bonus-list">
+          <li>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Гайд «Как слышать тело в моменте стресса»
+          </li>
+          <li>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Запись медитации на заземление
+          </li>
+        </ul>
+      </div>
+      <div class="pricing-btns">
+        <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--primary btn--full">Оплатить участие</a>
+        <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--outline btn--full">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Забронировать в Telegram
+        </a>
+      </div>
+      <p class="pricing-note">Старт: 19 марта · Группа до 12 человек</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="section section--white">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px" class="reveal">
+      <span class="label">FAQ</span>
+      <h2 class="section-title">Вопросы и ответы</h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-q">Это терапия или нет?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Да. «Тело помнит» — это интегративная терапевтическая группа (психосоматика + телесная терапия + работа с бессознательным). При этом это не замена индивидуальной психотерапии.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Что если мне станет хуже?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">В процессе возможны: усиление чувствительности, всплытие эмоций. Это нормально. Вы не остаётесь с этим одни — реакции объясняются, темп регулируется.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Боюсь начать самодиагностику<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">В «Тело помнит» не поощряется самодиагностика. Телесные реакции объясняются, а не драматизируются. Задача — научиться слышать тело, а не бояться его.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">А если я не попаду на разбор?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Каждая попадает на разбор 1–2 раза. Но разбор одного человека работает на всё поле группы — участницы узнают себя в процессах других.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Я боюсь, что жизнь развалится<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Разваливается только отжившее, то, что больше не подходит. Мы не разрушаем жизнь — мы возвращаем опору и осознанность.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Я никогда не была в терапии. Справлюсь?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Да. Программа подходит как для тех, кто только начинает путь, так и для тех, кто уже работал с психологом. Мы начинаем с базовой безопасности и идём в глубину постепенно.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Нужно ли включать камеру на встречах?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Это ваш выбор. Мы создаём условия, в которых вы можете регулировать степень своего присутствия. Телесные практики можно делать с выключенной камерой — главное, что вы здесь.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <h2 class="reveal">Готовы перестать жить автоматически?</h2>
+    <p class="reveal reveal-delay-1">Вопрос не в информации. Вопрос — готовы ли вы перестать жить автоматически и дать себе шанс на выбор.</p>
+    <div class="final-cta-btns reveal reveal-delay-2">
+      <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--white">Оплатить участие</a>
+      <a href="https://t.me/Almira_Sultanova" target="_blank" class="btn btn--ghost">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Задать вопрос
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer">
+  <div class="container">
+    <p>Мы не даём медицинских обещаний и не заменяем терапию или врачей. Мы работаем с реакцией и способом проживания жизни. Материалы и практики на сайте не являются медицинской услугой и не заменяют консультацию врача.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <span class="footer-logo">Тело помнит</span>
+    <div class="footer-links">
+      <a href="#process">Процесс</a>
+      <a href="#results">Результаты</a>
+      <a href="#pricing">Стоимость</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <p class="footer-copy">© <span id="year"></span> «Тело помнит». Все права защищены.</p>
+    <p class="footer-legal">Материалы и практики на сайте не являются медицинской услугой и не заменяют консультацию врача.</p>
+  </div>
+</footer>
+
+<!-- AUDIO BUTTON -->
+<button class="audio-btn" id="audio-btn" aria-label="Фоновая атмосфера">
+  <svg id="audio-icon-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+  <svg id="audio-icon-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+</button>
+
+<script>
+// Loading screen
+(function(){
+  var ls = document.getElementById('loading-screen');
+  setTimeout(function(){
+    ls.classList.add('hidden');
+    setTimeout(function(){ ls.style.display='none'; }, 900);
+  }, 2200);
+})();
+
+// Scroll progress
+(function(){
+  var bar = document.getElementById('scroll-progress');
+  window.addEventListener('scroll', function(){
+    var s = document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = 'scaleX(' + (s/h) + ')';
+  }, {passive:true});
+})();
+
+// Navbar
+(function(){
+  var nav = document.getElementById('navbar');
+  var burger = document.getElementById('burger');
+  var menu = document.getElementById('mobile-menu');
+  window.addEventListener('scroll', function(){
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, {passive:true});
+  burger.addEventListener('click', function(){
+    menu.classList.toggle('open');
+  });
+  document.querySelectorAll('.mobile-link').forEach(function(a){
+    a.addEventListener('click', function(){ menu.classList.remove('open'); });
+  });
+})();
+
+// Reveal on scroll
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+// Body map
+(function(){
+  var dots = document.querySelectorAll('.body-zone-dot');
+  var cards = { jaw:'zone-jaw', shoulders:'zone-shoulders', chest:'zone-chest', belly:'zone-belly' };
+  var glows = { jaw:'bm-glow-jaw', shoulders:'bm-glow-shoulders', chest:'bm-glow-chest', belly:'bm-glow-belly' };
+  var current = null;
+  dots.forEach(function(dot){
+    dot.addEventListener('click', function(){
+      var zone = this.getAttribute('data-zone');
+      // reset
+      dots.forEach(function(d){ d.classList.remove('active'); });
+      Object.values(glows).forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('opacity','0'); });
+      Object.values(cards).forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.remove('active'); });
+      document.getElementById('zone-default').style.display = 'block';
+      if(current === zone){ current=null; return; }
+      current = zone;
+      this.classList.add('active');
+      var g = document.getElementById(glows[zone]);
+      if(g) g.setAttribute('opacity','0.8');
+      var c = document.getElementById(cards[zone]);
+      if(c){ c.classList.add('active'); document.getElementById('zone-default').style.display='none'; }
+    });
+  });
+})();
+
+// Self check
+(function(){
+  var items = document.querySelectorAll('.selfcheck-item');
+  var result = document.getElementById('selfcheck-result');
+  var title = document.getElementById('selfcheck-title');
+  var checked = new Set();
+  items.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var idx = this.getAttribute('data-idx');
+      if(checked.has(idx)){ checked.delete(idx); this.classList.remove('checked'); }
+      else { checked.add(idx); this.classList.add('checked'); }
+      if(checked.size > 0){
+        result.classList.add('visible');
+        title.textContent = checked.size >= 4 ? 'Ваше тело накопило много автоматизмов.' : 'Вы уже начали замечать сигналы тела.';
+      } else {
+        result.classList.remove('visible');
+      }
+    });
+  });
+})();
+
+// Testimonials slider
+(function(){
+  var track = document.getElementById('testimonials-track');
+  var dotsWrap = document.getElementById('slider-dots');
+  var slides = track.querySelectorAll('.testimonial-slide');
+  var total = slides.length;
+  var current = 0;
+  // create dots
+  for(var i=0;i<total;i++){
+    var d = document.createElement('button');
+    d.className = 'slider-dot' + (i===0?' active':'');
+    d.setAttribute('data-i', i);
+    d.setAttribute('aria-label', 'Слайд ' + (i+1));
+    dotsWrap.appendChild(d);
+  }
+  function go(n){
+    current = (n + total) % total;
+    track.style.transform = 'translateX(-' + current*100 + '%)';
+    dotsWrap.querySelectorAll('.slider-dot').forEach(function(d,i){ d.classList.toggle('active', i===current); });
+  }
+  document.getElementById('slider-prev').addEventListener('click', function(){ go(current-1); });
+  document.getElementById('slider-next').addEventListener('click', function(){ go(current+1); });
+  dotsWrap.addEventListener('click', function(e){
+    var d = e.target.closest('.slider-dot');
+    if(d) go(parseInt(d.getAttribute('data-i')));
+  });
+  // auto
+  setInterval(function(){ go(current+1); }, 5000);
+})();
+
+// FAQ accordion
+(function(){
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    item.querySelector('.faq-q').addEventListener('click', function(){
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); });
+      if(!isOpen) item.classList.add('open');
+    });
+  });
+})();
+
+// Pricing + Countdown
+(function(){
+  var priceDeadline = new Date('2026-03-16T00:00:00+03:00');
+  var launch = new Date('2026-03-19T00:00:00+03:00');
+  var priceMain = document.getElementById('price-main');
+  var priceOld = document.getElementById('price-old');
+  var hint = document.getElementById('pricing-hint');
+  var countdown = document.getElementById('hero-countdown');
+  var label = document.getElementById('countdown-label');
+  var cDays = document.getElementById('c-days');
+  var cHours = document.getElementById('c-hours');
+  var cMins = document.getElementById('c-mins');
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function update(){
+    var now = Date.now();
+    if(now < priceDeadline.getTime()){
+      // early bird phase
+      priceMain.textContent = '12\u00a0000\u00a0\u20bd';
+      priceOld.style.display = '';
+      hint.textContent = '\u0420\u0430\u043d\u043d\u044f\u044f \u0446\u0435\u043d\u0430 \u2014 \u0434\u043e 15 \u043c\u0430\u0440\u0442\u0430';
+      var diff = priceDeadline.getTime() - now;
+      label.textContent = '\u0420\u0430\u043d\u043d\u044f\u044f \u0446\u0435\u043d\u0430 \u0434\u0435\u0439\u0441\u0442\u0432\u0443\u0435\u0442 \u0435\u0449\u0451';
+      cDays.textContent = Math.floor(diff/86400000);
+      cHours.textContent = pad(Math.floor(diff/3600000)%24);
+      cMins.textContent = pad(Math.floor(diff/60000)%60);
+      countdown.style.display = '';
+    } else if(now < launch.getTime()){
+      // full price, count to launch
+      priceMain.textContent = '15\u00a0000\u00a0\u20bd';
+      priceOld.style.display = 'none';
+      hint.textContent = '\u0421\u0442\u0430\u0440\u0442 \u2014 19 \u043c\u0430\u0440\u0442\u0430';
+      var diff2 = launch.getTime() - now;
+      label.textContent = '\u0414\u043e \u0437\u0430\u043f\u0443\u0441\u043a\u0430 \u043e\u0441\u0442\u0430\u043b\u043e\u0441\u044c';
+      cDays.textContent = Math.floor(diff2/86400000);
+      cHours.textContent = pad(Math.floor(diff2/3600000)%24);
+      cMins.textContent = pad(Math.floor(diff2/60000)%60);
+      countdown.style.display = '';
+    } else {
+      countdown.style.display = 'none';
+      priceMain.textContent = '15\u00a0000\u00a0\u20bd';
+      priceOld.style.display = 'none';
+      hint.textContent = '\u041f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0430 \u043d\u0430\u0447\u0430\u043b\u0430\u0441\u044c';
+    }
+  }
+  update();
+  setInterval(update, 30000);
+})();
+
+// Footer year
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// Audio atmosphere
+(function(){
+  var btn = document.getElementById('audio-btn');
+  var iconOff = document.getElementById('audio-icon-off');
+  var iconOn = document.getElementById('audio-icon-on');
+  var audio = null;
+  var playing = false;
+  btn.addEventListener('click', function(){
+    if(!audio){
+      audio = new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808f3030e.mp3?filename=meditation-bowl-ambient-114348.mp3');
+      audio.loop = true;
+      audio.volume = 0.3;
+    }
+    if(playing){
+      audio.pause();
+      playing = false;
+      btn.classList.remove('playing');
+      iconOff.style.display = '';
+      iconOn.style.display = 'none';
+    } else {
+      audio.play().catch(function(){});
+      playing = true;
+      btn.classList.add('playing');
+      iconOff.style.display = 'none';
+      iconOn.style.display = '';
+    }
+  });
+})();
+</script>
+</body>
+</html>
