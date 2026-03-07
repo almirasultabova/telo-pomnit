@@ -128,21 +128,21 @@ nav.scrolled{background:rgba(247,244,239,.92);backdrop-filter:blur(12px);padding
 .recognize-quote p{font-family:Georgia,serif;font-style:italic;font-size:22px;color:var(--text);line-height:1.4}
 
 /* BODY MAP */
-.bodymap-section{padding:80px 0;background:var(--white);overflow:hidden}
-.bodymap-wrap{display:flex;justify-content:center;align-items:flex-start;gap:48px;flex-wrap:wrap}
-.bodymap-svg-wrap{position:relative;width:280px;flex-shrink:0}
-.bodymap-svg-wrap svg{width:100%;height:auto}
-.body-zone-dot{position:absolute;width:20px;height:20px;cursor:pointer;transform:translate(-50%,-50%)}
-.body-zone-dot .dot-inner{width:16px;height:16px;border-radius:50%;border:2px solid var(--green);background:#fff;transition:all .3s;position:relative;z-index:2}
-.body-zone-dot.active .dot-inner{background:var(--green);transform:scale(1.2)}
-.dot-ping{position:absolute;inset:-4px;border-radius:50%;border:1.5px solid rgba(42,74,56,.3);animation:ping 2s ease-out infinite}
-.bodymap-info{flex:1;min-width:240px;max-width:400px}
-.zone-card{background:var(--bg);border-radius:var(--radius-card);padding:28px 32px;border-left:4px solid var(--green);display:none}
+.bodymap-section{padding:80px 0;background:#fdf9f4;overflow:hidden}
+.bodymap-wrap{display:flex;justify-content:center;align-items:center;gap:56px;flex-wrap:wrap}
+.bodymap-img-wrap{position:relative;width:300px;flex-shrink:0;filter:drop-shadow(0 0 40px rgba(196,154,60,.18))}
+.bodymap-img-wrap img{width:100%;height:auto;display:block;border-radius:16px}
+.body-zone-dot{position:absolute;width:28px;height:28px;cursor:pointer;transform:translate(-50%,-50%);z-index:3}
+.body-zone-dot .dot-inner{width:18px;height:18px;border-radius:50%;border:2px solid rgba(196,154,60,.9);background:rgba(255,240,200,.6);backdrop-filter:blur(4px);transition:all .3s;position:relative;z-index:2;box-shadow:0 0 12px rgba(196,154,60,.5)}
+.body-zone-dot.active .dot-inner{background:rgba(196,154,60,.9);border-color:#fff;transform:scale(1.3);box-shadow:0 0 20px rgba(196,154,60,.8)}
+.dot-ping{position:absolute;inset:-5px;border-radius:50%;border:1.5px solid rgba(196,154,60,.5);animation:ping 2.5s ease-out infinite}
+.bodymap-info{flex:1;min-width:260px;max-width:420px}
+.zone-card{background:var(--white);border-radius:var(--radius-card);padding:28px 32px;border-left:4px solid var(--gold);display:none;box-shadow:var(--shadow)}
 .zone-card.active{display:block;animation:slide-in .3s ease}
 .zone-card-name{font-family:Georgia,serif;font-style:italic;font-size:22px;color:var(--green);margin-bottom:6px}
 .zone-card-pattern{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px;display:block}
 .zone-card-desc{color:var(--muted);font-size:15px;line-height:1.65}
-.zone-card-default{color:var(--muted);font-style:italic;font-size:15px;padding:16px 0}
+.zone-card-default{color:var(--muted);font-style:italic;font-size:15px;padding:16px 0;line-height:1.6}
 
 /* BREATHING */
 .breathing-section{padding:40px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--white)}
@@ -353,6 +353,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   .host-card{flex-direction:column}
   .host-img-wrap{width:100%;max-width:200px}
   .bodymap-wrap{flex-direction:column;align-items:center}
+  .bodymap-img-wrap{width:260px}
   .hero-stats{grid-template-columns:repeat(2,1fr)}
   .hero-btns{flex-direction:column;align-items:center}
   .safety-box{border-radius:24px;padding:40px 28px}
@@ -504,50 +505,19 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       <p class="section-sub" style="max-width:500px;margin:0 auto">Нажмите на точки на силуэте, чтобы увидеть, как тело хранит стратегии выживания.</p>
     </div>
     <div class="bodymap-wrap reveal">
-      <div class="bodymap-svg-wrap" id="bodymap">
-        <svg viewBox="0 0 200 420" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="bm-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#c49a3c" stop-opacity=".5"/>
-              <stop offset="50%" stop-color="#2a4a38" stop-opacity=".7"/>
-              <stop offset="100%" stop-color="#c49a3c" stop-opacity=".5"/>
-            </linearGradient>
-          </defs>
-          <!-- silhouette -->
-          <path fill="#2a4a38" opacity=".07" d="M100,20 C88,20 80,30 80,45 C80,60 88,70 100,70 C112,70 120,60 120,45 C120,30 112,20 100,20 M100,75 C85,75 75,82 70,95 C60,110 58,130 48,150 C38,170 28,180 22,190 L18,200 L32,205 L38,195 C42,185 52,175 62,165 L68,160 L68,220 C68,255 72,290 78,320 L82,390 L100,390 L100,285 L115,285 L115,390 L133,390 L137,320 C143,290 147,255 147,220 L147,160 L153,165 C163,175 173,185 177,195 L183,205 L197,200 L193,190 C187,180 177,170 167,150 C157,130 155,110 150,95 C145,82 133,75 115,75 L100,75"/>
-          <!-- wireframe -->
-          <g stroke="#2a4a38" stroke-width=".3" fill="none" opacity=".35">
-            <path d="M100,75 L80,110 L100,140 L120,110 Z"/>
-            <path d="M80,110 L65,150 L100,170 L135,150 L120,110"/>
-            <path d="M65,150 L68,230 L100,250 L132,230 L135,150"/>
-            <path d="M68,230 L78,320 L100,350 L122,320 L132,230"/>
-            <path d="M100,140 L100,350"/>
-            <path d="M80,110 L120,110"/>
-            <path d="M65,150 L135,150"/>
-            <path d="M68,230 L132,230"/>
-          </g>
-          <!-- energy nodes -->
-          <circle cx="100" cy="80" r="2" fill="#c49a3c" opacity=".5"/>
-          <circle cx="100" cy="130" r="2" fill="#c49a3c" opacity=".4"/>
-          <circle cx="100" cy="175" r="2" fill="#c49a3c" opacity=".45"/>
-          <circle cx="100" cy="230" r="2" fill="#c49a3c" opacity=".4"/>
-          <!-- clickable zone highlights (updated by JS) -->
-          <circle id="bm-glow-jaw" cx="100" cy="58" r="5" fill="#c49a3c" opacity="0" filter="url(#glow-f)"/>
-          <circle id="bm-glow-shoulders" cx="100" cy="88" r="5" fill="#c49a3c" opacity="0"/>
-          <circle id="bm-glow-chest" cx="100" cy="128" r="5" fill="#c49a3c" opacity="0"/>
-          <circle id="bm-glow-belly" cx="100" cy="175" r="5" fill="#c49a3c" opacity="0"/>
-        </svg>
-        <!-- clickable dots -->
-        <button class="body-zone-dot" data-zone="jaw" style="top:14%;left:50%" aria-label="Челюсть">
+      <div class="bodymap-img-wrap" id="bodymap">
+        <img src="body-glow.png" alt="Тело и его энергетические зоны">
+        <!-- clickable dots — позиции подобраны под реальную фигуру на фото -->
+        <button class="body-zone-dot" data-zone="jaw" style="top:22%;left:50%" aria-label="Челюсть">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
-        <button class="body-zone-dot" data-zone="shoulders" style="top:22%;left:50%" aria-label="Плечи">
+        <button class="body-zone-dot" data-zone="shoulders" style="top:30%;left:50%" aria-label="Плечи">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
-        <button class="body-zone-dot" data-zone="chest" style="top:32%;left:50%" aria-label="Грудь">
+        <button class="body-zone-dot" data-zone="chest" style="top:40%;left:50%" aria-label="Грудь">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
-        <button class="body-zone-dot" data-zone="belly" style="top:44%;left:50%" aria-label="Живот">
+        <button class="body-zone-dot" data-zone="belly" style="top:54%;left:50%" aria-label="Живот">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
       </div>
@@ -1257,21 +1227,16 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 (function(){
   var dots = document.querySelectorAll('.body-zone-dot');
   var cards = { jaw:'zone-jaw', shoulders:'zone-shoulders', chest:'zone-chest', belly:'zone-belly' };
-  var glows = { jaw:'bm-glow-jaw', shoulders:'bm-glow-shoulders', chest:'bm-glow-chest', belly:'bm-glow-belly' };
   var current = null;
   dots.forEach(function(dot){
     dot.addEventListener('click', function(){
       var zone = this.getAttribute('data-zone');
-      // reset
       dots.forEach(function(d){ d.classList.remove('active'); });
-      Object.values(glows).forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('opacity','0'); });
       Object.values(cards).forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.remove('active'); });
       document.getElementById('zone-default').style.display = 'block';
       if(current === zone){ current=null; return; }
       current = zone;
       this.classList.add('active');
-      var g = document.getElementById(glows[zone]);
-      if(g) g.setAttribute('opacity','0.8');
       var c = document.getElementById(cards[zone]);
       if(c){ c.classList.add('active'); document.getElementById('zone-default').style.display='none'; }
     });
