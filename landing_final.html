@@ -132,10 +132,10 @@ nav.scrolled{background:rgba(247,244,239,.92);backdrop-filter:blur(12px);padding
 .bodymap-wrap{display:flex;justify-content:center;align-items:center;gap:56px;flex-wrap:wrap}
 .bodymap-img-wrap{position:relative;width:300px;flex-shrink:0}
 .bodymap-img-wrap img{width:100%;height:auto;display:block;border-radius:0;background:transparent}
-.body-zone-dot{position:absolute;width:28px;height:28px;cursor:pointer;transform:translate(-50%,-50%);z-index:3}
-.body-zone-dot .dot-inner{width:16px;height:16px;border-radius:50%;border:2.5px solid var(--green);background:rgba(42,74,56,.15);transition:all .3s;position:relative;z-index:2;box-shadow:0 0 8px rgba(42,74,56,.4)}
-.body-zone-dot.active .dot-inner{background:var(--green);border-color:var(--green);transform:scale(1.3);box-shadow:0 0 16px rgba(42,74,56,.6)}
-.dot-ping{position:absolute;inset:-5px;border-radius:50%;border:1.5px solid rgba(42,74,56,.4);animation:ping 2.5s ease-out infinite}
+.body-zone-dot{position:absolute;width:32px;height:32px;cursor:pointer;transform:translate(-50%,-50%);z-index:3;display:flex;align-items:center;justify-content:center;background:none;padding:0;border:none}
+.body-zone-dot .dot-inner{display:block;width:20px;height:20px;min-width:20px;min-height:20px;border-radius:50%;border:2.5px solid var(--green);background:rgba(232,240,234,.75);transition:all .3s;position:relative;z-index:2;box-shadow:0 0 10px rgba(42,74,56,.5),0 0 0 3px rgba(42,74,56,.12)}
+.body-zone-dot.active .dot-inner{background:var(--green);border-color:var(--green);transform:scale(1.25);box-shadow:0 0 20px rgba(42,74,56,.7),0 0 0 4px rgba(42,74,56,.2)}
+.dot-ping{position:absolute;width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(42,74,56,.45);animation:ping 2.5s ease-out infinite;top:50%;left:50%;transform:translate(-50%,-50%)}
 .bodymap-info{flex:1;min-width:260px;max-width:420px}
 .zone-card{background:var(--white);border-radius:var(--radius-card);padding:28px 32px;border-left:4px solid var(--gold);display:none;box-shadow:var(--shadow)}
 .zone-card.active{display:block;animation:slide-in .3s ease}
@@ -507,15 +507,19 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       <div class="bodymap-img-wrap" id="bodymap">
         <img src="body-glow.png" alt="Тело и его энергетические зоны">
         <!-- clickable dots — позиции подобраны под реальную фигуру на фото -->
-        <button class="body-zone-dot" data-zone="jaw" style="top:22%;left:50%" aria-label="Челюсть">
+        <!-- Челюсть — уровень подбородка/шеи -->
+        <button class="body-zone-dot" data-zone="jaw" style="top:21%;left:50%" aria-label="Челюсть">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
+        <!-- Плечи — уровень ключиц -->
         <button class="body-zone-dot" data-zone="shoulders" style="top:30%;left:50%" aria-label="Плечи">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
+        <!-- Грудь — уровень сердца, яркая звезда на фото -->
         <button class="body-zone-dot" data-zone="chest" style="top:40%;left:50%" aria-label="Грудь">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
+        <!-- Живот — солнечное сплетение, вторая звезда на фото -->
         <button class="body-zone-dot" data-zone="belly" style="top:54%;left:50%" aria-label="Живот">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
