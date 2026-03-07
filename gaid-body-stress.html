@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3 сигнала тела — Тело помнит</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #2D4739;
+      --gold: #C5A059;
+      --cream: #F8F7F4;
+      --text: #1f2937;
+      --muted: #4b5563;
+      --light: #9ca3af;
+      --border: #e5e7eb;
+      --bg: #f3f4f6;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 40px 16px;
+    }
+
+    .print-btn {
+      max-width: 210mm;
+      margin: 0 auto 24px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .print-btn button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    .print-btn button:hover { background: #1f3328; }
+    .print-btn button svg { width: 18px; height: 18px; }
+
+    /* PDF PAGE */
+    .pdf-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #fff;
+      margin: 0 auto;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.1);
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .pdf-inner {
+      padding: 20mm;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--green);
+      margin: -20mm -20mm 48px;
+      padding: 48px 20mm;
+      border-radius: 24px 24px 0 0;
+    }
+
+    .header-label {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-size: 9px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 34px;
+      line-height: 1.3;
+      color: #fff;
+      margin-bottom: 24px;
+      max-width: 580px;
+    }
+
+    .header p {
+      color: rgba(255,255,255,0.8);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 500px;
+    }
+
+    /* SECTIONS */
+    .section { margin-bottom: 56px; }
+
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .section-title-row .line {
+      height: 1px;
+      width: 40px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+    .section-title-row h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .text-body {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+    .text-body p + p { margin-top: 14px; }
+    .text-body ul { padding-left: 0; list-style: none; margin-top: 10px; }
+    .text-body ul li { margin-bottom: 4px; }
+
+    /* CHECKLIST BLOCK */
+    .checklist-block {
+      background: var(--cream);
+      padding: 32px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+    }
+
+    .checklist-block .block-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .checklist-block .block-title-row h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text);
+    }
+    .checklist-block .block-title-row svg { color: var(--green); width: 22px; height: 22px; }
+
+    .checklist-hint {
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 24px;
+    }
+
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .check-box {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .check-item span {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .checklist-note {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* STEP SECTIONS */
+    .step-num {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      color: var(--gold);
+      font-size: 22px;
+      opacity: 0.35;
+      margin-right: 4px;
+    }
+    .step-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text);
+    }
+    .step-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 28px; }
+
+    .step-body {
+      padding-left: 20px;
+      border-left: 1px solid var(--border);
+    }
+
+    .zone-item {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+    .zone-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(45, 71, 57, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 20px;
+      color: var(--green);
+    }
+    .zone-item h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .zone-item p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    .insight-box {
+      background: var(--cream);
+      padding: 20px 24px;
+      border-radius: 16px;
+    }
+    .insight-box .label {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-size: 9px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .insight-box p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--cream);
+      padding: 20px 24px;
+      border-radius: 16px;
+    }
+    .card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    .dark-box {
+      background: var(--green);
+      color: #fff;
+      padding: 20px 24px;
+      border-radius: 16px;
+    }
+    .dark-box .label-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .dark-box .label-row svg { color: var(--gold); width: 16px; height: 16px; }
+    .dark-box .label-row span {
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-size: 9px;
+      font-weight: 700;
+    }
+    .dark-box p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.6;
+    }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .tag {
+      padding: 7px 16px;
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    /* MINI-PRACTICE */
+    .practice-block {
+      background: var(--green);
+      color: #fff;
+      padding: 40px;
+      border-radius: 24px;
+      margin-bottom: 56px;
+      position: relative;
+      overflow: hidden;
+    }
+    .practice-block::after {
+      content: '⚡';
+      position: absolute;
+      top: 16px;
+      right: 24px;
+      font-size: 96px;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+    .practice-block h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--gold);
+      margin-bottom: 28px;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .step-list { list-style: none; }
+    .step-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    .step-list li .num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+    .practice-note {
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .practice-note p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 16px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+    }
+
+    /* RESULTS */
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .results-card {
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+    .results-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+    .results-card ul { list-style: none; }
+    .results-card ul li {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    /* WHY BLOCK */
+    .why-block {
+      background: var(--cream);
+      padding: 40px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      margin-bottom: 56px;
+    }
+    .why-block h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .why-block p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .why-block p:last-child { margin-bottom: 0; }
+
+    /* CTA */
+    .cta-section {
+      text-align: center;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+    .cta-icon { color: var(--gold); margin-bottom: 20px; }
+    .cta-section h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .cta-section > p {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--gold);
+      color: #fff;
+      padding: 14px 36px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-decoration: none;
+      transition: background 0.2s;
+      margin-bottom: 48px;
+    }
+    .cta-btn:hover { background: #b38f4d; }
+    .cta-btn svg { width: 16px; height: 16px; }
+
+    .copyright {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--light);
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .disclaimer {
+      font-size: 10px;
+      color: var(--light);
+      font-style: italic;
+      text-align: center;
+      padding-bottom: 8px;
+    }
+
+    /* PRINT */
+    @media print {
+      body { background: white; padding: 0; }
+      .print-btn { display: none; }
+      .pdf-page {
+        box-shadow: none;
+        border-radius: 0;
+        width: 100%;
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-btn">
+    <button onclick="window.print()">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+      </svg>
+      Скачать PDF
+    </button>
+  </div>
+
+  <div class="pdf-page">
+    <div class="pdf-inner">
+
+      <!-- HEADER -->
+      <div class="header">
+        <p class="header-label">Мини-практикум по телесной саморегуляции</p>
+        <h1>3 сигнала тела, которые показывают, что стресс уже управляет вами — и как вернуть контроль за 3 минуты</h1>
+        <p>Практические шаги, которые помогут вам за несколько минут снизить напряжение и вернуть ощущение опоры в теле.</p>
+      </div>
+
+      <!-- ВВЕДЕНИЕ -->
+      <div class="section">
+        <div class="section-title-row">
+          <div class="line"></div>
+          <h2>Введение</h2>
+        </div>
+        <div class="two-col">
+          <div class="text-body">
+            <p>Иногда стресс выглядит не как паника. Иногда он проявляется иначе:</p>
+            <ul>
+              <li>— сжимаются зубы</li>
+              <li>— плечи поднимаются к ушам</li>
+              <li>— в груди появляется холод или тяжесть</li>
+              <li>— дыхание становится поверхностным</li>
+              <li>— внутри появляется ощущение «я собран(а) в комок»</li>
+            </ul>
+            <p>И в этот момент мы обычно пытаемся думать. Мы анализируем. Мы пытаемся успокоить себя мыслями.</p>
+          </div>
+          <div class="text-body">
+            <p><strong style="color: var(--text); font-style: italic;">Но проблема в том, что стресс возникает не в мыслях.</strong></p>
+            <p>Стресс — это реакция нервной системы и тела. И пока тело находится в состоянии защиты, разумные объяснения редко помогают.</p>
+            <p style="color: var(--green); font-weight: 500;">Хорошая новость: Тело умеет само возвращаться в равновесие, если дать ему правильный сигнал.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ПРОВЕРЬТЕ СЕБЯ -->
+      <div class="section">
+        <div class="checklist-block">
+          <div class="block-title-row">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#2D4739">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+            </svg>
+            <h3>Проверьте себя</h3>
+          </div>
+          <p class="checklist-hint">Иногда тело живёт в режиме стресса настолько долго, что человек перестаёт это замечать. Ответьте себе честно на несколько вопросов. Замечаете ли вы у себя:</p>
+          <div class="checklist-grid">
+            <div class="check-item"><div class="check-box"></div><span>Постоянно напряжённую челюсть</span></div>
+            <div class="check-item"><div class="check-box"></div><span>Тяжесть или ком в груди</span></div>
+            <div class="check-item"><div class="check-box"></div><span>Ощущение давления в горле</span></div>
+            <div class="check-item"><div class="check-box"></div><span>Поверхностное дыхание</span></div>
+            <div class="check-item"><div class="check-box"></div><span>Напряжённые плечи к вечеру</span></div>
+            <div class="check-item"><div class="check-box"></div><span>Усталость, которая не проходит после отдыха</span></div>
+            <div class="check-item"><div class="check-box"></div><span>Повторяющиеся мысли и прокручивание ситуаций</span></div>
+          </div>
+          <div class="checklist-note">
+            Если вы узнали себя хотя бы в трёх пунктах, скорее всего ваша нервная система уже привыкла работать в режиме повышенного напряжения. И именно поэтому телу важно учиться возвращаться в состояние безопасности.
+          </div>
+        </div>
+      </div>
+
+      <!-- ШАГ 1 -->
+      <div class="section">
+        <div class="step-header">
+          <span class="step-num">1</span>
+          <h2 class="step-title">Шаг 1. Найдите, где стресс уже живёт в теле</h2>
+        </div>
+        <div class="step-body">
+          <p class="text-body" style="margin-bottom: 28px;">Когда нервная система реагирует на напряжение, тело почти всегда зажимается в одних и тех же местах. Проверьте прямо сейчас три зоны.</p>
+
+          <div class="zone-item">
+            <div class="zone-icon">Ч</div>
+            <div>
+              <h4>Челюсть</h4>
+              <p>Сожмите зубы на секунду и затем мягко разомкните их. Часто люди даже не замечают, что держат челюсть напряжённой часами.</p>
+            </div>
+          </div>
+          <div class="zone-item">
+            <div class="zone-icon">П</div>
+            <div>
+              <h4>Плечи</h4>
+              <p>Обратите внимание: подтянуты ли плечи к ушам? Сделайте медленный выдох и позвольте плечам опуститься. Иногда они опускаются на несколько сантиметров.</p>
+            </div>
+          </div>
+          <div class="zone-item">
+            <div class="zone-icon">Ж</div>
+            <div>
+              <h4>Живот</h4>
+              <p>Положите руку на живот. Спросите себя: живот мягкий или он сжат? Сделайте медленный вдох и почувствуйте, как живот расширяется под ладонью.</p>
+            </div>
+          </div>
+
+          <div class="insight-box">
+            <p class="label">Почему это работает:</p>
+            <p>Когда вы замечаете напряжение, мозг получает новый сигнал: «Опасность уже не такая сильная». И тело начинает постепенно снижать уровень защиты.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ШАГ 2 -->
+      <div class="section">
+        <div class="step-header">
+          <span class="step-num">2</span>
+          <h2 class="step-title">Шаг 2. Верните опору через тело</h2>
+        </div>
+        <div class="step-body">
+          <p class="text-body" style="margin-bottom: 24px;">Стресс уводит из тела в мысли. Мы прокручиваем сценарии, тело в этот момент как будто «исчезает». Чтобы вернуть равновесие, нужно вернуть ощущение опоры.</p>
+
+          <div class="card-grid">
+            <div class="card">
+              <h4>Почувствуйте стопы</h4>
+              <p>Поставьте стопы полностью на пол. Обратите внимание: где больше давления — в пятках или в носках? Медленно перенесите вес несколько раз. Теперь просто почувствуйте плотность пола.</p>
+            </div>
+            <div class="card">
+              <h4>Представьте опору</h4>
+              <p>Представьте, что ваши стопы становятся тяжелее. Как будто вы немного «врастаете» в поверхность. Это даёт сигнал: «Я стою. Я устойчив. Я в безопасности».</p>
+            </div>
+          </div>
+
+          <div class="dark-box">
+            <div class="label-row">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#C5A059">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              </svg>
+              <span>Где это можно делать:</span>
+            </div>
+            <p>В любой ситуации: во время сложного разговора, на совещании, в очереди. Снаружи это незаметно, но внутри тело начинает возвращаться в равновесие.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ШАГ 3 -->
+      <div class="section">
+        <div class="step-header">
+          <span class="step-num">3</span>
+          <h2 class="step-title">Шаг 3. Назовите то, что происходит в теле</h2>
+        </div>
+        <div class="step-body">
+          <p class="text-body" style="margin-bottom: 24px;">Нервная система реагирует на ощущения, а не на объяснения типа «мне тревожно». Попробуйте назвать именно телесное ощущение.</p>
+
+          <div class="tags">
+            <span class="tag">«Холод в груди»</span>
+            <span class="tag">«Давление в горле»</span>
+            <span class="tag">«Тяжесть в плечах»</span>
+            <span class="tag">«Дрожь в руках»</span>
+          </div>
+
+          <div class="insight-box">
+            <p class="label">Почему это важно:</p>
+            <p>Вы переходите из состояния «меня захватывает стресс» в состояние «я наблюдаю то, что происходит». Это автоматически снижает активность миндалины — центра страха в мозге.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- МИНИ-ПРАКТИКА -->
+      <div class="practice-block">
+        <h3>Мини-практика: Возвращение в тело за 60 секунд</h3>
+        <div class="steps-grid">
+          <ul class="step-list">
+            <li><span class="num">1</span> Разомкните зубы.</li>
+            <li><span class="num">2</span> Опустите плечи на выдохе.</li>
+            <li><span class="num">3</span> Сделайте три медленных дыхания животом.</li>
+          </ul>
+          <ul class="step-list">
+            <li><span class="num">4</span> Почувствуйте стопы на полу.</li>
+            <li><span class="num">5</span> Назовите одно ощущение в теле.</li>
+          </ul>
+        </div>
+        <div class="practice-note">
+          <p>Теперь задайте себе вопрос: Что изменилось в теле за эту минуту? Даже небольшое изменение — это уже сигнал, что нервная система начала перестраиваться.</p>
+        </div>
+      </div>
+
+      <!-- РЕЗУЛЬТАТЫ -->
+      <div class="section">
+        <h3 style="font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 22px; font-weight: 400; color: var(--text); text-align: center; margin-bottom: 28px;">Что начинает меняться, когда человек учится слышать тело</h3>
+        <div class="results-grid">
+          <div class="results-card">
+            <h4>На практике участницы отмечают:</h4>
+            <ul>
+              <li>• Снижается уровень тревоги</li>
+              <li>• Тело быстрее расслабляется</li>
+              <li>• Появляется больше энергии</li>
+              <li>• Легче держать границы</li>
+              <li>• Возвращается контакт с чувствами</li>
+            </ul>
+          </div>
+          <div class="results-card">
+            <h4>Неожиданные изменения:</h4>
+            <ul>
+              <li>• Проходит хроническое напряжение в плечах</li>
+              <li>• Исчезают повторяющиеся головные боли</li>
+              <li>• Становится легче принимать решения</li>
+              <li>• Отношения с близкими становятся спокойнее</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ПОЧЕМУ ПОНИМАНИЯ НЕДОСТАТОЧНО -->
+      <div class="why-block">
+        <h3>Почему одного понимания часто недостаточно</h3>
+        <p>Такие практики помогают снять напряжение в моменте. Но у большинства людей стресс закрепляется в теле годами. И тогда появляются автоматические реакции: тело зажимается раньше, чем вы успеваете это заметить.</p>
+        <p><strong style="color: var(--text); font-style: italic;">Проблема не в том, что человек не понимает. Проблема в том, что нервная система уже привыкла реагировать определённым образом.</strong></p>
+        <p>И изменить это можно только через регулярную работу с телом.</p>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-section">
+        <div class="cta-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#C5A059" width="30" height="30">
+            <path fill-rule="evenodd" d="M9 4.5a.75.75 0 0 1 .721.544l.813 2.846a3.75 3.75 0 0 0 2.576 2.576l2.846.813a.75.75 0 0 1 0 1.442l-2.846.813a3.75 3.75 0 0 0-2.576 2.576l-.813 2.846a.75.75 0 0 1-1.442 0l-.813-2.846a3.75 3.75 0 0 0-2.576-2.576l-2.846-.813a.75.75 0 0 1 0-1.442l2.846-.813A3.75 3.75 0 0 0 7.466 7.89l.813-2.846A.75.75 0 0 1 9 4.5ZM18 1.5a.75.75 0 0 1 .728.568l.258 1.036a2.63 2.63 0 0 0 1.91 1.91l1.036.258a.75.75 0 0 1 0 1.456l-1.036.258a2.63 2.63 0 0 0-1.91 1.91l-.258 1.036a.75.75 0 0 1-1.456 0l-.258-1.036a2.63 2.63 0 0 0-1.91-1.91l-1.036-.258a.75.75 0 0 1 0-1.456l1.036-.258a2.63 2.63 0 0 0 1.91-1.91l.258-1.036A.75.75 0 0 1 18 1.5Z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <h3>Именно поэтому мы создали группу «Тело помнит»</h3>
+        <p>Это пространство, где мы находим глубинные причины телесных реакций, обучаем нервную систему новым способам реагирования и закрепляем изменения в реальной жизни. Чтобы тело перестало жить в режиме постоянной защиты.</p>
+        <a href="#" class="cta-btn">
+          Узнать больше о Тело помнит
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+        <div class="copyright">© 2026 Программа «Тело помнит» · Анастасия Хорошавцева & Альмира Султанова</div>
+      </div>
+
+      <div class="disclaimer">Этот гайд предназначен для личного использования участницами программы.</div>
+
+    </div>
+  </div>
+
+</body>
+</html>
