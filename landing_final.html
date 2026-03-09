@@ -471,27 +471,9 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 #back-to-top:hover{background:var(--green-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(42,74,56,0.4)}
 #back-to-top:active{transform:scale(.92)}
 
-/* CONTACT FORM */
+/* CONTACT SECTION */
 .contact-section{padding:80px 0;background:var(--white)}
 .contact-wrap{max-width:600px;margin:0 auto}
-.contact-form{background:var(--bg);border-radius:32px;padding:clamp(32px,5vw,56px);border:1px solid rgba(42,74,56,.07)}
-.contact-field{margin-bottom:20px}
-.contact-field label{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:500}
-.contact-field input,.contact-field textarea{width:100%;padding:14px 18px;border:1.5px solid rgba(42,74,56,.15);border-radius:14px;background:#fff;font-family:inherit;font-size:15px;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;resize:none}
-.contact-field input:focus,.contact-field textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(42,74,56,.08)}
-.contact-field textarea{min-height:120px;line-height:1.6}
-.contact-field input::placeholder,.contact-field textarea::placeholder{color:rgba(95,84,76,.4)}
-.contact-submit{width:100%;margin-top:8px}
-
-/* Form success state */
-@keyframes success-pop{0%{transform:scale(.7);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
-@keyframes checkmark-draw{to{stroke-dashoffset:0}}
-.contact-success{display:none;text-align:center;padding:48px 24px}
-.contact-success.show{display:block;animation:success-pop .5s cubic-bezier(.22,1,.36,1) both}
-.success-icon{width:72px;height:72px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
-.success-icon svg{color:var(--green)}
-.success-title{font-family:Georgia,serif;font-style:italic;font-size:24px;color:var(--green);margin-bottom:10px}
-.success-text{font-size:15px;color:var(--muted);line-height:1.65}
 </style>
 </head>
 <body>
@@ -1298,42 +1280,15 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 <!-- CONTACT FORM -->
 <section class="contact-section">
   <div class="container contact-wrap">
-    <div style="text-align:center;margin-bottom:40px" class="reveal">
+    <div style="text-align:center" class="reveal">
       <span class="label">Остались вопросы?</span>
       <span class="section-line"></span>
       <h2 class="section-title">Напишите нам</h2>
-      <p class="section-sub">Мы ответим в течение дня</p>
-    </div>
-    <div class="contact-form reveal">
-      <div id="contact-form-inner">
-        <div class="contact-field">
-          <label for="cf-name">Ваше имя</label>
-          <input type="text" id="cf-name" placeholder="Как к вам обращаться?" autocomplete="name">
-        </div>
-        <div class="contact-field">
-          <label for="cf-email">Email</label>
-          <input type="email" id="cf-email" placeholder="your@email.com" autocomplete="email">
-        </div>
-        <div class="contact-field">
-          <label for="cf-msg">Сообщение</label>
-          <textarea id="cf-msg" placeholder="Расскажите, что вас интересует..."></textarea>
-        </div>
-        <button class="btn btn--primary contact-submit" id="contact-submit">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          Отправить сообщение
-        </button>
-      </div>
-      <div class="contact-success" id="contact-success">
-        <div class="success-icon">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        </div>
-        <p class="success-title">Спасибо, что написали</p>
-        <p class="success-text">Для быстрого ответа напишите нам напрямую — мы отвечаем в течение дня.</p>
-        <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--primary" style="margin-top:20px;display:inline-flex">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Написать в Telegram
-        </a>
-      </div>
+      <p class="section-sub" style="margin-bottom:32px">Мы отвечаем в течение дня</p>
+      <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Написать в Telegram
+      </a>
     </div>
   </div>
 </section>
@@ -1688,38 +1643,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
   }, {passive:true});
   btn.addEventListener('click', function(){
     window.scrollTo({top:0, behavior:'smooth'});
-  });
-})();
-
-// Contact form
-(function(){
-  var submitBtn = document.getElementById('contact-submit');
-  var formInner = document.getElementById('contact-form-inner');
-  var success = document.getElementById('contact-success');
-  if(!submitBtn) return;
-  submitBtn.addEventListener('click', function(){
-    var name = document.getElementById('cf-name').value.trim();
-    var email = document.getElementById('cf-email').value.trim();
-    var msg = document.getElementById('cf-msg').value.trim();
-    if(!name || !email || !msg){
-      [['cf-name', name], ['cf-email', email], ['cf-msg', msg]].forEach(function(pair){
-        var el = document.getElementById(pair[0]);
-        if(!pair[1]){
-          el.style.borderColor = '#c0392b';
-          el.addEventListener('input', function(){ el.style.borderColor = ''; }, {once:true});
-        }
-      });
-      return;
-    }
-    submitBtn.textContent = '...';
-    submitBtn.disabled = true;
-    setTimeout(function(){
-      formInner.style.cssText = 'opacity:0;transform:scale(.96);transition:all .3s';
-      setTimeout(function(){
-        formInner.style.display = 'none';
-        success.classList.add('show');
-      }, 300);
-    }, 800);
   });
 })();
 
