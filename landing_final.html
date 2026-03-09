@@ -59,6 +59,9 @@ h1,h2,h3,h4{font-family:Georgia,'Times New Roman',serif;font-style:italic;line-h
 
 /* animations */
 @keyframes breathe{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.05);opacity:1}}
+@keyframes breath-expand{0%{transform:scale(1);opacity:.5}38%{transform:scale(1.45);opacity:1}52%{transform:scale(1.45);opacity:1}88%{transform:scale(1);opacity:.5}100%{transform:scale(1);opacity:.5}}
+@keyframes breath-glow{0%{transform:scale(1);opacity:.15;filter:blur(28px)}38%{transform:scale(1.5);opacity:.35;filter:blur(40px)}52%{transform:scale(1.5);opacity:.35;filter:blur(40px)}88%{transform:scale(1);opacity:.15;filter:blur(28px)}100%{transform:scale(1);opacity:.15;filter:blur(28px)}}
+@keyframes breath-outer{0%{transform:scale(1);opacity:.12}38%{transform:scale(1.35);opacity:.3}52%{transform:scale(1.35);opacity:.3}88%{transform:scale(1);opacity:.12}100%{transform:scale(1);opacity:.12}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @keyframes spin-slow{to{transform:rotate(360deg)}}
 @keyframes ping{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.2);opacity:0}}
@@ -145,12 +148,14 @@ nav.scrolled{background:rgba(247,244,239,.92);backdrop-filter:blur(12px);padding
 .zone-card-default{color:var(--muted);font-style:italic;font-size:15px;padding:16px 0;line-height:1.6}
 
 /* BREATHING */
-.breathing-section{padding:40px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--white)}
-.breathing-ring-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:120px;height:120px}
-.breathing-glow{position:absolute;width:100px;height:100px;background:var(--green);border-radius:50%;filter:blur(24px);opacity:.2;animation:breathe 6s ease-in-out infinite}
-.breathing-ring{width:88px;height:88px;border-radius:50%;border:1.5px solid rgba(42,74,56,.25);display:flex;align-items:center;justify-content:center;animation:breathe 6s ease-in-out infinite}
-.breathing-ring span{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--green);font-weight:500}
-.breathing-hint{margin-top:20px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.breathing-section{padding:64px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--white)}
+.breathing-ring-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:220px;height:220px}
+.breathing-glow{position:absolute;width:160px;height:160px;background:var(--green);border-radius:50%;animation:breath-glow 8s ease-in-out infinite}
+.breathing-ring-outer{position:absolute;width:180px;height:180px;border-radius:50%;border:1.5px solid rgba(42,74,56,.2);animation:breath-outer 8s ease-in-out infinite}
+.breathing-ring{width:130px;height:130px;border-radius:50%;border:2px solid rgba(42,74,56,.45);background:rgba(42,74,56,.08);display:flex;align-items:center;justify-content:center;animation:breath-expand 8s ease-in-out infinite}
+.breathing-ring span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);font-weight:600;transition:opacity .4s}
+.breathing-phase{margin-top:12px;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);font-weight:500;min-height:20px;transition:opacity .4s}
+.breathing-hint{margin-top:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 
 /* SELF CHECK */
 .selfcheck-box{background:var(--white);border-radius:32px;padding:clamp(32px,5vw,64px);box-shadow:var(--shadow);border:1px solid rgba(42,74,56,.05);max-width:720px;margin:0 auto}
@@ -595,8 +600,10 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 <div class="breathing-section reveal">
   <div class="breathing-ring-wrap">
     <div class="breathing-glow"></div>
-    <div class="breathing-ring"><span>Дышите</span></div>
+    <div class="breathing-ring-outer"></div>
+    <div class="breathing-ring"><span id="breath-label">Вдох</span></div>
   </div>
+  <p class="breathing-phase" id="breath-phase">Вдох — 4 секунды</p>
   <p class="breathing-hint">Настройтесь на ритм своего тела</p>
 </div>
 
@@ -1267,6 +1274,36 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       if(r.top < window.innerHeight && r.bottom > 0){ el.classList.add('visible'); }
     });
   }, 2400);
+})();
+
+// Breathing labels — sync with 8s animation: 0-38% вдох, 38-52% пауза, 52-88% выдох, 88-100% пауза
+(function(){
+  var label = document.getElementById('breath-label');
+  var phase = document.getElementById('breath-phase');
+  if(!label || !phase) return;
+  var cycle = 8000;
+  var phases = [
+    { at: 0,    label: 'Вдох',  hint: 'Вдох — медленно' },
+    { at: 3040, label: '',      hint: 'Задержите...' },
+    { at: 4160, label: 'Выдох', hint: 'Выдох — медленно' },
+    { at: 7040, label: '',      hint: 'Задержите...' }
+  ];
+  function tick(elapsed) {
+    var pos = elapsed % cycle;
+    var current = phases[0];
+    for(var i = phases.length - 1; i >= 0; i--) {
+      if(pos >= phases[i].at) { current = phases[i]; break; }
+    }
+    label.textContent = current.label;
+    phase.textContent = current.hint;
+  }
+  var start = null;
+  function loop(ts) {
+    if(!start) start = ts;
+    tick(ts - start);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
 })();
 
 // Body map
