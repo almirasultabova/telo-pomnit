@@ -390,6 +390,72 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   .hero-stat{font-size:13px}
   .countdown-n{font-size:22px}
 }
+
+/* ===== WOW EFFECTS ===== */
+
+/* Hero animated gradient background */
+@keyframes hero-bg {
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+.hero{background:linear-gradient(135deg,#f7f4ef 0%,#edf3ee 25%,#f7f4ef 50%,#f4f0e6 75%,#f7f4ef 100%);background-size:400% 400%;animation:hero-bg 14s ease-in-out infinite}
+
+/* Hero title subtle gradient text */
+@keyframes title-gradient{0%,100%{background-position:0% center}50%{background-position:100% center}}
+.hero-title{background:linear-gradient(90deg,var(--text) 0%,var(--green) 40%,#c49a3c 65%,var(--text) 100%);background-size:250% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:title-gradient 8s ease-in-out infinite}
+
+/* Button shimmer sweep */
+@keyframes shimmer{0%{transform:translateX(-150%) skewX(-15deg)}100%{transform:translateX(350%) skewX(-15deg)}}
+.btn--primary{overflow:hidden;position:relative}
+.btn--primary::after{content:'';position:absolute;top:0;left:0;width:35%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:translateX(-150%) skewX(-15deg);pointer-events:none}
+.btn--primary:hover::after{animation:shimmer .65s ease forwards}
+
+/* Gold label pulse */
+@keyframes label-pulse{0%,100%{letter-spacing:.2em;opacity:1}50%{letter-spacing:.22em;opacity:.8}}
+.label{animation:label-pulse 4s ease-in-out infinite}
+
+/* Recognize cells hover */
+.recognize-cell{transition:transform .3s,box-shadow .3s,background .3s;cursor:default}
+.recognize-cell:hover{transform:translateY(-6px);box-shadow:0 12px 32px rgba(42,74,56,.1);background:rgba(255,255,255,.8)}
+
+/* Comparison col hover */
+.comparison-col{transition:transform .3s,box-shadow .3s}
+.comparison-col--new:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(42,74,56,.15)}
+
+/* Host image zoom on hover */
+.host-img-wrap img{transition:transform .6s ease}
+.host-card:hover .host-img-wrap img{transform:scale(1.06)}
+
+/* Pricing features slide on hover */
+.pricing-features li{transition:transform .2s,color .2s}
+.pricing-features li:hover{transform:translateX(5px);color:var(--green)}
+
+/* FAQ indent on hover */
+.faq-q{transition:color .2s,padding-left .2s}
+.faq-q:hover{padding-left:6px}
+.faq-item{transition:background .2s}
+.faq-item:hover{background:rgba(42,74,56,.02)}
+
+/* Case box hover */
+.case-box{transition:box-shadow .3s,transform .3s}
+.case-box:hover{box-shadow:0 12px 40px rgba(42,74,56,.1);transform:translateY(-3px)}
+
+/* Stagger child reveal */
+.stagger-child{opacity:0;transform:translateY(22px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1)}
+.stagger-child.visible{opacity:1;transform:none}
+
+/* Section gold decorator line */
+.section-line{display:block;width:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);margin:0 auto 20px;transition:width 1s cubic-bezier(.22,1,.36,1)}
+.section-line.visible{width:56px}
+
+/* Safety item hover */
+.safety-grid > div{transition:transform .3s}
+.safety-grid > div:hover{transform:translateY(-4px)}
+
+/* Process shift box shimmer on hover */
+.week-step-shift{position:relative;overflow:hidden}
+.week-step-shift::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(42,74,56,.04),transparent);transition:left .6s ease;pointer-events:none}
+.week-step-shift:hover::after{left:150%}
 </style>
 </head>
 <body>
@@ -487,6 +553,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   <div class="container">
     <div style="max-width:640px;margin:0 auto 48px;text-align:center" class="reveal">
       <span class="label">Узнаёте себя?</span>
+      <span class="section-line"></span>
       <h2 class="section-title">Если вы узнаёте себя</h2>
       <p class="section-sub">Вы многое понимаете. Вы были в терапии. Вы умеете анализировать. Но в момент давления:</p>
     </div>
@@ -518,6 +585,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   <div class="container">
     <div style="text-align:center;margin-bottom:48px" class="reveal">
       <span class="label">Исследование тела</span>
+      <span class="section-line"></span>
       <h2 class="section-title">Где в теле живёт ваш паттерн?</h2>
       <p class="section-sub" style="max-width:500px;margin:0 auto">Нажмите на точки на силуэте, чтобы увидеть, как тело хранит стратегии выживания.</p>
     </div>
@@ -1140,6 +1208,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   <div class="container">
     <div style="text-align:center;margin-bottom:48px" class="reveal">
       <span class="label">FAQ</span>
+      <span class="section-line"></span>
       <h2 class="section-title">Вопросы и ответы</h2>
     </div>
     <div class="faq-list reveal">
@@ -1449,6 +1518,82 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 
 // Footer year
 document.getElementById('year').textContent = new Date().getFullYear();
+
+// Parallax — hero blobs and silhouette
+(function(){
+  var blobs = document.querySelectorAll('.hero-blob');
+  var silhouette = document.querySelector('.hero-silhouette');
+  var heroH = window.innerHeight;
+  var ticking = false;
+  function update(){
+    var s = window.pageYOffset;
+    if(s < heroH * 1.2){
+      blobs.forEach(function(b,i){ b.style.transform='translateY('+(s*(i===0?.18:.11))+'px)'; });
+      if(silhouette) silhouette.style.transform='translateY('+(s*.14)+'px)';
+    }
+    ticking=false;
+  }
+  window.addEventListener('scroll',function(){if(!ticking){requestAnimationFrame(update);ticking=true;}},{passive:true});
+})();
+
+// Counter animation for stat values
+(function(){
+  function countUp(el){
+    var raw=el.textContent.trim();
+    var num=parseFloat(raw);
+    var suffix=raw.replace(/[\d.]/g,'');
+    if(isNaN(num)) return;
+    var dur=1600, start=null;
+    el.textContent='0'+suffix;
+    function step(ts){
+      if(!start) start=ts;
+      var p=Math.min((ts-start)/dur,1);
+      var e=1-Math.pow(1-p,3);
+      el.textContent=Math.round(num*e)+suffix;
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var v=e.target.querySelector('.stat-value');
+        if(v) countUp(v);
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.4});
+  document.querySelectorAll('.stat-card').forEach(function(c){ io.observe(c); });
+})();
+
+// Stagger reveal for gallery, wisdom, recognize cells
+(function(){
+  var selectors=['.gallery-grid > .gallery-card','.wisdom-grid > .wisdom-card','.recognize-grid > .recognize-cell','.results-stats > .stat-card'];
+  var allItems=[];
+  selectors.forEach(function(sel){
+    document.querySelectorAll(sel).forEach(function(el,i){
+      el.classList.add('stagger-child');
+      el.style.transitionDelay=(i*0.09)+'s';
+      allItems.push(el);
+    });
+  });
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  },{threshold:.07,rootMargin:'0px 0px -20px 0px'});
+  allItems.forEach(function(el){ io.observe(el); });
+})();
+
+// Section gold decorator lines — animate on reveal
+(function(){
+  document.querySelectorAll('.section-line').forEach(function(line){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+    },{threshold:.5});
+    io.observe(line);
+  });
+})();
 
 // Audio atmosphere
 (function(){
