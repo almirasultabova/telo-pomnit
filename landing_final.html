@@ -506,45 +506,72 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
     <div class="bodymap-wrap reveal">
       <div class="bodymap-img-wrap" id="bodymap">
         <img src="body-glow.png" alt="Тело и его энергетические зоны">
-        <!-- clickable dots — позиции подобраны под реальную фигуру на фото -->
-        <!-- Челюсть — уровень лица/подбородка -->
+        <!-- 7 поясов по Райху -->
+        <!-- 1. Глазной сегмент -->
+        <button class="body-zone-dot" data-zone="eyes" style="top:12%;left:50%" aria-label="Глаза">
+          <span class="dot-ping"></span><span class="dot-inner"></span>
+        </button>
+        <!-- 2. Оральный сегмент — рот, челюсть -->
         <button class="body-zone-dot" data-zone="jaw" style="top:17%;left:50%" aria-label="Челюсть">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
-        <!-- Плечи — уровень ключиц -->
-        <button class="body-zone-dot" data-zone="shoulders" style="top:26%;left:50%" aria-label="Плечи">
+        <!-- 3. Шейный сегмент — горло -->
+        <button class="body-zone-dot" data-zone="throat" style="top:23%;left:50%" aria-label="Горло">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
-        <!-- Грудь — уровень сердца -->
-        <button class="body-zone-dot" data-zone="chest" style="top:35%;left:50%" aria-label="Грудь">
+        <!-- 4. Грудной сегмент — сердце -->
+        <button class="body-zone-dot" data-zone="chest" style="top:32%;left:50%" aria-label="Грудь">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
-        <!-- Живот — солнечное сплетение -->
-        <button class="body-zone-dot" data-zone="belly" style="top:47%;left:50%" aria-label="Живот">
+        <!-- 5. Диафрагмальный сегмент -->
+        <button class="body-zone-dot" data-zone="diaphragm" style="top:40%;left:50%" aria-label="Диафрагма">
+          <span class="dot-ping"></span><span class="dot-inner"></span>
+        </button>
+        <!-- 6. Брюшной сегмент — живот -->
+        <button class="body-zone-dot" data-zone="belly" style="top:49%;left:50%" aria-label="Живот">
+          <span class="dot-ping"></span><span class="dot-inner"></span>
+        </button>
+        <!-- 7. Тазовый сегмент -->
+        <button class="body-zone-dot" data-zone="pelvis" style="top:60%;left:50%" aria-label="Таз">
           <span class="dot-ping"></span><span class="dot-inner"></span>
         </button>
       </div>
       <div class="bodymap-info">
         <div class="zone-card-default" id="zone-default">Нажмите на точку на силуэте, чтобы узнать, как эта зона тела связана с вашими реакциями.</div>
+        <div class="zone-card" id="zone-eyes">
+          <p class="zone-card-name">Глаза</p>
+          <span class="zone-card-pattern">«Постоянная бдительность»</span>
+          <p class="zone-card-desc">Напряжённый взгляд, сжатый лоб — тело сканирует угрозу даже в безопасности. Мы учимся возвращать мягкость взгляду и доверие миру.</p>
+        </div>
         <div class="zone-card" id="zone-jaw">
           <p class="zone-card-name">Челюсть</p>
           <span class="zone-card-pattern">«Невысказанный гнев»</span>
           <p class="zone-card-desc">Сжатые зубы — это запрет на голос. Мы учимся разжимать этот замок и звучать.</p>
         </div>
-        <div class="zone-card" id="zone-shoulders">
-          <p class="zone-card-name">Плечи и шея</p>
-          <span class="zone-card-pattern">«Груз ответственности»</span>
-          <p class="zone-card-desc">Здесь живёт гиперконтроль и страх не справиться. Мы учимся сбрасывать этот груз через осознанное расслабление.</p>
+        <div class="zone-card" id="zone-throat">
+          <p class="zone-card-name">Горло</p>
+          <span class="zone-card-pattern">«Запрет на голос»</span>
+          <p class="zone-card-desc">Здесь живёт всё «нельзя говорить». Ком в горле, застрявшие слова, подавленный крик. Мы возвращаем себе право звучать и быть услышанной.</p>
         </div>
         <div class="zone-card" id="zone-chest">
           <p class="zone-card-name">Грудная клетка</p>
           <span class="zone-card-pattern">«Замирание дыхания»</span>
           <p class="zone-card-desc">Точка, где мы подавляем эмоции. На группе мы возвращаем себе право дышать полной грудью.</p>
         </div>
+        <div class="zone-card" id="zone-diaphragm">
+          <p class="zone-card-name">Диафрагма</p>
+          <span class="zone-card-pattern">«Разрыв верха и низа»</span>
+          <p class="zone-card-desc">Диафрагма — граница между мышлением и чувствованием. Хронический зажим здесь отрезает от собственного тела. Мы учимся дышать вглубь.</p>
+        </div>
         <div class="zone-card" id="zone-belly">
           <p class="zone-card-name">Живот</p>
           <span class="zone-card-pattern">«Узел тревоги»</span>
           <p class="zone-card-desc">Центр безопасности. Когда здесь сжато — мир кажется опасным. Мы возвращаем животу мягкость и опору.</p>
+        </div>
+        <div class="zone-card" id="zone-pelvis">
+          <p class="zone-card-name">Таз</p>
+          <span class="zone-card-pattern">«Подавленная воля»</span>
+          <p class="zone-card-desc">Самый глубокий сегмент. Здесь хранятся запреты на удовольствие, импульс и движение. Работа с тазом возвращает ощущение жизненной силы и опоры.</p>
         </div>
       </div>
     </div>
@@ -1232,7 +1259,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 // Body map
 (function(){
   var dots = document.querySelectorAll('.body-zone-dot');
-  var cards = { jaw:'zone-jaw', shoulders:'zone-shoulders', chest:'zone-chest', belly:'zone-belly' };
+  var cards = { eyes:'zone-eyes', jaw:'zone-jaw', throat:'zone-throat', chest:'zone-chest', diaphragm:'zone-diaphragm', belly:'zone-belly', pelvis:'zone-pelvis' };
   var current = null;
   dots.forEach(function(dot){
     dot.addEventListener('click', function(){
