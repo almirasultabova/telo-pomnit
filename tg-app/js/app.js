@@ -178,9 +178,12 @@ function pluralDays(n) {
 function renderTodayCard() {
   const container = document.getElementById('today-card');
   if (!container) return;
-  const entry = Storage.getTodayEntry();
 
-  if (!entry) {
+  const today = new Date().toDateString();
+  const todayEntries = Storage.getDiaryEntries()
+    .filter(e => new Date(e.date).toDateString() === today);
+
+  if (!todayEntries.length) {
     container.className = 'today-card';
     container.innerHTML = `
       <div class="today-empty">
@@ -193,24 +196,33 @@ function renderTodayCard() {
       </div>`;
     document.getElementById('start-entry-btn')?.addEventListener('click', startDiaryEntry);
   } else {
-    const zone = DATA.zones.find(z => z.id === entry.zone);
-    const sLabels = (entry.sensations || [])
-      .map(id => DATA.sensations.find(s => s.id === id))
-      .filter(Boolean)
-      .map(s => `<span class="entry-sens-chip">${s.emoji} ${s.label}</span>`)
-      .join('');
-
     container.className = 'today-card today-card--done';
-    container.innerHTML = `
-      <div class="today-done">
-        <div class="today-done-check">✓</div>
-        <div class="today-done-info">
-          <div class="today-done-title">${zone?.label || '—'}</div>
-          <div class="today-done-meta">Запись за сегодня сделана</div>
-          <div class="entry-sens mt-8">${sLabels}</div>
-          ${entry.note ? `<div class="entry-note mt-8">${entry.note}</div>` : ''}
+    const chips = todayEntries.map(e => {
+      const zone = DATA.zones.find(z => z.id === e.zone);
+      const time = new Date(e.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+      const sLabels = (e.sensations || [])
+        .map(id => DATA.sensations.find(s => s.id === id))
+        .filter(Boolean)
+        .map(s => `<span class="entry-sens-chip">${s.emoji} ${s.label}</span>`)
+        .join('');
+      return `<div class="today-entry-row">
+        <div class="today-entry-meta">
+          <span class="today-entry-zone">${zone?.label || '—'}</span>
+          <span class="today-entry-time">${time}</span>
         </div>
+        <div class="entry-sens">${sLabels}</div>
+        ${e.note ? `<div class="entry-note">${e.note}</div>` : ''}
       </div>`;
+    }).join('<div class="today-divider"></div>');
+
+    container.innerHTML = `
+      <div class="today-multi">
+        ${chips}
+        <button class="btn btn--ghost mt-12" id="add-entry-btn" style="width:100%">
+          + Добавить ещё запись
+        </button>
+      </div>`;
+    document.getElementById('add-entry-btn')?.addEventListener('click', startDiaryEntry);
   }
 }
 

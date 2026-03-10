@@ -367,6 +367,36 @@ input, textarea { font-family: inherit; }
 .today-done-title { font-size: 15px; font-weight: 600; }
 .today-done-meta  { font-size: 13px; color: var(--tg-hint); margin-top: 2px; }
 
+/* ─── Несколько записей за день ─────────────────────────────────────────── */
+.today-multi {
+  display: flex;
+  flex-direction: column;
+}
+.today-entry-row {
+  padding: 4px 0;
+}
+.today-entry-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.today-entry-zone {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tg-text);
+}
+.today-entry-time {
+  font-size: 11px;
+  color: var(--tg-hint);
+}
+.today-divider {
+  height: 1px;
+  background: var(--card-border);
+  margin: 8px 0;
+  opacity: 0.5;
+}
+
 /* ─── Карточки записей ───────────────────────────────────────────────────── */
 .entry-card {
   background: var(--tg-secondary-bg);
