@@ -289,14 +289,10 @@ function initBodyMap() {
 }
 
 function renderBodyMap() {
-  // Сбрасываем все маркеры
-  document.querySelectorAll('.zone-marker').forEach(m => {
-    m.classList.remove('zone-marker--active');
-  });
+  // Сбрасываем зоны на изображении
+  document.querySelectorAll('.zone-area').forEach(a => a.classList.remove('zone-area--active'));
   // Сбрасываем кнопки
-  document.querySelectorAll('.zone-btn').forEach(b => {
-    b.classList.remove('zone-btn--active');
-  });
+  document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('zone-btn--active'));
   // Скрываем инфо-карточку
   document.getElementById('zone-info-card')?.classList.add('hidden');
   // Блокируем кнопку
@@ -304,11 +300,13 @@ function renderBodyMap() {
   if (btn) btn.disabled = true;
 }
 
-// Клик по кнопке зоны
+// Клик по кнопке зоны или по зоне на изображении
 document.addEventListener('click', e => {
-  const btn = e.target.closest('.zone-btn');
-  if (!btn || !btn.dataset.zone) return;
-  selectZone(btn.dataset.zone);
+  const btn  = e.target.closest('.zone-btn');
+  const area = e.target.closest('.zone-area');
+  const zoneId = btn?.dataset.zone || area?.dataset.zone;
+  if (!zoneId) return;
+  selectZone(zoneId);
   haptic('light');
 });
 
@@ -321,9 +319,9 @@ function selectZone(zoneId) {
   document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('zone-btn--active'));
   document.querySelector(`.zone-btn[data-zone="${zoneId}"]`)?.classList.add('zone-btn--active');
 
-  // Подсвечиваем маркер на SVG
-  document.querySelectorAll('.zone-marker').forEach(m => m.classList.remove('zone-marker--active'));
-  document.querySelector(`.zone-marker[data-zone="${zoneId}"]`)?.classList.add('zone-marker--active');
+  // Подсвечиваем зону на изображении
+  document.querySelectorAll('.zone-area').forEach(a => a.classList.remove('zone-area--active'));
+  document.querySelector(`.zone-area[data-zone="${zoneId}"]`)?.classList.add('zone-area--active');
 
   // Показываем инфо-карточку
   const card = document.getElementById('zone-info-card');

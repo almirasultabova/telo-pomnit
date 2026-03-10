@@ -187,28 +187,32 @@
     <div class="screen-scroll">
 
       <div class="body-map-layout">
-        <!-- SVG силуэт тела с маркерами зон -->
-        <div class="body-map-svg-col">
-          <svg viewBox="0 0 80 270" class="body-svg" xmlns="http://www.w3.org/2000/svg">
-            <!-- Силуэт (декоративный) -->
-            <g class="body-silhouette">
-              <circle cx="40" cy="22" r="16"/>
-              <rect x="34" y="37" width="12" height="10" rx="3"/>
-              <rect x="18" y="46" width="14" height="58" rx="7"/>
-              <rect x="48" y="46" width="14" height="58" rx="7"/>
-              <rect x="20" y="46" width="40" height="68" rx="8"/>
-              <rect x="18" y="112" width="44" height="20" rx="7"/>
-              <rect x="20" y="130" width="17" height="80" rx="8"/>
-              <rect x="43" y="130" width="17" height="80" rx="8"/>
-            </g>
-            <!-- Маркеры зон (data-zone совпадает с id в DATA.zones) -->
-            <circle class="zone-marker" data-zone="eyes"       cx="40" cy="16" r="7"/>
-            <circle class="zone-marker" data-zone="jaw"        cx="40" cy="30" r="7"/>
-            <circle class="zone-marker" data-zone="throat"     cx="40" cy="44" r="7"/>
-            <circle class="zone-marker" data-zone="chest"      cx="40" cy="65" r="7"/>
-            <circle class="zone-marker" data-zone="diaphragm"  cx="40" cy="84" r="7"/>
-            <circle class="zone-marker" data-zone="belly"      cx="40" cy="102" r="7"/>
-            <circle class="zone-marker" data-zone="pelvis"     cx="40" cy="122" r="7"/>
+        <!-- Изображение тела с кликабельными зонами поверх -->
+        <div class="body-img-wrap">
+          <img src="img/body-glow.png" alt="Тело" class="body-glow-img">
+          <!-- SVG-оверлей с зонами (viewBox пропорционален изображению 1243:2015) -->
+          <svg viewBox="0 0 100 162" class="body-zones-svg" xmlns="http://www.w3.org/2000/svg">
+            <!-- Глаза / лоб -->
+            <ellipse class="zone-area" data-zone="eyes"
+              cx="50" cy="12" rx="14" ry="8"/>
+            <!-- Челюсть -->
+            <ellipse class="zone-area" data-zone="jaw"
+              cx="50" cy="24" rx="12" ry="7"/>
+            <!-- Горло -->
+            <rect class="zone-area" data-zone="throat"
+              x="39" y="31" width="22" height="10" rx="5"/>
+            <!-- Грудь -->
+            <rect class="zone-area" data-zone="chest"
+              x="26" y="42" width="48" height="18" rx="4"/>
+            <!-- Диафрагма -->
+            <rect class="zone-area" data-zone="diaphragm"
+              x="26" y="60" width="48" height="14" rx="4"/>
+            <!-- Живот -->
+            <rect class="zone-area" data-zone="belly"
+              x="26" y="74" width="48" height="14" rx="4"/>
+            <!-- Таз -->
+            <rect class="zone-area" data-zone="pelvis"
+              x="24" y="88" width="52" height="16" rx="6"/>
           </svg>
         </div>
 
@@ -216,7 +220,7 @@
         <div class="zone-buttons-col">
           <button class="zone-btn" data-zone="eyes">
             <span class="zone-btn-name">Глаза</span>
-            <span class="zone-btn-sub">Область глаз и лба</span>
+            <span class="zone-btn-sub">Глаза и лоб</span>
           </button>
           <button class="zone-btn" data-zone="jaw">
             <span class="zone-btn-name">Челюсть</span>
@@ -232,7 +236,7 @@
           </button>
           <button class="zone-btn" data-zone="diaphragm">
             <span class="zone-btn-name">Диафрагма</span>
-            <span class="zone-btn-sub">Область под грудью</span>
+            <span class="zone-btn-sub">Под грудью</span>
           </button>
           <button class="zone-btn" data-zone="belly">
             <span class="zone-btn-name">Живот</span>

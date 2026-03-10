@@ -430,29 +430,39 @@ input, textarea { font-family: inherit; }
   gap: 12px;
   align-items: flex-start;
 }
-.body-map-svg-col {
+
+/* ─── Изображение тела с SVG-оверлеем ─── */
+.body-img-wrap {
   flex-shrink: 0;
-  width: 110px;
+  width: 120px;
   position: sticky;
   top: 0;
+  position: relative;
 }
-.body-svg {
+.body-glow-img {
   width: 100%;
   height: auto;
   display: block;
+  border-radius: 12px;
 }
-/* Силуэт тела */
-.body-silhouette { fill: var(--tg-text); opacity: 0.1; }
-/* Точки-маркеры зон (декоративные, подсвечиваются по data-zone) */
-.zone-marker {
-  fill: var(--tg-secondary-bg);
-  stroke: var(--tg-hint);
-  stroke-width: 1.5;
-  transition: fill .2s, stroke .2s;
+.body-zones-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
-.zone-marker--active {
-  fill: var(--accent);
-  stroke: var(--accent);
+/* Прозрачные зоны — становятся видимыми при выборе */
+.zone-area {
+  fill: transparent;
+  stroke: transparent;
+  cursor: pointer;
+  transition: fill 0.2s, stroke 0.2s;
+}
+.zone-area--active {
+  fill: rgba(42, 74, 56, 0.38);
+  stroke: rgba(42, 74, 56, 0.85);
+  stroke-width: 0.8;
 }
 
 .zone-buttons-col { flex: 1; }
