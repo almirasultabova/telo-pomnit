@@ -185,76 +185,17 @@
       <div class="screen-sub">Где ощущается напряжение сегодня?</div>
     </div>
     <div class="screen-scroll">
-
-      <div class="body-map-layout">
-        <!-- Изображение тела с кликабельными зонами поверх -->
-        <div class="body-img-wrap">
-          <img src="img/body-glow.png" alt="Тело" class="body-glow-img">
-          <!-- SVG-оверлей с зонами (viewBox пропорционален изображению 1243:2015) -->
-          <svg viewBox="0 0 100 162" class="body-zones-svg" xmlns="http://www.w3.org/2000/svg">
-            <!-- Глаза / лоб -->
-            <ellipse class="zone-area" data-zone="eyes"
-              cx="50" cy="12" rx="14" ry="8"/>
-            <!-- Челюсть -->
-            <ellipse class="zone-area" data-zone="jaw"
-              cx="50" cy="24" rx="12" ry="7"/>
-            <!-- Горло -->
-            <rect class="zone-area" data-zone="throat"
-              x="39" y="31" width="22" height="10" rx="5"/>
-            <!-- Грудь -->
-            <rect class="zone-area" data-zone="chest"
-              x="26" y="42" width="48" height="18" rx="4"/>
-            <!-- Диафрагма -->
-            <rect class="zone-area" data-zone="diaphragm"
-              x="26" y="60" width="48" height="14" rx="4"/>
-            <!-- Живот -->
-            <rect class="zone-area" data-zone="belly"
-              x="26" y="74" width="48" height="14" rx="4"/>
-            <!-- Таз -->
-            <rect class="zone-area" data-zone="pelvis"
-              x="24" y="88" width="52" height="16" rx="6"/>
-          </svg>
-        </div>
-
-        <!-- Кнопки выбора зоны -->
-        <div class="zone-buttons-col">
-          <button class="zone-btn" data-zone="eyes">
-            <span class="zone-btn-name">Глаза</span>
-            <span class="zone-btn-sub">Глаза и лоб</span>
-          </button>
-          <button class="zone-btn" data-zone="jaw">
-            <span class="zone-btn-name">Челюсть</span>
-            <span class="zone-btn-sub">Челюсть и рот</span>
-          </button>
-          <button class="zone-btn" data-zone="throat">
-            <span class="zone-btn-name">Горло</span>
-            <span class="zone-btn-sub">Горло и шея</span>
-          </button>
-          <button class="zone-btn" data-zone="chest">
-            <span class="zone-btn-name">Грудь</span>
-            <span class="zone-btn-sub">Грудная клетка</span>
-          </button>
-          <button class="zone-btn" data-zone="diaphragm">
-            <span class="zone-btn-name">Диафрагма</span>
-            <span class="zone-btn-sub">Под грудью</span>
-          </button>
-          <button class="zone-btn" data-zone="belly">
-            <span class="zone-btn-name">Живот</span>
-            <span class="zone-btn-sub">Живот и поясница</span>
-          </button>
-          <button class="zone-btn" data-zone="pelvis">
-            <span class="zone-btn-name">Таз</span>
-            <span class="zone-btn-sub">Таз и основание</span>
-          </button>
-        </div>
+      <div class="view-toggle">
+        <button class="view-toggle-btn view-toggle-btn--active" id="view-front-btn">Спереди</button>
+        <button class="view-toggle-btn" id="view-back-btn">Сзади</button>
       </div>
-
-      <!-- Инфо-карточка выбранной зоны (скрыта по умолчанию) -->
+      <div class="body-figure-wrap">
+        <svg viewBox="0 0 100 162" id="body-figure-svg" class="body-figure-svg"></svg>
+      </div>
       <div class="zone-info-card hidden" id="zone-info-card">
         <div class="zone-info-name" id="zone-info-name"></div>
         <div class="zone-info-desc" id="zone-info-desc"></div>
       </div>
-
     </div>
     <div class="screen-bottom">
       <button class="btn btn--primary btn--full" id="zone-continue-btn" disabled>

@@ -88,6 +88,8 @@ const draft = {
   note:       ''
 };
 
+let bodyMapView = 'front';
+
 // ─── Состояние диагностики ────────────────────────────────────────────────
 const diag = {
   answers:  [],   // массив { pattern }
@@ -261,6 +263,7 @@ function startDiaryEntry() {
   draft.zone = null;
   draft.sensations = [];
   draft.note = '';
+  bodyMapView = 'front';
   haptic('medium');
   renderBodyMap();
   goTo('body-map');
@@ -289,22 +292,53 @@ function initBodyMap() {
 }
 
 function renderBodyMap() {
-  // Сбрасываем зоны на изображении
-  document.querySelectorAll('.zone-area').forEach(a => a.classList.remove('zone-area--active'));
-  // Сбрасываем кнопки
-  document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('zone-btn--active'));
-  // Скрываем инфо-карточку
+  const svgEl = document.getElementById('body-figure-svg');
+  if (!svgEl) return;
+
+  const zones = DATA.zones.filter(z => z.view === bodyMapView);
+
+  const imgBg = bodyMapView === 'front'
+    ? `<image href="img/body-glow.png" x="0" y="0" width="100" height="162" preserveAspectRatio="xMidYMid meet"/>`
+    : '';
+
+  const paths = zones.map(z => {
+    const isDecor = z.selectable === false;
+    const cls = `zone-path${isDecor ? ' zone-path--decor' : ''}`;
+    const attr = isDecor ? '' : `data-zone="${z.id}"`;
+    return `<path class="${cls}" ${attr} d="${z.path}"/>`;
+  }).join('');
+
+  svgEl.innerHTML = `
+    ${imgBg}
+    <g transform="matrix(0.429,0,0,0.543,3,0)">${paths}</g>`;
+
+  // Reset selection state
+  draft.zone = null;
   document.getElementById('zone-info-card')?.classList.add('hidden');
-  // Блокируем кнопку
-  const btn = document.getElementById('zone-continue-btn');
-  if (btn) btn.disabled = true;
+  const continueBtn = document.getElementById('zone-continue-btn');
+  if (continueBtn) continueBtn.disabled = true;
+
+  // Sync toggle buttons
+  document.getElementById('view-front-btn')?.classList.toggle('view-toggle-btn--active', bodyMapView === 'front');
+  document.getElementById('view-back-btn')?.classList.toggle('view-toggle-btn--active', bodyMapView === 'back');
 }
 
-// Клик по кнопке зоны или по зоне на изображении
+function setBodyView(v) {
+  bodyMapView = v;
+  haptic('light');
+  renderBodyMap();
+}
+
+// Клики: переключатель вид + выбор зоны на SVG
 document.addEventListener('click', e => {
+  // Front/back toggle
+  if (e.target.closest('#view-front-btn')) { setBodyView('front'); return; }
+  if (e.target.closest('#view-back-btn'))  { setBodyView('back');  return; }
+
+  // Zone selection (tap on SVG path or zone button)
+  const path = e.target.closest('.zone-path:not(.zone-path--decor)');
   const btn  = e.target.closest('.zone-btn');
-  const area = e.target.closest('.zone-area');
-  const zoneId = btn?.dataset.zone || area?.dataset.zone;
+  const zoneId = path?.dataset.zone || btn?.dataset.zone;
   if (!zoneId) return;
   selectZone(zoneId);
   haptic('light');
@@ -315,23 +349,16 @@ function selectZone(zoneId) {
   const zone = DATA.zones.find(z => z.id === zoneId);
   if (!zone) return;
 
-  // Подсвечиваем кнопку
-  document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('zone-btn--active'));
-  document.querySelector(`.zone-btn[data-zone="${zoneId}"]`)?.classList.add('zone-btn--active');
+  document.querySelectorAll('.zone-path').forEach(p => p.classList.remove('zone-path--active'));
+  document.querySelector(`.zone-path[data-zone="${zoneId}"]`)?.classList.add('zone-path--active');
 
-  // Подсвечиваем зону на изображении
-  document.querySelectorAll('.zone-area').forEach(a => a.classList.remove('zone-area--active'));
-  document.querySelector(`.zone-area[data-zone="${zoneId}"]`)?.classList.add('zone-area--active');
-
-  // Показываем инфо-карточку
   const card = document.getElementById('zone-info-card');
   if (card) {
     card.classList.remove('hidden');
     document.getElementById('zone-info-name').textContent = zone.label;
-    document.getElementById('zone-info-desc').textContent = zone.detail;
+    document.getElementById('zone-info-desc').textContent = zone.desc || '';
   }
 
-  // Активируем кнопку продолжить
   const btn = document.getElementById('zone-continue-btn');
   if (btn) btn.disabled = false;
 }
@@ -568,9 +595,9 @@ function renderMirrorCard(entries) {
 
 // ─── Тепловая карта — силуэт тела ──────────────────────────────────────────
 function renderHeatmap(entries) {
-  // Подсчёт по зонам за весь поток
+  // Подсчёт по всем выбираемым зонам за весь поток
   const counts = {};
-  DATA.zones.forEach(z => { counts[z.id] = 0; });
+  DATA.zones.filter(z => z.selectable !== false).forEach(z => { counts[z.id] = 0; });
   entries.forEach(e => { if (counts[e.zone] !== undefined) counts[e.zone]++; });
   const maxCount = Math.max(...Object.values(counts), 1);
 
@@ -589,29 +616,16 @@ function renderHeatmap(entries) {
     return c > 0 ? 'rgba(42,74,56,0.9)' : 'rgba(42,74,56,0.15)';
   }
 
-  // Оверлей: те же координаты, что и на экране выбора зоны (viewBox 0 0 100 162)
+  // Оверлей: все передние выбираемые зоны с transform-матрицей
+  const frontZones = DATA.zones.filter(z => z.view === 'front' && z.selectable !== false);
+  const heatPaths = frontZones.map(z => {
+    const fill = heatFill(z.id);
+    const stroke = heatStroke(z.id);
+    return `<path d="${z.path}" fill="${fill}" stroke="${stroke}" stroke-width="0.6"/>`;
+  }).join('');
+
   const heatSvg = `<svg viewBox="0 0 100 162" xmlns="http://www.w3.org/2000/svg" class="hmap-zones-svg">
-    <!-- Глаза -->
-    <ellipse cx="50" cy="12" rx="14" ry="8"
-      fill="${heatFill('eyes')}" stroke="${heatStroke('eyes')}" stroke-width="0.6"/>
-    <!-- Челюсть -->
-    <ellipse cx="50" cy="24" rx="12" ry="7"
-      fill="${heatFill('jaw')}" stroke="${heatStroke('jaw')}" stroke-width="0.6"/>
-    <!-- Горло -->
-    <rect x="39" y="31" width="22" height="10" rx="5"
-      fill="${heatFill('throat')}" stroke="${heatStroke('throat')}" stroke-width="0.6"/>
-    <!-- Грудь -->
-    <rect x="26" y="42" width="48" height="18" rx="4"
-      fill="${heatFill('chest')}" stroke="${heatStroke('chest')}" stroke-width="0.6"/>
-    <!-- Диафрагма -->
-    <rect x="26" y="60" width="48" height="14" rx="4"
-      fill="${heatFill('diaphragm')}" stroke="${heatStroke('diaphragm')}" stroke-width="0.6"/>
-    <!-- Живот -->
-    <rect x="26" y="74" width="48" height="14" rx="4"
-      fill="${heatFill('belly')}" stroke="${heatStroke('belly')}" stroke-width="0.6"/>
-    <!-- Таз -->
-    <rect x="24" y="88" width="52" height="16" rx="6"
-      fill="${heatFill('pelvis')}" stroke="${heatStroke('pelvis')}" stroke-width="0.6"/>
+    <g transform="matrix(0.429,0,0,0.543,3,0)">${heatPaths}</g>
   </svg>`;
 
   const imgCol = `<div class="hmap-img-wrap">
@@ -619,18 +633,19 @@ function renderHeatmap(entries) {
     ${heatSvg}
   </div>`;
 
-  // Список зон с барами справа
-  const labels = DATA.zones.map(z => {
-    const c = counts[z.id];
-    const barW = Math.round((c / maxCount) * 100);
-    return `<div class="hmap-row">
-      <div class="hmap-zone-name">${z.label}</div>
-      <div class="hmap-bar-wrap">
-        <div class="hmap-bar" style="width:${barW}%"></div>
-      </div>
-      <div class="hmap-count ${c > 0 ? 'hmap-count--active' : ''}">${c || '—'}</div>
-    </div>`;
-  }).join('');
+  // Список всех выбираемых зон с барами, отсортированных по количеству
+  const allSelectableZones = DATA.zones.filter(z => z.selectable !== false);
+  const labels = allSelectableZones
+    .map(z => ({ zone: z, count: counts[z.id] || 0 }))
+    .sort((a, b) => b.count - a.count)
+    .map(({ zone: z, count: c }) => {
+      const barW = Math.round((c / maxCount) * 100);
+      return `<div class="hmap-row">
+        <div class="hmap-zone-name">${z.label}</div>
+        <div class="hmap-bar-wrap"><div class="hmap-bar" style="width:${barW}%"></div></div>
+        <div class="hmap-count ${c > 0 ? 'hmap-count--active' : ''}">${c || '—'}</div>
+      </div>`;
+    }).join('');
 
   return `<div class="section-label mt-16 mb-8">Карта напряжений за поток</div>
     <div class="hmap-wrap">

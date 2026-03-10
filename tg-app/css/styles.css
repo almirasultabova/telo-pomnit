@@ -424,48 +424,64 @@ input, textarea { font-family: inherit; }
 }
 .entry-note    { font-size: 13px; color: var(--tg-hint); font-style: italic; }
 
-/* ─── Экран: Карта тела ───────────────────────────────────────────────────── */
-.body-map-layout {
+/* ─── Карта тела — переключатель вид ─────────────────────────────────────── */
+.view-toggle {
   display: flex;
-  gap: 12px;
-  align-items: flex-start;
+  gap: 8px;
+  padding: 0 0 12px;
+  justify-content: center;
+}
+.view-toggle-btn {
+  flex: 1;
+  max-width: 130px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1.5px solid var(--card-border);
+  background: transparent;
+  color: var(--tg-hint);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.view-toggle-btn--active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
 }
 
-/* ─── Изображение тела с SVG-оверлеем ─── */
-.body-img-wrap {
-  flex-shrink: 0;
-  width: 120px;
-  position: sticky;
-  top: 0;
-  position: relative;
+/* ─── Фигура тела (SVG) ───────────────────────────────────────────────────── */
+.body-figure-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
 }
-.body-glow-img {
-  width: 100%;
+.body-figure-svg {
+  width: 55%;
+  max-width: 220px;
   height: auto;
   display: block;
   border-radius: 12px;
 }
-.body-zones-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-/* Прозрачные зоны — становятся видимыми при выборе */
-.zone-area {
-  fill: transparent;
-  stroke: transparent;
-  cursor: pointer;
-  transition: fill 0.2s, stroke 0.2s;
-}
-.zone-area--active {
-  fill: rgba(42, 74, 56, 0.38);
-  stroke: rgba(42, 74, 56, 0.85);
-  stroke-width: 0.8;
-}
 
-.zone-buttons-col { flex: 1; }
+/* Зоны на теле */
+.zone-path {
+  fill: rgba(42, 74, 56, 0.07);
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 0.8;
+  cursor: pointer;
+  transition: fill 0.2s;
+}
+.zone-path--decor {
+  fill: rgba(42, 74, 56, 0.06);
+  stroke: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+.zone-path--active {
+  fill: rgba(42, 74, 56, 0.52);
+  stroke: rgba(42, 74, 56, 0.85);
+  stroke-width: 1;
+}
 
 .zone-btn {
   width: 100%;
