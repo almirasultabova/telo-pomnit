@@ -390,6 +390,34 @@
 
 </div><!-- /#app -->
 
+<!-- ══════════════════════════════════════════════════════════════════════
+     ДЕТАЛИ ВСТРЕЧИ: нижний лист
+     Появляется при нажатии на встречу в расписании
+══════════════════════════════════════════════════════════════════════ -->
+<div class="bottom-sheet-overlay" id="meeting-detail-overlay" onclick="hideMeetingDetail()"></div>
+<div class="bottom-sheet" id="meeting-detail-sheet">
+  <div class="bottom-sheet-handle"></div>
+  <div class="bottom-sheet-content">
+    <div class="meeting-detail-header">
+      <div>
+        <div class="meeting-detail-type" id="meeting-detail-type"></div>
+        <div class="meeting-detail-date" id="meeting-detail-date"></div>
+        <div class="meeting-detail-week" id="meeting-detail-week"></div>
+      </div>
+      <button class="bottom-sheet-close" onclick="hideMeetingDetail()">✕</button>
+    </div>
+    <div class="meeting-detail-practice" id="meeting-detail-practice"></div>
+    <div class="meeting-detail-section">
+      <div class="meeting-detail-section-label">Что будет на встрече</div>
+      <div class="meeting-detail-text" id="meeting-detail-desc"></div>
+    </div>
+    <div class="meeting-detail-section">
+      <div class="meeting-detail-section-label">Как подготовиться</div>
+      <div class="meeting-detail-text" id="meeting-detail-prepare"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Данные и логика -->
 <script src="js/data.js"></script>
 <script src="js/storage.js"></script>

@@ -801,9 +801,23 @@ input, textarea { font-family: inherit; }
   border-radius: var(--radius-md);
   padding: 12px 14px;
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-left: 3px solid var(--accent);
+  border: none;
+  border-left: 3px solid var(--accent);
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.schedule-item:active { opacity: 0.75; }
+.schedule-item-left {
+  display: flex;
   flex-direction: column;
   gap: 2px;
-  border-left: 3px solid var(--accent);
 }
 .schedule-item--past {
   opacity: .45;
@@ -818,10 +832,121 @@ input, textarea { font-family: inherit; }
   font-size: 12px;
   color: var(--tg-hint);
 }
-.schedule-item-week {
+.schedule-item-practice {
+  font-size: 11px;
+  color: var(--accent);
+  font-style: italic;
+  margin-top: 2px;
+}
+.schedule-item-arrow {
+  color: var(--card-border);
+  flex-shrink: 0;
+}
+
+/* ─── Bottom sheet: детали встречи ──────────────────────────────────────── */
+.bottom-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.bottom-sheet-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--tg-secondary-bg);
+  border-radius: 20px 20px 0 0;
+  z-index: 201;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.bottom-sheet.active {
+  transform: translateY(0);
+}
+.bottom-sheet-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--card-border);
+  border-radius: 2px;
+  margin: 12px auto 4px;
+  flex-shrink: 0;
+}
+.bottom-sheet-content {
+  padding: 8px 20px 32px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.bottom-sheet-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--tg-hint);
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+.meeting-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.meeting-detail-type {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--tg-text);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+}
+.meeting-detail-date {
+  font-size: 13px;
+  color: var(--tg-hint);
+  margin-top: 4px;
+}
+.meeting-detail-week {
   font-size: 11px;
   color: var(--gold);
-  letter-spacing: .05em;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.meeting-detail-practice {
+  background: rgba(42,74,56,0.08);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--accent);
+  font-style: italic;
+  margin-bottom: 16px;
+}
+.meeting-detail-section {
+  margin-bottom: 16px;
+}
+.meeting-detail-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.meeting-detail-text {
+  font-size: 14px;
+  color: var(--tg-text);
+  line-height: 1.55;
 }
 
 /* ─── Zoom pending ───────────────────────────────────────────────────────── */

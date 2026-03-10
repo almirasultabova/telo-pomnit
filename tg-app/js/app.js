@@ -724,17 +724,48 @@ function renderSchedule() {
     const [h, min] = m.time.split(':').map(Number);
     const isPast = new Date(y, mo - 1, d, h, min) < now;
     const dateStr = `${d} ${monthNames[mo - 1]}`;
-    const weekTopic = DATA.program.weekTopics.find(w => w.num === m.week);
-    return `<div class="schedule-item ${isPast ? 'schedule-item--past' : ''}">
-      <div class="schedule-item-date">${dateStr} · ${m.time}</div>
-      <div class="schedule-item-type">${m.type}</div>
-      ${weekTopic ? `<div class="schedule-item-week">Неделя ${m.week}</div>` : ''}
-    </div>`;
+    return `<button class="schedule-item ${isPast ? 'schedule-item--past' : ''}" onclick="showMeetingDetail(${m.id})">
+      <div class="schedule-item-left">
+        <div class="schedule-item-date">${dateStr} · ${m.time}</div>
+        <div class="schedule-item-type">${m.type}</div>
+        ${m.practice ? `<div class="schedule-item-practice">${m.practice}</div>` : ''}
+      </div>
+      <svg class="schedule-item-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </button>`;
   }).join('');
 
   container.innerHTML = `
     <div class="section-label mt-16 mb-8">Расписание встреч</div>
     <div class="schedule-list">${items}</div>`;
+}
+
+function showMeetingDetail(id) {
+  const m = DATA.program.schedule.find(s => s.id === id);
+  if (!m) return;
+  haptic('light');
+
+  const monthNames = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  const dayNames = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+  const dateObj = new Date(m.date + 'T' + m.time);
+  const dateStr = `${dayNames[dateObj.getDay()]}, ${dateObj.getDate()} ${monthNames[dateObj.getMonth()]}`;
+  const weekTopic = DATA.program.weekTopics.find(w => w.num === m.week);
+
+  document.getElementById('meeting-detail-type').textContent    = m.type;
+  document.getElementById('meeting-detail-date').textContent    = `${dateStr} · ${m.time}`;
+  document.getElementById('meeting-detail-week').textContent    = weekTopic ? `Неделя ${m.week} — ${weekTopic.title}` : '';
+  const practiceEl = document.getElementById('meeting-detail-practice');
+  practiceEl.textContent    = m.practice || '';
+  practiceEl.style.display  = m.practice ? 'block' : 'none';
+  document.getElementById('meeting-detail-desc').textContent    = m.desc || '';
+  document.getElementById('meeting-detail-prepare').textContent = m.prepare || '';
+
+  document.getElementById('meeting-detail-sheet').classList.add('active');
+  document.getElementById('meeting-detail-overlay').classList.add('active');
+}
+
+function hideMeetingDetail() {
+  document.getElementById('meeting-detail-sheet').classList.remove('active');
+  document.getElementById('meeting-detail-overlay').classList.remove('active');
 }
 
 function renderHosts() {
