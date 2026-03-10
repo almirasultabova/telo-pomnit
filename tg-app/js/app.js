@@ -589,63 +589,35 @@ function renderHeatmap(entries) {
     return c > 0 ? 'rgba(42,74,56,0.9)' : 'rgba(42,74,56,0.15)';
   }
 
-  // SVG: каждая часть тела — отдельная форма со своим цветом
-  // Зоны:
-  //  eyes       → верхняя часть головы
-  //  jaw        → нижняя часть головы
-  //  throat     → шея
-  //  chest      → верхняя часть туловища
-  //  diaphragm  → средняя часть туловища
-  //  belly      → нижняя часть туловища
-  //  pelvis     → таз
-  const svg = `<svg viewBox="0 0 100 230" xmlns="http://www.w3.org/2000/svg" class="hmap-body-svg">
-    <defs>
-      <clipPath id="head-upper"><rect x="0" y="0" width="100" height="26"/></clipPath>
-      <clipPath id="head-lower"><rect x="0" y="26" width="100" height="30"/></clipPath>
-    </defs>
-
-    <!-- Руки (фон) -->
-    <rect x="10" y="54" width="16" height="62" rx="8"
-      fill="${heatFill('chest')}" stroke="${heatStroke('chest')}" stroke-width="0.5" opacity="0.5"/>
-    <rect x="74" y="54" width="16" height="62" rx="8"
-      fill="${heatFill('chest')}" stroke="${heatStroke('chest')}" stroke-width="0.5" opacity="0.5"/>
-
-    <!-- Ноги (фон) -->
-    <rect x="26" y="152" width="20" height="72" rx="10"
-      fill="${heatFill('pelvis')}" stroke="${heatStroke('pelvis')}" stroke-width="0.5" opacity="0.5"/>
-    <rect x="54" y="152" width="20" height="72" rx="10"
-      fill="${heatFill('pelvis')}" stroke="${heatStroke('pelvis')}" stroke-width="0.5" opacity="0.5"/>
-
-    <!-- Таз -->
-    <rect x="22" y="130" width="56" height="26" rx="10"
-      fill="${heatFill('pelvis')}" stroke="${heatStroke('pelvis')}" stroke-width="0.8"/>
-
-    <!-- Живот -->
-    <rect x="24" y="106" width="52" height="28" rx="4"
-      fill="${heatFill('belly')}" stroke="${heatStroke('belly')}" stroke-width="0.8"/>
-
-    <!-- Диафрагма -->
-    <rect x="24" y="82" width="52" height="28" rx="4"
-      fill="${heatFill('diaphragm')}" stroke="${heatStroke('diaphragm')}" stroke-width="0.8"/>
-
+  // Оверлей: те же координаты, что и на экране выбора зоны (viewBox 0 0 100 162)
+  const heatSvg = `<svg viewBox="0 0 100 162" xmlns="http://www.w3.org/2000/svg" class="hmap-zones-svg">
+    <!-- Глаза -->
+    <ellipse cx="50" cy="12" rx="14" ry="8"
+      fill="${heatFill('eyes')}" stroke="${heatStroke('eyes')}" stroke-width="0.6"/>
+    <!-- Челюсть -->
+    <ellipse cx="50" cy="24" rx="12" ry="7"
+      fill="${heatFill('jaw')}" stroke="${heatStroke('jaw')}" stroke-width="0.6"/>
+    <!-- Горло -->
+    <rect x="39" y="31" width="22" height="10" rx="5"
+      fill="${heatFill('throat')}" stroke="${heatStroke('throat')}" stroke-width="0.6"/>
     <!-- Грудь -->
-    <rect x="24" y="54" width="52" height="32" rx="4"
-      fill="${heatFill('chest')}" stroke="${heatStroke('chest')}" stroke-width="0.8"/>
-
-    <!-- Шея / горло -->
-    <rect x="40" y="40" width="20" height="18" rx="5"
-      fill="${heatFill('throat')}" stroke="${heatStroke('throat')}" stroke-width="0.8"/>
-
-    <!-- Голова верх (глаза) -->
-    <path d="M50,6 a22,22 0 0,1 0,44 a22,22 0 0,1 0,-44"
-      clip-path="url(#head-upper)"
-      fill="${heatFill('eyes')}" stroke="${heatStroke('eyes')}" stroke-width="0.8"/>
-
-    <!-- Голова низ (челюсть) -->
-    <path d="M50,6 a22,22 0 0,1 0,44 a22,22 0 0,1 0,-44"
-      clip-path="url(#head-lower)"
-      fill="${heatFill('jaw')}" stroke="${heatStroke('jaw')}" stroke-width="0.8"/>
+    <rect x="26" y="42" width="48" height="18" rx="4"
+      fill="${heatFill('chest')}" stroke="${heatStroke('chest')}" stroke-width="0.6"/>
+    <!-- Диафрагма -->
+    <rect x="26" y="60" width="48" height="14" rx="4"
+      fill="${heatFill('diaphragm')}" stroke="${heatStroke('diaphragm')}" stroke-width="0.6"/>
+    <!-- Живот -->
+    <rect x="26" y="74" width="48" height="14" rx="4"
+      fill="${heatFill('belly')}" stroke="${heatStroke('belly')}" stroke-width="0.6"/>
+    <!-- Таз -->
+    <rect x="24" y="88" width="52" height="16" rx="6"
+      fill="${heatFill('pelvis')}" stroke="${heatStroke('pelvis')}" stroke-width="0.6"/>
   </svg>`;
+
+  const imgCol = `<div class="hmap-img-wrap">
+    <img src="img/body-glow.png" alt="" class="hmap-glow-img">
+    ${heatSvg}
+  </div>`;
 
   // Список зон с барами справа
   const labels = DATA.zones.map(z => {
@@ -662,7 +634,7 @@ function renderHeatmap(entries) {
 
   return `<div class="section-label mt-16 mb-8">Карта напряжений за поток</div>
     <div class="hmap-wrap">
-      <div class="hmap-svg-col">${svg}</div>
+      <div class="hmap-svg-col">${imgCol}</div>
       <div class="hmap-labels-col">${labels}</div>
     </div>`;
 }
