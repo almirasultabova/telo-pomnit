@@ -110,15 +110,20 @@ document.addEventListener('DOMContentLoaded', () => {
   initProfile();
   initHistory();
 
-  // Запускаем сплэш → главный экран
+  // Запускаем сплэш → онбординг (первый раз) или сразу главный
   setTimeout(() => {
-    goTo('home');
     renderDiaryTab();
     renderDiagTab();
     renderProfileTab();
-    // Показываем оффер один раз при первом открытии
-    if (!Storage.isOfferSeen()) {
-      setTimeout(showOfferModal, 400);
+
+    if (!Storage.isOnboardingDone()) {
+      initOnboarding();
+      goTo('onboarding');
+    } else {
+      goTo('home');
+      if (!Storage.isOfferSeen()) {
+        setTimeout(showOfferModal, 400);
+      }
     }
   }, 1600);
 });
@@ -645,6 +650,26 @@ function renderResultScreen(patternId) {
     renderDiagTab();
     haptic();
   };
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// ОНБОРДИНГ
+// ─────────────────────────────────────────────────────────────────────────
+function initOnboarding() {
+  // Обращение по имени из Telegram
+  const user = tg?.initDataUnsafe?.user;
+  const firstName = user?.first_name || '';
+  const helloEl = document.getElementById('onboarding-hello');
+  if (helloEl) {
+    helloEl.textContent = firstName ? `Привет, ${firstName}!` : 'Привет!';
+  }
+
+  document.getElementById('onboarding-start-btn')?.addEventListener('click', () => {
+    Storage.setOnboardingDone();
+    Storage.setOfferSeen(); // не показывать оффер-модал отдельно
+    hapticNotify('success');
+    goTo('home');
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────

@@ -241,6 +241,10 @@ input, textarea { font-family: inherit; }
   0%,100% { transform: scale(1);    opacity: 1;   }
   50%      { transform: scale(1.08); opacity: 0.8; }
 }
+@keyframes breathe {
+  0%,100% { transform: scale(1);    }
+  50%      { transform: scale(1.07); }
+}
 .splash-title {
   font-family: var(--font-serif);
   font-style: italic;
@@ -947,6 +951,83 @@ input, textarea { font-family: inherit; }
   font-size: 14px;
   color: var(--tg-text);
   line-height: 1.55;
+}
+
+/* ─── Онбординг ─────────────────────────────────────────────────────────── */
+.onboarding-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 40px 24px 48px;
+  text-align: center;
+}
+.onboarding-icon {
+  font-size: 52px;
+  margin-bottom: 16px;
+  animation: breathe 3s ease-in-out infinite;
+}
+.onboarding-hello {
+  font-size: 26px;
+  font-weight: 700;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  color: var(--tg-text);
+  margin: 0 0 6px;
+}
+.onboarding-welcome {
+  font-size: 15px;
+  color: var(--tg-hint);
+  margin: 0 0 28px;
+  line-height: 1.5;
+}
+.onboarding-welcome em {
+  color: var(--accent);
+  font-style: italic;
+}
+.onboarding-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+.onboarding-bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--tg-secondary-bg);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+.onboarding-bullet-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.onboarding-bullets li div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.onboarding-bullets li strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tg-text);
+}
+.onboarding-bullets li span {
+  font-size: 12px;
+  color: var(--tg-hint);
+  line-height: 1.4;
+}
+.onboarding-btn {
+  width: 100%;
+  font-size: 16px;
+  padding: 14px 24px;
 }
 
 /* ─── Zoom pending ───────────────────────────────────────────────────────── */
