@@ -1194,3 +1194,198 @@ input, textarea { font-family: inherit; }
 .text-accent { color: var(--accent); }
 .text-center { text-align: center; }
 .hidden { display: none !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ВКЛАДКА: МОЙ ПУТЬ
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Пустое состояние ──────────────────────────────────────────────────── */
+.mypath-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 24px;
+}
+.mypath-empty-icon { font-size: 48px; margin-bottom: 16px; }
+.mypath-empty-title { font-size: 18px; font-weight: 700; color: var(--tg-text); margin-bottom: 8px; font-family: Georgia, serif; font-style: italic; }
+.mypath-empty-sub  { font-size: 14px; color: var(--tg-hint); line-height: 1.55; }
+
+/* ─── Зеркало недели ────────────────────────────────────────────────────── */
+.mirror-card {
+  background: var(--tg-secondary-bg);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border-left: 4px solid var(--accent);
+  margin-bottom: 4px;
+}
+.mirror-card--empty {
+  border-left-color: var(--card-border);
+}
+.mirror-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.mirror-text {
+  font-size: 15px;
+  color: var(--tg-text);
+  line-height: 1.55;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+}
+.mirror-text em {
+  font-style: normal;
+  color: var(--accent);
+  font-weight: 600;
+}
+.mirror-count {
+  font-size: 12px;
+  color: var(--tg-hint);
+  margin-top: 8px;
+}
+
+/* ─── Тепловая карта ────────────────────────────────────────────────────── */
+.heatmap-wrap {
+  background: var(--tg-secondary-bg);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  overflow-x: auto;
+}
+.hm-header,
+.hm-row {
+  display: grid;
+  grid-template-columns: 68px repeat(5, 1fr);
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.hm-header { margin-bottom: 6px; }
+.hm-week-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--tg-hint);
+  text-align: center;
+}
+.hm-zone-label {
+  font-size: 11px;
+  color: var(--tg-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hm-cell {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  min-height: 28px;
+  transition: transform 0.15s;
+}
+.hm-cell--0 { background: rgba(42,74,56,0.07); color: transparent; }
+.hm-cell--1 { background: rgba(42,74,56,0.18); color: transparent; }
+.hm-cell--2 { background: rgba(42,74,56,0.38); }
+.hm-cell--3 { background: rgba(42,74,56,0.62); }
+.hm-cell--4 { background: rgba(42,74,56,0.88); }
+.hm-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+.hm-legend span {
+  font-size: 10px;
+  color: var(--tg-hint);
+}
+.hm-legend .hm-cell {
+  min-height: 16px;
+  width: 16px;
+  border-radius: 3px;
+  aspect-ratio: unset;
+}
+
+/* ─── Топ ощущений ──────────────────────────────────────────────────────── */
+.tops-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tops-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--tg-secondary-bg);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+}
+.tops-rank {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tg-hint);
+  width: 14px;
+  flex-shrink: 0;
+}
+.tops-emoji { font-size: 20px; flex-shrink: 0; }
+.tops-info  { flex: 1; min-width: 0; }
+.tops-label { font-size: 13px; font-weight: 600; color: var(--tg-text); margin-bottom: 4px; }
+.tops-bar-wrap {
+  height: 4px;
+  background: rgba(42,74,56,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.tops-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+.tops-count {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ─── Статистика пути ───────────────────────────────────────────────────── */
+.path-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.path-stat {
+  background: var(--tg-secondary-bg);
+  border-radius: var(--radius-md);
+  padding: 14px 8px;
+  text-align: center;
+}
+.path-stat-num {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--accent);
+  font-family: Georgia, serif;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.path-stat-of {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--tg-hint);
+}
+.path-stat-label {
+  font-size: 11px;
+  color: var(--tg-hint);
+  line-height: 1.3;
+}

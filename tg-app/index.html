@@ -105,14 +105,14 @@
       </div>
     </div>
 
-    <!-- ─── ВКЛАДКА: ДИАГНОСТИКА ───────────────────────────────────── -->
+    <!-- ─── ВКЛАДКА: МОЙ ПУТЬ ─────────────────────────────────────── -->
     <div class="tab-pane" id="tab-diag">
       <div class="screen-header">
-        <div class="screen-title">Диагностика</div>
-        <div class="screen-sub">Найдите свой паттерн выживания</div>
+        <div class="screen-title">Мой путь</div>
+        <div class="screen-sub">Что говорит тело за эти недели</div>
       </div>
       <div class="screen-scroll screen-scroll--no-bottom" style="padding-bottom: calc(var(--nav-height) + 16px)" id="diag-tab-content">
-        <!-- Динамически: интро или сохранённый результат -->
+        <!-- Динамически из renderMyPathTab() -->
       </div>
     </div>
 
@@ -160,10 +160,9 @@
       </button>
       <button class="nav-btn" data-tab="diag">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/>
-          <path d="M21 21l-4.35-4.35"/>
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
         </svg>
-        <span>Диагностика</span>
+        <span>Мой путь</span>
       </button>
       <button class="nav-btn" data-tab="profile">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

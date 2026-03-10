@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Запускаем сплэш → онбординг (первый раз) или сразу главный
   setTimeout(() => {
     renderDiaryTab();
-    renderDiagTab();
+    renderMyPathTab();
     renderProfileTab();
 
     if (!Storage.isOnboardingDone()) {
@@ -148,7 +148,7 @@ function switchTab(tab) {
 
   // Обновляем содержимое при переключении
   if (tab === 'diary')   renderDiaryTab();
-  if (tab === 'diag')    renderDiagTab();
+  if (tab === 'diag')    renderMyPathTab();
   if (tab === 'profile') renderProfileTab();
 }
 
@@ -483,68 +483,205 @@ function renderHistory() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// ВКЛАДКА: ДИАГНОСТИКА
+// ВКЛАДКА: МОЙ ПУТЬ
 // ─────────────────────────────────────────────────────────────────────────
-function renderDiagTab() {
+
+// Недели программы (для тепловой карты)
+const PROGRAM_WEEKS = [
+  { label: 'Н1', start: new Date('2026-03-19'), end: new Date('2026-03-25T23:59:59') },
+  { label: 'Н2', start: new Date('2026-03-26'), end: new Date('2026-04-01T23:59:59') },
+  { label: 'Н3', start: new Date('2026-04-02'), end: new Date('2026-04-08T23:59:59') },
+  { label: 'Н4', start: new Date('2026-04-09'), end: new Date('2026-04-15T23:59:59') },
+  { label: 'Н5', start: new Date('2026-04-16'), end: new Date('2026-04-30T23:59:59') },
+];
+
+function renderMyPathTab() {
   const container = document.getElementById('diag-tab-content');
   if (!container) return;
 
-  const saved = Storage.getDiagResult();
+  const entries = Storage.getDiaryEntries();
 
-  if (saved) {
-    // Показываем сохранённый результат
-    const p = DATA.patterns[saved.patternId];
-    if (!p) return;
-    const date = new Date(saved.date).toLocaleDateString('ru-RU', {
-      day:'numeric', month:'long', year:'numeric'
-    });
+  if (!entries.length) {
     container.innerHTML = `
-      <div class="diag-saved-result" style="background:${p.colorLight}; border-left:4px solid ${p.color}">
-        <div class="diag-saved-emoji">${p.emoji}</div>
-        <div class="diag-saved-name" style="color:${p.color}">${p.name}</div>
-        <div class="diag-saved-sub">${p.subtitle}</div>
-        <div class="diag-saved-date">Диагностика: ${date}</div>
-      </div>
-      <button class="btn btn--ghost btn--full btn--sm mb-16" id="diag-view-result-btn">
-        Посмотреть полный результат
-      </button>
-      <div class="section-label">Хотите пройти заново?</div>
-      <button class="btn btn--outline btn--full btn--sm" id="diag-retake-btn">
-        Пройти диагностику снова
-      </button>`;
-
-    document.getElementById('diag-view-result-btn')?.addEventListener('click', () => {
-      renderResultScreen(saved.patternId);
-      goTo('result');
-      haptic();
-    });
-    document.getElementById('diag-retake-btn')?.addEventListener('click', () => {
-      Storage.clearDiagResult();
-      renderDiagTab();
-      haptic();
-    });
-
-  } else {
-    // Показываем интро
-    container.innerHTML = `
-      <div class="diag-intro">
-        <div class="diag-intro-icon">🔍</div>
-        <div class="diag-intro-title">Найдите свой паттерн</div>
-        <div class="diag-intro-desc">
-          10 вопросов — и вы узнаете, какая телесная стратегия выживания управляет вашими реакциями
-        </div>
-        <div class="diag-intro-chips">
-          <span class="diag-chip">⏱ 2 минуты</span>
-          <span class="diag-chip">🔒 Анонимно</span>
-          <span class="diag-chip">🎯 4 паттерна</span>
-        </div>
-        <button class="btn btn--primary btn--full" id="diag-start-btn">
-          Начать диагностику
-        </button>
+      <div class="mypath-empty">
+        <div class="mypath-empty-icon">🌱</div>
+        <div class="mypath-empty-title">Путь только начинается</div>
+        <div class="mypath-empty-sub">Делай запись в дневник каждый день — и здесь появится карта твоего тела за все недели потока</div>
       </div>`;
-
-    document.getElementById('diag-start-btn')?.addEventListener('click', startDiagnostic);
+    return;
   }
+
+  container.innerHTML =
+    renderMirrorCard(entries) +
+    renderHeatmap(entries) +
+    renderTopSensations(entries) +
+    renderPathStats(entries);
+}
+
+// ─── Зеркало ──────────────────────────────────────────────────────────────
+function renderMirrorCard(entries) {
+  const week7ago = new Date();
+  week7ago.setDate(week7ago.getDate() - 7);
+  const recent = entries.filter(e => new Date(e.date) >= week7ago);
+
+  if (!recent.length) {
+    return `<div class="mirror-card mirror-card--empty">
+      <div class="mirror-label">Зеркало недели</div>
+      <div class="mirror-text">Нет записей за последние 7 дней — загляни в дневник сегодня</div>
+    </div>`;
+  }
+
+  // Самая частая зона
+  const zoneCounts = {};
+  recent.forEach(e => { zoneCounts[e.zone] = (zoneCounts[e.zone] || 0) + 1; });
+  const topZoneId = Object.entries(zoneCounts).sort((a,b) => b[1]-a[1])[0][0];
+  const topZone   = DATA.zones.find(z => z.id === topZoneId);
+
+  // Самое частое ощущение
+  const sensCounts = {};
+  recent.forEach(e => (e.sensations||[]).forEach(s => {
+    sensCounts[s] = (sensCounts[s] || 0) + 1;
+  }));
+  const topSensId = Object.keys(sensCounts).sort((a,b) => sensCounts[b]-sensCounts[a])[0];
+  const topSens   = DATA.sensations.find(s => s.id === topSensId);
+
+  const phrase = topSens
+    ? `На этой неделе тело чаще всего замечало <em>${topSens.label.toLowerCase()}</em> в области <em>«${topZone?.label.toLowerCase() || topZoneId}»</em>`
+    : `На этой неделе тело чаще всего обращалось к зоне <em>«${topZone?.label || topZoneId}»</em>`;
+
+  return `<div class="mirror-card">
+    <div class="mirror-label">Зеркало недели</div>
+    <div class="mirror-text">${phrase}</div>
+    <div class="mirror-count">${recent.length} ${pluralDays(recent.length)} с записями</div>
+  </div>`;
+}
+
+// ─── Тепловая карта ────────────────────────────────────────────────────────
+function renderHeatmap(entries) {
+  // Считаем: сколько раз каждая зона встречалась в каждой неделе
+  const grid = {}; // grid[zoneId][weekIdx] = count
+  DATA.zones.forEach(z => {
+    grid[z.id] = PROGRAM_WEEKS.map(() => 0);
+  });
+
+  entries.forEach(e => {
+    const d = new Date(e.date);
+    const wi = PROGRAM_WEEKS.findIndex(w => d >= w.start && d <= w.end);
+    if (wi >= 0 && grid[e.zone]) grid[e.zone][wi]++;
+  });
+
+  // Максимальное значение для нормализации
+  const allCounts = Object.values(grid).flat();
+  const maxCount  = Math.max(...allCounts, 1);
+
+  const weekHeaders = PROGRAM_WEEKS.map(w =>
+    `<div class="hm-week-label">${w.label}</div>`
+  ).join('');
+
+  const rows = DATA.zones.map(z => {
+    const cells = grid[z.id].map(count => {
+      const intensity = count === 0 ? 0 : Math.ceil((count / maxCount) * 4);
+      return `<div class="hm-cell hm-cell--${intensity}" title="${z.label}: ${count}">${count || ''}</div>`;
+    }).join('');
+    return `<div class="hm-row">
+      <div class="hm-zone-label">${z.label}</div>
+      ${cells}
+    </div>`;
+  }).join('');
+
+  return `<div class="section-label mt-16 mb-8">Тепловая карта зон</div>
+    <div class="heatmap-wrap">
+      <div class="hm-header">
+        <div class="hm-zone-label"></div>
+        ${weekHeaders}
+      </div>
+      ${rows}
+    </div>
+    <div class="hm-legend">
+      <span>меньше</span>
+      <div class="hm-cell hm-cell--0"></div>
+      <div class="hm-cell hm-cell--1"></div>
+      <div class="hm-cell hm-cell--2"></div>
+      <div class="hm-cell hm-cell--3"></div>
+      <div class="hm-cell hm-cell--4"></div>
+      <span>больше</span>
+    </div>`;
+}
+
+// ─── Топ ощущений ──────────────────────────────────────────────────────────
+function renderTopSensations(entries) {
+  const counts = {};
+  entries.forEach(e => (e.sensations||[]).forEach(s => {
+    counts[s] = (counts[s] || 0) + 1;
+  }));
+
+  const top = Object.entries(counts)
+    .sort((a,b) => b[1]-a[1])
+    .slice(0, 3)
+    .map(([id, count]) => {
+      const s = DATA.sensations.find(x => x.id === id);
+      return s ? { ...s, count } : null;
+    }).filter(Boolean);
+
+  if (!top.length) return '';
+
+  const total = entries.reduce((n, e) => n + (e.sensations||[]).length, 0) || 1;
+
+  const items = top.map((s, i) => {
+    const pct = Math.round((s.count / total) * 100);
+    return `<div class="tops-item">
+      <div class="tops-rank">${i+1}</div>
+      <div class="tops-emoji">${s.emoji}</div>
+      <div class="tops-info">
+        <div class="tops-label">${s.label}</div>
+        <div class="tops-bar-wrap">
+          <div class="tops-bar" style="width:${pct}%"></div>
+        </div>
+      </div>
+      <div class="tops-count">${s.count}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="section-label mt-16 mb-8">Топ ощущений за поток</div>
+    <div class="tops-list">${items}</div>`;
+}
+
+// ─── Статистика пути ───────────────────────────────────────────────────────
+function renderPathStats(entries) {
+  const uniqueDays = new Set(entries.map(e => new Date(e.date).toDateString())).size;
+  const now = new Date();
+  const pastMeetings = DATA.program.schedule.filter(m => {
+    const [y, mo, d] = m.date.split('-').map(Number);
+    const [h, min]   = m.time.split(':').map(Number);
+    return new Date(y, mo-1, d, h, min) <= now;
+  }).length;
+  const totalMeetings = DATA.program.schedule.length;
+
+  return `<div class="section-label mt-16 mb-8">Статистика потока</div>
+    <div class="path-stats">
+      <div class="path-stat">
+        <div class="path-stat-num">${uniqueDays}</div>
+        <div class="path-stat-label">дней в дневнике</div>
+      </div>
+      <div class="path-stat">
+        <div class="path-stat-num">${pastMeetings}<span class="path-stat-of">/${totalMeetings}</span></div>
+        <div class="path-stat-label">встреч позади</div>
+      </div>
+      <div class="path-stat">
+        <div class="path-stat-num">${Storage.getStreak()}</div>
+        <div class="path-stat-label">дней подряд</div>
+      </div>
+    </div>`;
+}
+
+// ─── Утилита: склонение ────────────────────────────────────────────────────
+function pluralDays(n) {
+  const mod = n % 100;
+  if (mod >= 11 && mod <= 14) return 'дней';
+  const m = n % 10;
+  if (m === 1) return 'день';
+  if (m >= 2 && m <= 4) return 'дня';
+  return 'дней';
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -646,8 +783,8 @@ function renderResultScreen(patternId) {
     }
     if (screenStack[screenStack.length-1] === 'home') screenStack.pop();
     goTo('home', true);
-    switchTab('diag');
-    renderDiagTab();
+    switchTab('diary');
+    renderDiaryTab();
     haptic();
   };
 }
