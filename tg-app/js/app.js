@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSensations();
   initNote();
   initSaved();
-  initDiagnostic();
+  // initDiagnostic — вопросы рендерятся динамически, отдельного init не нужно
   initProfile();
   initHistory();
 
