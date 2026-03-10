@@ -5,7 +5,8 @@ const KEYS = {
   DIARY:      'tp_diary_entries',   // массив записей дневника
   DIAG:       'tp_diag_result',     // результат диагностики
   ONBOARDING: 'tp_onboarding_done', // флаг завершения онбординга
-  OFFER_SEEN: 'tp_offer_seen'       // флаг показа оффера при первом открытии
+  OFFER_SEEN: 'tp_offer_seen',      // флаг показа оффера при первом открытии
+  ATTENDED:   'tp_attended'         // массив id посещённых встреч
 };
 
 const Storage = {
@@ -112,5 +113,28 @@ const Storage = {
 
   setOfferSeen() {
     localStorage.setItem(KEYS.OFFER_SEEN, 'true');
+  },
+
+  // ─── Посещаемость встреч ──────────────────────────────────────────────────
+
+  getAttended() {
+    try {
+      return JSON.parse(localStorage.getItem(KEYS.ATTENDED)) || [];
+    } catch {
+      return [];
+    }
+  },
+
+  /** Переключить отметку: была / не была. Возвращает новое состояние (true = отмечена) */
+  toggleAttended(meetingId) {
+    const list = this.getAttended();
+    const idx  = list.indexOf(meetingId);
+    if (idx >= 0) { list.splice(idx, 1); } else { list.push(meetingId); }
+    localStorage.setItem(KEYS.ATTENDED, JSON.stringify(list));
+    return idx < 0; // true = только что добавлена
+  },
+
+  isAttended(meetingId) {
+    return this.getAttended().includes(meetingId);
   }
 };

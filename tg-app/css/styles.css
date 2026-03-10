@@ -1250,69 +1250,108 @@ input, textarea { font-family: inherit; }
   margin-top: 8px;
 }
 
-/* ─── Тепловая карта ────────────────────────────────────────────────────── */
-.heatmap-wrap {
+/* ─── Тепловая карта (тело) ─────────────────────────────────────────────── */
+.hmap-wrap {
   background: var(--tg-secondary-bg);
   border-radius: var(--radius-md);
-  padding: 12px;
-  overflow-x: auto;
+  padding: 16px 12px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
 }
-.hm-header,
-.hm-row {
-  display: grid;
-  grid-template-columns: 68px repeat(5, 1fr);
-  gap: 4px;
+.hmap-svg-col {
+  flex-shrink: 0;
+  width: 90px;
+}
+.hmap-body-svg {
+  width: 90px;
+  height: auto;
+  display: block;
+}
+.hmap-labels-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 4px;
+}
+.hmap-row {
+  display: flex;
   align-items: center;
-  margin-bottom: 4px;
+  gap: 8px;
 }
-.hm-header { margin-bottom: 6px; }
-.hm-week-label {
+.hmap-zone-name {
   font-size: 11px;
-  font-weight: 600;
   color: var(--tg-hint);
-  text-align: center;
-}
-.hm-zone-label {
-  font-size: 11px;
-  color: var(--tg-text);
+  width: 68px;
+  flex-shrink: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.hm-cell {
-  aspect-ratio: 1;
-  border-radius: 4px;
+.hmap-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: rgba(42,74,56,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.hmap-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+.hmap-count {
+  font-size: 11px;
+  color: var(--tg-hint);
+  width: 16px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.hmap-count--active {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ─── Кнопка посещаемости ───────────────────────────────────────────────── */
+.schedule-item-wrap {
+  position: relative;
+}
+.schedule-item-wrap .schedule-item--past {
+  padding-right: 44px;
+}
+.attend-btn {
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(42,74,56,0.3);
+  background: var(--tg-bg);
+  color: var(--tg-hint);
+  font-size: 16px;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.attend-btn--on {
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
-  min-height: 28px;
-  transition: transform 0.15s;
 }
-.hm-cell--0 { background: rgba(42,74,56,0.07); color: transparent; }
-.hm-cell--1 { background: rgba(42,74,56,0.18); color: transparent; }
-.hm-cell--2 { background: rgba(42,74,56,0.38); }
-.hm-cell--3 { background: rgba(42,74,56,0.62); }
-.hm-cell--4 { background: rgba(42,74,56,0.88); }
-.hm-legend {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  justify-content: flex-end;
-  margin-top: 8px;
-  padding: 0 4px;
-}
-.hm-legend span {
-  font-size: 10px;
+.attend-hint {
+  font-size: 11px;
   color: var(--tg-hint);
-}
-.hm-legend .hm-cell {
-  min-height: 16px;
-  width: 16px;
-  border-radius: 3px;
-  aspect-ratio: unset;
+  text-align: center;
+  margin-top: 4px;
+  font-style: italic;
 }
 
 /* ─── Топ ощущений ──────────────────────────────────────────────────────── */

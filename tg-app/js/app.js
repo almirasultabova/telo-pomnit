@@ -556,55 +556,104 @@ function renderMirrorCard(entries) {
   </div>`;
 }
 
-// ─── Тепловая карта ────────────────────────────────────────────────────────
+// ─── Тепловая карта — силуэт тела ──────────────────────────────────────────
 function renderHeatmap(entries) {
-  // Считаем: сколько раз каждая зона встречалась в каждой неделе
-  const grid = {}; // grid[zoneId][weekIdx] = count
-  DATA.zones.forEach(z => {
-    grid[z.id] = PROGRAM_WEEKS.map(() => 0);
-  });
+  // Подсчёт по зонам за весь поток
+  const counts = {};
+  DATA.zones.forEach(z => { counts[z.id] = 0; });
+  entries.forEach(e => { if (counts[e.zone] !== undefined) counts[e.zone]++; });
+  const maxCount = Math.max(...Object.values(counts), 1);
 
-  entries.forEach(e => {
-    const d = new Date(e.date);
-    const wi = PROGRAM_WEEKS.findIndex(w => d >= w.start && d <= w.end);
-    if (wi >= 0 && grid[e.zone]) grid[e.zone][wi]++;
-  });
+  // Цвет зоны: от прозрачного к тёмно-зелёному
+  function heatFill(zoneId) {
+    const c = counts[zoneId] || 0;
+    if (c === 0) return 'rgba(42,74,56,0.06)';
+    const t = c / maxCount;
+    // 3 градации: светло → средне → насыщенно
+    if (t < 0.35) return 'rgba(42,74,56,0.25)';
+    if (t < 0.65) return 'rgba(42,74,56,0.52)';
+    return 'rgba(42,74,56,0.82)';
+  }
+  function heatStroke(zoneId) {
+    const c = counts[zoneId] || 0;
+    return c > 0 ? 'rgba(42,74,56,0.9)' : 'rgba(42,74,56,0.15)';
+  }
 
-  // Максимальное значение для нормализации
-  const allCounts = Object.values(grid).flat();
-  const maxCount  = Math.max(...allCounts, 1);
+  // SVG: каждая часть тела — отдельная форма со своим цветом
+  // Зоны:
+  //  eyes       → верхняя часть головы
+  //  jaw        → нижняя часть головы
+  //  throat     → шея
+  //  chest      → верхняя часть туловища
+  //  diaphragm  → средняя часть туловища
+  //  belly      → нижняя часть туловища
+  //  pelvis     → таз
+  const svg = `<svg viewBox="0 0 100 230" xmlns="http://www.w3.org/2000/svg" class="hmap-body-svg">
+    <defs>
+      <clipPath id="head-upper"><rect x="0" y="0" width="100" height="26"/></clipPath>
+      <clipPath id="head-lower"><rect x="0" y="26" width="100" height="30"/></clipPath>
+    </defs>
 
-  const weekHeaders = PROGRAM_WEEKS.map(w =>
-    `<div class="hm-week-label">${w.label}</div>`
-  ).join('');
+    <!-- Руки (фон) -->
+    <rect x="10" y="54" width="16" height="62" rx="8"
+      fill="${heatFill('chest')}" stroke="${heatStroke('chest')}" stroke-width="0.5" opacity="0.5"/>
+    <rect x="74" y="54" width="16" height="62" rx="8"
+      fill="${heatFill('chest')}" stroke="${heatStroke('chest')}" stroke-width="0.5" opacity="0.5"/>
 
-  const rows = DATA.zones.map(z => {
-    const cells = grid[z.id].map(count => {
-      const intensity = count === 0 ? 0 : Math.ceil((count / maxCount) * 4);
-      return `<div class="hm-cell hm-cell--${intensity}" title="${z.label}: ${count}">${count || ''}</div>`;
-    }).join('');
-    return `<div class="hm-row">
-      <div class="hm-zone-label">${z.label}</div>
-      ${cells}
+    <!-- Ноги (фон) -->
+    <rect x="26" y="152" width="20" height="72" rx="10"
+      fill="${heatFill('pelvis')}" stroke="${heatStroke('pelvis')}" stroke-width="0.5" opacity="0.5"/>
+    <rect x="54" y="152" width="20" height="72" rx="10"
+      fill="${heatFill('pelvis')}" stroke="${heatStroke('pelvis')}" stroke-width="0.5" opacity="0.5"/>
+
+    <!-- Таз -->
+    <rect x="22" y="130" width="56" height="26" rx="10"
+      fill="${heatFill('pelvis')}" stroke="${heatStroke('pelvis')}" stroke-width="0.8"/>
+
+    <!-- Живот -->
+    <rect x="24" y="106" width="52" height="28" rx="4"
+      fill="${heatFill('belly')}" stroke="${heatStroke('belly')}" stroke-width="0.8"/>
+
+    <!-- Диафрагма -->
+    <rect x="24" y="82" width="52" height="28" rx="4"
+      fill="${heatFill('diaphragm')}" stroke="${heatStroke('diaphragm')}" stroke-width="0.8"/>
+
+    <!-- Грудь -->
+    <rect x="24" y="54" width="52" height="32" rx="4"
+      fill="${heatFill('chest')}" stroke="${heatStroke('chest')}" stroke-width="0.8"/>
+
+    <!-- Шея / горло -->
+    <rect x="40" y="40" width="20" height="18" rx="5"
+      fill="${heatFill('throat')}" stroke="${heatStroke('throat')}" stroke-width="0.8"/>
+
+    <!-- Голова верх (глаза) -->
+    <path d="M50,6 a22,22 0 0,1 0,44 a22,22 0 0,1 0,-44"
+      clip-path="url(#head-upper)"
+      fill="${heatFill('eyes')}" stroke="${heatStroke('eyes')}" stroke-width="0.8"/>
+
+    <!-- Голова низ (челюсть) -->
+    <path d="M50,6 a22,22 0 0,1 0,44 a22,22 0 0,1 0,-44"
+      clip-path="url(#head-lower)"
+      fill="${heatFill('jaw')}" stroke="${heatStroke('jaw')}" stroke-width="0.8"/>
+  </svg>`;
+
+  // Список зон с барами справа
+  const labels = DATA.zones.map(z => {
+    const c = counts[z.id];
+    const barW = Math.round((c / maxCount) * 100);
+    return `<div class="hmap-row">
+      <div class="hmap-zone-name">${z.label}</div>
+      <div class="hmap-bar-wrap">
+        <div class="hmap-bar" style="width:${barW}%"></div>
+      </div>
+      <div class="hmap-count ${c > 0 ? 'hmap-count--active' : ''}">${c || '—'}</div>
     </div>`;
   }).join('');
 
-  return `<div class="section-label mt-16 mb-8">Тепловая карта зон</div>
-    <div class="heatmap-wrap">
-      <div class="hm-header">
-        <div class="hm-zone-label"></div>
-        ${weekHeaders}
-      </div>
-      ${rows}
-    </div>
-    <div class="hm-legend">
-      <span>меньше</span>
-      <div class="hm-cell hm-cell--0"></div>
-      <div class="hm-cell hm-cell--1"></div>
-      <div class="hm-cell hm-cell--2"></div>
-      <div class="hm-cell hm-cell--3"></div>
-      <div class="hm-cell hm-cell--4"></div>
-      <span>больше</span>
+  return `<div class="section-label mt-16 mb-8">Карта напряжений за поток</div>
+    <div class="hmap-wrap">
+      <div class="hmap-svg-col">${svg}</div>
+      <div class="hmap-labels-col">${labels}</div>
     </div>`;
 }
 
@@ -648,13 +697,8 @@ function renderTopSensations(entries) {
 
 // ─── Статистика пути ───────────────────────────────────────────────────────
 function renderPathStats(entries) {
-  const uniqueDays = new Set(entries.map(e => new Date(e.date).toDateString())).size;
-  const now = new Date();
-  const pastMeetings = DATA.program.schedule.filter(m => {
-    const [y, mo, d] = m.date.split('-').map(Number);
-    const [h, min]   = m.time.split(':').map(Number);
-    return new Date(y, mo-1, d, h, min) <= now;
-  }).length;
+  const uniqueDays    = new Set(entries.map(e => new Date(e.date).toDateString())).size;
+  const attendedCount = Storage.getAttended().length;
   const totalMeetings = DATA.program.schedule.length;
 
   return `<div class="section-label mt-16 mb-8">Статистика потока</div>
@@ -664,8 +708,8 @@ function renderPathStats(entries) {
         <div class="path-stat-label">дней в дневнике</div>
       </div>
       <div class="path-stat">
-        <div class="path-stat-num">${pastMeetings}<span class="path-stat-of">/${totalMeetings}</span></div>
-        <div class="path-stat-label">встреч позади</div>
+        <div class="path-stat-num">${attendedCount}<span class="path-stat-of">/${totalMeetings}</span></div>
+        <div class="path-stat-label">встреч посещено</div>
       </div>
       <div class="path-stat">
         <div class="path-stat-num">${Storage.getStreak()}</div>
@@ -883,22 +927,41 @@ function renderSchedule() {
 
   const items = DATA.program.schedule.map(m => {
     const [y, mo, d] = m.date.split('-').map(Number);
-    const [h, min] = m.time.split(':').map(Number);
-    const isPast = new Date(y, mo - 1, d, h, min) < now;
-    const dateStr = `${d} ${monthNames[mo - 1]}`;
-    return `<button class="schedule-item ${isPast ? 'schedule-item--past' : ''}" onclick="showMeetingDetail(${m.id})">
-      <div class="schedule-item-left">
-        <div class="schedule-item-date">${dateStr} · ${m.time}</div>
-        <div class="schedule-item-type">${m.type}</div>
-        ${m.practice ? `<div class="schedule-item-practice">${m.practice}</div>` : ''}
-      </div>
-      <svg class="schedule-item-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-    </button>`;
+    const [h, min]   = m.time.split(':').map(Number);
+    const isPast     = new Date(y, mo - 1, d, h, min) < now;
+    const isAttended = Storage.isAttended(m.id);
+    const dateStr    = `${d} ${monthNames[mo - 1]}`;
+
+    const attendBtn = isPast ? `
+      <button class="attend-btn ${isAttended ? 'attend-btn--on' : ''}"
+        onclick="toggleAttend(event,${m.id})">${isAttended ? '✓' : '+'}</button>` : '';
+
+    return `<div class="schedule-item-wrap">
+      <button class="schedule-item ${isPast ? 'schedule-item--past' : ''} ${isAttended ? 'schedule-item--attended' : ''}"
+        onclick="showMeetingDetail(${m.id})">
+        <div class="schedule-item-left">
+          <div class="schedule-item-date">${dateStr} · ${m.time}</div>
+          <div class="schedule-item-type">${m.type}</div>
+          ${m.practice ? `<div class="schedule-item-practice">${m.practice}</div>` : ''}
+        </div>
+        <svg class="schedule-item-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>${attendBtn}
+    </div>`;
   }).join('');
 
   container.innerHTML = `
-    <div class="section-label mt-16 mb-8">Расписание встреч</div>
+    <div class="section-label mt-16 mb-4">Расписание встреч</div>
+    <div class="attend-hint">Нажми + после встречи, чтобы отметить присутствие</div>
     <div class="schedule-list">${items}</div>`;
+}
+
+function toggleAttend(event, meetingId) {
+  event.stopPropagation();
+  const wasAdded = Storage.toggleAttended(meetingId);
+  haptic(wasAdded ? 'medium' : 'light');
+  if (wasAdded) hapticNotify('success');
+  renderSchedule();
+  if (activeTab === 'diag') renderMyPathTab();
 }
 
 function showMeetingDetail(id) {
