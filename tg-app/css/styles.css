@@ -754,6 +754,84 @@ input, textarea { font-family: inherit; }
 .stat-box-num   { font-size: 24px; font-weight: 800; color: var(--accent); line-height: 1; }
 .stat-box-label { font-size: 11px; color: var(--tg-hint); margin-top: 4px; }
 
+/* ─── Следующая встреча ──────────────────────────────────────────────────── */
+.next-meeting-card {
+  background: linear-gradient(135deg, var(--accent), var(--green-dark));
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  color: #fff;
+}
+.next-meeting-card--done {
+  background: var(--tg-secondary-bg);
+  color: var(--tg-text);
+}
+.next-meeting-label {
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: .7;
+  margin-bottom: 6px;
+}
+.next-meeting-title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+.next-meeting-date {
+  font-size: 14px;
+  opacity: .9;
+  margin-bottom: 4px;
+}
+.next-meeting-week {
+  font-size: 12px;
+  opacity: .75;
+}
+
+/* ─── Расписание встреч ───────────────────────────────────────────────────── */
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.schedule-item {
+  background: var(--tg-secondary-bg);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-left: 3px solid var(--accent);
+}
+.schedule-item--past {
+  opacity: .45;
+  border-left-color: var(--card-border);
+}
+.schedule-item-date {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tg-text);
+}
+.schedule-item-type {
+  font-size: 12px;
+  color: var(--tg-hint);
+}
+.schedule-item-week {
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: .05em;
+}
+
+/* ─── Zoom pending ───────────────────────────────────────────────────────── */
+.zoom-pending {
+  font-size: 13px;
+  color: var(--tg-hint);
+  text-align: center;
+  padding: 10px 0;
+}
+
 .host-card-mini {
   display: flex;
   align-items: center;

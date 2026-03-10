@@ -226,12 +226,33 @@ const DATA = {
     title: '«Тело помнит»',
     subtitle: 'Интегративная терапевтическая группа',
     weeks: 5,
-    meetings: 9,
+    meetings: 8,
     format: 'Zoom + закрытый чат',
     nextStart: '19 марта 2026',
-    price: '12 000 ₽',
-    priceFull: '15 000 ₽',
-    landingUrl: 'https://almirasultabova.github.io/telo-pomnit/landing_final.html',
+    chatUrl: 'https://t.me/+qisOszyOlP4xZGMy',
+    zoomUrl: null, // добавить постоянную ссылку Zoom когда появится
+
+    // 5 недель программы
+    weekTopics: [
+      { num: 1, title: 'Тело и безопасность',    dates: '19–22 марта' },
+      { num: 2, title: 'Паттерны и стратегии',   dates: '26–29 марта' },
+      { num: 3, title: 'Точка выбора',            dates: '2–5 апреля' },
+      { num: 4, title: 'Новый телесный опыт',     dates: '9–12 апреля' },
+      { num: 5, title: 'Интеграция и жизнь',      dates: 'финальная' }
+    ],
+
+    // Расписание встреч (ISO-дата, 24ч время)
+    schedule: [
+      { id: 1, date: '2026-03-19', time: '18:00', type: 'Психосоматический разбор', week: 1 },
+      { id: 2, date: '2026-03-22', time: '11:00', type: 'Телесная практика',         week: 1 },
+      { id: 3, date: '2026-03-26', time: '18:00', type: 'Психосоматический разбор', week: 2 },
+      { id: 4, date: '2026-03-29', time: '11:00', type: 'Телесная практика',         week: 2 },
+      { id: 5, date: '2026-04-02', time: '18:00', type: 'Психосоматический разбор', week: 3 },
+      { id: 6, date: '2026-04-05', time: '11:00', type: 'Телесная практика',         week: 3 },
+      { id: 7, date: '2026-04-09', time: '18:00', type: 'Психосоматический разбор', week: 4 },
+      { id: 8, date: '2026-04-12', time: '11:00', type: 'Телесная практика',         week: 4 }
+    ],
+
     hosts: [
       {
         name: 'Анастасия Хорошавцева',

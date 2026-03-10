@@ -655,6 +655,103 @@ function initProfile() {}
 function renderProfileTab() {
   renderUserCard();
   renderStats();
+  renderNextMeeting();
+  renderZoomBtn();
+  renderSchedule();
+  renderHosts();
+}
+
+function renderNextMeeting() {
+  const container = document.getElementById('next-meeting-card');
+  if (!container) return;
+
+  const now = new Date();
+  const next = DATA.program.schedule.find(m => {
+    const [y, mo, d] = m.date.split('-').map(Number);
+    const [h, min] = m.time.split(':').map(Number);
+    return new Date(y, mo - 1, d, h, min) > now;
+  });
+
+  if (!next) {
+    container.innerHTML = `<div class="next-meeting-card next-meeting-card--done">
+      <div class="next-meeting-label">Программа завершена</div>
+      <div class="next-meeting-title">Спасибо за работу 🌿</div>
+    </div>`;
+    return;
+  }
+
+  const weekTopic = DATA.program.weekTopics.find(w => w.num === next.week);
+  const dateObj = new Date(next.date + 'T' + next.time);
+  const dayNames = ['вс','пн','вт','ср','чт','пт','сб'];
+  const monthNames = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  const dayName = dayNames[dateObj.getDay()];
+  const dateStr = `${dateObj.getDate()} ${monthNames[dateObj.getMonth()]}`;
+
+  container.innerHTML = `
+    <div class="next-meeting-card">
+      <div class="next-meeting-label">Следующая встреча</div>
+      <div class="next-meeting-title">${next.type}</div>
+      <div class="next-meeting-date">📅 ${dayName}, ${dateStr} · ${next.time}</div>
+      ${weekTopic ? `<div class="next-meeting-week">Неделя ${next.week} — ${weekTopic.title}</div>` : ''}
+    </div>`;
+}
+
+function renderZoomBtn() {
+  const container = document.getElementById('zoom-btn-wrap');
+  if (!container) return;
+
+  const zoomUrl = DATA.program.zoomUrl;
+  if (zoomUrl) {
+    container.innerHTML = `<button class="btn btn--outline btn--full mb-16" data-ext-link="${zoomUrl}">
+      🎥 Войти в Zoom
+    </button>`;
+  } else {
+    container.innerHTML = `<div class="zoom-pending mb-16">
+      🎥 Ссылка на Zoom появится перед встречей
+    </div>`;
+  }
+}
+
+function renderSchedule() {
+  const container = document.getElementById('schedule-section');
+  if (!container) return;
+
+  const now = new Date();
+  const monthNames = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+
+  const items = DATA.program.schedule.map(m => {
+    const [y, mo, d] = m.date.split('-').map(Number);
+    const [h, min] = m.time.split(':').map(Number);
+    const isPast = new Date(y, mo - 1, d, h, min) < now;
+    const dateStr = `${d} ${monthNames[mo - 1]}`;
+    const weekTopic = DATA.program.weekTopics.find(w => w.num === m.week);
+    return `<div class="schedule-item ${isPast ? 'schedule-item--past' : ''}">
+      <div class="schedule-item-date">${dateStr} · ${m.time}</div>
+      <div class="schedule-item-type">${m.type}</div>
+      ${weekTopic ? `<div class="schedule-item-week">Неделя ${m.week}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="section-label mt-16 mb-8">Расписание встреч</div>
+    <div class="schedule-list">${items}</div>`;
+}
+
+function renderHosts() {
+  const container = document.getElementById('hosts-list');
+  if (!container) return;
+
+  container.innerHTML = DATA.program.hosts.map(h => `
+    <div class="host-card-mini">
+      <div class="host-avatar-mini">${h.initial}</div>
+      <div>
+        <div class="host-name-mini">${h.name}</div>
+        <div class="host-role-mini">${h.role}</div>
+      </div>
+      <a class="host-tg-link" data-tg-link="${h.tg}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </a>
+    </div>`).join('');
 }
 
 function renderUserCard() {
@@ -726,7 +823,7 @@ function showOfferModal() {
   document.getElementById('offer-subscribe-btn').addEventListener('click', () => {
     Storage.setOfferSeen();
     closeOfferModal();
-    const url = 'https://t.me/body_remembers_bot?start=from_app';
+    const url = DATA.program.chatUrl;
     tg?.openTelegramLink?.(url) || window.open(url, '_blank');
     haptic('medium');
   });

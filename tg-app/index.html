@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#2AABEE">
+  <meta name="theme-color" content="#2a4a38">
   <title>Тело помнит</title>
 
   <!-- Telegram Web App SDK — обязательно первым -->
@@ -81,7 +81,7 @@
     <!-- ─── ВКЛАДКА: ПРОФИЛЬ ───────────────────────────────────────── -->
     <div class="tab-pane" id="tab-profile">
       <div class="screen-header">
-        <div class="screen-title">Профиль</div>
+        <div class="screen-title">Мой поток</div>
       </div>
       <div class="screen-scroll screen-scroll--no-bottom" style="padding-bottom: calc(var(--nav-height) + 16px)">
 
@@ -91,55 +91,23 @@
         <!-- Статистика (динамическая) -->
         <div class="profile-stats" id="profile-stats"></div>
 
-        <!-- Программа -->
-        <div class="program-card">
-          <div class="program-card-title">«Тело помнит»</div>
-          <div class="program-card-sub">Интегративная терапевтическая группа</div>
-          <div class="program-card-meta">
-            <span>📅 5 недель</span>
-            <span>🎥 9 встреч в Zoom</span>
-            <span>🔒 Закрытый чат</span>
-          </div>
-          <button class="btn btn--white btn--full btn--sm"
-            data-ext-link="https://almirasultabova.github.io/telo-pomnit/landing_final.html"
-            style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.4)">
-            Открыть лендинг →
-          </button>
-        </div>
+        <!-- Следующая встреча (динамическая) -->
+        <div id="next-meeting-card"></div>
+
+        <!-- Кнопки доступа -->
+        <div class="section-label mb-8">Доступ</div>
+        <button class="btn btn--primary btn--full mb-8" id="chat-btn"
+          data-tg-link="https://t.me/+qisOszyOlP4xZGMy">
+          💬 Войти в групповой чат
+        </button>
+        <div id="zoom-btn-wrap"></div>
+
+        <!-- Расписание (динамическое) -->
+        <div id="schedule-section"></div>
 
         <!-- Ведущие -->
-        <div class="section-label mb-8">Ведущие</div>
-        <div class="host-card-mini">
-          <div class="host-avatar-mini">А</div>
-          <div>
-            <div class="host-name-mini">Анастасия Хорошавцева</div>
-            <div class="host-role-mini">Психосоматика · Телесная терапия</div>
-          </div>
-          <a class="host-tg-link" data-tg-link="https://t.me/akhoroshavtseva">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </a>
-        </div>
-        <div class="host-card-mini">
-          <div class="host-avatar-mini">А</div>
-          <div>
-            <div class="host-name-mini">Альмира Султанова</div>
-            <div class="host-role-mini">Коуч · Внедрение изменений</div>
-          </div>
-          <a class="host-tg-link" data-tg-link="https://t.me/Almira_Sultanova">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </a>
-        </div>
-
-        <!-- Участие -->
-        <div class="section-label mt-16 mb-8">Записаться на программу</div>
-        <button class="btn btn--primary btn--full"
-          data-ext-link="https://www.sberbank.com/sms/pbpn?requisiteNumber=79177856422">
-          Оплатить участие — 12 000 ₽
-        </button>
-        <button class="btn btn--outline btn--full mt-8"
-          data-tg-link="https://t.me/akhoroshavtseva">
-          Задать вопрос в Telegram
-        </button>
+        <div class="section-label mt-16 mb-8">Ведущие</div>
+        <div id="hosts-list"></div>
 
       </div>
     </div>
@@ -407,17 +375,16 @@
   <div class="modal-overlay" id="offer-modal" hidden>
     <div class="offer-card">
       <div class="offer-emoji">🌿</div>
-      <h2 class="offer-title">Будьте на связи с программой</h2>
-      <p class="offer-sub">Подпишитесь на бота — он поможет вам не потерять контакт с телом между сессиями</p>
+      <h2 class="offer-title">Добро пожаловать в поток</h2>
+      <p class="offer-sub">Рады, что вы с нами. Здесь — ваш дневник тела и всё, что нужно для работы между встречами</p>
       <ul class="offer-bullets">
-        <li>Напоминания перед каждой встречей</li>
-        <li>Короткие практики в течение недели</li>
-        <li>Важные материалы и расписание группы</li>
+        <li>Первая встреча — 19 марта в 18:00</li>
+        <li>Дневник открывается каждый день</li>
+        <li>Расписание и чат — во вкладке «Мой поток»</li>
       </ul>
-      <a class="btn btn--accent btn--full offer-btn"
-         href="https://t.me/body_remembers_bot?start=from_app"
-         id="offer-subscribe-btn">Подписаться на бота</a>
-      <button class="offer-skip" id="offer-skip-btn">Пропустить</button>
+      <button class="btn btn--accent btn--full offer-btn"
+         id="offer-subscribe-btn">Войти в групповой чат</button>
+      <button class="offer-skip" id="offer-skip-btn">Закрыть</button>
     </div>
   </div>
 
