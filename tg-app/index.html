@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2AABEE">
+  <title>Тело помнит</title>
+
+  <!-- Telegram Web App SDK — обязательно первым -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН 1: СПЛЭШ
+       Показывается 1.6 секунды при запуске
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen screen--active" id="screen-splash">
+    <div class="splash-wrap">
+      <div class="splash-icon">🫀</div>
+      <h1 class="splash-title">Тело помнит</h1>
+      <p class="splash-sub">Интегративная телесная терапия</p>
+      <div class="splash-loader">
+        <div class="splash-loader-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН 2: ГЛАВНЫЙ (три вкладки)
+       diary / diag / profile — переключаются bottom nav
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-home">
+
+    <!-- ─── ВКЛАДКА: ДНЕВНИК ──────────────────────────────────────── -->
+    <div class="tab-pane tab-pane--active" id="tab-diary">
+      <div class="screen-header">
+        <div class="screen-title">Дневник тела</div>
+        <div class="screen-sub">Ежедневный контакт с собой</div>
+      </div>
+      <div class="screen-scroll screen-scroll--no-bottom" style="padding-bottom: calc(var(--nav-height) + 16px)">
+
+        <!-- Стрик -->
+        <div class="streak-hero">
+          <div class="streak-flame">🔥</div>
+          <div class="streak-info">
+            <div class="streak-num" id="streak-num">0</div>
+            <div class="streak-days" id="streak-days-sub">дней подряд</div>
+          </div>
+        </div>
+
+        <!-- Карточка сегодняшней записи (динамическая) -->
+        <div id="today-card" class="today-card"></div>
+
+        <!-- Кнопка истории -->
+        <button class="btn btn--ghost btn--full btn--sm mb-16" id="diary-history-btn">
+          📖 История записей
+        </button>
+
+        <!-- Последние записи -->
+        <div class="section-label">Последние записи</div>
+        <div id="recent-entries"></div>
+
+      </div>
+    </div>
+
+    <!-- ─── ВКЛАДКА: ДИАГНОСТИКА ───────────────────────────────────── -->
+    <div class="tab-pane" id="tab-diag">
+      <div class="screen-header">
+        <div class="screen-title">Диагностика</div>
+        <div class="screen-sub">Найдите свой паттерн выживания</div>
+      </div>
+      <div class="screen-scroll screen-scroll--no-bottom" style="padding-bottom: calc(var(--nav-height) + 16px)" id="diag-tab-content">
+        <!-- Динамически: интро или сохранённый результат -->
+      </div>
+    </div>
+
+    <!-- ─── ВКЛАДКА: ПРОФИЛЬ ───────────────────────────────────────── -->
+    <div class="tab-pane" id="tab-profile">
+      <div class="screen-header">
+        <div class="screen-title">Профиль</div>
+      </div>
+      <div class="screen-scroll screen-scroll--no-bottom" style="padding-bottom: calc(var(--nav-height) + 16px)">
+
+        <!-- Карточка пользователя (динамическая) -->
+        <div class="profile-user" id="profile-user-card"></div>
+
+        <!-- Статистика (динамическая) -->
+        <div class="profile-stats" id="profile-stats"></div>
+
+        <!-- Программа -->
+        <div class="program-card">
+          <div class="program-card-title">«Тело помнит»</div>
+          <div class="program-card-sub">Интегративная терапевтическая группа</div>
+          <div class="program-card-meta">
+            <span>📅 5 недель</span>
+            <span>🎥 9 встреч в Zoom</span>
+            <span>🔒 Закрытый чат</span>
+          </div>
+          <button class="btn btn--white btn--full btn--sm"
+            data-ext-link="https://almirasultabova.github.io/telo-pomnit/landing_final.html"
+            style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.4)">
+            Открыть лендинг →
+          </button>
+        </div>
+
+        <!-- Ведущие -->
+        <div class="section-label mb-8">Ведущие</div>
+        <div class="host-card-mini">
+          <div class="host-avatar-mini">А</div>
+          <div>
+            <div class="host-name-mini">Анастасия Хорошавцева</div>
+            <div class="host-role-mini">Психосоматика · Телесная терапия</div>
+          </div>
+          <a class="host-tg-link" data-tg-link="https://t.me/akhoroshavtseva">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </a>
+        </div>
+        <div class="host-card-mini">
+          <div class="host-avatar-mini">А</div>
+          <div>
+            <div class="host-name-mini">Альмира Султанова</div>
+            <div class="host-role-mini">Коуч · Внедрение изменений</div>
+          </div>
+          <a class="host-tg-link" data-tg-link="https://t.me/Almira_Sultanova">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </a>
+        </div>
+
+        <!-- Участие -->
+        <div class="section-label mt-16 mb-8">Записаться на программу</div>
+        <button class="btn btn--primary btn--full"
+          data-ext-link="https://www.sberbank.com/sms/pbpn?requisiteNumber=79177856422">
+          Оплатить участие — 12 000 ₽
+        </button>
+        <button class="btn btn--outline btn--full mt-8"
+          data-tg-link="https://t.me/akhoroshavtseva">
+          Задать вопрос в Telegram
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ─── НИЖНЯЯ НАВИГАЦИЯ ───────────────────────────────────────── -->
+    <nav class="bottom-nav">
+      <button class="nav-btn nav-btn--active" data-tab="diary">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        <span>Дневник</span>
+      </button>
+      <button class="nav-btn" data-tab="diag">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <span>Диагностика</span>
+      </button>
+      <button class="nav-btn" data-tab="profile">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>Профиль</span>
+      </button>
+    </nav>
+
+  </div><!-- /screen-home -->
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН 3: КАРТА ТЕЛА
+       Выбор зоны по поясам Райха
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-body-map">
+    <div class="screen-header">
+      <div class="screen-title">Выберите зону</div>
+      <div class="screen-sub">Где ощущается напряжение сегодня?</div>
+    </div>
+    <div class="screen-scroll">
+
+      <div class="body-map-layout">
+        <!-- SVG силуэт тела с маркерами зон -->
+        <div class="body-map-svg-col">
+          <svg viewBox="0 0 80 270" class="body-svg" xmlns="http://www.w3.org/2000/svg">
+            <!-- Силуэт (декоративный) -->
+            <g class="body-silhouette">
+              <circle cx="40" cy="22" r="16"/>
+              <rect x="34" y="37" width="12" height="10" rx="3"/>
+              <rect x="18" y="46" width="14" height="58" rx="7"/>
+              <rect x="48" y="46" width="14" height="58" rx="7"/>
+              <rect x="20" y="46" width="40" height="68" rx="8"/>
+              <rect x="18" y="112" width="44" height="20" rx="7"/>
+              <rect x="20" y="130" width="17" height="80" rx="8"/>
+              <rect x="43" y="130" width="17" height="80" rx="8"/>
+            </g>
+            <!-- Маркеры зон (data-zone совпадает с id в DATA.zones) -->
+            <circle class="zone-marker" data-zone="eyes"       cx="40" cy="16" r="7"/>
+            <circle class="zone-marker" data-zone="jaw"        cx="40" cy="30" r="7"/>
+            <circle class="zone-marker" data-zone="throat"     cx="40" cy="44" r="7"/>
+            <circle class="zone-marker" data-zone="chest"      cx="40" cy="65" r="7"/>
+            <circle class="zone-marker" data-zone="diaphragm"  cx="40" cy="84" r="7"/>
+            <circle class="zone-marker" data-zone="belly"      cx="40" cy="102" r="7"/>
+            <circle class="zone-marker" data-zone="pelvis"     cx="40" cy="122" r="7"/>
+          </svg>
+        </div>
+
+        <!-- Кнопки выбора зоны -->
+        <div class="zone-buttons-col">
+          <button class="zone-btn" data-zone="eyes">
+            <span class="zone-btn-name">Глаза</span>
+            <span class="zone-btn-sub">Область глаз и лба</span>
+          </button>
+          <button class="zone-btn" data-zone="jaw">
+            <span class="zone-btn-name">Челюсть</span>
+            <span class="zone-btn-sub">Челюсть и рот</span>
+          </button>
+          <button class="zone-btn" data-zone="throat">
+            <span class="zone-btn-name">Горло</span>
+            <span class="zone-btn-sub">Горло и шея</span>
+          </button>
+          <button class="zone-btn" data-zone="chest">
+            <span class="zone-btn-name">Грудь</span>
+            <span class="zone-btn-sub">Грудная клетка</span>
+          </button>
+          <button class="zone-btn" data-zone="diaphragm">
+            <span class="zone-btn-name">Диафрагма</span>
+            <span class="zone-btn-sub">Область под грудью</span>
+          </button>
+          <button class="zone-btn" data-zone="belly">
+            <span class="zone-btn-name">Живот</span>
+            <span class="zone-btn-sub">Живот и поясница</span>
+          </button>
+          <button class="zone-btn" data-zone="pelvis">
+            <span class="zone-btn-name">Таз</span>
+            <span class="zone-btn-sub">Таз и основание</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Инфо-карточка выбранной зоны (скрыта по умолчанию) -->
+      <div class="zone-info-card hidden" id="zone-info-card">
+        <div class="zone-info-name" id="zone-info-name"></div>
+        <div class="zone-info-desc" id="zone-info-desc"></div>
+      </div>
+
+    </div>
+    <div class="screen-bottom">
+      <button class="btn btn--primary btn--full" id="zone-continue-btn" disabled>
+        Продолжить
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН 4: ОЩУЩЕНИЯ
+       Мультиселект ощущений в выбранной зоне
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-sensations">
+    <div class="screen-header">
+      <div class="screen-title">Что ощущаете?</div>
+      <div>
+        <span class="sensations-zone-chip">
+          📍 <span id="sensations-zone-label">—</span>
+        </span>
+      </div>
+    </div>
+    <div class="screen-scroll">
+      <div class="section-label mb-8">Выберите одно или несколько</div>
+      <div class="sensations-grid" id="sensations-grid">
+        <!-- Рендерится в app.js -->
+      </div>
+    </div>
+    <div class="screen-bottom">
+      <button class="btn btn--primary btn--full" id="sensations-continue-btn" disabled>
+        Продолжить
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН 5: ЗАМЕТКА
+       Необязательное текстовое поле
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-note">
+    <div class="screen-header">
+      <div class="screen-title">Заметка</div>
+      <div class="screen-sub">Необязательно — что вы замечаете прямо сейчас?</div>
+    </div>
+    <div class="screen-scroll">
+      <textarea
+        class="note-textarea"
+        id="note-textarea"
+        placeholder="Что происходит в теле? Какие образы, слова или воспоминания приходят..."
+        rows="6"
+      ></textarea>
+      <p class="note-hint mt-8">Эта запись видна только вам</p>
+    </div>
+    <div class="screen-bottom">
+      <button class="btn btn--primary btn--full" id="note-save-btn">
+        Сохранить запись
+      </button>
+      <button class="btn btn--ghost btn--full" id="note-skip-btn">
+        Пропустить
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН 6: СОХРАНЕНО
+       Подтверждение после сохранения записи
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-saved">
+    <div class="saved-wrap">
+      <div class="saved-circle">✓</div>
+      <h2 class="saved-title">Запись сохранена</h2>
+      <p class="saved-sub">Хорошая работа — контакт с телом замечен</p>
+      <div class="saved-streak">
+        🔥 <span id="saved-streak-num">1</span> <span id="saved-streak-label">день подряд</span>
+      </div>
+      <button class="btn btn--outline" id="saved-home-btn">
+        На главную
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН 7: ИСТОРИЯ
+       Все записи дневника сгруппированные по датам
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-history">
+    <div class="screen-header">
+      <div class="screen-title">История записей</div>
+    </div>
+    <div class="screen-scroll screen-scroll--no-bottom" id="history-list">
+      <!-- Рендерится в app.js -->
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН 8: ВОПРОС ДИАГНОСТИКИ
+       Переиспользуется для всех 10 вопросов
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-question">
+    <div class="screen-header">
+      <!-- Прогресс-бар -->
+      <div class="diag-progress">
+        <div class="diag-progress-fill" id="diag-progress-fill" style="width:0%"></div>
+      </div>
+      <div class="diag-counter" id="diag-counter">Вопрос 1 из 10</div>
+    </div>
+    <div class="screen-scroll screen-scroll--no-bottom">
+      <div class="question-text" id="question-text"></div>
+      <div class="options-list" id="options-list">
+        <!-- Рендерится в app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН 9: РЕЗУЛЬТАТ ДИАГНОСТИКИ
+       Карточка паттерна + CTA
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-result">
+    <div class="screen-scroll screen-scroll--no-bottom" style="padding-bottom: 24px">
+
+      <!-- Герой-карточка паттерна -->
+      <div class="result-hero" id="result-hero">
+        <div class="result-emoji"  id="result-emoji"></div>
+        <div class="result-name"   id="result-name"></div>
+        <div class="result-subtitle" id="result-subtitle"></div>
+        <div class="result-desc"   id="result-desc"></div>
+      </div>
+
+      <!-- Тело -->
+      <div class="result-section">
+        <div class="result-section-label">🫀 Как это проявляется в теле</div>
+        <div class="result-section-text" id="result-body-text"></div>
+      </div>
+
+      <!-- Программа -->
+      <div class="result-section">
+        <div class="result-section-label">✨ Как программа работает с этим</div>
+        <div class="result-section-text" id="result-program-text"></div>
+      </div>
+
+      <!-- CTA -->
+      <div class="result-cta-wrap">
+        <button class="btn btn--primary btn--full" id="result-cta-btn">
+          Хочу на программу →
+        </button>
+        <button class="btn btn--ghost btn--full" id="result-home-btn">
+          Вернуться в приложение
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /#app -->
+
+<!-- Данные и логика -->
+<script src="js/data.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
