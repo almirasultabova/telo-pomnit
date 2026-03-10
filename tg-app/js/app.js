@@ -117,6 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDiaryTab();
     renderDiagTab();
     renderProfileTab();
+    // Показываем оффер один раз при первом открытии
+    if (!Storage.isOfferSeen()) {
+      setTimeout(showOfferModal, 400);
+    }
   }, 1600);
 });
 
@@ -710,3 +714,34 @@ document.addEventListener('click', e => {
     haptic('light');
   }
 });
+
+// ─────────────────────────────────────────────────────────────────────────
+// МОДАЛКА: ОФФЕР (показывается один раз при первом открытии)
+// ─────────────────────────────────────────────────────────────────────────
+function showOfferModal() {
+  const modal = document.getElementById('offer-modal');
+  if (!modal) return;
+
+  modal.hidden = false;
+
+  document.getElementById('offer-subscribe-btn').addEventListener('click', () => {
+    Storage.setOfferSeen();
+    closeOfferModal();
+    const url = 'https://t.me/body_remembers_bot?start=from_app';
+    tg?.openTelegramLink?.(url) || window.open(url, '_blank');
+    haptic('medium');
+  });
+
+  document.getElementById('offer-skip-btn').addEventListener('click', () => {
+    Storage.setOfferSeen();
+    closeOfferModal();
+    haptic('light');
+  });
+}
+
+function closeOfferModal() {
+  const modal = document.getElementById('offer-modal');
+  if (!modal) return;
+  modal.style.animation = 'overlayIn 0.2s ease reverse';
+  setTimeout(() => { modal.hidden = true; }, 200);
+}

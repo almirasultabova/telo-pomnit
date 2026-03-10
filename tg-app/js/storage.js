@@ -4,7 +4,8 @@
 const KEYS = {
   DIARY:      'tp_diary_entries',   // массив записей дневника
   DIAG:       'tp_diag_result',     // результат диагностики
-  ONBOARDING: 'tp_onboarding_done'  // флаг завершения онбординга
+  ONBOARDING: 'tp_onboarding_done', // флаг завершения онбординга
+  OFFER_SEEN: 'tp_offer_seen'       // флаг показа оффера при первом открытии
 };
 
 const Storage = {
@@ -101,5 +102,15 @@ const Storage = {
 
   setOnboardingDone() {
     localStorage.setItem(KEYS.ONBOARDING, 'true');
+  },
+
+  // ─── Оффер ────────────────────────────────────────────────────────────────
+
+  isOfferSeen() {
+    return localStorage.getItem(KEYS.OFFER_SEEN) === 'true';
+  },
+
+  setOfferSeen() {
+    localStorage.setItem(KEYS.OFFER_SEEN, 'true');
   }
 };
