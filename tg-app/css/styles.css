@@ -16,11 +16,12 @@
   --tg-btn-text:     var(--tg-theme-button-text-color, #ffffff);
   --tg-header-bg:    var(--tg-theme-header-bg-color, #ffffff);
 
-  /* Собственные токены */
-  --accent:          #2AABEE;
-  --accent-hover:    #1a9ad6;
-  --accent-light:    rgba(42, 171, 238, 0.12);
+  /* Собственные токены — фирменные цвета как на лендинге */
+  --accent:          #2a4a38;
+  --accent-hover:    #1e3020;
+  --accent-light:    rgba(42, 74, 56, 0.10);
   --green:           #2a4a38;
+  --green-dark:      #1e3020;
   --gold:            #c49a3c;
   --danger:          #e53935;
   --success:         #4CAF7D;
@@ -141,8 +142,8 @@ input, textarea { font-family: inherit; }
   border-bottom: 1px solid var(--card-border);
   background: var(--tg-header-bg, var(--tg-bg));
 }
-.screen-title   { font-size: 17px; font-weight: 600; color: var(--tg-text); }
-.screen-sub     { font-size: 13px; color: var(--tg-hint); margin-top: 2px; }
+.screen-title   { font-size: 18px; font-weight: 700; font-family: var(--font-serif); font-style: italic; color: var(--tg-text); }
+.screen-sub     { font-size: 13px; color: var(--tg-hint); margin-top: 2px; letter-spacing: 0.02em; }
 
 .screen-scroll {
   flex: 1;
@@ -213,11 +214,11 @@ input, textarea { font-family: inherit; }
 
 /* ─── Секция-заголовок ───────────────────────────────────────────────────── */
 .section-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: .08em;
+  letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--tg-hint);
+  color: var(--gold);
   margin-bottom: 10px;
 }
 

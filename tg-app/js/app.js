@@ -12,17 +12,16 @@ if (tg) {
 }
 
 function applyTgTheme() {
-  if (!tg?.themeParams) return;
-  const p = tg.themeParams;
   const r = document.documentElement;
-  if (p.bg_color)           r.style.setProperty('--tg-theme-bg-color',            p.bg_color);
-  if (p.secondary_bg_color) r.style.setProperty('--tg-theme-secondary-bg-color',  p.secondary_bg_color);
-  if (p.text_color)         r.style.setProperty('--tg-theme-text-color',           p.text_color);
-  if (p.hint_color)         r.style.setProperty('--tg-theme-hint-color',           p.hint_color);
-  if (p.link_color)         r.style.setProperty('--tg-theme-link-color',           p.link_color);
-  if (p.button_color)       r.style.setProperty('--tg-theme-button-color',         p.button_color);
-  if (p.button_text_color)  r.style.setProperty('--tg-theme-button-text-color',    p.button_text_color);
-  if (p.header_bg_color)    r.style.setProperty('--tg-theme-header-bg-color',      p.header_bg_color);
+  // Фирменные цвета как на лендинге — крем, зелёный, тёмный текст
+  r.style.setProperty('--tg-theme-bg-color',           '#f7f4ef');
+  r.style.setProperty('--tg-theme-secondary-bg-color', '#ffffff');
+  r.style.setProperty('--tg-theme-text-color',         '#1a110a');
+  r.style.setProperty('--tg-theme-hint-color',         '#8a7a6a');
+  r.style.setProperty('--tg-theme-link-color',         '#2a4a38');
+  r.style.setProperty('--tg-theme-button-color',       '#2a4a38');
+  r.style.setProperty('--tg-theme-button-text-color',  '#ffffff');
+  r.style.setProperty('--tg-theme-header-bg-color',    '#f7f4ef');
 }
 
 function haptic(type = 'light') {
