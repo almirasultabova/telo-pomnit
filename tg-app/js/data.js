@@ -229,7 +229,7 @@ const DATA = {
     meetings: 8,
     format: 'Zoom + закрытый чат',
     nextStart: '19 марта 2026',
-    chatUrl: 'https://t.me/+qisOszyOlP4xZGMy',
+    chatUrl: 'https://t.me/+IwJSzSom75M0ZDcy',
     zoomUrl: null, // добавить постоянную ссылку Zoom когда появится
 
     // 5 недель программы
