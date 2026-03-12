@@ -996,7 +996,11 @@ function renderHosts() {
 
   container.innerHTML = DATA.program.hosts.map(h => `
     <div class="host-card-mini">
-      <div class="host-avatar-mini">${h.initial}</div>
+      <div class="host-avatar-mini">
+        ${h.photo
+          ? `<img src="${h.photo}" alt="${h.name}" class="host-avatar-img" onerror="this.parentElement.innerHTML='${h.initial}'">`
+          : h.initial}
+      </div>
       <div>
         <div class="host-name-mini">${h.name}</div>
         <div class="host-role-mini">${h.role}</div>

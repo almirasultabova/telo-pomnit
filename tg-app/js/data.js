@@ -347,13 +347,15 @@ const DATA = {
         name: 'Анастасия Хорошавцева',
         role: 'Психосоматика · Телесная терапия',
         tg: 'https://t.me/akhoroshavtseva',
-        initial: 'А'
+        initial: 'А',
+        photo: 'img/nastya.jpg'
       },
       {
         name: 'Альмира Султанова',
         role: 'Коуч · Внедрение изменений',
         tg: 'https://t.me/Almira_Sultanova',
-        initial: 'А'
+        initial: 'А',
+        photo: 'img/almira.jpg'
       }
     ]
   }
