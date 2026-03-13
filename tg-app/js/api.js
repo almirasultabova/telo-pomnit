@@ -42,7 +42,7 @@ const Api = {
   async auth() {
     const tg = window.Telegram?.WebApp;
     const initData = tg?.initData || 'dev'; // 'dev' для локального тестирования
-    const data = await this._request('POST', '/auth/telegram', { initData });
+    const data = await this._request('POST', '/auth/telegram', { initData, consentGiven: true });
     this._setToken(data.token);
     return data.user;
   },
