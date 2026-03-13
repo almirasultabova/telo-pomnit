@@ -1,6 +1,7 @@
 require('dotenv').config()
 const Fastify = require('fastify')
 const db = require('./db')
+const { bot } = require('./bot')
 
 const app = Fastify({ logger: true })
 
@@ -35,6 +36,9 @@ const start = async () => {
   try {
     await app.listen({ port: process.env.PORT || 3000, host: '0.0.0.0' })
     console.log('Сервер запущен на порту', process.env.PORT || 3000)
+
+    // Запускаем бота (long polling)
+    bot.start({ onStart: () => console.log('Бот запущен') })
   } catch (err) {
     app.log.error(err)
     process.exit(1)
