@@ -93,9 +93,12 @@
         <!-- Карточка сегодняшней записи (динамическая) -->
         <div id="today-card" class="today-card"></div>
 
-        <!-- Кнопка истории -->
-        <button class="btn btn--ghost btn--full btn--sm mb-16" id="diary-history-btn">
+        <!-- Кнопки -->
+        <button class="btn btn--ghost btn--full btn--sm mb-8" id="diary-history-btn">
           📖 История записей
+        </button>
+        <button class="btn btn--ghost btn--full btn--sm mb-16" id="ai-chat-btn">
+          🤖 Соматический ассистент
         </button>
 
         <!-- Последние записи -->
@@ -283,6 +286,7 @@
   <div class="screen" id="screen-history">
     <div class="screen-header">
       <div class="screen-title">История записей</div>
+      <button class="screen-header-btn" id="export-pdf-btn">📄 PDF</button>
     </div>
     <div class="screen-scroll screen-scroll--no-bottom" id="history-list">
       <!-- Рендерится в app.js -->
@@ -349,6 +353,28 @@
     </div>
   </div>
 
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН: AI ЧАТ
+       Соматический ассистент — поддержка между встречами
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-ai-chat">
+    <div class="screen-header">
+      <div class="screen-title">Ассистент</div>
+      <div class="screen-sub">Соматическая поддержка</div>
+    </div>
+    <div class="screen-scroll screen-scroll--no-bottom" id="ai-messages" style="padding-bottom: 72px">
+      <!-- Рендерится в app.js -->
+    </div>
+    <div class="ai-input-bar">
+      <textarea class="ai-input" id="ai-input" placeholder="Что происходит в теле?" rows="1"></textarea>
+      <button class="ai-send-btn" id="ai-send-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
 
   <!-- ═══════════════════════════════════════════════════════════════════
        МОДАЛКА: ОФФЕР

@@ -111,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // initDiagnostic — вопросы рендерятся динамически, отдельного init не нужно
   initProfile();
   initHistory();
+  initAiChat();
 
   // Авторизация через бэкенд (в фоне, не блокирует UI)
   Api.auth()
@@ -274,8 +275,18 @@ function startDiaryEntry() {
   goTo('body-map');
 }
 
-// Кнопка «История»
+// Кнопки «История» и «Ассистент»
 document.addEventListener('click', e => {
+  if (e.target.closest('#ai-chat-btn')) {
+    renderAiChat();
+    goTo('ai-chat');
+    haptic();
+    return;
+  }
+  if (e.target.closest('#export-pdf-btn')) {
+    exportDiaryPdf();
+    return;
+  }
   if (e.target.id === 'diary-history-btn') {
     renderHistory();
     goTo('history');
@@ -1102,4 +1113,165 @@ function closeOfferModal() {
   if (!modal) return;
   modal.style.animation = 'overlayIn 0.2s ease reverse';
   setTimeout(() => { modal.hidden = true; }, 200);
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// PDF ЭКСПОРТ
+// ─────────────────────────────────────────────────────────────────────────
+
+function exportDiaryPdf() {
+  haptic('light');
+  const entries = Storage.getDiaryEntries();
+  if (!entries.length) {
+    alert('Записей пока нет.');
+    return;
+  }
+
+  const user = tg?.initDataUnsafe?.user;
+  const name = user ? [user.first_name, user.last_name].filter(Boolean).join(' ') : 'Участница';
+
+  const rows = entries.map(e => {
+    const zone = DATA.zones.find(z => z.id === e.zone);
+    const zoneLabel = zone?.label || e.zone;
+    const sens = (e.sensations || []).map(id => {
+      const s = DATA.sensations.find(x => x.id === id);
+      return s ? `${s.emoji} ${s.label}` : id;
+    }).join(', ');
+    const date = new Date(e.date).toLocaleDateString('ru-RU', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+    return `<tr>
+      <td>${date}</td>
+      <td>${zoneLabel}</td>
+      <td>${sens}</td>
+      <td>${e.note ? e.note.replace(/</g,'&lt;') : ''}</td>
+    </tr>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Дневник тела — Тело помнит</title>
+<style>
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; margin: 40px; color: #1a110a; }
+  h1 { color: #2a4a38; margin-bottom: 4px; font-size: 22px; }
+  .sub { color: #8a7a6a; margin-bottom: 24px; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #2a4a38; color: #fff; padding: 8px 12px; text-align: left; }
+  td { padding: 8px 12px; border-bottom: 1px solid #e8e2d8; vertical-align: top; }
+  tr:nth-child(even) td { background: #faf8f4; }
+  @media print { body { margin: 20px; } }
+</style>
+</head>
+<body>
+<h1>Дневник тела</h1>
+<div class="sub">«Тело помнит» — ${name} · Экспорт ${new Date().toLocaleDateString('ru-RU')}</div>
+<table>
+  <thead>
+    <tr><th>Дата</th><th>Зона</th><th>Ощущения</th><th>Заметка</th></tr>
+  </thead>
+  <tbody>${rows}</tbody>
+</table>
+</body>
+</html>`;
+
+  const w = window.open('', '_blank');
+  if (w) {
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+    setTimeout(() => w.print(), 600);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// AI ЧАТ
+// ─────────────────────────────────────────────────────────────────────────
+
+let aiSessionId = null;
+let aiMessages = [];
+
+function initAiChat() {
+  document.getElementById('ai-send-btn')?.addEventListener('click', sendAiMessage);
+
+  const input = document.getElementById('ai-input');
+  if (input) {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendAiMessage();
+      }
+    });
+    input.addEventListener('input', () => {
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+    });
+  }
+}
+
+function renderAiChat() {
+  const container = document.getElementById('ai-messages');
+  if (!container) return;
+
+  if (!aiMessages.length) {
+    container.innerHTML = `
+      <div class="ai-welcome">
+        <div class="ai-welcome-icon">🌿</div>
+        <div class="ai-welcome-text">Привет. Я здесь, чтобы помочь вам наблюдать за телом между встречами.<br><br>Что вы замечаете в себе прямо сейчас?</div>
+      </div>`;
+  } else {
+    renderAiMessages();
+  }
+}
+
+function renderAiMessages() {
+  const container = document.getElementById('ai-messages');
+  if (!container) return;
+  container.innerHTML = aiMessages.map(m => `
+    <div class="ai-msg ai-msg--${m.role}">
+      <div class="ai-msg-text">${m.content.replace(/</g,'&lt;')}</div>
+    </div>`).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+async function sendAiMessage() {
+  const input = document.getElementById('ai-input');
+  const message = input?.value?.trim();
+  if (!message) return;
+
+  if (!Api.isAuthed()) {
+    alert('Нет подключения к серверу. Попробуйте через несколько секунд.');
+    return;
+  }
+
+  input.value = '';
+  input.style.height = 'auto';
+
+  aiMessages.push({ role: 'user', content: message });
+  renderAiMessages();
+  haptic('light');
+
+  // Индикатор загрузки
+  const container = document.getElementById('ai-messages');
+  const typing = document.createElement('div');
+  typing.className = 'ai-msg ai-msg--assistant';
+  typing.innerHTML = '<div class="ai-msg-text ai-typing"><span></span><span></span><span></span></div>';
+  container?.appendChild(typing);
+  container.scrollTop = container.scrollHeight;
+
+  try {
+    const res = await Api.aiChat(message, aiSessionId);
+    aiSessionId = res.sessionId;
+    typing.remove();
+    aiMessages.push({ role: 'assistant', content: res.reply });
+    renderAiMessages();
+    hapticNotify('success');
+  } catch {
+    typing.remove();
+    const errEl = document.createElement('div');
+    errEl.className = 'ai-msg ai-msg--assistant';
+    errEl.innerHTML = '<div class="ai-msg-text" style="color:var(--danger)">Не удалось получить ответ. Проверьте подключение.</div>';
+    container?.appendChild(errEl);
+  }
 }

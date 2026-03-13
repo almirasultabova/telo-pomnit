@@ -113,4 +113,12 @@ const Api = {
   async saveDiagResult(data) {
     return this._request('POST', '/diagnostic/result', data);
   },
+
+  // ─── AI чат ───────────────────────────────────────────────────────────────
+
+  async aiChat(message, sessionId) {
+    const body = { message };
+    if (sessionId) body.sessionId = sessionId;
+    return this._request('POST', '/ai/chat', body);
+  },
 };
