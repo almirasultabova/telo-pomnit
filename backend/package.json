@@ -1,0 +1,29 @@
+{
+  "name": "telo-pomnit-backend",
+  "version": "1.0.0",
+  "description": "Backend для Telegram Mini App «Тело помнит»",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "db:push": "npx prisma db push",
+    "db:studio": "npx prisma studio",
+    "db:generate": "npx prisma generate"
+  },
+  "dependencies": {
+    "@fastify/cors": "^9.0.1",
+    "@fastify/rate-limit": "^9.1.0",
+    "@prisma/client": "^5.22.0",
+    "dotenv": "^17.3.1",
+    "fastify": "^4.28.1",
+    "grammy": "^1.31.0",
+    "jsonwebtoken": "^9.0.2",
+    "node-cron": "^3.0.3",
+    "openai": "^4.67.3",
+    "pdfkit": "^0.15.0",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
+  }
+}

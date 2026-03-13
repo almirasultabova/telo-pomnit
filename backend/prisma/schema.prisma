@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                String    @id @default(uuid())
+  telegramId        BigInt    @unique @map("telegram_id")
+  telegramUsername  String?   @map("telegram_username")
+  name              String?
+  photoUrl          String?   @map("photo_url")
+  phone             String?
+  notificationsTime String    @default("20:00") @map("notifications_time")
+  tokenVersion      Int       @default(0) @map("token_version")
+  consentGivenAt    DateTime? @map("consent_given_at")
+  consentText       String?   @map("consent_text")
+  deletedAt         DateTime? @map("deleted_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  enrollments        Enrollment[]
+  diaryEntries       DiaryEntry[]
+  triggerEntries     TriggerEntry[]
+  checkins           Checkin[]
+  diagnosticResults  DiagnosticResult[]
+  questionnaires     Questionnaire[]
+
+  @@map("users")
+}
+
+model Stream {
+  id        String   @id @default(uuid())
+  name      String
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+  isActive  Boolean  @default(true) @map("is_active")
+  zoomLink  String?  @map("zoom_link")
+  chatLink  String?  @map("chat_link")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  enrollments    Enrollment[]
+  meetings       Meeting[]
+  diaryEntries   DiaryEntry[]
+  questionnaires Questionnaire[]
+
+  @@map("streams")
+}
+
+model Meeting {
+  id          String   @id @default(uuid())
+  streamId    String   @map("stream_id")
+  number      Int
+  date        DateTime
+  topic       String?
+  description String?
+  prepare     String?
+  zoomLink    String?  @map("zoom_link")
+
+  stream Stream @relation(fields: [streamId], references: [id])
+
+  @@map("meetings")
+}
+
+model Enrollment {
+  id            String           @id @default(uuid())
+  userId        String           @map("user_id")
+  streamId      String           @map("stream_id")
+  status        EnrollmentStatus @default(pending)
+  paymentId     String?          @map("payment_id")
+  paidAt        DateTime?        @map("paid_at")
+  accessExpires DateTime?        @map("access_expires")
+  createdAt     DateTime         @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  stream Stream @relation(fields: [streamId], references: [id])
+
+  @@map("enrollments")
+}
+
+model DiaryEntry {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  streamId   String?  @map("stream_id")
+  zone       String
+  sensations String[]
+  note       String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user   User    @relation(fields: [userId], references: [id])
+  stream Stream? @relation(fields: [streamId], references: [id])
+
+  @@map("diary_entries")
+}
+
+model TriggerEntry {
+  id           String       @id @default(uuid())
+  userId       String       @map("user_id")
+  situation    String
+  reactionType ReactionType @map("reaction_type")
+  zone         String?
+  sensations   String[]
+  intensity    Int
+  note         String?
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("trigger_entries")
+}
+
+model Checkin {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  bodyScore   Int      @map("body_score")
+  tensionZone String?  @map("tension_zone")
+  mood        String?
+  note        String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("checkins")
+}
+
+model DiagnosticResult {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  patternId String   @map("pattern_id")
+  scores    Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("diagnostic_results")
+}
+
+model Questionnaire {
+  id          String            @id @default(uuid())
+  userId      String            @map("user_id")
+  streamId    String            @map("stream_id")
+  type        QuestionnaireType
+  answers     Json
+  submittedAt DateTime          @default(now()) @map("submitted_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  stream Stream @relation(fields: [streamId], references: [id])
+
+  @@map("questionnaires")
+}
+
+model AiChatSession {
+  id        String   @id @default(uuid())
+  sessionId String   @unique @map("session_id")
+  messages  Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("ai_chat_sessions")
+}
+
+enum EnrollmentStatus {
+  pending
+  active
+  completed
+  cancelled
+}
+
+enum ReactionType {
+  freeze
+  fight
+  flight
+  fawn
+}
+
+enum QuestionnaireType {
+  pre
+  post
+}
