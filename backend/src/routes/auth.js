@@ -3,7 +3,7 @@ const { verifyTelegramInitData, createToken } = require('../services/auth')
 
 async function authRoutes(app) {
   // POST /auth/telegram — вход через Telegram Mini App
-  app.post('/auth/telegram', {
+  app.post('/telegram', {
     schema: {
       body: {
         type: 'object',
