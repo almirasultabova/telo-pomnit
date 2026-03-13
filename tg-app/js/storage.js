@@ -1,5 +1,5 @@
 // storage.js — обёртка над localStorage для хранения данных пользователя.
-// Все данные хранятся локально на устройстве — backend не нужен.
+// Локальный кэш + фоновая синхронизация с бэкендом через Api.
 
 const KEYS = {
   DIARY:      'tp_diary_entries',   // массив записей дневника
@@ -31,6 +31,10 @@ const Storage = {
     // Хранить не более 90 записей (~6 недель)
     if (entries.length > 90) entries.splice(90);
     localStorage.setItem(KEYS.DIARY, JSON.stringify(entries));
+    // Фоновая синхронизация с бэкендом
+    if (typeof Api !== 'undefined' && Api.isAuthed()) {
+      Api.saveDiaryEntry(entry).catch(() => {});
+    }
   },
 
   /** Запись за сегодня (или null) */
@@ -79,6 +83,10 @@ const Storage = {
   /** Сохранить результат диагностики. Формат: { patternId, date, scores } */
   saveDiagResult(result) {
     localStorage.setItem(KEYS.DIAG, JSON.stringify(result));
+    // Фоновая синхронизация с бэкендом
+    if (typeof Api !== 'undefined' && Api.isAuthed()) {
+      Api.saveDiagResult(result).catch(() => {});
+    }
   },
 
   /** Получить сохранённый результат или null */
@@ -136,5 +144,27 @@ const Storage = {
 
   isAttended(meetingId) {
     return this.getAttended().includes(meetingId);
+  },
+
+  // ─── Синхронизация с бэкендом ─────────────────────────────────────────────
+
+  /** Загрузить данные с сервера и положить в localStorage.
+   *  Вызывается при старте приложения после авторизации. */
+  async initFromApi() {
+    if (typeof Api === 'undefined' || !Api.isAuthed()) return;
+    try {
+      const [diary, diag] = await Promise.allSettled([
+        Api.getDiary(),
+        Api.getDiagResult(),
+      ]);
+      if (diary.status === 'fulfilled' && diary.value?.entries?.length) {
+        localStorage.setItem(KEYS.DIARY, JSON.stringify(diary.value.entries));
+      }
+      if (diag.status === 'fulfilled' && diag.value) {
+        localStorage.setItem(KEYS.DIAG, JSON.stringify(diag.value));
+      }
+    } catch {
+      // Нет связи — работаем с локальным кэшем
+    }
   }
 };

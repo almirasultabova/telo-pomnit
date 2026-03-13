@@ -112,6 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initProfile();
   initHistory();
 
+  // Авторизация через бэкенд (в фоне, не блокирует UI)
+  Api.auth()
+    .then(() => Storage.initFromApi())
+    .catch(() => {}); // без бэкенда — работаем локально
+
   // Запускаем сплэш → онбординг (первый раз) или сразу главный
   setTimeout(() => {
     renderDiaryTab();
