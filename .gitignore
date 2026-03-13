@@ -8,5 +8,8 @@ desktop.ini
 .idea/
 *.swp
 
+# Secrets
+.env
+
 # Logs
 *.log
