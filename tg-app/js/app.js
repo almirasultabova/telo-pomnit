@@ -1240,9 +1240,13 @@ async function sendAiMessage() {
   const message = input?.value?.trim();
   if (!message) return;
 
+  // Если токена нет — пробуем авторизоваться ещё раз (Railway мог перезапускаться)
   if (!Api.isAuthed()) {
-    alert('Нет подключения к серверу. Попробуйте через несколько секунд.');
-    return;
+    try {
+      await Api.auth();
+    } catch {
+      // auth failed — продолжаем, ошибка придёт от самого запроса
+    }
   }
 
   input.value = '';
