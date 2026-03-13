@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initProfile();
   initHistory();
   initAiChat();
+  initTrigger();
 
   // Авторизация через бэкенд (в фоне, не блокирует UI)
   Api.auth()
@@ -1278,4 +1279,239 @@ async function sendAiMessage() {
     errEl.innerHTML = '<div class="ai-msg-text" style="color:var(--danger)">' + (e.message || 'Ошибка') + '</div>';
     container?.appendChild(errEl);
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// СТОП-РЕАКЦИЯ — дневник триггеров
+// ─────────────────────────────────────────────────────────────────────────
+
+const triggerDraft = {
+  situation:    '',
+  reactionType: null,
+  intensity:    5,
+  zone:         null,
+  sensations:   [],
+  note:         ''
+};
+
+function initTrigger() {
+  // Кнопка из вкладки Дневник
+  document.getElementById('stop-reaction-btn')?.addEventListener('click', () => {
+    resetTriggerForm();
+    goTo('trigger');
+    haptic('light');
+  });
+
+  // История → в экране trigger
+  document.getElementById('trigger-history-btn')?.addEventListener('click', () => {
+    renderTriggerHistory();
+    goTo('trigger-history');
+    haptic('light');
+  });
+
+  // Новая запись из экрана истории
+  document.getElementById('new-trigger-btn')?.addEventListener('click', () => {
+    resetTriggerForm();
+    goTo('trigger');
+    haptic('light');
+  });
+
+  // Слайдер интенсивности
+  const slider = document.getElementById('trigger-intensity');
+  if (slider) {
+    slider.addEventListener('input', () => {
+      triggerDraft.intensity = Number(slider.value);
+      const val = document.getElementById('intensity-value');
+      if (val) val.textContent = slider.value;
+    });
+  }
+
+  // Кнопка сохранить
+  document.getElementById('trigger-save-btn')?.addEventListener('click', saveTriggerEntry);
+
+  // Ситуация — разблокировать кнопку
+  document.getElementById('trigger-situation')?.addEventListener('input', updateTriggerSaveBtn);
+
+  // Рендерим статические части формы
+  renderReactionGrid();
+  renderTriggerZoneChips();
+  renderTriggerSensationChips();
+}
+
+function resetTriggerForm() {
+  triggerDraft.situation    = '';
+  triggerDraft.reactionType = null;
+  triggerDraft.intensity    = 5;
+  triggerDraft.zone         = null;
+  triggerDraft.sensations   = [];
+  triggerDraft.note         = '';
+
+  const sit = document.getElementById('trigger-situation');
+  if (sit) sit.value = '';
+  const note = document.getElementById('trigger-note');
+  if (note) note.value = '';
+  const slider = document.getElementById('trigger-intensity');
+  if (slider) slider.value = 5;
+  const val = document.getElementById('intensity-value');
+  if (val) val.textContent = '5';
+
+  // Снять выделение с реакций, зон, ощущений
+  document.querySelectorAll('.reaction-card--selected').forEach(el => el.classList.remove('reaction-card--selected'));
+  document.querySelectorAll('.zone-chip--selected').forEach(el => el.classList.remove('zone-chip--selected'));
+  document.querySelectorAll('#trigger-sensations-grid .sensation-chip--selected').forEach(el => el.classList.remove('sensation-chip--selected'));
+
+  updateTriggerSaveBtn();
+}
+
+function updateTriggerSaveBtn() {
+  const situation = document.getElementById('trigger-situation')?.value?.trim();
+  const btn = document.getElementById('trigger-save-btn');
+  if (btn) btn.disabled = !(situation && triggerDraft.reactionType);
+}
+
+function renderReactionGrid() {
+  const grid = document.getElementById('reaction-grid');
+  if (!grid) return;
+  const reactions = ['freeze', 'fight', 'flight', 'fawn'];
+  grid.innerHTML = reactions.map(id => {
+    const p = DATA.patterns[id];
+    return `<button class="reaction-card" data-reaction="${id}" style="--reaction-color:${p.color}; --reaction-bg:${p.colorLight}">
+      <span class="reaction-card-emoji">${p.emoji}</span>
+      <span class="reaction-card-name">${p.name}</span>
+      <span class="reaction-card-sub">${p.subtitle}</span>
+    </button>`;
+  }).join('');
+
+  grid.querySelectorAll('.reaction-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      triggerDraft.reactionType = btn.dataset.reaction;
+      grid.querySelectorAll('.reaction-card').forEach(b => b.classList.remove('reaction-card--selected'));
+      btn.classList.add('reaction-card--selected');
+      haptic('light');
+      updateTriggerSaveBtn();
+    });
+  });
+}
+
+function renderTriggerZoneChips() {
+  const wrap = document.getElementById('trigger-zone-chips');
+  if (!wrap) return;
+  const zones = DATA.zones.filter(z => z.view === 'front');
+  wrap.innerHTML = zones.map(z =>
+    `<button class="zone-chip" data-zone="${z.id}">${z.label}</button>`
+  ).join('');
+
+  wrap.querySelectorAll('.zone-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const isSelected = btn.classList.contains('zone-chip--selected');
+      wrap.querySelectorAll('.zone-chip').forEach(b => b.classList.remove('zone-chip--selected'));
+      if (!isSelected) {
+        btn.classList.add('zone-chip--selected');
+        triggerDraft.zone = btn.dataset.zone;
+      } else {
+        triggerDraft.zone = null;
+      }
+      haptic('light');
+    });
+  });
+}
+
+function renderTriggerSensationChips() {
+  const grid = document.getElementById('trigger-sensations-grid');
+  if (!grid) return;
+  grid.innerHTML = DATA.sensations.map(s =>
+    `<button class="sensation-chip" data-id="${s.id}">${s.emoji} ${s.label}</button>`
+  ).join('');
+
+  grid.querySelectorAll('.sensation-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('sensation-chip--selected');
+      const id = btn.dataset.id;
+      if (btn.classList.contains('sensation-chip--selected')) {
+        if (!triggerDraft.sensations.includes(id)) triggerDraft.sensations.push(id);
+      } else {
+        triggerDraft.sensations = triggerDraft.sensations.filter(s => s !== id);
+      }
+      haptic('light');
+    });
+  });
+}
+
+function saveTriggerEntry() {
+  const situation = document.getElementById('trigger-situation')?.value?.trim();
+  const note = document.getElementById('trigger-note')?.value?.trim();
+  if (!situation || !triggerDraft.reactionType) return;
+
+  const entry = {
+    situation,
+    reactionType: triggerDraft.reactionType,
+    intensity:    triggerDraft.intensity,
+    zone:         triggerDraft.zone || null,
+    sensations:   [...triggerDraft.sensations],
+    note:         note || null
+  };
+
+  Storage.saveTriggerEntry(entry);
+  hapticNotify('success');
+  goBack();
+}
+
+function renderTriggerHistory() {
+  const container = document.getElementById('trigger-history-list');
+  if (!container) return;
+
+  const entries = Storage.getTriggerEntries();
+  if (!entries.length) {
+    container.innerHTML = `
+      <div style="text-align:center; padding: 48px 24px; color:var(--tg-hint)">
+        <div style="font-size:2rem; margin-bottom:12px">⚡</div>
+        <div>Записей пока нет.</div>
+        <div style="margin-top:4px; font-size:13px">Зафиксируй реакцию — это займёт 2 минуты</div>
+      </div>`;
+    return;
+  }
+
+  // Статистика по типам реакций
+  const counts = { freeze: 0, fight: 0, flight: 0, fawn: 0 };
+  entries.forEach(e => { if (counts[e.reactionType] !== undefined) counts[e.reactionType]++; });
+  const total = entries.length;
+
+  const statsHtml = `
+    <div class="trigger-stats">
+      ${['freeze','fight','flight','fawn'].map(id => {
+        const p = DATA.patterns[id];
+        const pct = total ? Math.round(counts[id] / total * 100) : 0;
+        return `<div class="trigger-stat-item">
+          <div class="trigger-stat-bar" style="background:${p.colorLight}; border:1px solid ${p.color}20">
+            <div class="trigger-stat-fill" style="width:${pct}%; background:${p.color}"></div>
+          </div>
+          <div class="trigger-stat-label">${p.emoji} ${p.name}</div>
+          <div class="trigger-stat-count">${counts[id]}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  // Список записей
+  const listHtml = entries.map(e => {
+    const p = DATA.patterns[e.reactionType];
+    const date = new Date(e.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+    const zoneName = e.zone ? DATA.zones.find(z => z.id === e.zone)?.label : null;
+    return `<div class="trigger-card">
+      <div class="trigger-card-top">
+        <span class="trigger-badge" style="background:${p.colorLight}; color:${p.color}">${p.emoji} ${p.name}</span>
+        <span class="trigger-card-date">${date}</span>
+      </div>
+      <div class="trigger-card-situation">${e.situation}</div>
+      ${zoneName ? `<div class="trigger-card-meta">📍 ${zoneName} · интенсивность ${e.intensity}/10</div>` : `<div class="trigger-card-meta">интенсивность ${e.intensity}/10</div>`}
+      ${e.note ? `<div class="trigger-card-note">${e.note}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  container.innerHTML = `
+    <div style="padding: 0 16px 16px">
+      <div class="section-label" style="padding-top:16px">Паттерны реакций</div>
+      ${statsHtml}
+      <div class="section-label mt-16">Все записи</div>
+      ${listHtml}
+    </div>`;
 }

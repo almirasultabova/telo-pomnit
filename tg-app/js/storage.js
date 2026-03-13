@@ -6,7 +6,8 @@ const KEYS = {
   DIAG:       'tp_diag_result',     // результат диагностики
   ONBOARDING: 'tp_onboarding_done', // флаг завершения онбординга
   OFFER_SEEN: 'tp_offer_seen',      // флаг показа оффера при первом открытии
-  ATTENDED:   'tp_attended'         // массив id посещённых встреч
+  ATTENDED:   'tp_attended',        // массив id посещённых встреч
+  TRIGGERS:   'tp_trigger_entries'  // дневник реакций (стоп-реакция)
 };
 
 const Storage = {
@@ -121,6 +122,27 @@ const Storage = {
 
   setOfferSeen() {
     localStorage.setItem(KEYS.OFFER_SEEN, 'true');
+  },
+
+  // ─── Дневник реакций (Стоп-реакция) ─────────────────────────────────────
+
+  getTriggerEntries() {
+    try {
+      return JSON.parse(localStorage.getItem(KEYS.TRIGGERS)) || [];
+    } catch {
+      return [];
+    }
+  },
+
+  /** Формат: { id, date, situation, reactionType, intensity, zone, sensations, note } */
+  saveTriggerEntry(entry) {
+    const entries = this.getTriggerEntries();
+    entries.unshift({ ...entry, id: Date.now(), date: new Date().toISOString() });
+    if (entries.length > 90) entries.splice(90);
+    localStorage.setItem(KEYS.TRIGGERS, JSON.stringify(entries));
+    if (typeof Api !== 'undefined' && Api.isAuthed()) {
+      Api.saveTrigger(entry).catch(() => {});
+    }
   },
 
   // ─── Посещаемость встреч ──────────────────────────────────────────────────

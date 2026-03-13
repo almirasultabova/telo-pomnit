@@ -97,8 +97,11 @@
         <button class="btn btn--ghost btn--full btn--sm mb-8" id="diary-history-btn">
           📖 История записей
         </button>
-        <button class="btn btn--ghost btn--full btn--sm mb-16" id="ai-chat-btn">
+        <button class="btn btn--ghost btn--full btn--sm mb-8" id="ai-chat-btn">
           🤖 Соматический ассистент
+        </button>
+        <button class="btn btn--ghost btn--full btn--sm mb-16" id="stop-reaction-btn">
+          ⚡ Зафиксировать реакцию
         </button>
 
         <!-- Последние записи -->
@@ -373,6 +376,71 @@
           <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
         </svg>
       </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН: СТОП-РЕАКЦИЯ — форма новой записи
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-trigger">
+    <div class="screen-header">
+      <div class="screen-title">Стоп-реакция</div>
+      <div class="screen-sub">Зафиксируй момент, пока он свежий</div>
+      <button class="screen-header-btn" id="trigger-history-btn">История</button>
+    </div>
+    <div class="screen-scroll" style="padding-bottom: calc(var(--bottom-h) + 16px)">
+
+      <div class="section-label">Что случилось</div>
+      <textarea class="note-textarea" id="trigger-situation"
+        placeholder="Опиши ситуацию или момент, который тебя зацепил..." rows="3"></textarea>
+
+      <div class="section-label mt-16">Как отреагировало тело</div>
+      <div class="reaction-grid" id="reaction-grid">
+        <!-- Рендерится в app.js -->
+      </div>
+
+      <div class="section-label mt-16">Интенсивность реакции</div>
+      <div class="intensity-wrap">
+        <input type="range" class="intensity-slider" id="trigger-intensity" min="1" max="10" value="5">
+        <div class="intensity-labels">
+          <span class="intensity-hint">слабая</span>
+          <span class="intensity-value" id="intensity-value">5</span>
+          <span class="intensity-hint">сильная</span>
+        </div>
+      </div>
+
+      <div class="section-label mt-16">Где в теле <span class="optional-hint">необязательно</span></div>
+      <div class="zone-chips" id="trigger-zone-chips">
+        <!-- Рендерится в app.js -->
+      </div>
+
+      <div class="section-label mt-16">Ощущения <span class="optional-hint">необязательно</span></div>
+      <div class="sensations-grid" id="trigger-sensations-grid">
+        <!-- Рендерится в app.js -->
+      </div>
+
+      <div class="section-label mt-16">Заметка <span class="optional-hint">необязательно</span></div>
+      <textarea class="note-textarea" id="trigger-note"
+        placeholder="Что заметила, что сделала, что помогло..." rows="3"></textarea>
+
+    </div>
+    <div class="screen-bottom">
+      <button class="btn btn--primary btn--full" id="trigger-save-btn" disabled>
+        Сохранить
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН: ИСТОРИЯ РЕАКЦИЙ
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-trigger-history">
+    <div class="screen-header">
+      <div class="screen-title">Дневник реакций</div>
+      <button class="screen-header-btn" id="new-trigger-btn">+ Новая</button>
+    </div>
+    <div class="screen-scroll screen-scroll--no-bottom" id="trigger-history-list">
+      <!-- Рендерится в app.js -->
     </div>
   </div>
 

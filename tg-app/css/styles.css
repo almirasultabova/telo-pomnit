@@ -1722,3 +1722,151 @@ input, textarea { font-family: inherit; }
 }
 .ai-send-btn:active { opacity: 0.75; transform: scale(0.93); }
 
+/* ─── Стоп-реакция ──────────────────────────────────────────────────────── */
+
+/* Сетка типов реакций */
+.reaction-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.reaction-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--reaction-bg, rgba(0,0,0,0.04));
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.18s, transform 0.12s;
+}
+.reaction-card:active { transform: scale(0.97); }
+.reaction-card--selected {
+  border-color: var(--reaction-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--reaction-color) 15%, transparent);
+}
+.reaction-card-emoji { font-size: 1.5rem; line-height: 1; }
+.reaction-card-name  { font-size: 14px; font-weight: 600; color: var(--tg-text); }
+.reaction-card-sub   { font-size: 11px; color: var(--tg-hint); }
+
+/* Слайдер интенсивности */
+.intensity-wrap {
+  padding: 4px 0 8px;
+}
+.intensity-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--accent) 0%, var(--accent) 50%, var(--card-border) 50%);
+  outline: none;
+  cursor: pointer;
+}
+.intensity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  cursor: pointer;
+}
+.intensity-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+.intensity-hint  { font-size: 12px; color: var(--tg-hint); }
+.intensity-value {
+  font-size: 18px; font-weight: 700;
+  color: var(--accent);
+  min-width: 24px; text-align: center;
+}
+
+/* Чипы зон тела (горизонтальный скролл) */
+.zone-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.zone-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  background: var(--tg-secondary-bg);
+  border: 1.5px solid var(--card-border);
+  color: var(--tg-text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.zone-chip--selected {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Опциональная подсказка */
+.optional-hint {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--tg-hint);
+  margin-left: 6px;
+}
+
+/* Карточка в истории реакций */
+.trigger-card {
+  background: var(--tg-secondary-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.trigger-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.trigger-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.trigger-card-date     { font-size: 12px; color: var(--tg-hint); }
+.trigger-card-situation { font-size: 14px; color: var(--tg-text); line-height: 1.4; margin-bottom: 6px; }
+.trigger-card-meta     { font-size: 12px; color: var(--tg-hint); margin-bottom: 4px; }
+.trigger-card-note     { font-size: 13px; color: var(--tg-hint); font-style: italic; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--card-border); }
+
+/* Статистика реакций */
+.trigger-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.trigger-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.trigger-stat-bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.trigger-stat-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+.trigger-stat-label { font-size: 13px; color: var(--tg-text); white-space: nowrap; min-width: 110px; }
+.trigger-stat-count { font-size: 13px; font-weight: 600; color: var(--tg-hint); min-width: 20px; text-align: right; }
