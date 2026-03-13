@@ -1244,7 +1244,7 @@ async function sendAiMessage() {
   if (!Api.isAuthed()) {
     try {
       await Api.auth();
-    } catch {
+    } catch (e) {
       // auth failed — продолжаем, ошибка придёт от самого запроса
     }
   }
@@ -1271,11 +1271,11 @@ async function sendAiMessage() {
     aiMessages.push({ role: 'assistant', content: res.reply });
     renderAiMessages();
     hapticNotify('success');
-  } catch {
+  } catch (e) {
     typing.remove();
     const errEl = document.createElement('div');
     errEl.className = 'ai-msg ai-msg--assistant';
-    errEl.innerHTML = '<div class="ai-msg-text" style="color:var(--danger)">Не удалось получить ответ. Проверьте подключение.</div>';
+    errEl.innerHTML = '<div class="ai-msg-text" style="color:var(--danger)">' + (e.message || 'Ошибка') + '</div>';
     container?.appendChild(errEl);
   }
 }
