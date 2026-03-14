@@ -58,24 +58,24 @@ const DATA = {
     { id: 'shoulder_r',  label: 'Плечо (прав)',      view: 'front', path: 'M145,60 L158,65 L154,85 L142,80 Z',     desc: 'Где оседает ответственность и тяжесть.' },
     { id: 'arm_upper_l', label: 'Рука (лев, верх)',  view: 'front', path: 'M50,85 L63,85 L61,105 L47,105 Z',       desc: 'Сила и удержание.' },
     { id: 'arm_upper_r', label: 'Рука (прав, верх)', view: 'front', path: 'M157,85 L170,85 L173,105 L159,105 Z',   desc: 'Сила и удержание.' },
-    { id: 'arm_lower_l', label: 'Предплечье (лев)',  view: 'front', path: 'M46,115 L61,115 L60,130 L45,130 Z',     desc: 'Выражение силы.' },
-    { id: 'arm_lower_r', label: 'Предплечье (прав)', view: 'front', path: 'M159,115 L174,115 L175,130 L160,130 Z', desc: 'Выражение силы.' },
-    { id: 'hand_l',      label: 'Кисть (лев)',       view: 'front', path: 'M36,148 L56,148 L54,172 L34,172 Z',     desc: 'Контакт и управление.' },
-    { id: 'hand_r',      label: 'Кисть (прав)',      view: 'front', path: 'M164,148 L184,148 L186,172 L162,172 Z', desc: 'Контакт и управление.' },
-    { id: 'foot_l',      label: 'Стопа (лев)',        view: 'front', path: 'M75,265 L108,265 L107,288 L73,288 Z',   desc: 'Заземление и опора.' },
-    { id: 'foot_r',      label: 'Стопа (прав)',       view: 'front', path: 'M112,265 L145,265 L147,288 L110,288 Z', desc: 'Заземление и опора.' },
+    { id: 'arm_lower_l', label: 'Предплечье (лев)',  view: 'front', path: 'M45,115 L62,115 L56,158 L39,158 Z',     desc: 'Выражение силы.' },
+    { id: 'arm_lower_r', label: 'Предплечье (прав)', view: 'front', path: 'M158,115 L175,115 L181,158 L164,158 Z', desc: 'Выражение силы.' },
+    { id: 'hand_l',      label: 'Кисть (лев)',       view: 'front', path: 'M14,178 L36,178 L34,195 L12,195 Z',     desc: 'Контакт и управление.' },
+    { id: 'hand_r',      label: 'Кисть (прав)',      view: 'front', path: 'M184,178 L206,178 L208,195 L182,195 Z', desc: 'Контакт и управление.' },
+    { id: 'foot_l',      label: 'Стопа (лев)',        view: 'front', path: 'M83,274 L106,274 L104,290 L81,290 Z',   desc: 'Заземление и опора.' },
+    { id: 'foot_r',      label: 'Стопа (прав)',       view: 'front', path: 'M114,274 L137,274 L139,290 L112,290 Z', desc: 'Заземление и опора.' },
     { id: 'thigh_l',     label: 'Бедро (лев)',       view: 'front', path: 'M88,162 L110,162 L108,210 L88,210 Z',   desc: 'Движение и опора.' },
     { id: 'thigh_r',     label: 'Бедро (прав)',      view: 'front', path: 'M110,162 L132,162 L132,210 L112,210 Z', desc: 'Движение и опора.' },
-    { id: 'leg_l',       label: 'Голень (лев)',       view: 'front', path: 'M86,225 L106,225 L104,270 L84,270 Z',   desc: 'Заземление и устойчивость.' },
-    { id: 'leg_r',       label: 'Голень (прав)',      view: 'front', path: 'M114,225 L134,225 L136,270 L116,270 Z', desc: 'Заземление и устойчивость.' },
+    { id: 'leg_l',       label: 'Голень (лев)',       view: 'front', path: 'M86,225 L106,225 L104,262 L84,262 Z',   desc: 'Заземление и устойчивость.' },
+    { id: 'leg_r',       label: 'Голень (прав)',      view: 'front', path: 'M114,225 L134,225 L136,262 L116,262 Z', desc: 'Заземление и устойчивость.' },
 
     // ── Спереди: декоративные (не выбираются) ────────────────────────────
     { id: 'elbow_l', view: 'front', selectable: false, path: 'M47,105 L61,105 L60,115 L46,115 Z' },
     { id: 'elbow_r', view: 'front', selectable: false, path: 'M159,105 L173,105 L174,115 L160,115 Z' },
     { id: 'knee_l',  view: 'front', selectable: false, path: 'M88,210 L108,210 L106,225 L86,225 Z' },
     { id: 'knee_r',  view: 'front', selectable: false, path: 'M112,210 L132,210 L134,225 L114,225 Z' },
-    { id: 'ankle_l', view: 'front', selectable: false, path: 'M84,258 L106,258 L108,265 L82,265 Z' },
-    { id: 'ankle_r', view: 'front', selectable: false, path: 'M114,258 L136,258 L138,265 L112,265 Z' },
+    { id: 'ankle_l', view: 'front', selectable: false, path: 'M84,262 L106,262 L108,274 L82,274 Z' },
+    { id: 'ankle_r', view: 'front', selectable: false, path: 'M114,262 L136,262 L138,274 L112,274 Z' },
 
     // ── Сзади: выбираемые зоны ───────────────────────────────────────────
     { id: 'upper_back',       label: 'Верх спины',        view: 'back', path: 'M72,60 L148,60 L140,90 L80,90 Z',       desc: 'Между лопатками — непосильная ноша.' },
@@ -86,10 +86,10 @@ const DATA = {
     { id: 'buttocks',         label: 'Ягодицы',           view: 'back', path: 'M88,150 L132,150 L134,182 L86,182 Z',   desc: 'Контроль и выживание.' },
     { id: 'back_thigh_l',     label: 'Бедро сзади (лев)', view: 'back', path: 'M86,182 L110,182 L108,230 L86,230 Z',   desc: 'Задняя поверхность бедра.' },
     { id: 'back_thigh_r',     label: 'Бедро сзади (прав)',view: 'back', path: 'M110,182 L134,182 L134,230 L112,230 Z', desc: 'Задняя поверхность бедра.' },
-    { id: 'calf_l',           label: 'Икра (лев)',         view: 'back', path: 'M86,245 L106,245 L104,263 L84,263 Z',   desc: 'Готовность к движению.' },
-    { id: 'calf_r',           label: 'Икра (прав)',        view: 'back', path: 'M114,245 L134,245 L136,263 L116,263 Z', desc: 'Готовность к движению.' },
-    { id: 'foot_back_l',      label: 'Стопа (лев)',        view: 'back', path: 'M75,268 L108,268 L107,288 L73,288 Z',   desc: 'Заземление и опора.' },
-    { id: 'foot_back_r',      label: 'Стопа (прав)',       view: 'back', path: 'M112,268 L145,268 L147,288 L110,288 Z', desc: 'Заземление и опора.' },
+    { id: 'calf_l',           label: 'Икра (лев)',         view: 'back', path: 'M86,245 L106,245 L104,262 L84,262 Z',   desc: 'Готовность к движению.' },
+    { id: 'calf_r',           label: 'Икра (прав)',        view: 'back', path: 'M114,245 L134,245 L136,262 L116,262 Z', desc: 'Готовность к движению.' },
+    { id: 'foot_back_l',      label: 'Стопа (лев)',        view: 'back', path: 'M83,274 L106,274 L104,290 L81,290 Z',   desc: 'Заземление и опора.' },
+    { id: 'foot_back_r',      label: 'Стопа (прав)',       view: 'back', path: 'M114,274 L137,274 L139,290 L112,290 Z', desc: 'Заземление и опора.' },
 
     // ── Сзади: декоративные (не выбираются) ──────────────────────────────
     { id: 'b_head',    view: 'back', selectable: false, path: 'M100,20 Q100,10 110,10 Q120,10 120,20 Q120,40 110,50 Q100,40 100,20' },
@@ -102,12 +102,14 @@ const DATA = {
     { id: 'b_el_r',    view: 'back', selectable: false, path: 'M158,105 L173,105 L174,115 L159,115 Z' },
     { id: 'b_all',     view: 'back', selectable: false, path: 'M46,115 L61,115 L60,130 L45,130 Z' },
     { id: 'b_alr',     view: 'back', selectable: false, path: 'M159,115 L174,115 L175,130 L160,130 Z' },
-    { id: 'b_hand_l',  view: 'back', selectable: false, path: 'M36,148 L56,148 L54,172 L34,172 Z' },
-    { id: 'b_hand_r',  view: 'back', selectable: false, path: 'M164,148 L184,148 L186,172 L162,172 Z' },
+    { id: 'b_all2',  view: 'back', selectable: false, path: 'M45,115 L62,115 L56,158 L39,158 Z' },
+    { id: 'b_alr2',  view: 'back', selectable: false, path: 'M158,115 L175,115 L181,158 L164,158 Z' },
+    { id: 'b_hand_l',  view: 'back', selectable: false, path: 'M14,178 L36,178 L34,195 L12,195 Z' },
+    { id: 'b_hand_r',  view: 'back', selectable: false, path: 'M184,178 L206,178 L208,195 L182,195 Z' },
     { id: 'b_knee_l',  view: 'back', selectable: false, path: 'M86,230 L108,230 L106,245 L84,245 Z' },
     { id: 'b_knee_r',  view: 'back', selectable: false, path: 'M112,230 L134,230 L136,245 L114,245 Z' },
-    { id: 'b_ankle_l', view: 'back', selectable: false, path: 'M84,258 L106,258 L108,268 L82,268 Z' },
-    { id: 'b_ankle_r', view: 'back', selectable: false, path: 'M114,258 L136,258 L138,268 L112,268 Z' }
+    { id: 'b_ankle_l', view: 'back', selectable: false, path: 'M84,262 L106,262 L108,274 L82,274 Z' },
+    { id: 'b_ankle_r', view: 'back', selectable: false, path: 'M114,262 L136,262 L138,274 L112,274 Z' }
   ],
 
   // ─── 8 типов телесных ощущений ────────────────────────────────────────────
