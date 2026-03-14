@@ -325,9 +325,8 @@ function renderBodyMap() {
 
   const zones = DATA.zones.filter(z => z.view === bodyMapView);
 
-  const imgBg = bodyMapView === 'front'
-    ? `<image href="img/body-glow.png" x="0" y="0" width="100" height="162" preserveAspectRatio="xMidYMid meet"/>`
-    : '';
+  const imgSrc = bodyMapView === 'front' ? 'img/body-front.png' : 'img/body-rear.png';
+  const imgBg = `<image href="${imgSrc}" x="0" y="0" width="100" height="162" preserveAspectRatio="xMidYMid meet"/>`;
 
   const paths = zones.map(z => {
     const isDecor = z.selectable === false;
