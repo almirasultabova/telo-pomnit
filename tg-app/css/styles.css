@@ -588,22 +588,27 @@ input, textarea { font-family: inherit; }
 
 /* Зоны на теле */
 .zone-path {
-  fill: rgba(42, 74, 56, 0.07);
-  stroke: rgba(255,255,255,0.50);
-  stroke-width: 0.8;
+  fill: rgba(255, 185, 80, 0.08);
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 0.7;
   cursor: pointer;
-  transition: fill .18s, filter .18s;
+  transition: fill .18s, stroke .18s, filter .18s;
+}
+.zone-path:hover {
+  fill: rgba(255, 185, 80, 0.22);
+  stroke: rgba(255, 220, 140, 0.80);
+  filter: drop-shadow(0 0 2px rgba(255, 170, 60, 0.45));
 }
 .zone-path--decor {
-  fill: rgba(42, 74, 56, 0.05);
-  stroke: rgba(255,255,255,0.25);
+  fill: rgba(255, 185, 80, 0.04);
+  stroke: rgba(255, 255, 255, 0.22);
   pointer-events: none;
 }
 .zone-path--active {
-  fill: rgba(42, 74, 56, 0.55);
-  stroke: rgba(42, 74, 56, 0.90);
-  stroke-width: 1;
-  filter: drop-shadow(0 0 6px rgba(42,74,56,0.50));
+  fill: rgba(255, 170, 50, 0.35);
+  stroke: rgba(255, 215, 100, 0.95);
+  stroke-width: 0.9;
+  filter: drop-shadow(0 0 4px rgba(255, 170, 50, 0.65));
 }
 
 .zone-btn {
