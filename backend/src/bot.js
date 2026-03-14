@@ -74,6 +74,142 @@ bot.command('app', async (ctx) => {
   await ctx.reply('Ваш дневник наблюдений:', { reply_markup: keyboard })
 })
 
+// ─── /activate — зачислить участницу (только ведущие) ───────────────────
+
+bot.command('activate', async (ctx) => {
+  if (!ADMIN_IDS.includes(ctx.from?.id)) {
+    return ctx.reply('Эта команда доступна только ведущим.')
+  }
+
+  const usernameRaw = ctx.message?.text?.split(' ')[1]?.replace('@', '')
+  if (!usernameRaw) {
+    return ctx.reply('Использование: /activate @username\n\nНапример: /activate @ivanova_anna')
+  }
+
+  const user = await db.user.findFirst({
+    where: {
+      OR: [{ username: usernameRaw }, { telegramUsername: usernameRaw }],
+      deletedAt: null,
+    },
+  })
+  if (!user) {
+    return ctx.reply(
+      `Пользователь @${usernameRaw} не найден.\n\n` +
+      `Убедитесь, что она открыла бот и нажала /start.`
+    )
+  }
+
+  const stream = await db.stream.findFirst({
+    where: { isActive: true },
+    orderBy: { startDate: 'desc' },
+  })
+  if (!stream) {
+    return ctx.reply('Нет активного потока. Создайте поток через API.')
+  }
+
+  const existing = await db.enrollment.findFirst({
+    where: { userId: user.id, streamId: stream.id },
+  })
+  if (existing?.status === 'active') {
+    return ctx.reply(`@${usernameRaw} уже зачислена в поток «${stream.name}».`)
+  }
+
+  if (existing) {
+    await db.enrollment.update({
+      where: { id: existing.id },
+      data: { status: 'active', paidAt: new Date() },
+    })
+  } else {
+    await db.enrollment.create({
+      data: { userId: user.id, streamId: stream.id, status: 'active', paidAt: new Date() },
+    })
+  }
+
+  const keyboard = new InlineKeyboard().webApp('Открыть приложение', MINI_APP_URL)
+  await bot.api.sendMessage(
+    Number(user.telegramId),
+    `Добро пожаловать в поток «${stream.name}» 🌿\n\n` +
+    `Ваш доступ открыт. Здесь — ваш личный дневник тела, трекер состояния и AI-ассистент.\n\n` +
+    `Приложение работает прямо в Telegram — нажмите кнопку ниже:`,
+    { reply_markup: keyboard }
+  )
+
+  await ctx.reply(`✅ @${usernameRaw} зачислена в поток «${stream.name}». Уведомление отправлено.`)
+})
+
+// ─── /deactivate — отозвать доступ (только ведущие) ──────────────────────
+
+bot.command('deactivate', async (ctx) => {
+  if (!ADMIN_IDS.includes(ctx.from?.id)) {
+    return ctx.reply('Эта команда доступна только ведущим.')
+  }
+
+  const usernameRaw = ctx.message?.text?.split(' ')[1]?.replace('@', '')
+  if (!usernameRaw) {
+    return ctx.reply('Использование: /deactivate @username')
+  }
+
+  const user = await db.user.findFirst({
+    where: {
+      OR: [{ username: usernameRaw }, { telegramUsername: usernameRaw }],
+      deletedAt: null,
+    },
+  })
+  if (!user) return ctx.reply(`Пользователь @${usernameRaw} не найден.`)
+
+  const enrollment = await db.enrollment.findFirst({
+    where: { userId: user.id, status: 'active' },
+    orderBy: { createdAt: 'desc' },
+  })
+  if (!enrollment) {
+    return ctx.reply(`@${usernameRaw} не имеет активного доступа.`)
+  }
+
+  await db.enrollment.update({
+    where: { id: enrollment.id },
+    data: { status: 'cancelled' },
+  })
+
+  await ctx.reply(`❌ Доступ @${usernameRaw} отозван.`)
+})
+
+// ─── /participants — список участниц потока (только ведущие) ─────────────
+
+bot.command('participants', async (ctx) => {
+  if (!ADMIN_IDS.includes(ctx.from?.id)) {
+    return ctx.reply('Эта команда доступна только ведущим.')
+  }
+
+  const stream = await db.stream.findFirst({
+    where: { isActive: true },
+    orderBy: { startDate: 'desc' },
+  })
+  if (!stream) return ctx.reply('Нет активного потока.')
+
+  const enrollments = await db.enrollment.findMany({
+    where: { streamId: stream.id },
+    include: { user: true },
+    orderBy: { createdAt: 'asc' },
+  })
+
+  if (!enrollments.length) {
+    return ctx.reply(`Поток «${stream.name}»: участниц пока нет.`)
+  }
+
+  const statusEmoji = { active: '✅', pending: '⏳', completed: '🏁', cancelled: '❌' }
+  const lines = enrollments.map((e, i) => {
+    const name = e.user.firstName || e.user.name || 'Без имени'
+    const username = e.user.username ? `@${e.user.username}` : e.user.telegramUsername ? `@${e.user.telegramUsername}` : ''
+    return `${i + 1}. ${statusEmoji[e.status] || '?'} ${name} ${username}`
+  })
+
+  await ctx.reply(
+    `Поток «${stream.name}»\n` +
+    `Участниц: ${enrollments.length}\n\n` +
+    lines.join('\n')
+  )
+})
+
 // ─── Ежедневное напоминание ───────────────────────────────────────────────
 // Запускается каждый день в 20:00 по московскому времени
 
@@ -81,7 +217,7 @@ async function sendDailyReminder() {
   // Получаем всех активных участников с уведомлениями
   const enrollments = await db.enrollment.findMany({
     where: {
-      status: 'ACTIVE',
+      status: 'active',
       user: { notificationsEnabled: true },
     },
     include: { user: true },
