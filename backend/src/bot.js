@@ -253,9 +253,62 @@ async function sendDailyReminder() {
   console.log(`[cron] Напоминания отправлены: ${sent} из ${enrollments.length}`)
 }
 
+// ─── Напоминание перед встречей ──────────────────────────────────────────
+// За 1 час до встречи участницы получают уведомление с темой и подготовкой
+
+async function sendMeetingReminder() {
+  const now = new Date()
+  // Ищем встречи, которые начнутся через 55–65 минут
+  const from = new Date(now.getTime() + 55 * 60 * 1000)
+  const to   = new Date(now.getTime() + 65 * 60 * 1000)
+
+  const meetings = await db.meeting.findMany({
+    where: { date: { gte: from, lte: to } },
+    include: { stream: true }
+  })
+
+  for (const meeting of meetings) {
+    const enrollments = await db.enrollment.findMany({
+      where: { streamId: meeting.streamId, status: 'active' },
+      include: { user: true }
+    })
+
+    const zoomLink = meeting.zoomLink || meeting.stream.zoomLink
+    const topicLine = meeting.topic ? `📌 ${meeting.topic}` : ''
+    const zoomLine  = zoomLink ? `\n🔗 Zoom: ${zoomLink}` : ''
+
+    const keyboard = new InlineKeyboard().webApp('Открыть приложение', MINI_APP_URL)
+    let sent = 0
+
+    for (const enrollment of enrollments) {
+      try {
+        await bot.api.sendMessage(
+          Number(enrollment.user.telegramId),
+          `Встреча ${meeting.number} начинается через час\n\n` +
+          `${topicLine}${zoomLine}\n\n` +
+          `Приложение для подготовки — ниже.`,
+          { reply_markup: keyboard }
+        )
+        sent++
+        if (sent % 20 === 0) await new Promise(r => setTimeout(r, 1000))
+      } catch { /* пользователь заблокировал бота */ }
+    }
+
+    if (sent > 0) {
+      console.log(`[cron] Напоминание о встрече ${meeting.number}: отправлено ${sent}`)
+    }
+  }
+}
+
 // ─── Cron: 20:00 МСК (17:00 UTC) каждый день ──────────────────────────────
 
 cron.schedule('0 17 * * *', sendDailyReminder, {
+  timezone: 'UTC',
+})
+
+// ─── Cron: каждый час — проверка встреч ────────────────────────────────────
+
+cron.schedule('0 * * * *', sendMeetingReminder, {
   timezone: 'UTC',
 })
 

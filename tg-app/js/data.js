@@ -269,7 +269,7 @@ const DATA = {
     title: '«Тело помнит»',
     subtitle: 'Интегративная терапевтическая группа',
     weeks: 5,
-    meetings: 8,
+    meetings: 9,
     format: 'Zoom + закрытый чат',
     nextStart: '19 марта 2026',
     chatUrl: 'https://t.me/+IwJSzSom75M0ZDcy',
