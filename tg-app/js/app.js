@@ -1178,12 +1178,21 @@ function exportDiaryPdf() {
 </body>
 </html>`;
 
-  const w = window.open('', '_blank');
-  if (w) {
-    w.document.write(html);
-    w.document.close();
-    w.focus();
-    setTimeout(() => w.print(), 600);
+  // Скачиваем как HTML-файл (window.open заблокирован в Telegram)
+  try {
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `dnevnik-tela-${new Date().toISOString().slice(0,10)}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch {
+    // Fallback для Telegram — открываем через data URI
+    const encoded = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+    tg ? tg.openLink(encoded) : window.open(encoded, '_blank');
   }
 }
 
