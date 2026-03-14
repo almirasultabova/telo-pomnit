@@ -27,8 +27,16 @@ async function aiRoutes(app) {
         }
       }
     }
-  }, async (request) => {
+  }, async (request, reply) => {
     const { message, sessionId } = request.body
+
+    // Проверяем активный enrollment
+    const enrollment = await db.enrollment.findFirst({
+      where: { userId: request.user.id, status: 'active' }
+    })
+    if (!enrollment) {
+      return reply.code(403).send({ error: 'AI-чат доступен только активным участницам программы' })
+    }
 
     // Загружаем или создаём сессию
     let session = null

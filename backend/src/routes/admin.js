@@ -119,6 +119,71 @@ async function adminRoutes(app) {
       data: request.body
     })
   })
+
+  // ─── Зачисление участниц ─────────────────────────────────────────────────
+
+  // POST /admin/enrollments — зачислить участницу в поток
+  // Если запись уже есть — активирует её повторно (например, после отмены)
+  app.post('/admin/enrollments', {
+    preHandler: requireAdmin,
+    schema: {
+      body: {
+        type: 'object',
+        required: ['userId', 'streamId'],
+        properties: {
+          userId:   { type: 'string' },
+          streamId: { type: 'string' }
+        }
+      }
+    }
+  }, async (request) => {
+    const { userId, streamId } = request.body
+    const existing = await db.enrollment.findFirst({ where: { userId, streamId } })
+    if (existing) {
+      return db.enrollment.update({
+        where: { id: existing.id },
+        data: { status: 'active', paidAt: new Date() }
+      })
+    }
+    return db.enrollment.create({
+      data: { userId, streamId, status: 'active', paidAt: new Date() }
+    })
+  })
+
+  // PATCH /admin/enrollments/:id — изменить статус (active / completed / cancelled)
+  app.patch('/admin/enrollments/:id', {
+    preHandler: requireAdmin,
+    schema: {
+      body: {
+        type: 'object',
+        required: ['status'],
+        properties: {
+          status: { type: 'string', enum: ['pending', 'active', 'completed', 'cancelled'] }
+        }
+      }
+    }
+  }, async (request, reply) => {
+    const enrollment = await db.enrollment.findUnique({ where: { id: request.params.id } })
+    if (!enrollment) return reply.code(404).send({ error: 'Запись не найдена' })
+    return db.enrollment.update({
+      where: { id: request.params.id },
+      data: { status: request.body.status }
+    })
+  })
+
+  // POST /admin/streams/:id/complete — завершить поток: active → completed, isActive = false
+  // Вызывается вручную после последней встречи
+  app.post('/admin/streams/:id/complete', { preHandler: requireAdmin }, async (request) => {
+    const { count } = await db.enrollment.updateMany({
+      where: { streamId: request.params.id, status: 'active' },
+      data: { status: 'completed' }
+    })
+    await db.stream.update({
+      where: { id: request.params.id },
+      data: { isActive: false }
+    })
+    return { completed: count }
+  })
 }
 
 module.exports = adminRoutes
