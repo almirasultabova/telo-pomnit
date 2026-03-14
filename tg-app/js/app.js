@@ -1592,23 +1592,42 @@ function renderCheckinScales() {
 }
 
 function saveCheckinEntry() {
-  const note = document.getElementById('checkin-note')?.value?.trim() || '';
+  try {
+    const note = document.getElementById('checkin-note')?.value?.trim() || '';
 
-  // Не сохранять если уже есть чекин сегодня
-  const checkins = Storage.getCheckins();
-  const today = new Date().toDateString();
-  const alreadyToday = checkins.some(c => new Date(c.date).toDateString() === today);
-  if (alreadyToday) {
-    // Обновляем последний чекин вместо дубля
-    const idx = checkins.findIndex(c => new Date(c.date).toDateString() === today);
-    checkins[idx] = { ...checkins[idx], ...checkinDraft, note };
-    localStorage.setItem('tp_checkins', JSON.stringify(checkins));
-  } else {
-    Storage.saveCheckin({ ...checkinDraft, note });
+    const checkins = Storage.getCheckins();
+    const today = new Date().toDateString();
+    const alreadyToday = checkins.some(c => new Date(c.date).toDateString() === today);
+    if (alreadyToday) {
+      const idx = checkins.findIndex(c => new Date(c.date).toDateString() === today);
+      checkins[idx] = { ...checkins[idx], ...checkinDraft, note };
+      localStorage.setItem('tp_checkins', JSON.stringify(checkins));
+    } else {
+      Storage.saveCheckin({ ...checkinDraft, note });
+    }
+
+    hapticNotify('success');
+    showToast('Чекин сохранён ✓');
+    setTimeout(goBack, 900);
+  } catch (e) {
+    showToast('Ошибка: ' + e.message, false);
   }
+}
 
-  hapticNotify('success');
-  goBack();
+function showToast(msg, ok = true) {
+  let t = document.getElementById('app-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'app-toast';
+    t.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:9999;padding:10px 20px;border-radius:24px;font-size:14px;font-weight:500;pointer-events:none;transition:opacity 0.3s;max-width:280px;text-align:center;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.background = ok ? '#22c55e' : '#ef4444';
+  t.style.color = '#fff';
+  t.style.opacity = '1';
+  clearTimeout(t._hide);
+  t._hide = setTimeout(() => { t.style.opacity = '0'; }, 2200);
 }
 
 function renderCheckinHistory() {
