@@ -966,7 +966,7 @@ function renderSchedule() {
 
   container.innerHTML = `
     <div class="section-label mt-16 mb-4">Расписание встреч</div>
-    <div class="attend-hint">Нажми + после встречи, чтобы отметить присутствие</div>
+    <div class="attend-hint">После встречи появится кнопка + — отметь присутствие</div>
     <div class="schedule-list">${items}</div>`;
 }
 
