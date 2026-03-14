@@ -7,7 +7,8 @@ const KEYS = {
   ONBOARDING: 'tp_onboarding_done', // флаг завершения онбординга
   OFFER_SEEN: 'tp_offer_seen',      // флаг показа оффера при первом открытии
   ATTENDED:   'tp_attended',        // массив id посещённых встреч
-  TRIGGERS:   'tp_trigger_entries'  // дневник реакций (стоп-реакция)
+  TRIGGERS:   'tp_trigger_entries', // дневник реакций (стоп-реакция)
+  CHECKINS:   'tp_checkins'         // трекер изменений (недельные чекины)
 };
 
 const Storage = {
@@ -166,6 +167,29 @@ const Storage = {
 
   isAttended(meetingId) {
     return this.getAttended().includes(meetingId);
+  },
+
+  // ─── Трекер изменений (чекины) ───────────────────────────────────────────
+
+  getCheckins() {
+    try {
+      return JSON.parse(localStorage.getItem(KEYS.CHECKINS)) || [];
+    } catch {
+      return [];
+    }
+  },
+
+  /** Формат: { id, date, tension, anxiety, energy, safety, bodyContact, note } */
+  saveCheckin(checkin) {
+    const list = this.getCheckins();
+    list.push({ ...checkin, id: Date.now(), date: new Date().toISOString() });
+    localStorage.setItem(KEYS.CHECKINS, JSON.stringify(list));
+    if (typeof Api !== 'undefined' && Api.isAuthed()) {
+      const avg = Math.round(
+        (checkin.tension + checkin.anxiety + checkin.energy + checkin.safety + checkin.bodyContact) / 5
+      );
+      Api.saveCheckin({ bodyScore: avg, note: checkin.note || '' }).catch(() => {});
+    }
   },
 
   // ─── Синхронизация с бэкендом ─────────────────────────────────────────────
