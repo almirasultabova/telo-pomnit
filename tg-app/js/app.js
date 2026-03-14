@@ -1397,7 +1397,7 @@ function renderReactionGrid() {
 function renderTriggerZoneChips() {
   const wrap = document.getElementById('trigger-zone-chips');
   if (!wrap) return;
-  const zones = DATA.zones.filter(z => z.view === 'front');
+  const zones = DATA.zones.filter(z => z.label && z.selectable !== false);
   wrap.innerHTML = zones.map(z =>
     `<button class="zone-chip" data-zone="${z.id}">${z.label}</button>`
   ).join('');
@@ -1421,14 +1421,18 @@ function renderTriggerSensationChips() {
   const grid = document.getElementById('trigger-sensations-grid');
   if (!grid) return;
   grid.innerHTML = DATA.sensations.map(s =>
-    `<button class="sensation-chip" data-id="${s.id}">${s.emoji} ${s.label}</button>`
+    `<div class="checklist-item" data-id="${s.id}">
+      <span class="checklist-check"></span>
+      <span class="checklist-emoji">${s.emoji}</span>
+      <span class="checklist-label">${s.label}</span>
+    </div>`
   ).join('');
 
-  grid.querySelectorAll('.sensation-chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      btn.classList.toggle('sensation-chip--selected');
-      const id = btn.dataset.id;
-      if (btn.classList.contains('sensation-chip--selected')) {
+  grid.querySelectorAll('.checklist-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('checklist-item--selected');
+      const id = item.dataset.id;
+      if (item.classList.contains('checklist-item--selected')) {
         if (!triggerDraft.sensations.includes(id)) triggerDraft.sensations.push(id);
       } else {
         triggerDraft.sensations = triggerDraft.sensations.filter(s => s !== id);

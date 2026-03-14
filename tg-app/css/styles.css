@@ -1939,3 +1939,45 @@ input, textarea { font-family: inherit; }
 .checkin-delta--good   { color: #22c55e; }
 .checkin-delta--bad    { color: #ef4444; }
 .checkin-delta--same   { color: var(--tg-hint); }
+
+/* ─── Чеклист ощущений (Стоп-реакция) ────────────────────────────────────── */
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--tg-secondary-bg);
+  border: 1.5px solid var(--card-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.checklist-item--selected {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.checklist-check {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--card-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.checklist-item--selected .checklist-check {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.checklist-item--selected .checklist-check::after {
+  content: '✓';
+  font-size: 13px;
+  color: #fff;
+  line-height: 1;
+}
+.checklist-emoji { font-size: 18px; }
+.checklist-label { font-size: 15px; color: var(--tg-text); }
