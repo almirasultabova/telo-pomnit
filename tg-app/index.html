@@ -100,8 +100,11 @@
         <button class="btn btn--ghost btn--full btn--sm mb-8" id="ai-chat-btn">
           🤖 Соматический ассистент
         </button>
-        <button class="btn btn--ghost btn--full btn--sm mb-16" id="stop-reaction-btn">
+        <button class="btn btn--ghost btn--full btn--sm mb-8" id="stop-reaction-btn">
           ⚡ Зафиксировать реакцию
+        </button>
+        <button class="btn btn--ghost btn--full btn--sm mb-16" id="checkin-btn">
+          📊 Трекер изменений
         </button>
 
         <!-- Последние записи -->
@@ -440,6 +443,46 @@
       <button class="screen-header-btn" id="new-trigger-btn">+ Новая</button>
     </div>
     <div class="screen-scroll screen-scroll--no-bottom" id="trigger-history-list">
+      <!-- Рендерится в app.js -->
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН: ТРЕКЕР ИЗМЕНЕНИЙ — форма чекина
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-checkin">
+    <div class="screen-header">
+      <div class="screen-title">Трекер изменений</div>
+      <div class="screen-sub">Оцени своё состояние сейчас</div>
+      <button class="screen-header-btn" id="checkin-history-btn">История</button>
+    </div>
+    <div class="screen-scroll" style="padding-bottom: calc(var(--bottom-h) + 16px)">
+
+      <div class="checkin-scales" id="checkin-scales">
+        <!-- 5 шкал рендерятся в app.js -->
+      </div>
+
+      <div class="section-label mt-16">Заметка <span class="optional-hint">необязательно</span></div>
+      <textarea class="note-textarea" id="checkin-note"
+        placeholder="Что замечаешь? Что изменилось на этой неделе..." rows="3"></textarea>
+
+    </div>
+    <div class="screen-bottom">
+      <button class="btn btn--primary btn--full" id="checkin-save-btn">
+        Сохранить чекин
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ЭКРАН: ИСТОРИЯ ЧЕКИНОВ — сравнение было/стало
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-checkin-history">
+    <div class="screen-header">
+      <div class="screen-title">Мои изменения</div>
+      <button class="screen-header-btn" id="new-checkin-btn">+ Новый</button>
+    </div>
+    <div class="screen-scroll screen-scroll--no-bottom" id="checkin-history-list">
       <!-- Рендерится в app.js -->
     </div>
   </div>

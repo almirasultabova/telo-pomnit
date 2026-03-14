@@ -1870,3 +1870,72 @@ input, textarea { font-family: inherit; }
 }
 .trigger-stat-label { font-size: 13px; color: var(--tg-text); white-space: nowrap; min-width: 110px; }
 .trigger-stat-count { font-size: 13px; font-weight: 600; color: var(--tg-hint); min-width: 20px; text-align: right; }
+
+/* ─── Трекер изменений — форма чекина ─────────────────────────────────── */
+.checkin-scale-item {
+  background: var(--tg-secondary-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.checkin-scale-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.checkin-scale-emoji { font-size: 18px; }
+.checkin-scale-label { font-size: 14px; font-weight: 500; color: var(--tg-text); flex: 1; }
+.checkin-scale-val   { font-size: 20px; font-weight: 700; color: var(--accent); min-width: 24px; text-align: right; }
+
+/* ─── История чекинов — карточка ──────────────────────────────────────── */
+.checkin-card {
+  background: var(--tg-secondary-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.checkin-card-date { font-size: 13px; font-weight: 600; color: var(--tg-hint); margin-bottom: 10px; }
+.checkin-card-note { font-size: 13px; color: var(--tg-hint); font-style: italic; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--card-border); }
+
+.checkin-mini-bars   { display: flex; flex-direction: column; gap: 6px; }
+.checkin-mini-row    { display: flex; align-items: center; gap: 8px; }
+.checkin-mini-label  { font-size: 14px; width: 20px; }
+.checkin-mini-bar-wrap { flex: 1; height: 6px; background: var(--card-border); border-radius: 3px; overflow: hidden; }
+.checkin-mini-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+.checkin-mini-val    { font-size: 12px; color: var(--tg-hint); width: 16px; text-align: right; }
+
+/* ─── Сравнение было/стало ─────────────────────────────────────────────── */
+.checkin-comparison {
+  background: var(--tg-secondary-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.checkin-comparison-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tg-text);
+  margin-bottom: 12px;
+}
+.checkin-comparison-dates { font-size: 12px; font-weight: 400; color: var(--tg-hint); }
+.checkin-compare-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--card-border);
+}
+.checkin-compare-row:last-child { border-bottom: none; }
+.checkin-compare-label { font-size: 13px; color: var(--tg-text); flex: 1; }
+.checkin-compare-vals  { font-size: 13px; color: var(--tg-hint); }
+.checkin-delta         { font-size: 13px; font-weight: 700; min-width: 28px; text-align: right; }
+.checkin-delta--good   { color: #22c55e; }
+.checkin-delta--bad    { color: #ef4444; }
+.checkin-delta--same   { color: var(--tg-hint); }

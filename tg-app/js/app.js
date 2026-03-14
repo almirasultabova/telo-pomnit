@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initHistory();
   initAiChat();
   initTrigger();
+  initCheckin();
 
   // Авторизация через бэкенд (в фоне, не блокирует UI)
   Api.auth()
@@ -1514,4 +1515,179 @@ function renderTriggerHistory() {
       <div class="section-label mt-16">Все записи</div>
       ${listHtml}
     </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// ТРЕКЕР ИЗМЕНЕНИЙ
+// ─────────────────────────────────────────────────────────────────────────
+
+const CHECKIN_SCALES = [
+  { key: 'tension',     label: 'Напряжение в теле', emoji: '😤', lowBetter: true,  low: 'нет',  high: 'сильное' },
+  { key: 'anxiety',     label: 'Тревога',           emoji: '😰', lowBetter: true,  low: 'нет',  high: 'сильная' },
+  { key: 'energy',      label: 'Энергия',           emoji: '⚡',  lowBetter: false, low: 'мало', high: 'много'   },
+  { key: 'safety',      label: 'Безопасность',      emoji: '🛡️', lowBetter: false, low: 'нет',  high: 'есть'   },
+  { key: 'bodyContact', label: 'Контакт с телом',   emoji: '🫀', lowBetter: false, low: 'слабый', high: 'сильный' },
+];
+
+const checkinDraft = { tension: 5, anxiety: 5, energy: 5, safety: 5, bodyContact: 5 };
+
+function initCheckin() {
+  // Кнопка «📊 Трекер изменений» в дневнике
+  document.getElementById('checkin-btn')?.addEventListener('click', () => {
+    renderCheckinScales();
+    document.getElementById('checkin-note').value = '';
+    goTo('checkin');
+    haptic('light');
+  });
+
+  // Кнопка «История» в шапке экрана чекина
+  document.getElementById('checkin-history-btn')?.addEventListener('click', () => {
+    renderCheckinHistory();
+    goTo('checkin-history');
+    haptic('light');
+  });
+
+  // Кнопка «+ Новый» из экрана истории
+  document.getElementById('new-checkin-btn')?.addEventListener('click', () => {
+    renderCheckinScales();
+    document.getElementById('checkin-note').value = '';
+    goTo('checkin');
+    haptic('light');
+  });
+
+  // Сохранить чекин
+  document.getElementById('checkin-save-btn')?.addEventListener('click', saveCheckinEntry);
+}
+
+function renderCheckinScales() {
+  const container = document.getElementById('checkin-scales');
+  if (!container) return;
+
+  container.innerHTML = CHECKIN_SCALES.map(s => `
+    <div class="checkin-scale-item">
+      <div class="checkin-scale-header">
+        <span class="checkin-scale-emoji">${s.emoji}</span>
+        <span class="checkin-scale-label">${s.label}</span>
+        <span class="checkin-scale-val" id="val-${s.key}">5</span>
+      </div>
+      <input type="range" class="intensity-slider" min="1" max="10" value="5"
+        id="slider-${s.key}" data-key="${s.key}">
+      <div class="intensity-labels">
+        <span class="intensity-hint">${s.low}</span>
+        <span class="intensity-hint">${s.high}</span>
+      </div>
+    </div>`).join('');
+
+  CHECKIN_SCALES.forEach(s => {
+    checkinDraft[s.key] = 5;
+    const slider = document.getElementById(`slider-${s.key}`);
+    if (slider) {
+      slider.addEventListener('input', () => {
+        checkinDraft[s.key] = Number(slider.value);
+        const valEl = document.getElementById(`val-${s.key}`);
+        if (valEl) valEl.textContent = slider.value;
+      });
+    }
+  });
+}
+
+function saveCheckinEntry() {
+  const note = document.getElementById('checkin-note')?.value?.trim() || '';
+
+  // Не сохранять если уже есть чекин сегодня
+  const checkins = Storage.getCheckins();
+  const today = new Date().toDateString();
+  const alreadyToday = checkins.some(c => new Date(c.date).toDateString() === today);
+  if (alreadyToday) {
+    // Обновляем последний чекин вместо дубля
+    const idx = checkins.findIndex(c => new Date(c.date).toDateString() === today);
+    checkins[idx] = { ...checkins[idx], ...checkinDraft, note };
+    localStorage.setItem('tp_checkins', JSON.stringify(checkins));
+  } else {
+    Storage.saveCheckin({ ...checkinDraft, note });
+  }
+
+  hapticNotify('success');
+  goBack();
+}
+
+function renderCheckinHistory() {
+  const container = document.getElementById('checkin-history-list');
+  if (!container) return;
+
+  const checkins = Storage.getCheckins();
+
+  if (!checkins.length) {
+    container.innerHTML = `
+      <div style="text-align:center; padding: 48px 24px; color:var(--tg-hint)">
+        <div style="font-size:2.5rem; margin-bottom:12px">📊</div>
+        <div>Чекинов пока нет.</div>
+        <div style="margin-top:4px; font-size:13px">Сделай первую оценку — это займёт минуту</div>
+      </div>`;
+    return;
+  }
+
+  // Карточка сравнения: первый vs последний чекин (если >= 2)
+  let comparisonHtml = '';
+  if (checkins.length >= 2) {
+    const first = checkins[0];
+    const last  = checkins[checkins.length - 1];
+    const firstDate = new Date(first.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+    const lastDate  = new Date(last.date).toLocaleDateString('ru-RU',  { day: 'numeric', month: 'short' });
+
+    const rows = CHECKIN_SCALES.map(s => {
+      const a = first[s.key] || 5;
+      const b = last[s.key]  || 5;
+      const delta = b - a;
+      const improved = s.lowBetter ? delta < 0 : delta > 0;
+      const worsened = s.lowBetter ? delta > 0 : delta < 0;
+      const arrow  = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
+      const cls    = improved ? 'checkin-delta--good' : worsened ? 'checkin-delta--bad' : 'checkin-delta--same';
+      return `<div class="checkin-compare-row">
+        <span class="checkin-compare-label">${s.emoji} ${s.label}</span>
+        <span class="checkin-compare-vals">${a} → ${b}</span>
+        <span class="checkin-delta ${cls}">${arrow}${Math.abs(delta) || ''}</span>
+      </div>`;
+    }).join('');
+
+    comparisonHtml = `
+      <div class="checkin-comparison">
+        <div class="checkin-comparison-head">
+          <span>Изменения за программу</span>
+          <span class="checkin-comparison-dates">${firstDate} → ${lastDate}</span>
+        </div>
+        ${rows}
+      </div>`;
+  }
+
+  // Список чекинов (от новых к старым)
+  const listHtml = [...checkins].reverse().map(c => {
+    const date = new Date(c.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+    const bars = CHECKIN_SCALES.map(s => {
+      const val = c[s.key] || 5;
+      const pct = val * 10;
+      const color = s.lowBetter
+        ? `hsl(${120 - val * 10}, 60%, 55%)`
+        : `hsl(${val * 10}, 60%, 45%)`;
+      return `<div class="checkin-mini-row">
+        <span class="checkin-mini-label">${s.emoji}</span>
+        <div class="checkin-mini-bar-wrap">
+          <div class="checkin-mini-bar-fill" style="width:${pct}%; background:${color}"></div>
+        </div>
+        <span class="checkin-mini-val">${val}</span>
+      </div>`;
+    }).join('');
+
+    return `<div class="checkin-card">
+      <div class="checkin-card-date">${date}</div>
+      <div class="checkin-mini-bars">${bars}</div>
+      ${c.note ? `<div class="checkin-card-note">${c.note}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  container.innerHTML = `<div style="padding: 0 16px 24px">
+    ${comparisonHtml}
+    <div class="section-label" style="padding-top:${checkins.length >= 2 ? 16 : 0}px">Все чекины</div>
+    ${listHtml}
+  </div>`;
 }
