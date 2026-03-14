@@ -1615,6 +1615,19 @@ input, textarea { font-family: inherit; }
 .screen-header-btn:active { color: var(--accent); border-color: var(--accent); }
 
 /* ─── AI Чат ──────────────────────────────────────────────────────────────── */
+.ai-locked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px 24px;
+  text-align: center;
+}
+.ai-locked-icon { font-size: 48px; margin-bottom: 16px; }
+.ai-locked-title { font-size: 17px; font-weight: 600; color: var(--tg-text); margin-bottom: 10px; }
+.ai-locked-text { font-size: 14px; color: var(--tg-hint); line-height: 1.6; }
+
 .ai-welcome {
   padding: 40px 24px;
   text-align: center;

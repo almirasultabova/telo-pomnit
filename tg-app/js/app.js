@@ -117,7 +117,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Авторизация через бэкенд (в фоне, не блокирует UI)
   Api.auth()
-    .then(() => Storage.initFromApi())
+    .then(async () => {
+      Storage.initFromApi();
+      try {
+        const access = await Api.getAccess();
+        aiAccessGranted = !!access?.canWrite;
+        // Если AI-экран уже открыт — перерисовываем
+        if (currentScreen === 'ai-chat') renderAiChat();
+      } catch {
+        /* нет связи — оставляем null, чат откроется с ошибкой при отправке */
+      }
+    })
     .catch(() => {}); // без бэкенда — работаем локально
 
   // Запускаем сплэш → онбординг (первый раз) или сразу главный
@@ -1202,6 +1212,7 @@ function exportDiaryPdf() {
 
 let aiSessionId = null;
 let aiMessages = [];
+let aiAccessGranted = null; // null = неизвестно, true = есть, false = нет
 
 function initAiChat() {
   document.getElementById('ai-send-btn')?.addEventListener('click', sendAiMessage);
@@ -1223,7 +1234,21 @@ function initAiChat() {
 
 function renderAiChat() {
   const container = document.getElementById('ai-messages');
+  const inputBar  = document.getElementById('ai-input-bar');
   if (!container) return;
+
+  if (aiAccessGranted === false) {
+    container.innerHTML = `
+      <div class="ai-locked">
+        <div class="ai-locked-icon">🌿</div>
+        <div class="ai-locked-title">Доступ к ассистенту</div>
+        <div class="ai-locked-text">AI-ассистент доступен участницам программы.<br><br>Ссылка придёт после зачисления в поток.</div>
+      </div>`;
+    if (inputBar) inputBar.style.display = 'none';
+    return;
+  }
+
+  if (inputBar) inputBar.style.display = '';
 
   if (!aiMessages.length) {
     container.innerHTML = `
