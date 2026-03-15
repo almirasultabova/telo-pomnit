@@ -80,13 +80,12 @@ h1,h2,h3,h4{font-family:Georgia,'Times New Roman',serif;font-style:italic;line-h
 .btn--ghost:hover{background:rgba(255,255,255,0.08)}
 .btn--full{width:100%}
 
-/* reveal */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1);animation:css-reveal 0s 4s forwards}
-.reveal.visible{opacity:1;transform:none;animation:none}
+/* reveal — скрываем только если JS загрузился */
+.js-ready .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:none}
 .reveal-delay-1{transition-delay:.1s}
 .reveal-delay-2{transition-delay:.2s}
 .reveal-delay-3{transition-delay:.3s}
-@keyframes css-reveal{to{opacity:1;transform:none}}
 
 /* animations */
 @keyframes breathe{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.05);opacity:1}}
@@ -479,8 +478,8 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 .case-box:hover{box-shadow:0 12px 40px rgba(42,74,56,.1);transform:translateY(-3px)}
 
 /* Stagger child reveal */
-.stagger-child{opacity:0;transform:translateY(22px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1);animation:css-reveal 0s 4s forwards}
-.stagger-child.visible{opacity:1;transform:none;animation:none}
+.js-ready .stagger-child{opacity:0;transform:translateY(22px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1)}
+.stagger-child.visible{opacity:1;transform:none}
 
 /* Section gold decorator line */
 .section-line{display:block;width:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);margin:0 auto 20px;transition:width 1s cubic-bezier(.22,1,.36,1)}
@@ -1570,6 +1569,9 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 </button>
 
 <script>
+// Включаем анимации только если JS работает
+document.documentElement.classList.add('js-ready');
+
 // Loading screen
 (function(){
   var ls = document.getElementById('loading-screen');
