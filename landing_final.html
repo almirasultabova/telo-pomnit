@@ -1608,28 +1608,30 @@ document.documentElement.classList.add('js-ready');
   });
 })();
 
+// Hard fallback: показать всё через 3с независимо от остального JS
+setTimeout(function(){
+  document.querySelectorAll('.reveal,.stagger-child').forEach(function(el){
+    el.classList.add('visible');
+  });
+}, 3000);
+
 // Reveal on scroll
 (function(){
-  var els = document.querySelectorAll('.reveal');
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
-    });
-  }, {threshold:0.08, rootMargin:'0px 0px -40px 0px'});
-  els.forEach(function(el){ io.observe(el); });
-  // Fallback: reveal all in viewport on load (after loading screen)
-  setTimeout(function(){
-    els.forEach(function(el){
-      var r = el.getBoundingClientRect();
-      if(r.top < window.innerHeight && r.bottom > 0){ el.classList.add('visible'); }
-    });
-  }, 2400);
-  // Hard fallback: reveal everything after 3s no matter what
-  setTimeout(function(){
-    document.querySelectorAll('.reveal,.stagger-child').forEach(function(el){
-      el.classList.add('visible');
-    });
-  }, 3000);
+  try {
+    var els = document.querySelectorAll('.reveal');
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+      });
+    }, {threshold:0.08, rootMargin:'0px 0px -40px 0px'});
+    els.forEach(function(el){ io.observe(el); });
+    setTimeout(function(){
+      els.forEach(function(el){
+        var r = el.getBoundingClientRect();
+        if(r.top < window.innerHeight && r.bottom > 0){ el.classList.add('visible'); }
+      });
+    }, 1800);
+  } catch(e) {}
 })();
 
 // Breathing labels — sync with 8s animation: 0-38% вдох, 38-52% пауза, 52-88% выдох, 88-100% пауза
