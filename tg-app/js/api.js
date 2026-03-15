@@ -1,7 +1,7 @@
 // api.js — клиент для работы с бэкендом «Тело помнит»
 // Заменяет прямые обращения к localStorage через API-запросы.
 
-const API_URL = 'https://telo-pomnit-production.up.railway.app';
+const API_URL = 'https://api.telo-pomnit.ru';
 
 // ─── JWT токен ────────────────────────────────────────────────────────────
 
