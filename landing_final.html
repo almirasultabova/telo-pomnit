@@ -112,8 +112,8 @@ h1,h2,h3,h4{font-family:Georgia,'Times New Roman',serif;font-style:italic;line-h
 #scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--green);transform-origin:left;transform:scaleX(0);z-index:100;transition:transform .1s linear}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;width:100%;z-index:90;padding:24px 0;transition:all .3s}
-nav.scrolled{background:rgba(247,244,239,.92);backdrop-filter:blur(12px);padding:12px 0;box-shadow:var(--shadow)}
+nav{position:fixed;top:0;left:0;width:100%;z-index:90;padding:24px 0;transition:all .3s;background:rgba(247,244,239,.92);backdrop-filter:blur(12px)}
+nav.scrolled{padding:12px 0;box-shadow:var(--shadow)}
 .nav-inner{display:flex;align-items:center;justify-content:space-between}
 .nav-logo{font-family:Georgia,serif;font-style:italic;font-size:26px;color:var(--green);letter-spacing:.01em}
 .nav-links{display:flex;align-items:center;gap:32px}
@@ -1623,6 +1623,12 @@ document.documentElement.classList.add('js-ready');
       if(r.top < window.innerHeight && r.bottom > 0){ el.classList.add('visible'); }
     });
   }, 2400);
+  // Hard fallback: reveal everything after 3s no matter what
+  setTimeout(function(){
+    document.querySelectorAll('.reveal,.stagger-child').forEach(function(el){
+      el.classList.add('visible');
+    });
+  }, 3000);
 })();
 
 // Breathing labels — sync with 8s animation: 0-38% вдох, 38-52% пауза, 52-88% выдох, 88-100% пауза
