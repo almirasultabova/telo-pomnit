@@ -1614,25 +1614,16 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   });
 })();
 
-// Reveal on scroll — добавляем .animate только через JS, потом показываем
+// Reveal on scroll
 (function(){
   try {
-    var els = document.querySelectorAll('.reveal');
-    // Сначала включаем анимацию
-    els.forEach(function(el){ el.classList.add('animate'); });
-    document.querySelectorAll('.stagger-child').forEach(function(el){ el.classList.add('animate'); });
+    var els = document.querySelectorAll('.reveal,.stagger-child');
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
         if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
       });
-    }, {threshold:0.08, rootMargin:'0px 0px -40px 0px'});
+    }, {threshold:0.08});
     els.forEach(function(el){ io.observe(el); });
-    setTimeout(function(){
-      els.forEach(function(el){
-        var r = el.getBoundingClientRect();
-        if(r.top < window.innerHeight && r.bottom > 0){ el.classList.add('visible'); }
-      });
-    }, 1800);
   } catch(e) {}
 })();
 
