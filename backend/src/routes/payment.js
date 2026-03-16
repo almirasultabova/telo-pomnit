@@ -46,7 +46,7 @@ async function paymentRoutes(app) {
     const { email, name } = request.body
 
     const payment = await yukassaRequest('POST', '/payments', {
-      amount: { value: '15000.00', currency: 'RUB' },
+      amount: { value: new Date() < new Date('2026-03-22T00:00:00+03:00') ? '12000.00' : '15000.00', currency: 'RUB' },
       confirmation: {
         type: 'redirect',
         return_url: `${process.env.APP_URL || 'https://telo-pomnit.ru'}/thanks.html`
