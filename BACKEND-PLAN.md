@@ -1,6 +1,14 @@
 # BACKEND-PLAN.md — Бэкенд «Тело помнит»
 
-_Дата: март 2026. Автор архитектуры: Claude_
+_Дата: март 2026. Обновлено: март 2026. Автор архитектуры: Claude_
+
+## Статус: ✅ Задеплоен и работает
+
+**Сервер:** Beget VPS `45.11.93.236` (Ubuntu 24.04)
+**API URL:** `https://api.telo-pomnit.ru`
+**Health check:** `curl https://api.telo-pomnit.ru/health`
+**Управление процессом:** `pm2 list` / `pm2 restart telo-backend`
+**Код на сервере:** `/var/www/telo-pomnit/backend/`
 
 ---
 
@@ -26,9 +34,10 @@ _Дата: март 2026. Автор архитектуры: Claude_
 | ORM | Prisma | читаемые схемы, автомиграции |
 | Telegram-бот | Grammy | современная библиотека, TypeScript-ready |
 | Оплата | ЮKassa Node.js SDK | работает с самозанятыми |
+| Email | Resend SDK или Nodemailer (SMTP) | уведомления после оплаты |
 | AI-чат | OpenAI SDK (GPT-4o) | есть API ключ |
 | PDF | pdfkit | генерация без браузера |
-| Хостинг | Beget VPS (~400–500 ₽/мес) | серверы в России, 152-ФЗ |
+| Хостинг | Beget VPS `45.11.93.236` (~500 ₽/мес) | серверы в России, 152-ФЗ ✅ |
 | Планировщик | node-cron | ежедневные уведомления |
 | Auth | JWT + Telegram initData | стандарт для Mini Apps |
 | Process manager | PM2 | автозапуск сервера после перезагрузки |
@@ -328,9 +337,10 @@ PATCH /admin/meetings/:id
 
 **После оплаты (webhook от ЮKassa):**
 1. Создать enrollment в БД
-2. Отправить участнице welcome-сообщение с кнопкой «Открыть приложение»
-3. Отправить анкету «До потока» (inline-кнопка → Mini App)
-4. Уведомить ведущих: «Новая участница: [имя]»
+2. Отправить участнице welcome-сообщение в Telegram с кнопкой «Открыть приложение»
+3. Отправить email-подтверждение: оплата прошла + ссылка на Mini App + ссылка на чат потока
+4. Отправить анкету «До потока» (inline-кнопка → Mini App)
+5. Уведомить ведущих: «Новая участница: [имя]»
 
 **Ежедневное напоминание (node-cron):**
 - Один cron запускается каждую минуту
@@ -409,17 +419,22 @@ backend/
 ## Переменные окружения (.env)
 
 ```
-DATABASE_URL=postgresql://user:pass@localhost:5432/telo_pomnit
-BOT_TOKEN=...                          # Telegram Bot Token (@BotFather)
-JWT_SECRET=...                         # случайная строка 32+ символа
-YUKASSA_SHOP_ID=...                    # ID магазина ЮKassa
-YUKASSA_SECRET_KEY=...                 # секретный ключ ЮKassa
-OPENAI_API_KEY=...                     # OpenAI API key
+DATABASE_URL=postgresql://telo_user:...@localhost:5432/telo_pomnit
+DIRECT_URL=postgresql://telo_user:...@localhost:5432/telo_pomnit
+BOT_TOKEN=...                          # Telegram Bot Token (@BotFather) ✅
+JWT_SECRET=...                         # случайная строка 32+ символа ✅
+OPENAI_API_KEY=...                     # OpenAI API key ✅
+YUKASSA_SHOP_ID=...                    # ID магазина ЮKassa (ждёт одобрения)
+YUKASSA_SECRET_KEY=...                 # секретный ключ ЮKassa (ждёт одобрения)
+RESEND_API_KEY=...                     # ключ Resend для отправки email (или SMTP настройки)
+FROM_EMAIL=hello@telo-pomnit.ru        # адрес отправителя
 ADMIN_TELEGRAM_IDS=12345678,87654321   # Telegram ID ведущих
 WEBHOOK_SECRET=...                     # для проверки вебхука ЮKassa
-APP_URL=https://telo-pomnit.ru         # URL сервера (домен)
-MINI_APP_URL=https://telo-pomnit.ru/app  # URL Mini App
+APP_URL=https://api.telo-pomnit.ru
+MINI_APP_URL=https://almirasultabova.github.io/telo-pomnit/tg-app/
 ```
+
+> `.env` файл находится на сервере в `/var/www/telo-pomnit/backend/.env` — не в git.
 
 ---
 
