@@ -28,6 +28,8 @@ app.register(require('./routes/questionnaires'), { prefix: '/' })
 app.register(require('./routes/gdpr'), { prefix: '/gdpr' })
 app.register(require('./routes/admin'), { prefix: '/admin' })
 app.register(require('./routes/ai'), { prefix: '/' })
+app.register(require('./routes/email'), { prefix: '/' })
+app.register(require('./routes/payment'), { prefix: '/' })
 
 // Health check
 app.get('/health', async () => ({ status: 'ok', timestamp: new Date().toISOString() }))
