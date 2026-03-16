@@ -30,12 +30,16 @@ async function aiRoutes(app) {
   }, async (request, reply) => {
     const { message, sessionId } = request.body
 
-    // Проверяем активный enrollment
-    const enrollment = await db.enrollment.findFirst({
-      where: { userId: request.user.id, status: 'active' }
-    })
-    if (!enrollment) {
-      return reply.code(403).send({ error: 'AI-чат доступен только активным участницам программы' })
+    // Проверяем активный enrollment (ведущие имеют доступ всегда)
+    const adminIds = (process.env.ADMIN_TELEGRAM_IDS || '').split(',').map(id => id.trim()).filter(Boolean)
+    const isAdmin = adminIds.includes(String(request.user.telegramId))
+    if (!isAdmin) {
+      const enrollment = await db.enrollment.findFirst({
+        where: { userId: request.user.id, status: 'active' }
+      })
+      if (!enrollment) {
+        return reply.code(403).send({ error: 'AI-чат доступен только активным участницам программы' })
+      }
     }
 
     // Загружаем или создаём сессию
