@@ -1565,7 +1565,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
     <p class="footer-copy">© <span id="year"></span> «Тело помнит». Все права защищены.</p>
     <p class="footer-legal">Материалы и практики на сайте не являются медицинской услугой и не заменяют консультацию врача.</p>
     <p class="footer-legal" style="margin-top:12px">Самозанятая Султанова Альмира Ильгизовна · ИНН 026804542818<br>
-    <a href="mailto:alm.sultanova2011@yandex.ru" style="color:inherit;border-bottom:1px solid rgba(255,255,255,.3)">alm.sultanova2011@yandex.ru</a> ·
+    <a href="mailto:telo.pomnit@yandex.ru" style="color:inherit;border-bottom:1px solid rgba(255,255,255,.3)">telo.pomnit@yandex.ru</a> ·
     <a href="offer.html" style="color:inherit;border-bottom:1px solid rgba(255,255,255,.3)">Публичная оферта</a></p>
     <p class="footer-dev">Разработано <a href="https://t.me/Almira_Sultanova" target="_blank" rel="noopener">SULTANOVA AI</a></p>
   </div>
@@ -1965,8 +1965,9 @@ document.getElementById('year').textContent = new Date().getFullYear();
   <div style="background:#fff;border-radius:24px;padding:40px 36px;max-width:420px;width:calc(100% - 32px);position:relative;box-shadow:0 8px 48px rgba(42,74,56,0.18)">
     <button onclick="document.getElementById('pay-modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;color:#9e8e7e;font-size:22px;line-height:1">×</button>
     <p style="font-family:Georgia,serif;font-style:italic;font-size:22px;color:#1e3020;margin:0 0 8px">Записаться на программу</p>
-    <p style="font-size:14px;color:#7a6a5a;margin:0 0 24px;line-height:1.6">Укажите email — туда придёт доступ к программе и ссылка на бота после оплаты.</p>
+    <p style="font-size:14px;color:#7a6a5a;margin:0 0 24px;line-height:1.6">Укажите email и Telegram — туда придёт доступ к программе и откроется приложение сразу после оплаты.</p>
     <input id="pay-email" type="email" placeholder="ваш@email.ru" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1.5px solid rgba(42,74,56,0.2);border-radius:12px;font-size:15px;font-family:inherit;outline:none;margin-bottom:12px;color:#1a110a">
+    <input id="pay-tg" type="text" placeholder="@username в Telegram" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1.5px solid rgba(42,74,56,0.2);border-radius:12px;font-size:15px;font-family:inherit;outline:none;margin-bottom:12px;color:#1a110a">
     <div id="pay-error" style="display:none;color:#c0392b;font-size:13px;margin-bottom:10px"></div>
     <button id="pay-btn" onclick="startPayment()" style="width:100%;padding:15px;background:linear-gradient(135deg,#3d6b51,#2a4a38);color:#fff;border:none;border-radius:50px;font-size:15px;font-weight:500;cursor:pointer;font-family:inherit">Перейти к оплате →</button>
     <p id="pay-price" style="text-align:center;font-size:13px;color:#9e8e7e;margin:12px 0 0"></p>
@@ -1984,10 +1985,16 @@ function openPayModal() {
 }
 async function startPayment() {
   var email = document.getElementById('pay-email').value.trim();
+  var tg = document.getElementById('pay-tg').value.trim().replace(/^@/, '');
   var errEl = document.getElementById('pay-error');
   var btn = document.getElementById('pay-btn');
   if (!email || !email.includes('@')) {
     errEl.textContent = 'Введите корректный email';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!tg) {
+    errEl.textContent = 'Введите ваш Telegram @username';
     errEl.style.display = 'block';
     return;
   }
@@ -1998,7 +2005,7 @@ async function startPayment() {
     var res = await fetch('https://api.telo-pomnit.ru/create-payment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email })
+      body: JSON.stringify({ email: email, telegramUsername: tg })
     });
     var data = await res.json();
     if (data.url) {
@@ -2017,6 +2024,9 @@ async function startPayment() {
   }
 }
 document.getElementById('pay-email').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') startPayment();
+});
+document.getElementById('pay-tg').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') startPayment();
 });
 document.getElementById('pay-modal').addEventListener('click', function(e) {
