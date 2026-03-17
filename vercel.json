@@ -1,7 +1,8 @@
 {
   "rewrites": [
     { "source": "/", "destination": "/landing_final.html" },
-    { "source": "/guide", "destination": "/gaid-body-stress.html" }
+    { "source": "/guide", "destination": "/gaid-body-stress.html" },
+    { "source": "/privacy", "destination": "/privacy.html" }
   ],
   "headers": [
     {
