@@ -1,6 +1,6 @@
 # BACKEND-PLAN.md — Бэкенд «Тело помнит»
 
-_Дата: март 2026. Обновлено: март 2026. Автор архитектуры: Claude_
+_Обновлено: 17 марта 2026_
 
 ## Статус: ✅ Задеплоен и работает
 
@@ -12,181 +12,73 @@ _Дата: март 2026. Обновлено: март 2026. Автор архи
 
 ---
 
-## Цель
-
-Бэкенд, который:
-- открывает доступ в Mini App только оплатившим участницам
-- хранит все данные участниц на сервере в России (152-ФЗ)
-- присылает ежедневные напоминания через Telegram-бот
-- даёт ведущим панель управления потоками и участницами
-- генерирует PDF-выгрузку личных данных участницы
-- поддерживает AI-чат для новых пользователей
-
----
-
 ## Технический стек
 
-| Слой | Технология | Почему |
-|---|---|---|
-| Runtime | Node.js 20+ | лучший ecosystem для Telegram-ботов |
-| Framework | Fastify | быстрее Express, встроенная валидация |
-| База данных | PostgreSQL на Beget VPS | данные в России, соответствие 152-ФЗ |
-| ORM | Prisma | читаемые схемы, автомиграции |
-| Telegram-бот | Grammy | современная библиотека, TypeScript-ready |
-| Оплата | ЮKassa Node.js SDK | работает с самозанятыми |
-| Email | Resend SDK или Nodemailer (SMTP) | уведомления после оплаты |
-| AI-чат | OpenAI SDK (GPT-4o) | есть API ключ |
-| PDF | pdfkit | генерация без браузера |
-| Хостинг | Beget VPS `45.11.93.236` (~500 ₽/мес) | серверы в России, 152-ФЗ ✅ |
-| Планировщик | node-cron | ежедневные уведомления |
-| Auth | JWT + Telegram initData | стандарт для Mini Apps |
-| Process manager | PM2 | автозапуск сервера после перезагрузки |
+| Слой | Технология |
+|---|---|
+| Runtime | Node.js 20 |
+| Framework | Fastify |
+| База данных | PostgreSQL 16 (Beget VPS, локально) |
+| ORM | Prisma |
+| Telegram-бот | Grammy |
+| Оплата | ЮKassa (прямые HTTPS-запросы) |
+| Email | Nodemailer + Яндекс SMTP (`telo.pomnit@yandex.ru`) |
+| AI-чат | OpenAI SDK (GPT-4o-mini) |
+| Планировщик | node-cron |
+| Auth | JWT + Telegram initData |
+| Process manager | PM2 |
+| Reverse proxy | Nginx + Let's Encrypt SSL |
 
 ---
 
-## Архитектура системы
+## Структура файлов
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Участница                  Ведущая (Альмира / Настя)       │
-│  Telegram Mini App          Admin Panel (веб-интерфейс)     │
-└────────────┬────────────────────────────┬───────────────────┘
-             │ HTTPS                       │ HTTPS
-             ▼                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Beget VPS (сервер в России)                     │
-│                    Fastify API Server                        │
-│  /auth   /diary   /triggers   /checkins   /export   /admin  │
-│  /payment/webhook   /ai-chat   /questionnaires   /gdpr      │
-└────────────┬────────────────────────────┬───────────────────┘
-             │                             │
-    ┌────────▼────────┐          ┌─────────▼────────┐
-    │   PostgreSQL    │          │   Grammy Bot      │
-    │  (Beget VPS,    │          │  уведомления      │
-    │   Россия)       │          │  команды /start   │
-    └─────────────────┘          └──────────┬────────┘
-                         ┌──────────────────┼──────────────┐
-                    ЮKassa webhook    OpenAI API      node-cron
+backend/
+├── src/
+│   ├── index.js               # точка входа, регистрация роутов
+│   ├── bot.js                 # Grammy бот + cron-напоминания
+│   ├── db.js                  # Prisma client singleton
+│   ├── routes/
+│   │   ├── auth.js            # POST /auth/telegram
+│   │   ├── me.js              # GET /me, PATCH /me, GET /me/enrollment/access
+│   │   ├── diary.js           # /diary
+│   │   ├── triggers.js        # /triggers
+│   │   ├── checkins.js        # /checkins
+│   │   ├── diagnostic.js      # /diagnostic
+│   │   ├── questionnaires.js  # /questionnaires
+│   │   ├── ai.js              # POST /ai/chat
+│   │   ├── payment.js         # POST /create-payment, POST /webhook/yukassa
+│   │   ├── admin.js           # /admin/*
+│   │   ├── gdpr.js            # /gdpr
+│   │   └── email.js           # POST /send-welcome (ручная отправка)
+│   └── services/
+│       ├── auth.js            # verifyTelegramInitData, JWT, requireAuth, requireAdmin
+│       └── email.js           # sendWelcomeEmail через Nodemailer
+├── prisma/
+│   └── schema.prisma          # схема БД
+├── scripts/
+│   └── create-stream.js       # создание потока в БД
+└── .env                       # секреты (не в git)
 ```
 
 ---
 
-## База данных — схема
+## База данных — таблицы
 
-### Таблица `users` (участницы)
-```
-id                  UUID, PK
-telegram_id         BIGINT, UNIQUE, NOT NULL   -- ID из Telegram
-telegram_username   TEXT                        -- @username
-name                TEXT                        -- из TG или введённое
-photo_url           TEXT                        -- из TG
-phone               TEXT                        -- из оплаты ЮKassa
-notifications_time  TEXT DEFAULT '20:00'        -- время уведомлений
-token_version       INT DEFAULT 0               -- при удалении/блокировке инкрементируется → старые JWT перестают работать
-consent_given_at    TIMESTAMP                   -- 152-ФЗ: когда дала согласие
-consent_text        TEXT                        -- версия политики конфиденциальности
-deleted_at          TIMESTAMP                   -- мягкое удаление (право на забвение)
-created_at          TIMESTAMP
-```
-
-### Таблица `streams` (потоки)
-```
-id           UUID, PK
-name         TEXT          -- «Поток март 2026»
-start_date   DATE
-end_date     DATE
-is_active    BOOLEAN
-zoom_link    TEXT
-chat_link    TEXT          -- ссылка на закрытый TG-чат
-created_at   TIMESTAMP
-```
-
-### Таблица `meetings` (встречи внутри потока)
-```
-id           UUID, PK
-stream_id    UUID → streams
-number       INT           -- встреча №1, №2... №9
-date         TIMESTAMP
-topic        TEXT
-description  TEXT
-prepare      TEXT          -- как подготовиться
-zoom_link    TEXT          -- может отличаться от общего
-```
-
-### Таблица `enrollments` (участие в потоке)
-```
-id              UUID, PK
-user_id         UUID → users
-stream_id       UUID → streams
-status          ENUM: pending | active | completed | cancelled
-payment_id      TEXT        -- ID платежа ЮKassa
-paid_at         TIMESTAMP
-access_expires  TIMESTAMP   -- NULL = навсегда
-created_at      TIMESTAMP
-```
-> Доступ к данным остаётся навсегда. Запись новых данных блокируется когда `status = completed` и поток завершён.
-
-### Таблица `diary_entries` (дневник тела)
-```
-id           UUID, PK
-user_id      UUID → users
-stream_id    UUID → streams, NULLABLE
-zone         TEXT          -- id зоны тела
-sensations   TEXT[]        -- массив id ощущений
-note         TEXT
-created_at   TIMESTAMP
-```
-
-### Таблица `trigger_entries` (Стоп-реакция)
-```
-id             UUID, PK
-user_id        UUID → users
-situation      TEXT          -- что случилось
-reaction_type  ENUM: freeze | fight | flight | fawn
-zone           TEXT
-sensations     TEXT[]
-intensity      INT           -- 1-10
-note           TEXT
-created_at     TIMESTAMP
-```
-
-### Таблица `checkins` (Новая реакция — ежедневный чекин)
-```
-id            UUID, PK
-user_id       UUID → users
-body_score    INT           -- как тело сейчас 1-10
-tension_zone  TEXT          -- где напряжение
-mood          TEXT          -- одним словом
-note          TEXT
-created_at    TIMESTAMP
-```
-
-### Таблица `diagnostic_results` (результат диагностики)
-```
-id          UUID, PK
-user_id     UUID → users
-pattern_id  TEXT            -- freeze | fight | flight | fawn
-scores      JSONB           -- {freeze: 4, fight: 2, ...}
-created_at  TIMESTAMP
-```
-
-### Таблица `questionnaires` (анкеты)
-```
-id           UUID, PK
-user_id      UUID → users
-stream_id    UUID → streams
-type         ENUM: pre | post
-answers      JSONB           -- {q1: "...", q2: "..."}
-submitted_at TIMESTAMP
-```
-
-### Таблица `ai_chat_sessions` (сессии AI-чата)
-```
-id          UUID, PK
-session_id  TEXT            -- случайный ID (без привязки к аккаунту)
-messages    JSONB           -- [{role, content}, ...]
-created_at  TIMESTAMP
-```
+| Таблица | Что хранит |
+|---|---|
+| `users` | участницы: telegram_id, имя, username, роль |
+| `streams` | потоки: название, даты, zoom/chat ссылки |
+| `meetings` | встречи внутри потока: дата, тема, описание |
+| `enrollments` | зачисление: user → stream, статус, payment_id |
+| `pending_enrollments` | оплатили но ещё не открыли бота: username, email, payment_id |
+| `diary_entries` | записи дневника тела |
+| `trigger_entries` | стоп-реакции |
+| `checkins` | ежедневные чекины |
+| `diagnostic_results` | результат диагностики (паттерн) |
+| `questionnaires` | анкеты до/после потока |
+| `ai_chat_sessions` | история AI-диалогов |
 
 ---
 
@@ -195,118 +87,125 @@ created_at  TIMESTAMP
 ### Авторизация
 ```
 POST /auth/telegram
-  body: { initData: string, consentGiven: boolean }
-  → { token: JWT, user: User }
-
-  Логика: проверяем подпись initData → ищем user по telegram_id
-  → если новый: проверяем consentGiven (обязательно) → создаём → JWT 30 дней
+  body: { initData, consentGiven }
+  → { token, user }
 ```
 
 ### Профиль
 ```
-GET    /me                → { user, activeEnrollment, streak }
-PATCH  /me                body: { name?, notificationsTime? }
-DELETE /me                → удалить все данные (право на забвение, 152-ФЗ)
-```
-
-### Потоки и доступ
-```
-GET /streams/active       → текущий активный поток (для покупки)
-GET /me/enrollment        → моё участие: статус, поток, встречи
-GET /me/enrollment/access → { hasAccess: bool, canWrite: bool }
+GET   /me                      → { user, enrollment, streak }
+PATCH /me                      body: { name?, notificationsTime? }
+GET   /me/enrollment/access    → { hasAccess, canWrite }
+                               Администраторы (ADMIN_TELEGRAM_IDS) всегда получают canWrite: true
 ```
 
 ### Дневник
 ```
-GET  /diary               query: { limit, offset, from, to }
-POST /diary               body: { zone, sensations, note }
-GET  /diary/:id
-GET  /diary/stats         → { streakDays, totalEntries, heatmap }
+GET  /diary          → список записей
+POST /diary          body: { zone, sensations, note }
+GET  /diary/stats    → { streakDays, totalEntries }
 ```
 
-### Стоп-реакция
+### Стоп-реакции
 ```
-GET  /triggers            query: { limit, offset }
-POST /triggers            body: { situation, reactionType, zone, sensations, intensity, note }
-GET  /triggers/stats      → { byReaction, byZone, byMonth }
+GET  /triggers       → список
+POST /triggers       body: { situation, reactionType, zone, sensations, intensity, note }
 ```
 
-### Ежедневный чекин
+### Чекины
 ```
-GET  /checkins            query: { limit, offset }
-POST /checkins            body: { bodyScore, tensionZone, mood, note }
-GET  /checkins/today      → сегодняшний чекин или null
+GET  /checkins/today → сегодняшний или null
+POST /checkins       body: { bodyScore, tensionZone, mood, note }
 ```
 
 ### Диагностика
 ```
-GET  /diagnostic/result   → последний результат или null
-POST /diagnostic/result   body: { patternId, scores }
-```
-
-### Анкеты
-```
-POST /questionnaires/pre   body: { streamId, answers }
-POST /questionnaires/post  body: { streamId, answers }
-GET  /questionnaires/:streamId → { pre, post }
-```
-
-### PDF-выгрузка
-```
-GET /export/pdf
-  → PDF файл со всеми данными участницы:
-    - профиль + паттерн
-    - записи дневника тела
-    - стоп-реакции
-    - ежедневные чекины
-    - анкеты (до и после)
+GET  /diagnostic/result  → последний результат
+POST /diagnostic/result  body: { patternId, scores }
 ```
 
 ### AI-чат
 ```
-POST /ai-chat
-  body: { sessionId: string, message: string }
-  → { reply: string, sessionId: string }
-
-  Rate limit: 20 запросов в час с одного IP (@fastify/rate-limit)
-  При превышении: 429 Too Many Requests + сообщение на русском
-
-  Системный промпт: роль — мягкий проводник в телесное наблюдение,
-  язык методологии «Тело помнит», без диагнозов, без советов,
-  только вопросы и отражение. После 5 сообщений — CTA на программу.
+POST /ai/chat
+  body: { message, sessionId? }
+  → { reply, sessionId }
+  Доступ: активные участницы + администраторы (ADMIN_TELEGRAM_IDS)
 ```
 
 ### Оплата
 ```
-POST /payment/create
-  body: { streamId, returnUrl }
-  → { paymentUrl, paymentId }   -- редирект на ЮKassa
+POST /create-payment
+  body: { email, telegramUsername }
+  → { url }   — ссылка на оплату в ЮКассе
 
-POST /payment/webhook           -- только ЮKassa может вызвать
-  body: ЮKassa payload
-  Логика: payment.succeeded → создать enrollment → открыть доступ
-          → отправить welcome-сообщение через бота
-```
-
-### Права субъекта данных (152-ФЗ)
-```
-GET  /gdpr/my-data        → все данные в JSON (право на получение)
-DELETE /gdpr/delete-me    → удалить все данные навсегда (право на забвение)
-  Логика: помечаем deleted_at, обезличиваем, через 30 дней чистим физически
+POST /webhook/yukassa
+  Webhook от ЮКассы после успешной оплаты:
+  1. Отправить welcome-email
+  2. Найти пользователя по telegramUsername
+  3. Если найден → создать enrollment → отправить сообщение в боте
+  4. Если не найден → создать PendingEnrollment
 ```
 
-### Админ-панель (только для ведущих)
+### Админ
 ```
-GET  /admin/streams                    → список всех потоков
-POST /admin/streams                    body: { name, startDate, endDate, zoomLink, chatLink }
+GET  /admin/streams
+POST /admin/streams                  body: { name, startDate, endDate, zoomLink, chatLink }
 PATCH /admin/streams/:id
-GET  /admin/streams/:id/participants   → участницы + статус + анкеты
-GET  /admin/participants               → все участницы (поиск, фильтр)
-GET  /admin/participants/:id           → профиль + все данные + анкеты
-GET  /admin/meetings
-POST /admin/meetings                   body: { streamId, number, date, topic, ... }
+POST /admin/streams/:id/complete     → завершить поток (active → completed)
+GET  /admin/streams/:id/participants
+GET  /admin/participants
+GET  /admin/participants/:id
+POST /admin/meetings                 body: { streamId, number, date, topic, ... }
 PATCH /admin/meetings/:id
+POST /admin/enrollments              body: { userId, streamId } — зачислить
+PATCH /admin/enrollments/:id        body: { status }
 ```
+
+### GDPR (152-ФЗ)
+```
+GET    /gdpr/my-data    → все данные в JSON
+DELETE /gdpr/delete-me  → обезличить и удалить через 30 дней
+```
+
+---
+
+## Telegram-бот — команды
+
+| Команда | Кто | Что делает |
+|---|---|---|
+| `/start` | все | приветствие + авто-зачисление если есть pending enrollment |
+| `/app` | все | кнопка открыть Mini App |
+| `/help` | все | помощь |
+| `/activate @username` | ведущие | зачислить участницу вручную |
+| `/deactivate @username` | ведущие | отозвать доступ |
+| `/participants` | ведущие | список участниц активного потока |
+
+**Cron-задачи:**
+- 20:00 МСК ежедневно — напоминание участницам сделать запись в дневник
+- каждый час — проверка встреч через 55–65 минут → напоминание с Zoom-ссылкой
+
+---
+
+## Переменные окружения (.env на сервере)
+
+```
+DATABASE_URL=postgresql://telo_user:...@127.0.0.1:5432/telo_pomnit
+DIRECT_URL=postgresql://telo_user:...@127.0.0.1:5432/telo_pomnit
+BOT_TOKEN=...
+JWT_SECRET=...
+OPENAI_API_KEY=...
+YUKASSA_SHOP_ID=1298653
+YUKASSA_SECRET_KEY=...
+SMTP_USER=telo.pomnit@yandex.ru
+SMTP_PASS=...
+ADMIN_TELEGRAM_IDS=412942287
+APP_URL=https://telo-pomnit.ru
+MINI_APP_URL=https://almirasultabova.github.io/telo-pomnit/tg-app/
+PORT=3000
+NODE_ENV=production
+```
+
+> `.env` на сервере: `/var/www/telo-pomnit/backend/.env`
 
 ---
 
@@ -314,238 +213,29 @@ PATCH /admin/meetings/:id
 
 | Кто | Что может |
 |---|---|
-| **Неавторизованный** | только AI-чат (по sessionId без аккаунта) |
-| **Участница (активная)** | читать и писать дневник, чекины, триггеры; анкеты; PDF |
-| **Участница (выпускница)** | только читать свои данные; PDF-выгрузка; диагностика |
-| **Ведущая (admin)** | всё: управление потоками, просмотр данных участниц |
+| **Неавторизованный** | — |
+| **Участница (активная)** | дневник, чекины, триггеры, диагностика, AI-чат, анкеты |
+| **Участница (выпускница)** | только читать свои данные |
+| **Ведущая (admin)** | всё + управление потоками, просмотр данных участниц |
 
-Правило «данные не удаляются» — выпускница всегда видит свою историю и может скачать PDF.
-
----
-
-## Telegram-бот — команды и сценарии
-
-### Команды
-```
-/start      — приветствие, проверка доступа, кнопка открыть Mini App
-/checkin    — быстрый ежедневный чекин прямо в боте (альтернатива Mini App)
-/myday      — статистика за сегодня
-/help       — список команд
-```
-
-### Сценарии автоматики
-
-**После оплаты (webhook от ЮKassa):**
-1. Создать enrollment в БД
-2. Отправить участнице welcome-сообщение в Telegram с кнопкой «Открыть приложение»
-3. Отправить email-подтверждение: оплата прошла + ссылка на Mini App + ссылка на чат потока
-4. Отправить анкету «До потока» (inline-кнопка → Mini App)
-5. Уведомить ведущих: «Новая участница: [имя]»
-
-**Ежедневное напоминание (node-cron):**
-- Один cron запускается каждую минуту
-- Запрос в БД: `SELECT * FROM users WHERE notifications_time = текущее_время AND сегодня нет checkin`
-- Отправляет уведомление только тем, кому сейчас их время И кто ещё не чекинился сегодня
-- Такой подход надёжен при перезапуске сервера (задача одна, состояние в БД)
-- Сообщение: «Как твоё тело сегодня? [Отметить в приложении]»
-
-**За 30 минут до встречи:**
-- «Встреча начинается через 30 минут. [Войти в Zoom]»
-
-**Конец потока:**
-- Отправить анкету «После потока»
-- Сообщение о том, что доступ к записям сохранён навсегда
-- CTA на следующий поток
+Администраторы определяются по `ADMIN_TELEGRAM_IDS` в `.env`.
 
 ---
 
 ## Соответствие 152-ФЗ
 
-### Что делаем технически
-- **Серверы в России** — Beget VPS, дата-центр в Москве или Санкт-Петербурге
-- **Согласие при регистрации** — сохраняем `consent_given_at` и версию политики в БД
-- **Право на получение данных** — `GET /gdpr/my-data` отдаёт всё в JSON
-- **Право на удаление** — `DELETE /gdpr/delete-me` обезличивает и удаляет через 30 дней
-- **Минимизация данных** — собираем только то, что нужно для работы приложения
-
-### Что делаем организационно
-- **Политика конфиденциальности** — отдельная страница `privacy.html` на сайте
-- **Уведомление Роскомнадзора** — подать через сайт РКН (бесплатно, онлайн)
-- **Галочка согласия** — при первом открытии Mini App, до сохранения любых данных
-
-### Что считается персональными данными в проекте
-- Telegram ID, имя, username, фото
-- Номер телефона (из оплаты)
-- Записи дневника, чекины, стоп-реакции — данные о **состоянии здоровья** (особая категория, требует явного согласия)
-
----
-
-## Структура файлов проекта
-
-```
-backend/
-├── src/
-│   ├── routes/
-│   │   ├── auth.ts
-│   │   ├── diary.ts
-│   │   ├── triggers.ts
-│   │   ├── checkins.ts
-│   │   ├── payment.ts
-│   │   ├── questionnaires.ts
-│   │   ├── export.ts
-│   │   ├── ai-chat.ts
-│   │   ├── gdpr.ts
-│   │   └── admin.ts
-│   ├── bot/
-│   │   ├── index.ts           — инициализация Grammy
-│   │   ├── commands.ts        — /start, /checkin, /help
-│   │   ├── notifications.ts   — ежедневные уведомления
-│   │   └── welcome.ts         — сообщение после оплаты
-│   ├── services/
-│   │   ├── auth.ts            — проверка Telegram initData
-│   │   ├── payment.ts         — ЮKassa интеграция
-│   │   ├── pdf.ts             — генерация PDF
-│   │   └── ai.ts              — OpenAI чат
-│   ├── prisma/
-│   │   └── schema.prisma      — схема БД
-│   └── index.ts               — точка входа
-├── .env                       — секреты (в .gitignore)
-├── package.json
-└── ecosystem.config.js        — PM2 конфиг для Beget
-```
-
----
-
-## Переменные окружения (.env)
-
-```
-DATABASE_URL=postgresql://telo_user:...@localhost:5432/telo_pomnit
-DIRECT_URL=postgresql://telo_user:...@localhost:5432/telo_pomnit
-BOT_TOKEN=...                          # Telegram Bot Token (@BotFather) ✅
-JWT_SECRET=...                         # случайная строка 32+ символа ✅
-OPENAI_API_KEY=...                     # OpenAI API key ✅
-YUKASSA_SHOP_ID=...                    # ID магазина ЮKassa (ждёт одобрения)
-YUKASSA_SECRET_KEY=...                 # секретный ключ ЮKassa (ждёт одобрения)
-RESEND_API_KEY=...                     # ключ Resend для отправки email (или SMTP настройки)
-FROM_EMAIL=hello@telo-pomnit.ru        # адрес отправителя
-ADMIN_TELEGRAM_IDS=12345678,87654321   # Telegram ID ведущих
-WEBHOOK_SECRET=...                     # для проверки вебхука ЮKassa
-APP_URL=https://api.telo-pomnit.ru
-MINI_APP_URL=https://almirasultabova.github.io/telo-pomnit/tg-app/
-```
-
-> `.env` файл находится на сервере в `/var/www/telo-pomnit/backend/.env` — не в git.
-
----
-
-## Порядок разработки
-
-### Фаза 0 — Подготовка (до начала кода)
-- [ ] Зарегистрироваться на Beget, создать VPS (Ubuntu 22.04)
-- [ ] Создать бота через @BotFather, получить токен
-- [ ] Зарегистрироваться в ЮKassa как самозанятая
-- [ ] Подать уведомление в Роскомнадзор (ркн.gov.ru → раздел «Операторы ПД»)
-- [ ] Написать и опубликовать Политику конфиденциальности (`privacy.html`)
-
-### Фаза 1 — Фундамент (1–2 недели)
-- [ ] Настройка Beget VPS: Node.js, PostgreSQL, PM2, nginx, HTTPS
-- [ ] Инициализация проекта: Fastify + Prisma
-- [ ] Схема БД, первые миграции
-- [ ] Авторизация через Telegram initData + сохранение согласия
-- [ ] Эндпоинты профиля `/me`
-- [ ] Первый деплой на сервер
-
-### Фаза 2 — Оплата и доступ (1 неделя)
-- [ ] `POST /payment/create` — создание платежа ЮKassa
-- [ ] `POST /payment/webhook` — обработка успешной оплаты
-- [ ] Автоматическое открытие доступа
-- [ ] Welcome-сообщение от бота
-
-### Фаза 3 — Данные участниц (1–2 недели)
-- [ ] API дневника `/diary`
-- [ ] API стоп-реакций `/triggers`
-- [ ] API чекинов `/checkins`
-- [ ] API диагностики `/diagnostic`
-- [ ] API анкет `/questionnaires`
-- [ ] Эндпоинты GDPR `/gdpr`
-- [ ] Перенос Mini App с localStorage → API
-
-### Фаза 4 — Бот и уведомления (1 неделя)
-- [ ] Grammy бот: /start, /checkin, /help
-- [ ] Ежедневные напоминания (node-cron)
-- [ ] Напоминания за 30 минут до встречи
-- [ ] Welcome flow после оплаты
-
-### Фаза 5 — PDF и AI (1 неделя)
-- [ ] Генерация PDF (pdfkit)
-- [ ] AI-чат на лендинге (OpenAI)
-- [ ] Системный промпт в стиле методологии
-
-### Фаза 6 — Админ-панель (1–2 недели)
-- [ ] API для ведущих `/admin/*`
-- [ ] Простой веб-интерфейс: список участниц, анкеты, управление потоками
-
----
-
-## Бюджет инфраструктуры
-
-| Сервис | Тариф | Цена |
-|---|---|---|
-| Beget VPS (сервер + БД) | VPS-1 | ~500 ₽/мес |
-| Домен telo-pomnit.ru | Reg.ru / Beget | ~300 ₽/год |
-| ЮKassa | Комиссия ~3.5% с оплат | — |
-| OpenAI | ~$0.01/сообщение GPT-4o mini | ~100–300 ₽/мес |
-| **Итого** | | **~600–800 ₽/мес** |
-
-> Всё дешевле и всё в России. При росте — Beget VPS-2 (~900 ₽/мес).
+- Серверы в России — Beget VPS
+- Согласие при регистрации — сохраняется `consent_given_at` в БД
+- Право на получение — `GET /gdpr/my-data`
+- Право на удаление — `DELETE /gdpr/delete-me`
+- Данные участниц изолированы — каждая видит только своё
 
 ---
 
 ## Безопасность
 
-- Все запросы от Mini App проверяются через Telegram initData подпись
-- JWT токены с временем жизни 30 дней + поле `token_version` в БД для отзыва
-- При удалении аккаунта или блокировке: `token_version++` → все старые токены перестают работать немедленно
-- Вебхук ЮKassa проверяется по HMAC подписи
-- Данные участниц изолированы: каждый видит только своё
-- Ведущие идентифицируются по Telegram ID (задаётся в .env)
-- HTTPS через nginx + Let's Encrypt (бесплатно, автообновление)
-- .env файл не попадает в репозиторий
-- PostgreSQL доступен только локально на сервере (не наружу)
-- Rate limiting на AI-чате: 20 запросов/час с IP
-
----
-
-## Резервное копирование
-
-Ежедневный автоматический бэкап базы данных — **обязательно** до запуска в продакшн.
-
-```bash
-# cron на сервере: каждый день в 3:00 ночи
-0 3 * * * pg_dump telo_pomnit | gzip > /backups/telo_$(date +%Y%m%d).sql.gz
-```
-
-- Хранить на сервере последние 7 дней (локально)
-- Копировать на внешнее хранилище: Backblaze B2 (~$0.6/мес за 10 GB) или Яндекс Облако
-- Раз в месяц — проверять что бэкап восстанавливается (тестовое восстановление)
-
----
-
-## Тестирование
-
-Минимальный план тестирования перед запуском в продакшн:
-
-### Обязательно (Фаза 2 — оплата):
-- [ ] `POST /payment/webhook` — тест: оплата прошла → enrollment создан → бот отправил сообщение
-- [ ] `POST /payment/webhook` — тест: дублирующий webhook не создаёт второй enrollment
-- [ ] `POST /payment/webhook` — тест: невалидная подпись → 401, enrollment не создан
-
-### Желательно (Фаза 3 — данные):
-- [ ] Участница видит только свои записи, не чужие
-- [ ] Выпускница не может создавать новые записи (canWrite = false)
-- [ ] `DELETE /gdpr/delete-me` — все данные обезличиваются, токен перестаёт работать
-
-### Ручное тестирование перед каждым деплоем:
-- [ ] Открыть Mini App в Telegram, проверить авторизацию
-- [ ] Создать тестовую запись в дневнике, проверить в БД
-- [ ] Проверить PDF-выгрузку
+- Все запросы проверяются через Telegram initData подпись
+- JWT токены 30 дней + `token_version` для немедленного отзыва
+- HTTPS через Nginx + Let's Encrypt
+- PostgreSQL доступен только локально
+- `.env` не в git

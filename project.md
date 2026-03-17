@@ -1,6 +1,6 @@
 # Тело помнит — описание проекта
 
-_Обновлено: 16 марта 2026_
+_Обновлено: 17 марта 2026_
 
 ## Что это за проект
 
@@ -52,7 +52,27 @@ _Обновлено: 16 марта 2026_
 | SSL | Let's Encrypt | автообновление через Certbot |
 
 **Backend URL:** `https://api.telo-pomnit.ru`
-**Деплой бэкенда:** автоматически через SSH-ключ (`c:/tmp/beget_key`) — Claude делает сам
+**Деплой бэкенда:** через SSH-ключ (`c:/tmp/beget_key`) — Claude делает сам
+**SSH пароль:** Telo2026!
+
+---
+
+## Поток 1 — расписание
+
+**Старт:** 26 марта 2026
+**Финал:** 23 апреля 2026
+
+| № | Дата | Время (МСК) | Тип |
+|---|---|---|---|
+| 1 | 26 марта | 18:00 | Психосоматический разбор |
+| 2 | 29 марта | 11:00 | Телесная практика |
+| 3 | 2 апреля | 18:00 | Психосоматический разбор |
+| 4 | 5 апреля | 11:00 | Телесная практика |
+| 5 | 9 апреля | 18:00 | Психосоматический разбор |
+| 6 | 12 апреля | 11:00 | Телесная практика |
+| 7 | 16 апреля | 18:00 | Психосоматический разбор |
+| 8 | 19 апреля | 11:00 | Телесная практика |
+| 9 | 23 апреля | 18:00 | Завершающая встреча |
 
 ---
 
@@ -63,6 +83,7 @@ _Обновлено: 16 марта 2026_
 | Файл | Что это |
 |---|---|
 | `landing_final.html` | Основной лендинг (маршрут `/`) |
+| `thanks.html` | Страница «Спасибо» после оплаты |
 | `gaid-body-stress.html` | Гайд (маршрут `/guide`) |
 | `offer.html` | Публичная оферта |
 | `landing.html` | Лендинг v1 — архив |
@@ -87,12 +108,18 @@ _Обновлено: 16 марта 2026_
 |---|---|
 | `src/index.js` | Точка входа Fastify |
 | `src/bot.js` | Grammy бот + cron-напоминания |
-| `src/routes/` | Все API маршруты |
-| `src/routes/payment.js` | Создание платежа ЮКасса + webhook |
-| `src/routes/email.js` | Ручная отправка welcome-письма |
+| `src/routes/auth.js` | Авторизация через Telegram initData |
+| `src/routes/me.js` | Профиль + статус доступа |
+| `src/routes/diary.js` | Дневник тела |
+| `src/routes/triggers.js` | Стоп-реакции |
+| `src/routes/checkins.js` | Ежедневные чекины |
+| `src/routes/ai.js` | AI-ассистент (GPT-4o-mini) |
+| `src/routes/payment.js` | Создание платежа ЮКасса + webhook + авто-зачисление |
+| `src/routes/admin.js` | Управление потоками и участницами |
+| `src/services/auth.js` | Проверка Telegram initData + JWT |
 | `src/services/email.js` | Nodemailer через Яндекс SMTP |
-| `src/services/auth.js` | Проверка Telegram initData |
 | `prisma/schema.prisma` | Схема базы данных |
+| `scripts/create-stream.js` | Скрипт создания потока в БД |
 | `.env` | Секреты (не в git) |
 
 ---
@@ -104,8 +131,9 @@ _Обновлено: 16 марта 2026_
 - GitHub → Vercel (авто-деплой)
 
 ### Telegram Mini App
-- Vanilla JS SPA, localStorage-first с фоновым sync
-- GitHub Pages
+- Vanilla JS SPA
+- Авторизация через Telegram initData + JWT
+- API-первый подход (данные на сервере)
 
 ### Backend
 - Node.js 20 + Fastify + Prisma + PostgreSQL
@@ -115,6 +143,7 @@ _Обновлено: 16 марта 2026_
 - Let's Encrypt SSL
 - Nodemailer + Яндекс SMTP (welcome-письма)
 - ЮКасса API (приём платежей, webhook)
+- OpenAI GPT-4o-mini (AI-ассистент)
 
 ---
 
@@ -141,6 +170,7 @@ _Обновлено: 16 марта 2026_
 ```
 telo_pomnit/
 ├── landing_final.html        # Основной лендинг → Vercel /
+├── thanks.html               # Страница «Спасибо» → Vercel /thanks
 ├── gaid-body-stress.html     # Гайд → Vercel /guide
 ├── offer.html                # Публичная оферта
 ├── landing.html              # Архив v1
@@ -154,10 +184,11 @@ telo_pomnit/
 ├── backend/                  # API сервер → Beget VPS
 │   ├── src/
 │   ├── prisma/
+│   ├── scripts/
 │   └── .env (не в git)
 ├── project.md                # Этот файл
 ├── PLAN.md                   # Статус задач
 ├── CLAUDE.md                 # Правила для Claude
 ├── BACKEND-PLAN.md           # Архитектура бэкенда
-└── TESTING.md                # Руководство тестировщика
+└── tg-app/CLAUDE.md          # Правила для Mini App
 ```
