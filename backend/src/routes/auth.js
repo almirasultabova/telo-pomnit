@@ -42,6 +42,7 @@ async function authRoutes(app) {
         data: {
           telegramId: BigInt(tgUser.id),
           telegramUsername: tgUser.username || null,
+          username: tgUser.username || null,
           name: tgUser.first_name || null,
           photoUrl: tgUser.photo_url || null,
           consentGivenAt: new Date(),

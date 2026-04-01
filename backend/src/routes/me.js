@@ -19,16 +19,20 @@ async function meRoutes(app) {
       select: { createdAt: true }
     })
 
-    let streak = 0
-    let today = new Date()
-    today.setHours(0, 0, 0, 0)
+    // Дедуплицируем по дате (несколько записей в один день = 1 день стрика)
+    const uniqueDays = [...new Set(entries.map(e => {
+      const d = new Date(e.createdAt)
+      d.setHours(0, 0, 0, 0)
+      return d.getTime()
+    }))].sort((a, b) => b - a)
 
-    for (let i = 0; i < entries.length; i++) {
-      const entryDay = new Date(entries[i].createdAt)
-      entryDay.setHours(0, 0, 0, 0)
-      const diff = (today - entryDay) / (1000 * 60 * 60 * 24)
+    let streak = 0
+    const todayMs = new Date().setHours(0, 0, 0, 0)
+
+    for (const dayMs of uniqueDays) {
+      const diff = (todayMs - dayMs) / (1000 * 60 * 60 * 24)
       if (diff === streak) streak++
-      else if (diff > streak + 1) break
+      else break
     }
 
     return {
@@ -82,6 +86,12 @@ async function meRoutes(app) {
 
   // GET /me/enrollment — статус доступа
   app.get('/me/enrollment/access', { preHandler: requireAuth }, async (request) => {
+    const adminIds = (process.env.ADMIN_TELEGRAM_IDS || '').split(',').map(id => id.trim()).filter(Boolean)
+    const isAdmin = adminIds.includes(String(request.user.telegramId))
+    if (isAdmin) {
+      return { hasAccess: true, canWrite: true }
+    }
+
     const enrollment = await db.enrollment.findFirst({
       where: { userId: request.user.id, status: { in: ['active', 'completed'] } },
       orderBy: { createdAt: 'desc' }

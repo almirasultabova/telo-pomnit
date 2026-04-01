@@ -53,7 +53,6 @@ _Обновлено: 17 марта 2026_
 
 **Backend URL:** `https://api.telo-pomnit.ru`
 **Деплой бэкенда:** через SSH-ключ (`c:/tmp/beget_key`) — Claude делает сам
-**SSH пароль:** Telo2026!
 
 ---
 
