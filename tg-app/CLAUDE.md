@@ -143,8 +143,10 @@ Cron в `bot.js` (10:00 МСК) отправляет уведомления на
 | `tp_attended` | Массив id посещённых встреч |
 | `tp_questionnaire_done` | Флаг `'true'` после заполнения анкеты |
 | `tp_q_sheet_shown` | Флаг `'true'` после первого показа bottom sheet анкеты |
+| `tp_consent_given` | Флаг `'true'` после согласия на обработку данных (ФЗ-152) |
 
 > Данные дневника, диагностики и чекинов синхронизируются с сервером через API.
+> `tp_consent_given` синхронизируется при каждом логине через `consentGivenAt` из `/auth/telegram`.
 > Чтобы снова увидеть онбординг: `localStorage.removeItem('tp_onboarding_done')`
 > Чтобы сбросить анкету: `localStorage.removeItem('tp_questionnaire_done')`
 

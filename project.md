@@ -156,8 +156,10 @@ _Обновлено: 2 апреля 2026_
 | Webhook ЮКасса | IP-фильтр по официальным подсетям ЮКасса |
 | AI-сессии | Проверка `session.userId === request.user.id` перед доступом |
 | Входные данные | `maxLength` на email (254), name (100), telegramUsername (64) |
-| Dev-режим | Удалён — авторизация через `'dev'` initData отключена |
+| Dev-режим | Удалён — `|| 'dev'` fallback убран из `api.js`, `auth.js` |
 | База данных | Supabase RLS включён, прямой доступ через REST API закрыт |
+| Согласие ФЗ-152 | `PATCH /me/consent` сохраняет дату+текст; синхронизируется между устройствами через `consentGivenAt` в ответе `POST /auth/telegram` |
+| pending_enrollments | Cron (03:00 МСК) удаляет незавершённые оплаты старше 60 дней |
 
 ---
 
