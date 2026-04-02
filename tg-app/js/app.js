@@ -99,6 +99,22 @@ const diag = {
 // ─── Текущая активная вкладка ─────────────────────────────────────────────
 let activeTab = 'diary';
 
+// ─── Фильтр карты тела по неделям (0 = все) ───────────────────────────────
+let heatmapWeek = 0;
+
+// ─── Хелпер: номер недели потока (1–5) по дате записи ─────────────────────
+function getStreamWeek(dateStr) {
+  const start = new Date('2026-04-16');
+  const d = new Date(dateStr);
+  const diff = Math.floor((d - start) / (7 * 24 * 60 * 60 * 1000));
+  if (diff < 0 || diff >= 5) return null;
+  return diff + 1;
+}
+
+function avgOf(arr) {
+  return arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null;
+}
+
 // ─────────────────────────────────────────────────────────────────────────
 // ИНИЦИАЛИЗАЦИЯ
 // ─────────────────────────────────────────────────────────────────────────
@@ -584,10 +600,21 @@ function renderMyPathTab() {
   }
 
   container.innerHTML =
+    renderStreamSummary(entries) +
     renderMirrorCard(entries) +
-    renderHeatmap(entries) +
+    renderCheckinChart() +
+    renderHeatmapSection(entries) +
     renderTopSensations(entries) +
+    renderRecentNotes(entries) +
     renderPathStats(entries);
+
+  // Бинд фильтра недель карты тела
+  container.querySelectorAll('.hmap-week-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      heatmapWeek = Number(btn.dataset.week);
+      renderMyPathTab();
+    });
+  });
 }
 
 // ─── Зеркало ──────────────────────────────────────────────────────────────
@@ -629,7 +656,23 @@ function renderMirrorCard(entries) {
 }
 
 // ─── Тепловая карта — силуэт тела ──────────────────────────────────────────
-function renderHeatmap(entries) {
+function renderHeatmapSection(entries) {
+  const filtered = heatmapWeek === 0
+    ? entries
+    : entries.filter(e => getStreamWeek(e.date) === heatmapWeek);
+
+  const weekBtns = [0, 1, 2, 3, 4, 5].map(w => {
+    const active = heatmapWeek === w ? ' hmap-week-btn--active' : '';
+    const label  = w === 0 ? 'Все' : `Н${w}`;
+    return `<button class="hmap-week-btn${active}" data-week="${w}">${label}</button>`;
+  }).join('');
+
+  return `<div class="section-label mt-16 mb-4">Карта напряжений</div>
+    <div class="hmap-week-filter">${weekBtns}</div>
+    ${renderHeatmapBody(filtered)}`;
+}
+
+function renderHeatmapBody(entries) {
   // Подсчёт по всем выбираемым зонам за весь поток
   const counts = {};
   DATA.zones.filter(z => z.selectable !== false).forEach(z => { counts[z.id] = 0; });
@@ -682,8 +725,7 @@ function renderHeatmap(entries) {
       </div>`;
     }).join('');
 
-  return `<div class="section-label mt-16 mb-8">Карта напряжений за поток</div>
-    <div class="hmap-wrap">
+  return `<div class="hmap-wrap">
       <div class="hmap-svg-col">${imgCol}</div>
       <div class="hmap-labels-col">${labels}</div>
     </div>`;
@@ -748,6 +790,122 @@ function renderPathStats(entries) {
         <div class="path-stat-label">дней подряд</div>
       </div>
     </div>`;
+}
+
+// ─── 1. График чекинов по неделям потока ─────────────────────────────────
+function renderCheckinChart() {
+  const checkins = Storage.getCheckins();
+  if (checkins.length < 2) return '';
+
+  // Группируем по неделям потока
+  const weekPoints = [1, 2, 3, 4, 5].map(w => {
+    const wc = checkins.filter(c => getStreamWeek(c.date) === w);
+    if (!wc.length) return null;
+    return {
+      week: w,
+      stress:   avgOf(wc.map(c => ((c.tension || 5) + (c.anxiety || 5)) / 2)),
+      resource: avgOf(wc.map(c => ((c.energy || 5) + (c.safety || 5) + (c.bodyContact || 5)) / 3))
+    };
+  }).filter(Boolean);
+
+  if (weekPoints.length < 2) return '';
+
+  const W = 260, H = 110, pL = 22, pR = 8, pT = 8, pB = 22;
+  const pw = W - pL - pR, ph = H - pT - pB;
+  const xp = w => pL + ((w - 1) / 4) * pw;
+  const yp = v => pT + ph - ((v - 1) / 9) * ph;
+
+  const gridLines = [2, 4, 6, 8, 10].map(v =>
+    `<line x1="${pL}" y1="${yp(v)}" x2="${W - pR}" y2="${yp(v)}" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+     <text x="${pL - 3}" y="${yp(v) + 3.5}" text-anchor="end" font-size="7.5" fill="rgba(0,0,0,0.3)">${v}</text>`
+  ).join('');
+
+  const weekLabels = [1, 2, 3, 4, 5].map(w =>
+    `<text x="${xp(w)}" y="${H - 5}" text-anchor="middle" font-size="8" fill="rgba(0,0,0,0.4)">Н${w}</text>`
+  ).join('');
+
+  const stressPath = 'M' + weekPoints.map(p => `${xp(p.week).toFixed(1)},${yp(p.stress).toFixed(1)}`).join(' L');
+  const resPath    = 'M' + weekPoints.map(p => `${xp(p.week).toFixed(1)},${yp(p.resource).toFixed(1)}`).join(' L');
+
+  const stressDots = weekPoints.map(p =>
+    `<circle cx="${xp(p.week).toFixed(1)}" cy="${yp(p.stress).toFixed(1)}" r="3" fill="#D4706A"/>`
+  ).join('');
+  const resDots = weekPoints.map(p =>
+    `<circle cx="${xp(p.week).toFixed(1)}" cy="${yp(p.resource).toFixed(1)}" r="3" fill="#2a4a38"/>`
+  ).join('');
+
+  const svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="checkin-chart-svg">
+    ${gridLines}${weekLabels}
+    <path d="${stressPath}" fill="none" stroke="#D4706A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="${resPath}"    fill="none" stroke="#2a4a38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    ${stressDots}${resDots}
+  </svg>`;
+
+  return `<div class="section-label mt-16 mb-8">Динамика состояния</div>
+    <div class="checkin-chart-wrap">${svg}
+      <div class="checkin-chart-legend">
+        <span class="cchart-leg"><span class="cchart-dot" style="background:#D4706A"></span>Напряжение</span>
+        <span class="cchart-leg"><span class="cchart-dot" style="background:#2a4a38"></span>Ресурс</span>
+      </div>
+    </div>`;
+}
+
+// ─── 3. Итоговое резюме потока (после 14 мая) ─────────────────────────────
+function renderStreamSummary(entries) {
+  const streamEnd = new Date('2026-05-15'); // показываем начиная со следующего дня
+  if (new Date() < streamEnd) return '';
+
+  const uniqueDays    = new Set(entries.map(e => new Date(e.date).toDateString())).size;
+  const attendedCount = Storage.getAttended().length;
+  const totalMeetings = DATA.program.schedule.length;
+
+  const zoneCounts = {};
+  entries.forEach(e => { zoneCounts[e.zone] = (zoneCounts[e.zone] || 0) + 1; });
+  const topZoneId = Object.entries(zoneCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
+  const topZone   = DATA.zones.find(z => z.id === topZoneId);
+
+  const sensCounts = {};
+  entries.forEach(e => (e.sensations || []).forEach(s => { sensCounts[s] = (sensCounts[s] || 0) + 1; }));
+  const topSensId = Object.keys(sensCounts).sort((a, b) => sensCounts[b] - sensCounts[a])[0];
+  const topSens   = DATA.sensations.find(s => s.id === topSensId);
+
+  return `<div class="stream-summary">
+    <div class="stream-summary-title">Поток завершён</div>
+    <div class="stream-summary-sub">Ваши итоги за 5 недель</div>
+    <div class="stream-summary-stats">
+      <div class="stream-summary-stat">
+        <div class="stream-summary-num">${uniqueDays}</div>
+        <div class="stream-summary-label">дней<br>в дневнике</div>
+      </div>
+      <div class="stream-summary-stat">
+        <div class="stream-summary-num">${attendedCount}/${totalMeetings}</div>
+        <div class="stream-summary-label">встреч<br>посещено</div>
+      </div>
+      <div class="stream-summary-stat">
+        <div class="stream-summary-num">${Storage.getStreak()}</div>
+        <div class="stream-summary-label">дней<br>подряд</div>
+      </div>
+    </div>
+    ${topZone ? `<div class="stream-summary-insight">Главная зона потока — <em>${topZone.label}</em>${topSens ? `, ощущение — <em>${topSens.label.toLowerCase()}</em>` : ''}</div>` : ''}
+  </div>`;
+}
+
+// ─── 4. Последние заметки в «Мой путь» ───────────────────────────────────
+function renderRecentNotes(entries) {
+  const withNotes = entries.filter(e => e.note && e.note.trim());
+  if (withNotes.length < 2) return '';
+
+  const recent = withNotes.slice(0, 3);
+  const fmt = d => new Date(d).toLocaleDateString('ru', { day: 'numeric', month: 'short' });
+
+  const items = recent.map(e => `
+    <div class="rnote-item">
+      <div class="rnote-date">${fmt(e.date)}</div>
+      <div class="rnote-text">${e.note}</div>
+    </div>`).join('');
+
+  return `<div class="section-label mt-16 mb-8">Последние заметки</div>
+    <div class="rnotes-list">${items}</div>`;
 }
 
 // ─── Утилита: склонение ────────────────────────────────────────────────────

@@ -2225,3 +2225,99 @@ input, textarea { font-family: inherit; }
   font-weight: 600;
   cursor: pointer;
 }
+
+/* ─── Итоговое резюме потока ─────────────────────────────────────────────── */
+.stream-summary {
+  background: linear-gradient(135deg, #2a4a38 0%, #3d6b52 100%);
+  border-radius: 18px;
+  padding: 24px 20px 20px;
+  color: #fff;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.stream-summary-title {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  font-style: italic;
+  margin-bottom: 4px;
+}
+.stream-summary-sub { font-size: 13px; opacity: 0.75; margin-bottom: 20px; }
+.stream-summary-stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+.stream-summary-num   { font-size: 28px; font-weight: 700; line-height: 1; }
+.stream-summary-label { font-size: 11px; opacity: 0.7; margin-top: 4px; line-height: 1.4; }
+.stream-summary-insight {
+  font-size: 13px;
+  opacity: 0.85;
+  background: rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 10px 14px;
+  line-height: 1.5;
+}
+
+/* ─── График чекинов ─────────────────────────────────────────────────────── */
+.checkin-chart-wrap {
+  background: var(--tg-secondary-bg);
+  border-radius: 14px;
+  padding: 12px 8px 8px;
+}
+.checkin-chart-svg { width: 100%; display: block; }
+.checkin-chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 6px;
+}
+.cchart-leg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--tg-hint);
+}
+.cchart-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── Фильтр по неделям (карта тела) ─────────────────────────────────────── */
+.hmap-week-filter {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.hmap-week-btn {
+  background: var(--tg-secondary-bg);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--tg-hint);
+  cursor: pointer;
+}
+.hmap-week-btn--active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* ─── Последние заметки ──────────────────────────────────────────────────── */
+.rnotes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rnote-item {
+  background: var(--tg-secondary-bg);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.rnote-date  { font-size: 11px; color: var(--tg-hint); margin-bottom: 4px; }
+.rnote-text  { font-size: 14px; color: var(--tg-text); line-height: 1.5; }
