@@ -41,7 +41,8 @@ async function meRoutes(app) {
         name: user.name,
         photoUrl: user.photoUrl,
         telegramUsername: user.telegramUsername,
-        notificationsTime: user.notificationsTime
+        notificationsTime: user.notificationsTime,
+        consentGivenAt: user.consentGivenAt
       },
       enrollment: enrollment ? {
         status: enrollment.status,
@@ -82,6 +83,24 @@ async function meRoutes(app) {
       }
     })
     return { name: updated.name, notificationsTime: updated.notificationsTime }
+  })
+
+  // PATCH /me/consent — зафиксировать согласие на обработку данных (ФЗ-152)
+  app.patch('/me/consent', { preHandler: requireAuth }, async (request) => {
+    const already = await db.user.findUnique({
+      where: { id: request.user.id },
+      select: { consentGivenAt: true }
+    })
+    if (already?.consentGivenAt) return { ok: true } // уже зафиксировано
+
+    await db.user.update({
+      where: { id: request.user.id },
+      data: {
+        consentGivenAt: new Date(),
+        consentText: 'Согласие на обработку персональных данных в соответствии с ФЗ-152 «О персональных данных»'
+      }
+    })
+    return { ok: true }
   })
 
   // GET /me/enrollment — статус доступа

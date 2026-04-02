@@ -877,10 +877,20 @@ function initOnboarding() {
     helloEl.textContent = firstName ? `Привет, ${firstName}!` : 'Привет!';
   }
 
-  document.getElementById('onboarding-start-btn')?.addEventListener('click', () => {
+  const cb  = document.getElementById('consent-cb');
+  const btn = document.getElementById('onboarding-start-btn');
+
+  cb?.addEventListener('change', () => {
+    if (btn) btn.disabled = !cb.checked;
+  });
+
+  btn?.addEventListener('click', () => {
+    if (!cb?.checked) return;
     Storage.setOnboardingDone();
-    Storage.setOfferSeen(); // не показывать оффер-модал отдельно
+    Storage.setOfferSeen();
+    Storage.setConsentGiven();
     hapticNotify('success');
+    Api.giveConsent().catch(() => {}); // фон — не блокируем UI
     goTo('home');
   });
 }
@@ -891,6 +901,7 @@ function initOnboarding() {
 function initProfile() {}
 
 function renderProfileTab() {
+  renderConsentBanner();
   renderQuestionnaireBanner();
   renderUserCard();
   renderStats();
@@ -2084,6 +2095,35 @@ async function submitQuestionnaire() {
     if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = 'Отправить'; }
     alert('Не удалось отправить анкету. Проверьте соединение и попробуйте ещё раз.');
   }
+}
+
+// ─── Баннер согласия на обработку данных ─────────────────────────────────
+
+function renderConsentBanner() {
+  const container = document.getElementById('consent-banner-wrap');
+  if (!container) return;
+
+  if (Storage.isConsentGiven()) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="consent-banner">
+      <div class="consent-banner-icon">🔒</div>
+      <div class="consent-banner-body">
+        <div class="consent-banner-title">Подтвердите согласие на обработку данных</div>
+        <div class="consent-banner-sub">Требуется по ФЗ-152 — займёт 10 секунд</div>
+      </div>
+      <button class="consent-banner-btn" id="consent-banner-btn">Подтвердить</button>
+    </div>`;
+
+  document.getElementById('consent-banner-btn')?.addEventListener('click', async () => {
+    Storage.setConsentGiven();
+    container.innerHTML = '';
+    hapticNotify('success');
+    Api.giveConsent().catch(() => {});
+  });
 }
 
 // ─── Баннер в профиле ────────────────────────────────────────────────────

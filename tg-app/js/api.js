@@ -66,6 +66,10 @@ const Api = {
     return this._request('PATCH', '/me', data);
   },
 
+  async giveConsent() {
+    return this._request('PATCH', '/me/consent');
+  },
+
   async getAccess() {
     return this._request('GET', '/me/enrollment/access');
   },

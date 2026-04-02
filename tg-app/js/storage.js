@@ -10,7 +10,8 @@ const KEYS = {
   TRIGGERS:       'tp_trigger_entries',    // дневник реакций (стоп-реакция)
   CHECKINS:       'tp_checkins',           // трекер изменений (недельные чекины)
   QUESTIONNAIRE:  'tp_questionnaire_done', // флаг заполненной анкеты
-  Q_SHEET_SHOWN:  'tp_q_sheet_shown'       // флаг показа bottom sheet анкеты
+  Q_SHEET_SHOWN:  'tp_q_sheet_shown',      // флаг показа bottom sheet анкеты
+  CONSENT:        'tp_consent_given'       // флаг согласия на обработку данных (ФЗ-152)
 };
 
 const Storage = {
@@ -210,6 +211,16 @@ const Storage = {
 
   setQSheetShown() {
     localStorage.setItem(KEYS.Q_SHEET_SHOWN, 'true');
+  },
+
+  // ─── Согласие на обработку данных (ФЗ-152) ───────────────────────────────
+
+  isConsentGiven() {
+    return localStorage.getItem(KEYS.CONSENT) === 'true';
+  },
+
+  setConsentGiven() {
+    localStorage.setItem(KEYS.CONSENT, 'true');
   },
 
   // ─── Синхронизация с бэкендом ─────────────────────────────────────────────

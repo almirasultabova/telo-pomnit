@@ -61,7 +61,15 @@
           </div>
         </li>
       </ul>
-      <button class="btn btn--accent btn--full onboarding-btn" id="onboarding-start-btn">
+      <div class="consent-block">
+        <label class="consent-label">
+          <input type="checkbox" id="consent-cb" class="consent-cb">
+          <span>Я соглашаюсь на обработку персональных данных согласно
+            <a class="consent-link" href="https://www.telo-pomnit.ru/offer" target="_blank">оферте</a>
+            и ФЗ-152</span>
+        </label>
+      </div>
+      <button class="btn btn--accent btn--full onboarding-btn" id="onboarding-start-btn" disabled>
         Начать
       </button>
     </div>
@@ -131,6 +139,9 @@
         <div class="screen-title">Мой поток</div>
       </div>
       <div class="screen-scroll screen-scroll--no-bottom" style="padding-bottom: calc(var(--nav-height) + 16px)">
+
+        <!-- Баннер согласия (скрывается после подтверждения) -->
+        <div id="consent-banner-wrap"></div>
 
         <!-- Баннер анкеты (скрывается после заполнения) -->
         <div id="q-banner-wrap"></div>

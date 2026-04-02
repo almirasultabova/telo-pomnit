@@ -2169,3 +2169,59 @@ input, textarea { font-family: inherit; }
 .q-done-icon  { font-size: 56px; margin-bottom: 20px; }
 .q-done-title { font-family: Georgia, serif; font-size: 24px; font-style: italic; color: var(--tg-text); margin-bottom: 12px; }
 .q-done-text  { font-size: 15px; color: var(--tg-hint); line-height: 1.6; max-width: 280px; }
+
+/* ─── Согласие на обработку данных (ФЗ-152) ─────────────────────────────── */
+
+/* Чекбокс в онбординге */
+.consent-block {
+  margin: 16px 0 12px;
+  text-align: left;
+}
+.consent-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--tg-hint);
+  line-height: 1.5;
+}
+.consent-cb {
+  margin-top: 2px;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.consent-link {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* Баннер в профиле для существующих пользователей */
+.consent-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff8e6;
+  border: 1px solid #e8c96b;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.consent-banner-icon { font-size: 22px; flex-shrink: 0; }
+.consent-banner-body { flex: 1; min-width: 0; }
+.consent-banner-title { font-size: 13px; font-weight: 600; color: var(--tg-text); margin-bottom: 2px; }
+.consent-banner-sub   { font-size: 12px; color: var(--tg-hint); }
+.consent-banner-btn {
+  flex-shrink: 0;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
