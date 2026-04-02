@@ -121,4 +121,14 @@ const Api = {
     if (sessionId) body.sessionId = sessionId;
     return this._request('POST', '/ai/chat', body);
   },
+
+  // ─── Анкеты ───────────────────────────────────────────────────────────────
+
+  async getQuestionnaireStatus(streamId) {
+    return this._request('GET', `/questionnaires/${streamId}`);
+  },
+
+  async saveQuestionnairePre(streamId, answers) {
+    return this._request('POST', '/questionnaires/pre', { streamId, answers });
+  },
 };

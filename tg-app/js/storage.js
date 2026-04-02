@@ -2,13 +2,15 @@
 // Локальный кэш + фоновая синхронизация с бэкендом через Api.
 
 const KEYS = {
-  DIARY:      'tp_diary_entries',   // массив записей дневника
-  DIAG:       'tp_diag_result',     // результат диагностики
-  ONBOARDING: 'tp_onboarding_done', // флаг завершения онбординга
-  OFFER_SEEN: 'tp_offer_seen',      // флаг показа оффера при первом открытии
-  ATTENDED:   'tp_attended',        // массив id посещённых встреч
-  TRIGGERS:   'tp_trigger_entries', // дневник реакций (стоп-реакция)
-  CHECKINS:   'tp_checkins'         // трекер изменений (недельные чекины)
+  DIARY:          'tp_diary_entries',      // массив записей дневника
+  DIAG:           'tp_diag_result',        // результат диагностики
+  ONBOARDING:     'tp_onboarding_done',    // флаг завершения онбординга
+  OFFER_SEEN:     'tp_offer_seen',         // флаг показа оффера при первом открытии
+  ATTENDED:       'tp_attended',           // массив id посещённых встреч
+  TRIGGERS:       'tp_trigger_entries',    // дневник реакций (стоп-реакция)
+  CHECKINS:       'tp_checkins',           // трекер изменений (недельные чекины)
+  QUESTIONNAIRE:  'tp_questionnaire_done', // флаг заполненной анкеты
+  Q_SHEET_SHOWN:  'tp_q_sheet_shown'       // флаг показа bottom sheet анкеты
 };
 
 const Storage = {
@@ -190,6 +192,24 @@ const Storage = {
       );
       Api.saveCheckin({ bodyScore: avg, note: checkin.note || '' }).catch(() => {});
     }
+  },
+
+  // ─── Анкета ───────────────────────────────────────────────────────────────
+
+  isQuestionnaireDone() {
+    return localStorage.getItem(KEYS.QUESTIONNAIRE) === 'true';
+  },
+
+  setQuestionnaireDone() {
+    localStorage.setItem(KEYS.QUESTIONNAIRE, 'true');
+  },
+
+  isQSheetShown() {
+    return localStorage.getItem(KEYS.Q_SHEET_SHOWN) === 'true';
+  },
+
+  setQSheetShown() {
+    localStorage.setItem(KEYS.Q_SHEET_SHOWN, 'true');
   },
 
   // ─── Синхронизация с бэкендом ─────────────────────────────────────────────

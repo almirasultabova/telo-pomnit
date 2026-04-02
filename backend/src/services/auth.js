@@ -23,12 +23,21 @@ function verifyTelegramInitData(initData) {
     .update(BOT_TOKEN)
     .digest()
 
-  const expectedHash = crypto
+  const expectedHashBuf = crypto
     .createHmac('sha256', secretKey)
     .update(dataCheckString)
-    .digest('hex')
+    .digest()
 
-  if (expectedHash !== hash) return null
+  // Timing-safe сравнение — защита от timing attack
+  const hashBuf = Buffer.from(hash, 'hex')
+  if (expectedHashBuf.length !== hashBuf.length) return null
+  if (!crypto.timingSafeEqual(expectedHashBuf, hashBuf)) return null
+
+  // Проверка свежести данных — не старше 24 часов
+  const authDate = params.get('auth_date')
+  if (!authDate) return null
+  const ageSeconds = Math.floor(Date.now() / 1000) - parseInt(authDate, 10)
+  if (ageSeconds > 86400) return null
 
   const userParam = params.get('user')
   if (!userParam) return null
@@ -38,7 +47,7 @@ function verifyTelegramInitData(initData) {
 
 // Создать JWT токен
 function createToken(userId, tokenVersion) {
-  return jwt.sign({ userId, tokenVersion }, JWT_SECRET, { expiresIn: '30d' })
+  return jwt.sign({ userId, tokenVersion }, JWT_SECRET, { expiresIn: '7d' })
 }
 
 // Проверить JWT токен + token_version в БД

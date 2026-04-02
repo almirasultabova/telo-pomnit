@@ -38,9 +38,9 @@ async function paymentRoutes(app) {
         type: 'object',
         required: ['email', 'telegramUsername'],
         properties: {
-          email:            { type: 'string', format: 'email' },
-          name:             { type: 'string' },
-          telegramUsername: { type: 'string' }
+          email:            { type: 'string', format: 'email', maxLength: 254 },
+          name:             { type: 'string', maxLength: 100 },
+          telegramUsername: { type: 'string', maxLength: 64, pattern: '^@?[a-zA-Z0-9_]{3,32}$' }
         }
       }
     }
@@ -77,7 +77,46 @@ async function paymentRoutes(app) {
   })
 
   // Webhook от ЮКассы — вызывается автоматически после успешной оплаты
+  // IP-адреса ЮКассы: https://yookassa.ru/developers/using-api/webhooks
+  const YUKASSA_IPS = [
+    '185.71.76.0/27',
+    '185.71.77.0/27',
+    '77.75.153.0/25',
+    '77.75.156.11',
+    '77.75.156.35',
+    '77.75.154.128/25',
+    '2a02:5180::/32'
+  ]
+
+  function isYukassaIP(ip) {
+    // Точные IP
+    const exact = ['77.75.156.11', '77.75.156.35']
+    if (exact.includes(ip)) return true
+    // CIDR-диапазоны (упрощённая проверка для IPv4 /25 и /27)
+    const ranges = [
+      { base: [185, 71, 76, 0],   mask: 27 },
+      { base: [185, 71, 77, 0],   mask: 27 },
+      { base: [77, 75, 153, 0],   mask: 25 },
+      { base: [77, 75, 154, 128], mask: 25 }
+    ]
+    const parts = ip.split('.').map(Number)
+    if (parts.length !== 4) return false
+    for (const { base, mask } of ranges) {
+      const bits = 32 - mask
+      const ipNum   = (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3]
+      const baseNum = (base[0]  << 24) | (base[1]  << 16) | (base[2]  << 8) | base[3]
+      if ((ipNum >>> bits) === (baseNum >>> bits)) return true
+    }
+    return false
+  }
+
   app.post('/webhook/yukassa', async (request, reply) => {
+    const clientIP = request.headers['x-forwarded-for']?.split(',')[0].trim() || request.ip
+    if (!isYukassaIP(clientIP)) {
+      request.log.warn({ clientIP }, 'Webhook отклонён: неизвестный IP')
+      return reply.code(403).send({ error: 'Forbidden' })
+    }
+
     const event = request.body
 
     if (event.event !== 'payment.succeeded') {

@@ -46,6 +46,10 @@ async function aiRoutes(app) {
     let session = null
     if (sessionId) {
       session = await db.aiChatSession.findUnique({ where: { sessionId } })
+      // Проверяем, что сессия принадлежит текущему пользователю
+      if (session && session.userId !== request.user.id) {
+        return reply.code(403).send({ error: 'Нет доступа к этой сессии' })
+      }
     }
     const history = session?.messages || []
 
@@ -76,14 +80,24 @@ async function aiRoutes(app) {
       { role: 'user', content: message }
     ]
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages,
-      max_tokens: 400,
-      temperature: 0.7
-    })
+    let completion
+    try {
+      completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages,
+        max_tokens: 400,
+        temperature: 0.7
+      })
+    } catch (err) {
+      request.log.error({ err: err.message, status: err.status }, 'Ошибка OpenAI API')
+      return reply.code(503).send({ error: 'AI-ассистент временно недоступен, попробуйте позже' })
+    }
 
-    const assistantMessage = completion.choices[0].message.content
+    const assistantMessage = completion.choices[0]?.message?.content
+    if (!assistantMessage) {
+      request.log.error({ completion }, 'OpenAI вернул пустой ответ')
+      return reply.code(503).send({ error: 'AI-ассистент не смог ответить, попробуйте ещё раз' })
+    }
 
     const newHistory = [
       ...history,
@@ -99,7 +113,7 @@ async function aiRoutes(app) {
       })
     } else {
       await db.aiChatSession.create({
-        data: { sessionId: newSessionId, messages: newHistory }
+        data: { sessionId: newSessionId, userId: request.user.id, messages: newHistory }
       })
     }
 

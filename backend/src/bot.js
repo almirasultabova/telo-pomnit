@@ -367,6 +367,62 @@ cron.schedule('0 17 * * *', sendDailyReminder, { timezone: 'UTC' })
 
 cron.schedule('0 * * * *', sendMeetingReminder, { timezone: 'UTC' })
 
+// ─── Напоминание заполнить анкету ─────────────────────────────────────────
+
+async function sendQuestionnairReminder(dayNumber) {
+  const messages = {
+    1: `📋 Добро пожаловать в программу «Тело помнит»!\n\nПожалуйста, заполните короткую анкету участницы — займёт около 5 минут. Это поможет нам лучше вас узнать и сделать программу точнее.\n\nОткройте приложение → вкладка «Мой поток» → нажмите на баннер анкеты.`,
+    3: `📋 Напоминание об анкете\n\nЕсли ещё не заполнили анкету участницы — самое время. Это займёт 5 минут и поможет нам подготовить программу именно для вашей группы.\n\nОткройте приложение → вкладка «Мой поток».`,
+    5: `📋 Последнее напоминание\n\nАнкета участницы ждёт вас в приложении. После этого напоминания больше не будем беспокоить — но анкету всегда можно заполнить в разделе «Мой поток».`
+  }
+
+  const text = messages[dayNumber]
+  if (!text) return
+
+  // Находим всех активных участниц, у кого нет заполненной анкеты
+  const enrollments = await db.enrollment.findMany({
+    where: { status: 'active' },
+    include: {
+      user: true,
+      stream: true
+    }
+  })
+
+  let sent = 0
+  for (const en of enrollments) {
+    const user = en.user
+    if (!user || user.deletedAt) continue
+
+    // Проверяем, что участница зачислена именно N дней назад
+    const daysSinceEnroll = Math.floor(
+      (Date.now() - new Date(en.createdAt).getTime()) / (1000 * 60 * 60 * 24)
+    )
+    if (daysSinceEnroll !== dayNumber) continue
+
+    // Проверяем, не заполнена ли уже анкета
+    const existing = await db.questionnaire.findFirst({
+      where: { userId: user.id, streamId: en.streamId, type: 'pre' }
+    })
+    if (existing) continue
+
+    try {
+      await bot.api.sendMessage(Number(user.telegramId), text)
+      sent++
+    } catch (e) {
+      console.warn(`[cron] Не удалось отправить напоминание об анкете ${user.telegramId}:`, e.message)
+    }
+  }
+
+  if (sent > 0) console.log(`[cron] Напоминание об анкете (день ${dayNumber}): отправлено ${sent}`)
+}
+
+// Cron: каждый день в 10:00 МСК (07:00 UTC) — проверяем дни 1, 3, 5
+cron.schedule('0 7 * * *', async () => {
+  await sendQuestionnairReminder(1)
+  await sendQuestionnairReminder(3)
+  await sendQuestionnairReminder(5)
+}, { timezone: 'UTC' })
+
 // ─── Регистрация публичных команд в Telegram ──────────────────────────────
 
 bot.api.setMyCommands([

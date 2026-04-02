@@ -76,6 +76,25 @@ h1,h2,h3{font-family:Georgia,'Times New Roman',serif;font-style:italic;line-heig
 .note-text{font-size:14px;color:var(--green-dark);line-height:1.7}
 .note-text strong{font-weight:600}
 
+/* --- EMAIL FORM --- */
+.email-section{padding:0 0 64px}
+.email-card{background:var(--white);border-radius:var(--radius-card);padding:36px 40px;box-shadow:var(--shadow);text-align:center}
+.email-card h2{font-family:Georgia,serif;font-style:italic;font-size:22px;color:var(--green-dark);margin-bottom:12px}
+.email-card p{font-size:15px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.email-form{display:flex;gap:12px;max-width:440px;margin:0 auto}
+.email-input{flex:1;padding:12px 18px;border:1.5px solid rgba(42,74,56,0.2);border-radius:var(--radius-btn);font-size:15px;font-family:inherit;background:#fff;color:var(--text);outline:none;transition:border-color .2s}
+.email-input:focus{border-color:var(--green)}
+.email-input::placeholder{color:#b0a090}
+.email-status{margin-top:14px;font-size:14px;min-height:20px}
+.email-status--ok{color:var(--green)}
+.email-status--err{color:#c0392b}
+
+@media (max-width:480px){
+  .email-card{padding:24px 20px}
+  .email-form{flex-direction:column}
+  .email-form .btn{width:100%}
+}
+
 /* --- FOOTER --- */
 footer{padding:32px 0;border-top:1px solid rgba(42,74,56,0.08);text-align:center}
 .footer-logo{font-family:Georgia,serif;font-style:italic;font-size:20px;color:var(--green);margin-bottom:8px}
@@ -185,6 +204,21 @@ footer{padding:32px 0;border-top:1px solid rgba(42,74,56,0.08);text-align:center
   </div>
 </section>
 
+<!-- EMAIL FORM -->
+<section class="email-section">
+  <div class="container">
+    <div class="email-card reveal animate">
+      <h2>Получите инструкцию на почту</h2>
+      <p>Введите email — мы пришлём ссылку на бота, чтобы она всегда была под рукой.</p>
+      <form class="email-form" id="emailForm" onsubmit="sendEmail(event)">
+        <input class="email-input" type="email" id="emailInput" placeholder="ваш@email.ru" required autocomplete="email">
+        <button type="submit" class="btn btn--primary" id="emailBtn" style="width:auto;padding:12px 24px">Отправить</button>
+      </form>
+      <p class="email-status" id="emailStatus"></p>
+    </div>
+  </div>
+</section>
+
 <!-- NOTE -->
 <section class="note">
   <div class="container">
@@ -214,6 +248,39 @@ footer{padding:32px 0;border-top:1px solid rgba(42,74,56,0.08);text-align:center
 </footer>
 
 <script>
+// Send welcome email
+async function sendEmail(e) {
+  e.preventDefault()
+  var btn = document.getElementById('emailBtn')
+  var status = document.getElementById('emailStatus')
+  var email = document.getElementById('emailInput').value
+
+  btn.disabled = true
+  btn.textContent = 'Отправляем...'
+  status.textContent = ''
+  status.className = 'email-status'
+
+  try {
+    var res = await fetch('https://api.telo-pomnit.ru/send-welcome', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    })
+    if (res.ok) {
+      status.textContent = 'Письмо отправлено — проверьте почту'
+      status.className = 'email-status email-status--ok'
+      btn.textContent = 'Отправлено'
+    } else {
+      throw new Error()
+    }
+  } catch {
+    status.textContent = 'Не удалось отправить. Попробуйте ещё раз.'
+    status.className = 'email-status email-status--err'
+    btn.disabled = false
+    btn.textContent = 'Отправить'
+  }
+}
+
 // Reveal on scroll
 (function(){
   var els = document.querySelectorAll('.reveal.animate')

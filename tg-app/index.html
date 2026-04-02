@@ -132,6 +132,9 @@
       </div>
       <div class="screen-scroll screen-scroll--no-bottom" style="padding-bottom: calc(var(--nav-height) + 16px)">
 
+        <!-- Баннер анкеты (скрывается после заполнения) -->
+        <div id="q-banner-wrap"></div>
+
         <!-- Карточка пользователя (динамическая) -->
         <div class="profile-user" id="profile-user-card"></div>
 
@@ -533,6 +536,42 @@
     <div class="meeting-detail-section">
       <div class="meeting-detail-section-label">Как подготовиться</div>
       <div class="meeting-detail-text" id="meeting-detail-prepare"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     АНКЕТА: bottom sheet-приглашение
+     Показывается через 10 сек после первого входа, если анкета не заполнена
+══════════════════════════════════════════════════════════════════════ -->
+<div class="bottom-sheet-overlay" id="q-invite-overlay" onclick="closeQInvite()"></div>
+<div class="bottom-sheet" id="q-invite-sheet">
+  <div class="bottom-sheet-handle"></div>
+  <div class="bottom-sheet-content">
+    <div class="q-invite-emoji">📋</div>
+    <h3 class="q-invite-title">Расскажите немного о себе</h3>
+    <p class="q-invite-text">Анкета участницы поможет нам лучше вас узнать и сделать программу точнее. Займёт около 5 минут.</p>
+    <button class="btn btn--accent btn--full" id="q-invite-start-btn" onclick="openQuestionnaire()">Заполнить анкету</button>
+    <button class="q-invite-later" onclick="closeQInvite()">Заполню позже</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     АНКЕТА: полноэкранный экран (пошаговый)
+══════════════════════════════════════════════════════════════════════ -->
+<div class="screen" id="screen-questionnaire">
+  <div class="questionnaire-wrap">
+    <div class="questionnaire-header">
+      <button class="q-close-btn" onclick="closeQuestionnaire()">✕</button>
+      <div class="q-progress-wrap">
+        <div class="q-progress-bar"><div class="q-progress-fill" id="q-progress-fill"></div></div>
+        <div class="q-progress-label" id="q-progress-label">Блок 1 из 6</div>
+      </div>
+    </div>
+    <div class="questionnaire-body" id="questionnaire-body"></div>
+    <div class="questionnaire-footer">
+      <button class="btn btn--outline q-back-btn" id="q-back-btn" onclick="qPrev()">Назад</button>
+      <button class="btn btn--accent q-next-btn" id="q-next-btn" onclick="qNext()">Далее</button>
     </div>
   </div>
 </div>

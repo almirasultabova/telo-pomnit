@@ -17,15 +17,9 @@ async function authRoutes(app) {
   }, async (request, reply) => {
     const { initData, consentGiven } = request.body
 
-    // В режиме разработки — разрешаем тестовый вход
-    let tgUser
-    if (process.env.NODE_ENV === 'development' && initData === 'dev') {
-      tgUser = { id: 412942287, first_name: 'Альмира', username: 'almira_test', photo_url: null }
-    } else {
-      tgUser = verifyTelegramInitData(initData)
-      if (!tgUser) {
-        return reply.code(401).send({ error: 'Невалидные данные Telegram' })
-      }
+    const tgUser = verifyTelegramInitData(initData)
+    if (!tgUser) {
+      return reply.code(401).send({ error: 'Невалидные данные Telegram' })
     }
 
     if (!consentGiven) {

@@ -33,6 +33,7 @@ model User {
   checkins           Checkin[]
   diagnosticResults  DiagnosticResult[]
   questionnaires     Questionnaire[]
+  aiChatSessions     AiChatSession[]
 
   @@map("users")
 }
@@ -160,10 +161,24 @@ model Questionnaire {
 model AiChatSession {
   id        String   @id @default(uuid())
   sessionId String   @unique @map("session_id")
+  userId    String?  @map("user_id")
   messages  Json
   createdAt DateTime @default(now()) @map("created_at")
 
+  user      User?    @relation(fields: [userId], references: [id])
+
   @@map("ai_chat_sessions")
+}
+
+model PendingEnrollment {
+  id               String   @id @default(uuid())
+  telegramUsername String   @map("telegram_username")
+  email            String
+  name             String?
+  paymentId        String   @unique @map("payment_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@map("pending_enrollments")
 }
 
 enum EnrollmentStatus {

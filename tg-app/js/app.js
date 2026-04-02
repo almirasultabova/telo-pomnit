@@ -120,12 +120,20 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(async () => {
       Storage.initFromApi();
       try {
-        const access = await Api.getAccess();
-        aiAccessGranted = !!access?.canWrite;
-        // Если AI-экран уже открыт — перерисовываем
-        if (currentScreen === 'ai-chat') renderAiChat();
+        const [access, me] = await Promise.allSettled([
+          Api.getAccess(),
+          Api.getMe()
+        ]);
+        if (access.status === 'fulfilled') {
+          aiAccessGranted = !!access.value?.canWrite;
+          if (currentScreen === 'ai-chat') renderAiChat();
+        }
+        // Проверяем анкету, если участница зачислена
+        if (me.status === 'fulfilled' && me.value?.enrollment?.stream?.id) {
+          checkAndShowQuestionnaire(me.value.enrollment.stream.id);
+        }
       } catch {
-        /* нет связи — оставляем null, чат откроется с ошибкой при отправке */
+        /* нет связи — работаем локально */
       }
     })
     .catch(() => {}); // без бэкенда — работаем локально
@@ -883,6 +891,7 @@ function initOnboarding() {
 function initProfile() {}
 
 function renderProfileTab() {
+  renderQuestionnaireBanner();
   renderUserCard();
   renderStats();
   renderNextMeeting();
@@ -1275,7 +1284,7 @@ async function sendAiMessage() {
   const message = input?.value?.trim();
   if (!message) return;
 
-  // Если токена нет — пробуем авторизоваться ещё раз (Railway мог перезапускаться)
+  // Если токена нет — пробуем авторизоваться ещё раз (сервер мог перезапускаться)
   if (!Api.isAuthed()) {
     try {
       await Api.auth();
@@ -1746,4 +1755,355 @@ function renderCheckinHistory() {
     <div class="section-label" style="padding-top:${checkins.length >= 2 ? 16 : 0}px">Все чекины</div>
     ${listHtml}
   </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// АНКЕТА УЧАСТНИЦЫ (до потока)
+// ─────────────────────────────────────────────────────────────────────────
+
+let qAnswers = {};
+let qStep = 0;
+let qStreamId = null;
+
+const Q_BLOCKS = [
+  {
+    title: 'О вас',
+    fields: [
+      { id: 'name',         label: 'Как вас зовут?', hint: 'Имя, как вам удобно', type: 'text', required: true },
+      { id: 'age',          label: 'Сколько вам лет?', type: 'radio', options: ['до 25','25–30','31–35','36–40','41–45','46–50','старше 50'], required: true },
+      { id: 'occupation',   label: 'Чем вы занимаетесь?', type: 'radio', options: ['найм (офис или удалённо)','своё дело / самозанятость','фриланс','в декрете','учусь','не работаю сейчас','другое'], required: true },
+      { id: 'familyStatus', label: 'Семейное положение', type: 'radio', options: ['в отношениях / замужем','не в отношениях','развожусь / недавно рассталась'], required: true },
+      { id: 'hasChildren',  label: 'Есть ли у вас дети?', type: 'radio', options: ['нет','да, один ребёнок','да, двое и больше'], required: true },
+      { id: 'city',         label: 'Из какого вы города / региона?', type: 'text', required: false }
+    ]
+  },
+  {
+    title: 'Как вы сюда пришли',
+    fields: [
+      { id: 'source',              label: 'Откуда вы узнали о программе?', type: 'radio', options: ['от подруги или знакомой','Telegram-канал','Instagram','сама нашла в поиске','другое'], required: true },
+      { id: 'referralName',        label: 'Если посоветовала подруга — как её зовут?', hint: 'Необязательно', type: 'text', required: false },
+      { id: 'whatCaughtAttention', label: 'Что вас зацепило — из-за чего решили прийти?', hint: 'Можно выбрать несколько', type: 'checkbox', options: ['тема работы с телом и реакциями','соматический подход, не просто «осознайте»','доверие к ведущим','рекомендация подруги','формат — живые встречи в группе','цена','другое'] },
+      { id: 'priorExperience',     label: 'Что пробовали до этого?', hint: 'Можно выбрать несколько', type: 'checkbox', options: ['индивидуальная терапия','онлайн-курсы по психологии','марафоны и групповые программы','йога / дыхательные практики / медитация','ничего, это первый опыт','другое'] }
+    ]
+  },
+  {
+    title: 'Ваш запрос',
+    fields: [
+      { id: 'currentSituation',     label: 'Что сейчас происходит в вашей жизни, что привело вас сюда?', hint: 'Это самый важный вопрос анкеты', type: 'textarea', required: false },
+      { id: 'bodyTension',          label: 'Где в теле чаще всего живёт напряжение?', hint: 'Можно выбрать несколько', type: 'checkbox', options: ['горло / шея','плечи / спина','грудь / сердце','живот','челюсть','голова','чувствую онемение — тело как будто не моё','не замечаю ничего конкретного'] },
+      { id: 'bodyStressSensations', label: 'Какие ощущения возникают в теле при стрессе?', hint: 'Можно выбрать несколько', type: 'checkbox', options: ['тяжесть','зажатость, сдавленность','дрожь или холод','ком в горле или груди','онемение, отключение','жар, пульсация','ничего не чувствую — уходит в голову'] },
+      { id: 'stressReaction',       label: 'Как вы обычно реагируете, когда что-то идёт не так?', type: 'radio', options: ['замираю — не могу думать или двигаться','злюсь, спорю, защищаюсь','ухожу — в работу, телефон, сон, еду','начинаю подстраиваться, угождать, чтобы всё наладилось','по-разному, зависит от ситуации'] }
+    ]
+  },
+  {
+    title: 'Ваше состояние сейчас',
+    fields: [
+      { id: 'bodyContactScale', label: 'Насколько вы чувствуете контакт с телом?', hint: '1 — совсем не чувствую, 10 — в полном контакте', type: 'scale', min: 1, max: 10 },
+      { id: 'anxietyScale',     label: 'Уровень тревоги в обычный день', hint: '1 — спокойно, 10 — постоянно тревожно', type: 'scale', min: 1, max: 10 },
+      { id: 'hasTherapist',     label: 'Есть ли у вас сейчас психолог или терапевт?', type: 'radio', options: ['да, работаю параллельно','нет, но был раньше','нет, никогда не было'] }
+    ]
+  },
+  {
+    title: 'Ожидания',
+    fields: [
+      { id: 'successMeans',    label: 'Что для вас будет означать, что программа сработала?', type: 'textarea', required: false },
+      { id: 'importantInWork', label: 'Что для вас важно в работе с собой?', hint: 'Можно выбрать несколько', type: 'checkbox', options: ['почувствовать, что я не одна с этим','получить конкретные инструменты на каждый день','наконец-то что-то почувствовать — а не только понять','разобраться, почему тело реагирует именно так','научиться останавливаться в моменте'] }
+    ]
+  },
+  {
+    title: 'Немного о предпочтениях',
+    fields: [
+      { id: 'followedChannels', label: 'На что вы подписаны — что читаете или смотрите про психологию, тело, саморазвитие?', hint: 'Каналы, блогеры, подкасты — любой формат. Необязательно', type: 'textarea', required: false },
+      { id: 'practiceTime',    label: 'Сколько минут в день реально готовы уделять практике?', type: 'radio', options: ['5–10 минут','10–20 минут','20–30 минут','больше 30 минут'] },
+      { id: 'futureInterest',  label: 'Интересен ли вам формат работы после потока?', hint: 'Можно выбрать несколько', type: 'checkbox', options: ['да, хочу индивидуальные сессии','да, интересен записанный курс','да, хочу следующий поток в группе','пока не знаю','мне достаточно этой программы'] }
+    ]
+  }
+];
+
+// ─── Инициализация и проверка статуса ────────────────────────────────────
+
+async function checkAndShowQuestionnaire(streamId) {
+  qStreamId = streamId;
+  if (Storage.isQuestionnaireDone()) return;
+
+  // Проверяем на сервере — вдруг уже заполнена с другого устройства
+  try {
+    const status = await Api.getQuestionnaireStatus(streamId);
+    if (status?.pre) {
+      Storage.setQuestionnaireDone();
+      return;
+    }
+  } catch { /* нет связи — показываем по флагу */ }
+
+  // Показываем bottom sheet через 10 сек (только 1 раз)
+  if (!Storage.isQSheetShown()) {
+    setTimeout(() => {
+      Storage.setQSheetShown();
+      showQInvite();
+    }, 10000);
+  }
+}
+
+// ─── Bottom sheet — приглашение ───────────────────────────────────────────
+
+function showQInvite() {
+  const overlay = document.getElementById('q-invite-overlay');
+  const sheet   = document.getElementById('q-invite-sheet');
+  if (!overlay || !sheet) return;
+  overlay.classList.add('active');
+  sheet.classList.add('active');
+  haptic('light');
+}
+
+function closeQInvite() {
+  const overlay = document.getElementById('q-invite-overlay');
+  const sheet   = document.getElementById('q-invite-sheet');
+  if (!overlay || !sheet) return;
+  overlay.classList.remove('active');
+  sheet.classList.remove('active');
+}
+
+// ─── Открыть / закрыть экран анкеты ──────────────────────────────────────
+
+function openQuestionnaire() {
+  closeQInvite();
+  qStep = 0;
+  qAnswers = {};
+  renderQBlock();
+  goTo('questionnaire');
+}
+
+function closeQuestionnaire() {
+  goBack();
+}
+
+// ─── Рендер блока ────────────────────────────────────────────────────────
+
+function renderQBlock() {
+  const block = Q_BLOCKS[qStep];
+  const total = Q_BLOCKS.length;
+
+  // Прогресс
+  const pct = Math.round(((qStep + 1) / total) * 100);
+  const fill = document.getElementById('q-progress-fill');
+  const label = document.getElementById('q-progress-label');
+  if (fill) fill.style.width = pct + '%';
+  if (label) label.textContent = `Блок ${qStep + 1} из ${total}`;
+
+  // Кнопки
+  const backBtn = document.getElementById('q-back-btn');
+  const nextBtn = document.getElementById('q-next-btn');
+  if (backBtn) backBtn.style.display = qStep === 0 ? 'none' : '';
+  if (nextBtn) nextBtn.textContent = qStep === total - 1 ? 'Отправить' : 'Далее';
+
+  // Контент
+  const body = document.getElementById('questionnaire-body');
+  if (!body) return;
+
+  const fieldsHtml = block.fields.map(f => renderQField(f)).join('');
+  body.innerHTML = `
+    <div class="q-block-title">${block.title}</div>
+    ${fieldsHtml}
+  `;
+  body.scrollTop = 0;
+
+  // Восстанавливаем сохранённые значения
+  block.fields.forEach(f => restoreQField(f));
+
+  // Вешаем обработчики
+  block.fields.forEach(f => bindQField(f));
+}
+
+function renderQField(f) {
+  const hint = f.hint ? `<div class="q-field-hint">${f.hint}</div>` : '';
+  const req  = f.required ? '<span class="q-required">*</span>' : '';
+
+  if (f.type === 'text') {
+    return `<div class="q-field">
+      <label class="q-label">${f.label}${req}</label>${hint}
+      <input class="q-input" id="qf-${f.id}" type="text" placeholder="">
+    </div>`;
+  }
+
+  if (f.type === 'textarea') {
+    return `<div class="q-field">
+      <label class="q-label">${f.label}${req}</label>${hint}
+      <textarea class="q-textarea" id="qf-${f.id}" rows="4" placeholder=""></textarea>
+    </div>`;
+  }
+
+  if (f.type === 'radio') {
+    const opts = f.options.map(o => `
+      <label class="q-option">
+        <input type="radio" name="qf-${f.id}" value="${o}">
+        <span class="q-option-label">${o}</span>
+      </label>`).join('');
+    return `<div class="q-field">
+      <div class="q-label">${f.label}${req}</div>${hint}
+      <div class="q-options">${opts}</div>
+    </div>`;
+  }
+
+  if (f.type === 'checkbox') {
+    const opts = f.options.map(o => `
+      <label class="q-option">
+        <input type="checkbox" name="qf-${f.id}" value="${o}">
+        <span class="q-option-label">${o}</span>
+      </label>`).join('');
+    return `<div class="q-field">
+      <div class="q-label">${f.label}</div>${hint}
+      <div class="q-options">${opts}</div>
+    </div>`;
+  }
+
+  if (f.type === 'scale') {
+    const nums = Array.from({length: f.max - f.min + 1}, (_,i) => i + f.min);
+    const btns = nums.map(n => `<button class="q-scale-btn" data-val="${n}" data-id="${f.id}">${n}</button>`).join('');
+    return `<div class="q-field">
+      <div class="q-label">${f.label}</div>${hint}
+      <div class="q-scale" id="qscale-${f.id}">${btns}</div>
+    </div>`;
+  }
+
+  return '';
+}
+
+function restoreQField(f) {
+  const saved = qAnswers[f.id];
+  if (!saved) return;
+
+  if (f.type === 'text' || f.type === 'textarea') {
+    const el = document.getElementById(`qf-${f.id}`);
+    if (el) el.value = saved;
+  }
+  if (f.type === 'radio') {
+    document.querySelectorAll(`input[name="qf-${f.id}"]`).forEach(inp => {
+      if (inp.value === saved) inp.checked = true;
+    });
+  }
+  if (f.type === 'checkbox' && Array.isArray(saved)) {
+    document.querySelectorAll(`input[name="qf-${f.id}"]`).forEach(inp => {
+      if (saved.includes(inp.value)) inp.checked = true;
+    });
+  }
+  if (f.type === 'scale') {
+    document.querySelectorAll(`#qscale-${f.id} .q-scale-btn`).forEach(btn => {
+      if (Number(btn.dataset.val) === saved) btn.classList.add('q-scale-btn--active');
+    });
+  }
+}
+
+function bindQField(f) {
+  if (f.type === 'scale') {
+    document.querySelectorAll(`#qscale-${f.id} .q-scale-btn`).forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll(`#qscale-${f.id} .q-scale-btn`).forEach(b => b.classList.remove('q-scale-btn--active'));
+        btn.classList.add('q-scale-btn--active');
+        qAnswers[f.id] = Number(btn.dataset.val);
+        haptic('light');
+      });
+    });
+  }
+}
+
+// ─── Собрать ответы текущего блока ───────────────────────────────────────
+
+function collectQBlock() {
+  const block = Q_BLOCKS[qStep];
+  block.fields.forEach(f => {
+    if (f.type === 'text' || f.type === 'textarea') {
+      const el = document.getElementById(`qf-${f.id}`);
+      if (el) qAnswers[f.id] = el.value.trim();
+    }
+    if (f.type === 'radio') {
+      const checked = document.querySelector(`input[name="qf-${f.id}"]:checked`);
+      if (checked) qAnswers[f.id] = checked.value;
+    }
+    if (f.type === 'checkbox') {
+      const checked = [...document.querySelectorAll(`input[name="qf-${f.id}"]:checked`)].map(i => i.value);
+      if (checked.length) qAnswers[f.id] = checked;
+    }
+    // scale — уже сохраняется при клике
+  });
+}
+
+// ─── Навигация по блокам ─────────────────────────────────────────────────
+
+function qNext() {
+  collectQBlock();
+  haptic('light');
+
+  if (qStep < Q_BLOCKS.length - 1) {
+    qStep++;
+    renderQBlock();
+    return;
+  }
+
+  // Последний блок — отправляем
+  submitQuestionnaire();
+}
+
+function qPrev() {
+  collectQBlock();
+  haptic('light');
+  if (qStep > 0) {
+    qStep--;
+    renderQBlock();
+  }
+}
+
+// ─── Отправка на сервер ───────────────────────────────────────────────────
+
+async function submitQuestionnaire() {
+  const nextBtn = document.getElementById('q-next-btn');
+  if (nextBtn) { nextBtn.disabled = true; nextBtn.textContent = 'Отправляем…'; }
+
+  try {
+    if (qStreamId) {
+      await Api.saveQuestionnairePre(qStreamId, qAnswers);
+    }
+    Storage.setQuestionnaireDone();
+    hapticNotify('success');
+
+    // Показываем благодарность
+    const body = document.getElementById('questionnaire-body');
+    if (body) {
+      body.innerHTML = `
+        <div class="q-done">
+          <div class="q-done-icon">🌿</div>
+          <div class="q-done-title">Спасибо</div>
+          <div class="q-done-text">Мы внимательно прочитаем каждую анкету. Увидимся на первой встрече.</div>
+        </div>`;
+    }
+    const footer = document.querySelector('.questionnaire-footer');
+    if (footer) footer.innerHTML = `<button class="btn btn--accent btn--full" onclick="closeQuestionnaire()">Закрыть</button>`;
+
+    // Обновляем профиль — убираем баннер
+    renderProfileTab();
+  } catch {
+    if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = 'Отправить'; }
+    alert('Не удалось отправить анкету. Проверьте соединение и попробуйте ещё раз.');
+  }
+}
+
+// ─── Баннер в профиле ────────────────────────────────────────────────────
+
+function renderQuestionnaireBanner() {
+  const container = document.getElementById('q-banner-wrap');
+  if (!container) return;
+
+  if (Storage.isQuestionnaireDone()) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="q-banner" onclick="openQuestionnaire()">
+      <div class="q-banner-icon">📋</div>
+      <div class="q-banner-body">
+        <div class="q-banner-title">Анкета участницы не заполнена</div>
+        <div class="q-banner-sub">Займёт 5 минут — помогает сделать программу точнее</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>`;
 }

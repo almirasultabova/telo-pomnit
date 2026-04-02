@@ -92,6 +92,12 @@ async function meRoutes(app) {
       return { hasAccess: true, canWrite: true }
     }
 
+    // Демо-режим: временный доступ для всех до указанной даты
+    const demoUntil = process.env.DEMO_MODE_UNTIL
+    if (demoUntil && new Date() < new Date(demoUntil)) {
+      return { hasAccess: true, canWrite: true }
+    }
+
     const enrollment = await db.enrollment.findFirst({
       where: { userId: request.user.id, status: { in: ['active', 'completed'] } },
       orderBy: { createdAt: 'desc' }

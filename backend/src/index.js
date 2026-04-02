@@ -5,9 +5,14 @@ const { bot } = require('./bot')
 
 const app = Fastify({ logger: true })
 
-// CORS — разрешаем запросы от Mini App
+// CORS — разрешаем запросы только от известных доменов
 app.register(require('@fastify/cors'), {
-  origin: true,
+  origin: [
+    'https://telo-pomnit.ru',
+    'https://www.telo-pomnit.ru',
+    'https://almirasultabova.github.io',
+    'https://web.telegram.org'
+  ],
   credentials: true
 })
 
