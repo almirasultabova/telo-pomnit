@@ -38,22 +38,29 @@ async function diaryRoutes(app) {
       }
     }
   }, async (request, reply) => {
-    // Проверяем что участница может писать
-    const enrollment = await db.enrollment.findFirst({
-      where: { userId: request.user.id, status: 'active' }
-    })
-    if (!enrollment) {
-      return reply.code(403).send({ error: 'Запись доступна только активным участницам' })
+    const { zone, sensations = [], note, streamId } = request.body
+
+    // Определяем streamId: из запроса, или из активного зачисления, или из активного потока
+    let resolvedStreamId = streamId
+    if (!resolvedStreamId) {
+      const enrollment = await db.enrollment.findFirst({
+        where: { userId: request.user.id, status: 'active' }
+      })
+      if (enrollment) {
+        resolvedStreamId = enrollment.streamId
+      } else {
+        const stream = await db.stream.findFirst({ where: { isActive: true } })
+        resolvedStreamId = stream?.id || null
+      }
     }
 
-    const { zone, sensations = [], note, streamId } = request.body
     const entry = await db.diaryEntry.create({
       data: {
         userId: request.user.id,
         zone,
         sensations,
         note,
-        streamId: streamId || enrollment.streamId
+        streamId: resolvedStreamId
       }
     })
     return entry
