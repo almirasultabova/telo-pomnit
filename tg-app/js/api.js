@@ -41,9 +41,13 @@ const Api = {
 
   async auth() {
     const tg = window.Telegram?.WebApp;
-    const initData = tg?.initData || 'dev'; // 'dev' для локального тестирования
-    const data = await this._request('POST', '/auth/telegram', { initData, consentGiven: true });
+    const initData = tg?.initData || '';
+    const data = await this._request('POST', '/auth/telegram', { initData });
     this._setToken(data.token);
+    // Синхронизируем согласие: если на сервере уже зафиксировано — ставим флаг локально
+    if (data.user?.consentGivenAt) {
+      Storage.setConsentGiven();
+    }
     return data.user;
   },
 

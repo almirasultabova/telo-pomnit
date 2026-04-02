@@ -423,6 +423,19 @@ cron.schedule('0 7 * * *', async () => {
   await sendQuestionnairReminder(5)
 }, { timezone: 'UTC' })
 
+// Cron: каждую ночь в 03:00 МСК (00:00 UTC) — чистим незавершённые оплаты старше 60 дней
+cron.schedule('0 0 * * *', async () => {
+  try {
+    const cutoff = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000)
+    const { count } = await db.pendingEnrollment.deleteMany({
+      where: { createdAt: { lt: cutoff } }
+    })
+    if (count > 0) console.log(`[cron] Удалено устаревших pending_enrollments: ${count}`)
+  } catch (e) {
+    console.error('[cron] Ошибка чистки pending_enrollments:', e.message)
+  }
+}, { timezone: 'UTC' })
+
 // ─── Регистрация публичных команд в Telegram ──────────────────────────────
 
 bot.api.setMyCommands([

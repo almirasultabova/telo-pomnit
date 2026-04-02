@@ -7,23 +7,18 @@ async function authRoutes(app) {
     schema: {
       body: {
         type: 'object',
-        required: ['initData', 'consentGiven'],
+        required: ['initData'],
         properties: {
-          initData: { type: 'string' },
-          consentGiven: { type: 'boolean' }
+          initData: { type: 'string' }
         }
       }
     }
   }, async (request, reply) => {
-    const { initData, consentGiven } = request.body
+    const { initData } = request.body
 
     const tgUser = verifyTelegramInitData(initData)
     if (!tgUser) {
       return reply.code(401).send({ error: 'Невалидные данные Telegram' })
-    }
-
-    if (!consentGiven) {
-      return reply.code(400).send({ error: 'Необходимо согласие на обработку данных' })
     }
 
     // Найти или создать пользователя
@@ -38,9 +33,7 @@ async function authRoutes(app) {
           telegramUsername: tgUser.username || null,
           username: tgUser.username || null,
           name: tgUser.first_name || null,
-          photoUrl: tgUser.photo_url || null,
-          consentGivenAt: new Date(),
-          consentText: 'v1.0'
+          photoUrl: tgUser.photo_url || null
         }
       })
     } else if (user.deletedAt) {
@@ -55,7 +48,8 @@ async function authRoutes(app) {
         id: user.id,
         name: user.name,
         photoUrl: user.photoUrl,
-        telegramUsername: user.telegramUsername
+        telegramUsername: user.telegramUsername,
+        consentGivenAt: user.consentGivenAt
       }
     }
   })
