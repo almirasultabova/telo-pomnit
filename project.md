@@ -1,6 +1,6 @@
 # Тело помнит — описание проекта
 
-_Обновлено: 2 апреля 2026_
+_Обновлено: 7 апреля 2026_
 
 ## Что это за проект
 
@@ -152,7 +152,7 @@ _Обновлено: 2 апреля 2026_
 | Компонент | Меры защиты |
 |---|---|
 | CORS | Whitelist: `telo-pomnit.ru`, `almirasultabova.github.io`, `web.telegram.org` |
-| Авторизация | HMAC-SHA256 с `timingSafeEqual`, проверка `auth_date` (макс. 24ч), JWT 7 дней |
+| Авторизация | HMAC-SHA256 с `timingSafeEqual`, проверка `auth_date` (макс. 24ч), JWT 7 дней; временный whitelist по Telegram ID в `auth.js` и `bot.js` |
 | Webhook ЮКасса | IP-фильтр по официальным подсетям ЮКасса |
 | AI-сессии | Проверка `session.userId === request.user.id` перед доступом |
 | Входные данные | `maxLength` на email (254), name (100), telegramUsername (64) |
