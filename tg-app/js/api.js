@@ -28,7 +28,9 @@ const Api = {
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Ошибка сервера');
+        const error = new Error(err.error || 'Ошибка сервера');
+        error.status = res.status;
+        throw error;
       }
       return res.status === 204 ? null : res.json();
     } catch (e) {

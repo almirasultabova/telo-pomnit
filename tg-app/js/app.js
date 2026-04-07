@@ -150,6 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Авторизация + загрузка данных; минимальное время сплэша — 1600мс
   const minSplash = new Promise(resolve => setTimeout(resolve, 1600));
 
+  let accessDenied = false;
+
   const authFlow = Api.auth()
     .then(async () => {
       await Storage.initFromApi(); // ждём загрузки данных с сервера
@@ -168,10 +170,21 @@ document.addEventListener('DOMContentLoaded', () => {
         /* нет связи — работаем локально */
       }
     })
-    .catch(() => {}); // без бэкенда — работаем локально
+    .catch(err => {
+      if (err?.status === 403) {
+        accessDenied = true;
+      }
+      // иначе — нет связи, работаем локально
+    });
 
   // Переходим с экрана сплэша только после обоих условий
-  Promise.all([minSplash, authFlow]).then(startApp);
+  Promise.all([minSplash, authFlow]).then(() => {
+    if (accessDenied) {
+      showAccessDenied();
+    } else {
+      startApp();
+    }
+  });
 });
 
 // ─── Нижняя навигация ─────────────────────────────────────────────────────
@@ -1274,6 +1287,23 @@ document.addEventListener('click', e => {
     haptic('light');
   }
 });
+
+// ─────────────────────────────────────────────────────────────────────────
+// ЭКРАН: НЕТ ДОСТУПА
+// ─────────────────────────────────────────────────────────────────────────
+function showAccessDenied() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('screen--active'));
+  const el = document.getElementById('screen-splash');
+  if (el) {
+    el.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px;text-align:center;gap:20px;">
+        <div style="font-size:48px;">🌿</div>
+        <div style="font-family:Georgia,serif;font-size:22px;color:#1a110a;">Тело помнит</div>
+        <div style="font-size:15px;color:#8a7a6a;line-height:1.6;">Приложение пока закрыто.<br>По вопросам доступа напишите<br><a href="https://t.me/Almira_Sultanova" style="color:#2a4a38;">@Almira_Sultanova</a></div>
+      </div>`;
+    el.classList.add('screen--active');
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────
 // МОДАЛКА: ОФФЕР (показывается один раз при первом открытии)
