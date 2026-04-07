@@ -44,9 +44,10 @@ const Api = {
     const initData = tg?.initData || '';
     const data = await this._request('POST', '/auth/telegram', { initData });
     this._setToken(data.token);
-    // Синхронизируем согласие: если на сервере уже зафиксировано — ставим флаг локально
+    // Синхронизируем согласие и онбординг: если на сервере уже зафиксировано — ставим флаги локально
     if (data.user?.consentGivenAt) {
       Storage.setConsentGiven();
+      Storage.setOnboardingDone(); // пользователь уже проходил онбординг — не показывать повторно
     }
     return data.user;
   },

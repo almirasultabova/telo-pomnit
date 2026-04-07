@@ -131,31 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTrigger();
   initCheckin();
 
-  // Авторизация через бэкенд (в фоне, не блокирует UI)
-  Api.auth()
-    .then(async () => {
-      Storage.initFromApi();
-      try {
-        const [access, me] = await Promise.allSettled([
-          Api.getAccess(),
-          Api.getMe()
-        ]);
-        if (access.status === 'fulfilled') {
-          aiAccessGranted = !!access.value?.canWrite;
-          if (currentScreen === 'ai-chat') renderAiChat();
-        }
-        // Проверяем анкету, если участница зачислена
-        if (me.status === 'fulfilled' && me.value?.enrollment?.stream?.id) {
-          checkAndShowQuestionnaire(me.value.enrollment.stream.id);
-        }
-      } catch {
-        /* нет связи — работаем локально */
-      }
-    })
-    .catch(() => {}); // без бэкенда — работаем локально
-
-  // Запускаем сплэш → онбординг (первый раз) или сразу главный
-  setTimeout(() => {
+  function startApp() {
     renderDiaryTab();
     renderMyPathTab();
     renderProfileTab();
@@ -169,7 +145,33 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(showOfferModal, 400);
       }
     }
-  }, 1600);
+  }
+
+  // Авторизация + загрузка данных; минимальное время сплэша — 1600мс
+  const minSplash = new Promise(resolve => setTimeout(resolve, 1600));
+
+  const authFlow = Api.auth()
+    .then(async () => {
+      await Storage.initFromApi(); // ждём загрузки данных с сервера
+      try {
+        const [access, me] = await Promise.allSettled([
+          Api.getAccess(),
+          Api.getMe()
+        ]);
+        if (access.status === 'fulfilled') {
+          aiAccessGranted = !!access.value?.canWrite;
+        }
+        if (me.status === 'fulfilled' && me.value?.enrollment?.stream?.id) {
+          checkAndShowQuestionnaire(me.value.enrollment.stream.id);
+        }
+      } catch {
+        /* нет связи — работаем локально */
+      }
+    })
+    .catch(() => {}); // без бэкенда — работаем локально
+
+  // Переходим с экрана сплэша только после обоих условий
+  Promise.all([minSplash, authFlow]).then(startApp);
 });
 
 // ─── Нижняя навигация ─────────────────────────────────────────────────────
