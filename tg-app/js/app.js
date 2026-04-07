@@ -1299,7 +1299,7 @@ function showAccessDenied() {
       <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px;text-align:center;gap:20px;">
         <div style="font-size:48px;">🌿</div>
         <div style="font-family:Georgia,serif;font-size:22px;color:#1a110a;">Тело помнит</div>
-        <div style="font-size:15px;color:#8a7a6a;line-height:1.6;">Приложение пока закрыто.<br>По вопросам доступа напишите<br><a href="https://t.me/Almira_Sultanova" style="color:#2a4a38;">@Almira_Sultanova</a></div>
+        <div style="font-size:15px;color:#8a7a6a;line-height:1.6;">У вас нет доступа к приложению.<br>Если вы участница программы,<br>напишите<br><a href="https://t.me/Almira_Sultanova" style="color:#2a4a38;">@Almira_Sultanova</a></div>
       </div>`;
     el.classList.add('screen--active');
   }
