@@ -643,7 +643,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       </div>
       <div class="hero-stat">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span>Старт 16 апреля</span>
+        <span>Набор закрыт</span>
       </div>
       <div class="hero-stat">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -1401,7 +1401,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
         <span class="price-main" id="price-main">12 000 ₽</span>
         <span class="price-old" id="price-old">15 000 ₽</span>
       </div>
-      <span class="pricing-hint" id="pricing-hint">Ранняя цена — до 12 апреля</span>
+      <span class="pricing-hint" id="pricing-hint">Следующий поток — дата уточняется</span>
       <ul class="pricing-features">
         <li>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -1452,7 +1452,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
           Забронировать в Telegram
         </a>
       </div>
-      <p class="pricing-note">Старт: 16 апреля · Группа до 12 человек</p>
+      <p class="pricing-note">Группа до 12 человек · Следующий поток — дата уточняется</p>
     </div>
   </div>
 </section>
@@ -2031,6 +2031,28 @@ document.getElementById('pay-tg').addEventListener('keydown', function(e) {
 });
 document.getElementById('pay-modal').addEventListener('click', function(e) {
   if (e.target === this) this.style.display = 'none';
+});
+</script>
+<script>
+// Набор закрыт — блокируем все кнопки записи и скрываем счётчик
+document.addEventListener('DOMContentLoaded', function() {
+  // Скрываем обратный счётчик
+  var countdown = document.getElementById('hero-countdown');
+  if (countdown) countdown.style.display = 'none';
+
+  // Скрываем старую цену (зачёркнутую)
+  var priceOld = document.getElementById('price-old');
+  if (priceOld) priceOld.style.display = 'none';
+
+  // Заменяем все кнопки записи
+  document.querySelectorAll('.enroll-btn').forEach(function(btn) {
+    btn.removeAttribute('onclick');
+    btn.disabled = true;
+    btn.textContent = 'Набор закрыт';
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'default';
+    btn.style.pointerEvents = 'none';
+  });
 });
 </script>
 </body>
