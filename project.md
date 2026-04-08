@@ -1,20 +1,19 @@
 # Тело помнит — описание проекта
 
-_Обновлено: 7 апреля 2026_
+_Обновлено: 8 апреля 2026_
 
 ## Что это за проект
 
 **«Тело помнит»** — онлайн-программа интегративной телесной терапии.
 
 Психосоматика + телесная терапия + внедрение в реальную жизнь.
-5 недель, 9 живых встреч, 2 ведущие, Zoom + закрытый Telegram-чат.
+5 недель, 9 живых встреч, Zoom + закрытый Telegram-чат.
 
 **GitHub:** https://github.com/almirasultabova/telo-pomnit
 **Лендинг:** https://www.telo-pomnit.ru (Vercel)
 **TG Mini App:** https://almirasultabova.github.io/telo-pomnit/tg-app/
 **Backend API:** https://api.telo-pomnit.ru
-**Telegram Анастасии:** https://t.me/akhoroshavtseva
-**Telegram Альмиры:** https://t.me/AlmiraSultanova_AI
+**Разработчик:** Альмира Султанова (SULTANOVA AI)
 
 ---
 
@@ -31,12 +30,9 @@ _Обновлено: 7 апреля 2026_
 
 ---
 
-## Ведущие
+## Ведущая
 
-| | Роль в методе |
-|---|---|
-| **Анастасия** | Глубина — психосоматика, телесная терапия, работа с бессознательным |
-| **Альмира** | Внедрение — инструменты, новые сценарии, перенос в реальную жизнь |
+**Анастасия** — психосоматика, телесная терапия, работа с бессознательным.
 
 ---
 
@@ -152,7 +148,7 @@ _Обновлено: 7 апреля 2026_
 | Компонент | Меры защиты |
 |---|---|
 | CORS | Whitelist: `telo-pomnit.ru`, `almirasultabova.github.io`, `web.telegram.org` |
-| Авторизация | HMAC-SHA256 с `timingSafeEqual`, проверка `auth_date` (макс. 24ч), JWT 7 дней; временный whitelist по Telegram ID в `auth.js` и `bot.js` |
+| Авторизация | HMAC-SHA256 с `timingSafeEqual`, проверка `auth_date` (макс. 24ч), JWT 7 дней |
 | Webhook ЮКасса | IP-фильтр по официальным подсетям ЮКасса |
 | AI-сессии | Проверка `session.userId === request.user.id` перед доступом |
 | Входные данные | `maxLength` на email (254), name (100), telegramUsername (64) |
