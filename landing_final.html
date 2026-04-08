@@ -275,9 +275,9 @@ picture{display:block;width:100%}
 .gallery-body p{font-size:13px;color:var(--muted)}
 
 /* HOSTS */
-.hosts-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px}
+.hosts-grid{display:grid;grid-template-columns:1fr;gap:64px;max-width:600px;margin:0 auto}
 .host-card{display:flex;gap:28px;align-items:flex-start}
-.host-img-wrap{width:160px;flex-shrink:0;border-radius:20px;overflow:hidden;box-shadow:var(--shadow-hover)}
+.host-img-wrap{width:200px;flex-shrink:0;border-radius:20px;overflow:hidden;box-shadow:var(--shadow-hover)}
 .host-img-wrap img{width:100%;aspect-ratio:3/4;object-fit:cover}
 .host-role{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}
 .host-name{font-family:Georgia,serif;font-style:italic;font-size:22px;margin-bottom:12px}
@@ -619,7 +619,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
     </div>
     <div class="hero-btns reveal reveal-delay-3">
       <button onclick="openPayModal()" class="btn btn--primary enroll-btn">Записаться на программу</button>
-      <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--outline">
+      <a href="#" target="_blank" class="btn btn--outline">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         Забронировать в Telegram
       </a>
@@ -680,7 +680,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       <div class="recognize-quote">
         <p>Проблема не в силе воли. Проблема в закреплённой реакции.</p>
       </div>
-      <p class="section-sub">Когнитивная работа меняет понимание. Но тело продолжает реагировать по-старому: паттерн закреплён на уровне реакции, не мысли. Мы работаем именно там — в точке включения автоматизма.</p>
+      <p class="section-sub">Когнитивная работа меняет понимание. Но тело продолжает реагировать по-старому: паттерн закреплён на уровне реакции, не мысли. Программа работает именно там — в точке включения автоматизма.</p>
     </div>
   </div>
 </section>
@@ -735,32 +735,32 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
         <div class="zone-card" id="zone-eyes">
           <p class="zone-card-name">Глаза</p>
           <span class="zone-card-pattern">«Постоянная бдительность»</span>
-          <p class="zone-card-desc">Напряжённый взгляд, сжатый лоб — тело сканирует угрозу даже в безопасности. Мы учимся возвращать мягкость взгляду и доверие миру.</p>
+          <p class="zone-card-desc">Напряжённый взгляд, сжатый лоб — тело сканирует угрозу даже в безопасности. Учимся возвращать мягкость взгляду и доверие миру.</p>
         </div>
         <div class="zone-card" id="zone-jaw">
           <p class="zone-card-name">Челюсть</p>
           <span class="zone-card-pattern">«Невысказанный гнев»</span>
-          <p class="zone-card-desc">Сжатые зубы — это запрет на голос. Мы учимся разжимать этот замок и звучать.</p>
+          <p class="zone-card-desc">Сжатые зубы — это запрет на голос. Учимся разжимать этот замок и звучать.</p>
         </div>
         <div class="zone-card" id="zone-throat">
           <p class="zone-card-name">Горло</p>
           <span class="zone-card-pattern">«Запрет на голос»</span>
-          <p class="zone-card-desc">Здесь живёт всё «нельзя говорить». Ком в горле, застрявшие слова, подавленный крик. Мы возвращаем себе право звучать и быть услышанной.</p>
+          <p class="zone-card-desc">Здесь живёт всё «нельзя говорить». Ком в горле, застрявшие слова, подавленный крик. Возвращаем себе право звучать и быть услышанной.</p>
         </div>
         <div class="zone-card" id="zone-chest">
           <p class="zone-card-name">Грудная клетка</p>
           <span class="zone-card-pattern">«Замирание дыхания»</span>
-          <p class="zone-card-desc">Точка, где мы подавляем эмоции. На группе мы возвращаем себе право дышать полной грудью.</p>
+          <p class="zone-card-desc">Точка, где подавляются эмоции. На встречах возвращается право дышать полной грудью.</p>
         </div>
         <div class="zone-card" id="zone-diaphragm">
           <p class="zone-card-name">Диафрагма</p>
           <span class="zone-card-pattern">«Разрыв верха и низа»</span>
-          <p class="zone-card-desc">Диафрагма — граница между мышлением и чувствованием. Хронический зажим здесь отрезает от собственного тела. Мы учимся дышать вглубь.</p>
+          <p class="zone-card-desc">Диафрагма — граница между мышлением и чувствованием. Хронический зажим здесь отрезает от собственного тела. Учимся дышать вглубь.</p>
         </div>
         <div class="zone-card" id="zone-belly">
           <p class="zone-card-name">Живот</p>
           <span class="zone-card-pattern">«Узел тревоги»</span>
-          <p class="zone-card-desc">Центр безопасности. Когда здесь сжато — мир кажется опасным. Мы возвращаем животу мягкость и опору.</p>
+          <p class="zone-card-desc">Центр безопасности. Когда здесь сжато — мир кажется опасным. Возвращаем животу мягкость и опору.</p>
         </div>
         <div class="zone-card" id="zone-pelvis">
           <p class="zone-card-name">Таз</p>
@@ -818,7 +818,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       </div>
       <div class="selfcheck-result" id="selfcheck-result">
         <p class="selfcheck-result-title" id="selfcheck-title">Вы уже начали замечать сигналы тела.</p>
-        <p class="selfcheck-result-text">Это не приговор, а точка входа. На группе мы научимся находить паузу в этих реакциях и выбирать новый способ жизни.</p>
+        <p class="selfcheck-result-text">Это не приговор, а точка входа. На встречах вы научитесь находить паузу в этих реакциях и выбирать новый способ жизни.</p>
         <a href="#pricing" class="btn btn--primary">Хочу на программу</a>
       </div>
     </div>
@@ -852,7 +852,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
         </ul>
       </div>
       <div class="comparison-col comparison-col--new">
-        <span class="comparison-badge">Наш метод</span>
+        <span class="comparison-badge">Интегративный метод</span>
         <h3 class="comparison-head">Интегративный подход</h3>
         <ul class="comparison-list">
           <li>
@@ -871,7 +871,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       </div>
     </div>
     </div><!-- /comparison-grid -->
-    <p class="comparison-note">Мы не просто «обсуждаем» проблемы. Мы перепрошиваем реакцию вашей нервной системы.</p>
+    <p class="comparison-note">В программе не просто «обсуждаются» проблемы. Перепрошивается реакция вашей нервной системы.</p>
     </div><!-- /comparison-wrap -->
   </div>
 </section>
@@ -916,20 +916,20 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       <div class="safety-grid">
         <div>
           <p class="safety-item-title">Конфиденциальность</p>
-          <p class="safety-item-text">Всё, что происходит в группе, остаётся внутри. Мы создаём пространство, где можно быть настоящей.</p>
+          <p class="safety-item-text">Всё, что происходит в группе, остаётся внутри. Создаётся пространство, где можно быть настоящей.</p>
         </div>
         <div>
           <p class="safety-item-title">Бережный темп</p>
-          <p class="safety-item-text">Мы не форсируем глубину. Каждый идёт в своём ритме, регулируя уровень открытости.</p>
+          <p class="safety-item-text">Без форсирования глубины. Каждый идёт в своём ритме, регулируя уровень открытости.</p>
         </div>
         <div>
           <p class="safety-item-title">Профессиональная опора</p>
-          <p class="safety-item-text">Два специалиста ведут группу, обеспечивая безопасность и поддержку на каждом этапе.</p>
+          <p class="safety-item-text">Специалист ведёт группу, обеспечивая безопасность и поддержку на каждом этапе.</p>
         </div>
       </div>
       <div class="safety-divider">
         <p class="safety-quote">«Группа — это зеркало, которое помогает увидеть свои паттерны быстрее, чем в личной терапии.»</p>
-        <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--white">Задать вопрос о формате</a>
+        <a href="#" target="_blank" class="btn btn--white">Задать вопрос о формате</a>
       </div>
     </div>
   </div>
@@ -1001,7 +1001,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
             <span class="week-step-tag">Неделя 1</span>
           </div>
           <h3>Тело и безопасность</h3>
-          <p>Мы начинаем с фундамента. Учимся слышать сигналы тела до того, как они станут невыносимой болью. Создаём пространство группы, где ваша нервная система наконец сможет выдохнуть и перестать ждать удара.</p>
+          <p>Начинаем с фундамента. Учимся слышать сигналы тела до того, как они станут невыносимой болью. Создаётся пространство, где ваша нервная система наконец сможет выдохнуть и перестать ждать удара.</p>
           <div class="week-step-shift">
             <span class="week-step-shift-label">Shift / Сдвиг</span>
             <p>«Я в безопасности. Моё тело — мой союзник, а не враг.»</p>
@@ -1017,7 +1017,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
             <span class="week-step-tag">Неделя 2</span>
           </div>
           <h3>Паттерны и стратегии</h3>
-          <p>Находим вашу личную «стратегию выживания». Почему вы замираете, нападаете или убегаете в работу? Мы не просто обсуждаем это — мы находим, где этот паттерн «застрял» в мышцах и фасциях.</p>
+          <p>Находим вашу личную «стратегию выживания». Почему вы замираете, нападаете или убегаете в работу? В программе не просто обсуждается это — находим, где этот паттерн «застрял» в мышцах и фасциях.</p>
           <div class="week-step-shift">
             <span class="week-step-shift-label">Shift / Сдвиг</span>
             <p>«Я вижу, как я выживаю, и готов попробовать жить иначе.»</p>
@@ -1033,7 +1033,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
             <span class="week-step-tag">Неделя 3</span>
           </div>
           <h3>Точка выбора</h3>
-          <p>Самый важный этап. Мы учимся находить ту самую секунду между триггером и привычной реакцией. Работаем с телом в моменте, чтобы создать физическую паузу для нового решения.</p>
+          <p>Самый важный этап. Вы учитесь находить ту самую секунду между триггером и привычной реакцией. Работа с телом в моменте создаёт физическую паузу для нового решения.</p>
           <div class="week-step-shift">
             <span class="week-step-shift-label">Shift / Сдвиг</span>
             <p>«Между стимулом и реакцией есть зазор. В этом зазоре — моя свобода.»</p>
@@ -1134,7 +1134,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   <div class="container">
     <div style="margin-bottom:56px;text-align:center" class="reveal">
       <span class="label">Кто ведёт</span>
-      <h2 class="section-title">Ведущие программы</h2>
+      <h2 class="section-title">Ведущая программы</h2>
     </div>
     <div class="hosts-grid">
       <div class="host-card reveal">
@@ -1145,35 +1145,14 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
           </picture>
         </div>
         <div>
-          <span class="host-role">Глубина</span>
           <p class="host-name">Анастасия Хорошавцева</p>
           <p class="host-bio">Специалист по психосоматике и телесной терапии с 5-летним опытом практики и более 100+ довольных клиентов. В своей работе использует методы регрессии, трансовые состояния, психосоматический анализ и телесно-ориентированные практики.</p>
           <div class="host-links">
-            <a href="https://t.me/akhoroshavtseva" target="_blank" class="host-link">
+            <a href="#" class="host-link">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               Написать
             </a>
-            <a href="https://t.me/Anastasiya_v_glubinu" target="_blank" class="host-link">Канал</a>
-          </div>
-        </div>
-      </div>
-      <div class="host-card reveal reveal-delay-1">
-        <div class="host-img-wrap">
-          <picture>
-            <source srcset="almira.webp" type="image/webp">
-            <img src="almira.jpg" alt="Альмира Султанова" loading="lazy" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block">
-          </picture>
-        </div>
-        <div>
-          <span class="host-role">Внедрение</span>
-          <p class="host-name">Альмира Султанова</p>
-          <p class="host-bio">Коуч и специалист по поведенческим изменениям. Переводит глубинные инсайты в конкретные действия. Работает с тем, чтобы новый способ реагирования не остался «на сессии», а закрепился в реальных ситуациях — на работе, в отношениях, в теле.</p>
-          <div class="host-links">
-            <a href="https://t.me/Almira_Sultanova" target="_blank" class="host-link">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              Написать
-            </a>
-            <a href="https://t.me/AlmiraSultanova_AI" target="_blank" class="host-link">Канал</a>
+            <a href="#" class="host-link">Канал</a>
           </div>
         </div>
       </div>
@@ -1447,7 +1426,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       </div>
       <div class="pricing-btns">
         <button onclick="openPayModal()" class="btn btn--primary btn--full enroll-btn">Записаться на программу</button>
-        <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--outline btn--full">
+        <a href="#" target="_blank" class="btn btn--outline btn--full">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Забронировать в Telegram
         </a>
@@ -1484,15 +1463,15 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       </div>
       <div class="faq-item">
         <button class="faq-q">Я боюсь, что жизнь развалится<span class="faq-icon">+</span></button>
-        <div class="faq-a"><p class="faq-a-inner">Разваливается только отжившее, то, что больше не подходит. Мы не разрушаем жизнь — мы возвращаем опору и осознанность.</p></div>
+        <div class="faq-a"><p class="faq-a-inner">Разваливается только отжившее, то, что больше не подходит. Программа не разрушает жизнь — возвращает опору и осознанность.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Я никогда не была в терапии. Справлюсь?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><p class="faq-a-inner">Да. Программа подходит как для тех, кто только начинает путь, так и для тех, кто уже работал с психологом. Мы начинаем с базовой безопасности и идём в глубину постепенно.</p></div>
+        <div class="faq-a"><p class="faq-a-inner">Да. Программа подходит как для тех, кто только начинает путь, так и для тех, кто уже работал с психологом. Программа начинается с базовой безопасности и идёт в глубину постепенно.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Нужно ли включать камеру на встречах?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><p class="faq-a-inner">Это ваш выбор. Мы создаём условия, в которых вы можете регулировать степень своего присутствия. Телесные практики можно делать с выключенной камерой — главное, что вы здесь.</p></div>
+        <div class="faq-a"><p class="faq-a-inner">Это ваш выбор. Создаются условия, в которых вы можете регулировать степень своего присутствия. Телесные практики можно делать с выключенной камерой — главное, что вы здесь.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Что такое телесная практика?<span class="faq-icon">+</span></button>
@@ -1520,8 +1499,8 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       <span class="label">Остались вопросы?</span>
       <span class="section-line"></span>
       <h2 class="section-title">Напишите нам</h2>
-      <p class="section-sub" style="margin-bottom:32px">Мы отвечаем в течение дня</p>
-      <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--primary">
+      <p class="section-sub" style="margin-bottom:32px">Отвечаем в течение дня</p>
+      <a href="#" target="_blank" class="btn btn--primary">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         Написать в Telegram
       </a>
@@ -1536,7 +1515,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
     <p class="reveal reveal-delay-1">Вопрос не в информации. Вопрос — готовы ли вы перестать жить автоматически и дать себе шанс на выбор.</p>
     <div class="final-cta-btns reveal reveal-delay-2">
       <button onclick="openPayModal()" class="btn btn--white enroll-btn">Записаться на программу</button>
-      <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--ghost">
+      <a href="#" target="_blank" class="btn btn--ghost">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         Задать вопрос
       </a>
@@ -1547,7 +1526,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 <!-- DISCLAIMER -->
 <div class="disclaimer">
   <div class="container">
-    <p>Мы не даём медицинских обещаний и не заменяем терапию или врачей. Мы работаем с реакцией и способом проживания жизни. Материалы и практики на сайте не являются медицинской услугой и не заменяют консультацию врача.</p>
+    <p>Программа не даёт медицинских обещаний и не заменяет терапию или врачей. Работа ведётся с реакцией и способом проживания жизни. Материалы и практики на сайте не являются медицинской услугой и не заменяют консультацию врача.</p>
   </div>
 </div>
 
@@ -1564,8 +1543,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
     </div>
     <p class="footer-copy">© <span id="year"></span> «Тело помнит». Все права защищены.</p>
     <p class="footer-legal">Материалы и практики на сайте не являются медицинской услугой и не заменяют консультацию врача.</p>
-    <p class="footer-legal" style="margin-top:12px">Самозанятая Султанова Альмира Ильгизовна · ИНН 026804542818<br>
-    <a href="mailto:telo.pomnit@yandex.ru" style="color:inherit;border-bottom:1px solid rgba(255,255,255,.3)">telo.pomnit@yandex.ru</a> ·
+    <p class="footer-legal" style="margin-top:12px">
     <a href="offer.html" style="color:inherit;border-bottom:1px solid rgba(255,255,255,.3)">Публичная оферта</a></p>
     <p class="footer-dev">Разработано <a href="https://t.me/Almira_Sultanova" target="_blank" rel="noopener">SULTANOVA AI</a></p>
   </div>
@@ -1795,7 +1773,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       hint.textContent = '';
       document.querySelectorAll('.enroll-btn').forEach(function(btn){
         btn.textContent = 'Мест нет — следить за новым потоком';
-        btn.href = 'https://t.me/akhoroshavtseva';
+        btn.href = '#';
         btn.target = '_blank';
         btn.style.opacity = '0.7';
       });
