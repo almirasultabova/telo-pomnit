@@ -114,14 +114,18 @@ const DATA = {
 
   // ─── 8 типов телесных ощущений ────────────────────────────────────────────
   sensations: [
-    { id: 'tension',   label: 'Зажатость', emoji: '✊' },
-    { id: 'heaviness', label: 'Тяжесть',   emoji: '🏋️' },
-    { id: 'pulsation', label: 'Пульсация', emoji: '💗' },
-    { id: 'numbness',  label: 'Онемение',  emoji: '🫥' },
-    { id: 'burning',   label: 'Жжение',    emoji: '🔥' },
-    { id: 'trembling', label: 'Дрожь',     emoji: '〰️' },
-    { id: 'emptiness', label: 'Пустота',   emoji: '⭕' },
-    { id: 'warmth',    label: 'Тепло',     emoji: '☀️' }
+    { id: 'tension',    label: 'Зажатость',   emoji: '✊' },
+    { id: 'heaviness',  label: 'Тяжесть',     emoji: '🪨' },
+    { id: 'pulsation',  label: 'Пульсация',   emoji: '💗' },
+    { id: 'numbness',   label: 'Онемение',    emoji: '🫥' },
+    { id: 'burning',    label: 'Жжение',      emoji: '🔥' },
+    { id: 'trembling',  label: 'Дрожь',       emoji: '〰️' },
+    { id: 'emptiness',  label: 'Пустота',     emoji: '⭕' },
+    { id: 'warmth',     label: 'Тепло',       emoji: '☀️' },
+    { id: 'pain',       label: 'Боль',        emoji: '😣' },
+    { id: 'pressure',   label: 'Давление',    emoji: '🫸' },
+    { id: 'tingling',   label: 'Покалывание', emoji: '⚡' },
+    { id: 'cold',       label: 'Холод',       emoji: '🧊' }
   ],
 
   // ─── 10 вопросов диагностики ──────────────────────────────────────────────
