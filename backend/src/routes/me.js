@@ -103,28 +103,9 @@ async function meRoutes(app) {
     return { ok: true }
   })
 
-  // GET /me/enrollment — статус доступа
+  // GET /me/enrollment — статус доступа (открытый доступ для всех)
   app.get('/me/enrollment/access', { preHandler: requireAuth }, async (request) => {
-    const adminIds = (process.env.ADMIN_TELEGRAM_IDS || '').split(',').map(id => id.trim()).filter(Boolean)
-    const isAdmin = adminIds.includes(String(request.user.telegramId))
-    if (isAdmin) {
-      return { hasAccess: true, canWrite: true }
-    }
-
-    // Демо-режим: временный доступ для всех до указанной даты
-    const demoUntil = process.env.DEMO_MODE_UNTIL
-    if (demoUntil && new Date() < new Date(demoUntil)) {
-      return { hasAccess: true, canWrite: true }
-    }
-
-    const enrollment = await db.enrollment.findFirst({
-      where: { userId: request.user.id, status: { in: ['active', 'completed'] } },
-      orderBy: { createdAt: 'desc' }
-    })
-    return {
-      hasAccess: !!enrollment,
-      canWrite: enrollment?.status === 'active'
-    }
+    return { hasAccess: true, canWrite: true }
   })
 }
 
