@@ -1902,26 +1902,27 @@ input, textarea { font-family: inherit; }
 .checkin-slider-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 8px 0 0;
+  gap: 10px;
+  margin: 10px 0 0;
 }
 .checkin-step-btn {
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1.5px solid var(--card-border);
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: none;
   background: var(--tg-secondary-bg);
-  color: var(--tg-text);
-  font-size: 18px;
+  color: var(--tg-hint);
+  font-size: 20px;
+  font-weight: 300;
   line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s;
+  transition: color 0.15s, background 0.15s;
 }
-.checkin-step-btn:active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.checkin-step-btn:active { background: var(--accent); color: #fff; }
 
 .intensity-slider {
   width: 100%;
