@@ -603,33 +603,111 @@ function renderMyPathTab() {
   if (!container) return;
 
   const entries = Storage.getDiaryEntries();
+  const diagResult = Storage.getDiagResult();
 
-  if (!entries.length) {
-    container.innerHTML = `
-      <div class="mypath-empty">
+  const analyticsHtml = entries.length
+    ? renderStreamSummary(entries) +
+      renderMirrorCard(entries) +
+      renderCheckinChart() +
+      renderHeatmapSection(entries) +
+      renderTopSensations(entries) +
+      renderRecentNotes(entries) +
+      renderPathStats(entries)
+    : `<div class="mypath-empty">
         <div class="mypath-empty-icon">🌱</div>
         <div class="mypath-empty-title">Путь только начинается</div>
         <div class="mypath-empty-sub">Делай запись в дневник каждый день — и здесь появится карта твоего тела за все недели потока</div>
       </div>`;
-    return;
-  }
 
-  container.innerHTML =
-    renderStreamSummary(entries) +
-    renderMirrorCard(entries) +
-    renderCheckinChart() +
-    renderHeatmapSection(entries) +
-    renderTopSensations(entries) +
-    renderRecentNotes(entries) +
-    renderPathStats(entries);
+  container.innerHTML = renderDiagBlock(diagResult) + analyticsHtml;
 
-  // Бинд фильтра недель карты тела
   container.querySelectorAll('.hmap-week-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       heatmapWeek = Number(btn.dataset.week);
       renderMyPathTab();
     });
   });
+}
+
+// ─── Блок диагностики паттерна ────────────────────────────────────────────
+
+function renderDiagBlock(result) {
+  if (!result) {
+    return `<div class="diag-invite">
+      <div class="diag-invite-title">Узнайте свой паттерн выживания</div>
+      <div class="diag-invite-sub">10 вопросов о реакциях тела — и вы увидите свою стратегию в стрессе</div>
+      <button class="btn btn--primary btn--full" onclick="startDiag()">Пройти диагностику</button>
+    </div>`;
+  }
+  const p = DATA.patterns[result.patternId];
+  if (!p) return '';
+  return `<div class="diag-result-card" style="--p-color:${p.color};--p-color-light:${p.colorLight}">
+    <div class="diag-result-top">
+      <span class="diag-result-emoji">${p.emoji}</span>
+      <div>
+        <div class="diag-result-name">${p.name}</div>
+        <div class="diag-result-sub">${p.subtitle}</div>
+      </div>
+    </div>
+    <div class="diag-result-desc">${p.desc}</div>
+    <div class="diag-result-section-title">Как проявляется в теле</div>
+    <div class="diag-result-body">${p.body}</div>
+    <div class="diag-result-section-title">В программе</div>
+    <div class="diag-result-body">${p.program}</div>
+    <button class="diag-result-retry" onclick="startDiag()">Пройти заново</button>
+  </div>`;
+}
+
+function startDiag() {
+  diag.answers = [];
+  diag.current = 0;
+  showDiagQuestion();
+}
+
+function showDiagQuestion() {
+  const container = document.getElementById('diag-tab-content');
+  if (!container) return;
+
+  const total = DATA.diagnosticQuestions.length;
+  const q = DATA.diagnosticQuestions[diag.current];
+  const progress = (diag.current / total) * 100;
+
+  container.innerHTML = `
+    <div class="diag-quiz">
+      <div class="diag-quiz-header">
+        <div class="diag-quiz-counter">Вопрос ${diag.current + 1} из ${total}</div>
+        <div class="diag-quiz-bar"><div class="diag-quiz-fill" style="width:${progress}%"></div></div>
+      </div>
+      <div class="diag-quiz-q">${q.q}</div>
+      <div class="diag-quiz-options">
+        ${q.options.map(o => `
+          <button class="diag-quiz-option" onclick="pickDiagAnswer('${o.pattern}')">
+            ${o.text}
+          </button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function pickDiagAnswer(pattern) {
+  diag.answers.push({ pattern });
+  diag.current++;
+
+  if (diag.current < DATA.diagnosticQuestions.length) {
+    showDiagQuestion();
+    return;
+  }
+
+  // Подсчёт результата
+  const scores = { freeze: 0, fawn: 0, fight: 0, flight: 0 };
+  diag.answers.forEach(a => { if (scores[a.pattern] !== undefined) scores[a.pattern]++; });
+  const patternId = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+
+  const result = { patternId, date: new Date().toISOString(), scores };
+  Storage.saveDiagResult(result);
+
+  renderMyPathTab();
+  const container = document.getElementById('diag-tab-content');
+  if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ─── Зеркало ──────────────────────────────────────────────────────────────
