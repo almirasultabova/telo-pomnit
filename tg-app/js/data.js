@@ -277,7 +277,7 @@ const DATA = {
     },
     flight: {
       id: 'flight',
-      name: 'Уход в голову',
+      name: 'Бегство',
       subtitle: 'Всё понимаю — ничего не чувствую',
       emoji: '🌀',
       color: '#5E9E6E',
