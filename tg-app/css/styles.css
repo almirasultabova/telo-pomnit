@@ -1899,6 +1899,30 @@ input, textarea { font-family: inherit; }
 .intensity-wrap {
   padding: 4px 0 8px;
 }
+.checkin-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 0;
+}
+.checkin-step-btn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid var(--card-border);
+  background: var(--tg-secondary-bg);
+  color: var(--tg-text);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.checkin-step-btn:active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
 .intensity-slider {
   width: 100%;
   -webkit-appearance: none;

@@ -1895,8 +1895,12 @@ function renderCheckinScales() {
         <span class="checkin-scale-label">${s.label}</span>
         <span class="checkin-scale-val" id="val-${s.key}">5</span>
       </div>
-      <input type="range" class="intensity-slider" min="1" max="10" value="5"
-        id="slider-${s.key}" data-key="${s.key}">
+      <div class="checkin-slider-row">
+        <button class="checkin-step-btn" onclick="stepSlider('${s.key}',-1)">−</button>
+        <input type="range" class="intensity-slider" min="1" max="10" value="5"
+          id="slider-${s.key}" data-key="${s.key}">
+        <button class="checkin-step-btn" onclick="stepSlider('${s.key}',1)">+</button>
+      </div>
       <div class="intensity-labels">
         <span class="intensity-hint">${s.low}</span>
         <span class="intensity-hint">${s.high}</span>
@@ -1914,6 +1918,16 @@ function renderCheckinScales() {
       });
     }
   });
+}
+
+function stepSlider(key, delta) {
+  const slider = document.getElementById(`slider-${key}`);
+  if (!slider) return;
+  const newVal = Math.min(10, Math.max(1, Number(slider.value) + delta));
+  slider.value = newVal;
+  checkinDraft[key] = newVal;
+  const valEl = document.getElementById(`val-${key}`);
+  if (valEl) valEl.textContent = newVal;
 }
 
 function saveCheckinEntry() {
