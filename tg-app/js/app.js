@@ -1091,7 +1091,7 @@ function renderResultScreen(patternId) {
 
   document.getElementById('result-hero').style.background = p.colorLight;
   document.getElementById('result-hero').style.borderLeft = `4px solid ${p.color}`;
-  document.getElementById('result-emoji').textContent    = p.emoji;
+  document.getElementById('result-emoji').innerHTML      = p.emoji;
   document.getElementById('result-name').textContent     = p.name;
   document.getElementById('result-name').style.color     = p.color;
   document.getElementById('result-subtitle').textContent = p.subtitle;

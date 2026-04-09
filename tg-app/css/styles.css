@@ -1267,6 +1267,21 @@ input, textarea { font-family: inherit; }
 .host-role-mini { font-size: 12px; color: var(--tg-hint); margin-top: 1px; }
 .host-tg-link   { margin-left: auto; color: var(--accent); flex-shrink: 0; }
 
+/* ─── SVG иконки (заменяют emoji) ──────────────────────────────────────── */
+.icon-svg {
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.2em;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.sensation-emoji .icon-svg,
+.tops-emoji .icon-svg,
+.checkin-scale-emoji .icon-svg,
+.checklist-emoji .icon-svg { width: 1em; height: 1em; vertical-align: middle; }
+.diag-result-emoji .icon-svg,
+.reaction-card-emoji .icon-svg { width: 1em; height: 1em; }
+
 .app-footer {
   text-align: center;
   font-size: 12px;

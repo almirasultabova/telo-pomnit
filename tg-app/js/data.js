@@ -128,20 +128,20 @@ const DATA = {
     { id: 'b_ankle_r', view: 'back', selectable: false, path: 'M114,262 L136,262 L138,274 L112,274 Z' }
   ],
 
-  // ─── 8 типов телесных ощущений ────────────────────────────────────────────
+  // ─── 12 типов телесных ощущений ──────────────────────────────────────────
   sensations: [
-    { id: 'tension',    label: 'Зажатость',   emoji: '✊' },
-    { id: 'heaviness',  label: 'Тяжесть',     emoji: '🪨' },
-    { id: 'pulsation',  label: 'Пульсация',   emoji: '💗' },
-    { id: 'numbness',   label: 'Онемение',    emoji: '🫥' },
-    { id: 'burning',    label: 'Жжение',      emoji: '🔥' },
-    { id: 'trembling',  label: 'Дрожь',       emoji: '〰️' },
-    { id: 'emptiness',  label: 'Пустота',     emoji: '⭕' },
-    { id: 'warmth',     label: 'Тепло',       emoji: '☀️' },
-    { id: 'pain',       label: 'Боль',        emoji: '😣' },
-    { id: 'pressure',   label: 'Давление',    emoji: '🫸' },
-    { id: 'tingling',   label: 'Покалывание', emoji: '⚡' },
-    { id: 'cold',       label: 'Холод',       emoji: '🧊' }
+    { id: 'tension',   label: 'Зажатость',   emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5l5 7-5 7"/><path d="M17 5l-5 7 5 7"/></svg>' },
+    { id: 'heaviness', label: 'Тяжесть',     emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M12 11v8M9 16l3 3 3-3"/></svg>' },
+    { id: 'pulsation', label: 'Пульсация',   emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-5 4 10 2-5h8"/></svg>' },
+    { id: 'numbness',  label: 'Онемение',    emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="16" x2="20" y2="16"/></svg>' },
+    { id: 'burning',   label: 'Жжение',      emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c0 6-6 6-6 12a6 6 0 0 0 12 0c0-6-6-6-6-12z"/><path d="M12 12c0 3-2 4-2 6a2 2 0 0 0 4 0c0-2-2-3-2-6z"/></svg>' },
+    { id: 'trembling', label: 'Дрожь',       emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12l3-6 3 12 4-12 3 6 3-3 3 3"/></svg>' },
+    { id: 'emptiness', label: 'Пустота',     emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/></svg>' },
+    { id: 'warmth',    label: 'Тепло',       emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>' },
+    { id: 'pain',      label: 'Боль',        emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.3-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>' },
+    { id: 'pressure',  label: 'Давление',    emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13M8 12l4 5 4-5M5 20h14"/></svg>' },
+    { id: 'tingling',  label: 'Покалывание', emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 5v3M12 16v3M5 12H8M16 12h3M7.05 7.05l2.12 2.12M14.83 14.83l2.12 2.12M7.05 16.95l2.12-2.12M14.83 9.17l2.12-2.12"/></svg>' },
+    { id: 'cold',      label: 'Холод',       emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07"/></svg>' }
   ],
 
   // ─── 10 вопросов диагностики ──────────────────────────────────────────────
@@ -246,7 +246,7 @@ const DATA = {
       id: 'freeze',
       name: 'Замирание',
       subtitle: 'Тихий наблюдатель',
-      emoji: '🧊',
+      emoji: '<svg class="icon-svg" viewBox="0 0 24 24"><rect x="5" y="4" width="5" height="16" rx="1.5" fill="currentColor"/><rect x="14" y="4" width="5" height="16" rx="1.5" fill="currentColor"/></svg>',
       color: '#5B8CDB',
       colorLight: 'rgba(91,140,219,0.12)',
       desc: 'Ваша стратегия выживания — замирание. В момент угрозы тело буквально останавливается: движения замедляются, голос пропадает, время тянется. Это очень древняя защита — «если не двигаться, опасность не заметит». Только опасность давно прошла, а паттерн остался.',
@@ -257,7 +257,7 @@ const DATA = {
       id: 'fawn',
       name: 'Угождение',
       subtitle: 'Хороший человек',
-      emoji: '🤲',
+      emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>',
       color: '#D4706A',
       colorLight: 'rgba(212,112,106,0.12)',
       desc: 'Ваша стратегия — угождение. Когда рядом напряжение, тело включает режим «сгладить конфликт любой ценой». Это не слабость — это выученная защита: безопасность через то, что всем хорошо. Только собственные потребности в этой стратегии исчезают.',
@@ -268,7 +268,7 @@ const DATA = {
       id: 'fight',
       name: 'Нападение',
       subtitle: 'В бой',
-      emoji: '⚡',
+      emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 13h7l-1 9 10-13h-7l1-7z"/></svg>',
       color: '#D4884A',
       colorLight: 'rgba(212,136,74,0.12)',
       desc: 'Ваша стратегия — нападение. В момент угрозы тело мобилизуется: энергия поднимается, хочется действовать, говорить, отвечать. Это мощная активная защита. Но реакция включается раньше, чем успеваешь подумать.',
@@ -279,7 +279,7 @@ const DATA = {
       id: 'flight',
       name: 'Бегство',
       subtitle: 'Всё понимаю — ничего не чувствую',
-      emoji: '🌀',
+      emoji: '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5v14"/><path d="M9 12h11"/><path d="M15 7l5 5-5 5"/></svg>',
       color: '#5E9E6E',
       colorLight: 'rgba(94,158,110,0.12)',
       desc: 'Ваша стратегия — уход в голову. Когда становится трудно, тело как будто «выключается», а сознание улетает в мысли, анализ, фантазии. Безопасность через отключение. Тело продолжает жить своей жизнью — и его сигналы не слышны.',
