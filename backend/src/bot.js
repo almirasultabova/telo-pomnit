@@ -339,23 +339,24 @@ async function sendMeetingReminder() {
     const keyboard = new InlineKeyboard().webApp('Открыть приложение', MINI_APP_URL)
     let sent = 0
 
-    for (const enrollment of enrollments) {
-      try {
-        await bot.api.sendMessage(
-          Number(enrollment.user.telegramId),
-          `Встреча ${meeting.number} начинается через час\n\n` +
-          `${topicLine}${zoomLine}\n\n` +
-          `Приложение для подготовки — ниже.`,
-          { reply_markup: keyboard }
-        )
-        sent++
-        if (sent % 20 === 0) await new Promise(r => setTimeout(r, 1000))
-      } catch { /* пользователь заблокировал бота */ }
-    }
+    // ОТКЛЮЧЕНО: уведомления о занятиях временно не отправляются
+    // for (const enrollment of enrollments) {
+    //   try {
+    //     await bot.api.sendMessage(
+    //       Number(enrollment.user.telegramId),
+    //       `Встреча ${meeting.number} начинается через час\n\n` +
+    //       `${topicLine}${zoomLine}\n\n` +
+    //       `Приложение для подготовки — ниже.`,
+    //       { reply_markup: keyboard }
+    //     )
+    //     sent++
+    //     if (sent % 20 === 0) await new Promise(r => setTimeout(r, 1000))
+    //   } catch { /* пользователь заблокировал бота */ }
+    // }
 
-    if (sent > 0) {
-      console.log(`[cron] Напоминание о встрече ${meeting.number}: отправлено ${sent}`)
-    }
+    // if (sent > 0) {
+    //   console.log(`[cron] Напоминание о встрече ${meeting.number}: отправлено ${sent}`)
+    // }
   }
 }
 
