@@ -1164,45 +1164,49 @@ input, textarea { font-family: inherit; }
 .meeting-detail-text { font-size: 14px; color: var(--tg-text); line-height: 1.55; }
 
 /* ─── Онбординг ─────────────────────────────────────────────────────────── */
+#screen-onboarding {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
 .onboarding-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100%;
-  padding: 40px 24px 48px;
+  padding: 24px 20px 32px;
   text-align: center;
 }
 .onboarding-icon {
-  font-size: 56px;
-  margin-bottom: 16px;
+  font-size: 44px;
+  margin-bottom: 12px;
   animation: breathe 3.5s ease-in-out infinite;
   filter: drop-shadow(0 8px 20px rgba(42,74,56,0.25));
 }
 .onboarding-hello {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   font-family: Georgia, 'Times New Roman', serif;
   font-style: italic;
   color: var(--tg-text);
-  margin: 0 0 6px;
+  margin: 0 0 4px;
   letter-spacing: -0.01em;
 }
 .onboarding-welcome {
   font-size: 15px;
   color: var(--tg-hint);
-  margin: 0 0 28px;
+  margin: 0 0 20px;
   line-height: 1.55;
 }
 .onboarding-welcome em { color: var(--accent); font-style: italic; }
 .onboarding-bullets {
   list-style: none;
   padding: 0;
-  margin: 0 0 32px;
+  margin: 0 0 20px;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   text-align: left;
 }
 .onboarding-bullets li {
@@ -1211,7 +1215,7 @@ input, textarea { font-family: inherit; }
   gap: 12px;
   background: var(--tg-secondary-bg);
   border-radius: var(--radius-md);
-  padding: 14px;
+  padding: 11px 14px;
   border: 0.5px solid var(--card-border);
   box-shadow: var(--shadow-xs);
 }
@@ -1223,7 +1227,7 @@ input, textarea { font-family: inherit; }
 .onboarding-bullets li div { display: flex; flex-direction: column; gap: 2px; }
 .onboarding-bullets li strong { font-size: 14px; font-weight: 600; color: var(--tg-text); }
 .onboarding-bullets li span  { font-size: 12px; color: var(--tg-hint); line-height: 1.4; }
-.onboarding-btn { width: 100%; font-size: 16px; padding: 15px 24px; }
+.onboarding-btn { width: 100%; font-size: 16px; padding: 13px 24px; }
 
 /* ─── Zoom pending ───────────────────────────────────────────────────────── */
 .zoom-pending {
@@ -2323,7 +2327,7 @@ input, textarea { font-family: inherit; }
 
 /* Чекбокс в онбординге */
 .consent-block {
-  margin: 16px 0 12px;
+  margin: 12px 0 10px;
   text-align: left;
 }
 .consent-label {
