@@ -132,3 +132,5 @@ SSH-ключ: `c:/tmp/beget_key`
 scp -i c:/tmp/beget_key файл.js root@45.11.93.236:/var/www/telo-pomnit/backend/src/...
 ssh -i c:/tmp/beget_key root@45.11.93.236 "pm2 restart telo-backend"
 ```
+
+> **Сервер защищён** (UFW, SSH только по ключу, fail2ban, CPU-мониторинг — настроено 2026-04-19 из проекта `agent`). `telo-backend` **намеренно** оставлен под root как закрытый кейс портфолио — не мигрировать под непривилегированного пользователя. Порт `:3000` закрыт снаружи UFW, API доступно через nginx на `api.telo-pomnit.ru`.
