@@ -25,12 +25,23 @@ telo_pomnit/
 
 Самодостаточная страница (HTML + inline CSS/JS), доступная по `/admin`. Вход — JWT-токен из Mini App (берётся через `localStorage.getItem('tp_jwt')` в DevTools). Доступ только для Telegram-аккаунтов из `ADMIN_TELEGRAM_IDS`.
 
-Три вкладки:
-- **Сводка** — счётчики (пользователи, дневник, чекины, триггеры, отзывы) + распределение оценок отзывов
+Четыре вкладки:
+- **Сводка** — счётчики (пользователи, дневник, чекины, триггеры, анкеты, отзывы) + распределение оценок отзывов
 - **Отзывы** — список с фильтром по рейтингу
+- **Анкеты** — список всех заполненных анкет (раскрывающиеся блоки со всеми ответами), фильтр `pre`/`post`
 - **Пользователи** — таблица с именем, telegram, статусом enrollment, потоком, датой регистрации
 
-Бэкенд-маршруты под `requireAdmin`: `GET /admin/stats`, `GET /admin/feedback`, `GET /admin/feedback/stats`, `GET /admin/participants`.
+Бэкенд-маршруты под `requireAdmin`: `GET /admin/stats`, `GET /admin/feedback`, `GET /admin/feedback/stats`, `GET /admin/participants`, `GET /admin/questionnaires`, `GET /admin/questionnaires/stats`.
+
+> `/admin/participants` сериализует `telegramId` (BigInt в Prisma) как строку — иначе JSON.stringify падает с 500.
+
+### Команда `/admin` в боте
+
+Бот (`bot.js`) принимает команду `/admin` от Telegram-аккаунтов из `ADMIN_TELEGRAM_IDS` и присылает inline-кнопку с `webApp(ADMIN_PANEL_URL)` (по умолчанию `https://telo-pomnit.ru/admin`). Открытая через эту кнопку панель авторизуется автоматически: `admin.html` подключает `telegram-web-app.js`, читает `initData`, отправляет на `POST /auth/telegram` и сохраняет JWT в `localStorage.tp_admin_jwt`. Вне Telegram остаётся форма ручного ввода JWT.
+
+### Префикс админ-маршрутов
+
+В `backend/src/index.js` админ-роут регистрируется с `prefix: '/'` (НЕ `/admin`), потому что пути внутри `routes/admin.js` уже начинаются с `/admin/...`. Если поставить `prefix: '/admin'`, фактические URL станут `/admin/admin/...` и всё сломается с 404.
 
 ---
 
