@@ -34,6 +34,7 @@ model User {
   diagnosticResults  DiagnosticResult[]
   questionnaires     Questionnaire[]
   aiChatSessions     AiChatSession[]
+  feedback           Feedback[]
 
   @@map("users")
 }
@@ -168,6 +169,19 @@ model AiChatSession {
   user      User?    @relation(fields: [userId], references: [id])
 
   @@map("ai_chat_sessions")
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  rating    Int?
+  text      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@map("feedback")
 }
 
 model PendingEnrollment {

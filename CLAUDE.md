@@ -15,10 +15,22 @@ telo_pomnit/
 ├── thanks.html          # Страница «Спасибо» после оплаты → Vercel /thanks
 ├── offer.html           # Публичная оферта
 ├── gaid-body-stress.html # Гайд → Vercel /guide
+├── admin.html           # Админ-панель → Vercel /admin (вход по JWT)
 ├── landing.html         # Архив v1 — не используется
 ├── landing2.html        # Архив v2 — не используется
 └── project.md           # Описание проекта
 ```
+
+### Админ-панель (admin.html)
+
+Самодостаточная страница (HTML + inline CSS/JS), доступная по `/admin`. Вход — JWT-токен из Mini App (берётся через `localStorage.getItem('tp_jwt')` в DevTools). Доступ только для Telegram-аккаунтов из `ADMIN_TELEGRAM_IDS`.
+
+Три вкладки:
+- **Сводка** — счётчики (пользователи, дневник, чекины, триггеры, отзывы) + распределение оценок отзывов
+- **Отзывы** — список с фильтром по рейтингу
+- **Пользователи** — таблица с именем, telegram, статусом enrollment, потоком, датой регистрации
+
+Бэкенд-маршруты под `requireAdmin`: `GET /admin/stats`, `GET /admin/feedback`, `GET /admin/feedback/stats`, `GET /admin/participants`.
 
 ---
 

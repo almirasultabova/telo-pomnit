@@ -445,6 +445,26 @@ bot.api.setMyCommands([
   { command: 'help',  description: 'Помощь' },
 ]).catch(() => {})
 
+// ─── Уведомления админам о новых отзывах ──────────────────────────────────
+
+async function notifyAdminsAboutFeedback(feedback, user) {
+  const adminIds = (process.env.ADMIN_TELEGRAM_IDS || '')
+    .split(',').map(id => id.trim()).filter(Boolean)
+  if (!adminIds.length) return
+
+  const stars = feedback.rating ? '⭐'.repeat(feedback.rating) : '—'
+  const who = user.name || user.firstName || (user.telegramUsername ? '@' + user.telegramUsername : 'участница')
+  const text = `📝 Новый отзыв\n\nОт: ${who}\nОценка: ${stars}\n\n${feedback.text}`
+
+  for (const id of adminIds) {
+    try {
+      await bot.api.sendMessage(Number(id), text)
+    } catch (err) {
+      console.error('[bot] notify admin failed:', id, err.message)
+    }
+  }
+}
+
 // ─── Запуск ───────────────────────────────────────────────────────────────
 
-module.exports = { bot, sendDailyReminder }
+module.exports = { bot, sendDailyReminder, notifyAdminsAboutFeedback }

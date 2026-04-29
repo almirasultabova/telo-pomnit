@@ -2510,3 +2510,98 @@ input, textarea { font-family: inherit; }
 }
 .rnote-date  { font-size: 11px; color: var(--tg-hint); margin-bottom: 4px; }
 .rnote-text  { font-size: 14px; color: var(--tg-text); line-height: 1.5; }
+
+/* ─── Кнопка-ссылка в профиле (Обратная связь и т.п.) ─────────────────── */
+.profile-link-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: var(--tg-secondary-bg);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--tg-text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .18s, background .18s;
+}
+.profile-link-btn:active { transform: scale(0.98); }
+.profile-link-btn .icon-svg { color: var(--accent); flex: 0 0 auto; }
+.profile-link-btn span { flex: 1; }
+.profile-link-arrow { width: 16px; height: 16px; color: var(--tg-hint); flex: 0 0 auto; }
+
+/* ─── Экран обратной связи ──────────────────────────────────────────────── */
+.fb-hint {
+  font-size: 14px;
+  color: var(--tg-hint);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+.fb-section-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--tg-hint);
+  margin: 16px 0 10px;
+}
+.fb-stars {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.fb-star {
+  flex: 1;
+  background: var(--tg-secondary-bg);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 14px 0;
+  font-size: 28px;
+  line-height: 1;
+  color: rgba(0,0,0,0.18);
+  cursor: pointer;
+  transition: color .15s, background .15s, transform .12s;
+}
+.fb-star:active { transform: scale(0.94); }
+.fb-star--active { color: #c49a3c; background: rgba(196,154,60,0.08); }
+.fb-textarea {
+  width: 100%;
+  background: var(--tg-secondary-bg);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--tg-text);
+  resize: vertical;
+  min-height: 140px;
+  transition: border-color .18s;
+}
+.fb-textarea:focus { outline: none; border-color: var(--accent); }
+.fb-textarea::placeholder { color: var(--tg-hint); }
+.fb-counter {
+  font-size: 12px;
+  color: var(--tg-hint);
+  text-align: right;
+  margin-top: 6px;
+}
+.fb-thanks {
+  text-align: center;
+  padding: 40px 20px 20px;
+}
+.fb-thanks-icon { font-size: 48px; margin-bottom: 16px; }
+.fb-thanks-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 24px;
+  color: var(--tg-text);
+  margin-bottom: 8px;
+}
+.fb-thanks-text {
+  font-size: 14px;
+  color: var(--tg-hint);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}

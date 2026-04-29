@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Админ — Тело помнит</title>
+<style>
+  :root {
+    --bg: #f7f4ef;
+    --green: #2a4a38;
+    --green-dark: #1f3a2a;
+    --gold: #c49a3c;
+    --text: #1a110a;
+    --hint: #6b6259;
+    --border: rgba(0,0,0,0.08);
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; margin: 0; }
+  h1 { font-size: 28px; font-style: italic; }
+  h2 { font-size: 22px; font-style: italic; margin-bottom: 16px; }
+  h3 { font-size: 16px; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* ── Шапка ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .header-title { display: flex; flex-direction: column; gap: 2px; }
+  .header-sub { font-size: 13px; color: var(--hint); }
+  .logout-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    color: var(--hint);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .logout-btn:hover { color: var(--text); border-color: var(--text); }
+
+  /* ── Логин ── */
+  .login-wrap {
+    max-width: 460px;
+    margin: 80px auto 0;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+  }
+  .login-wrap h1 { margin-bottom: 8px; }
+  .login-hint { font-size: 14px; color: var(--hint); margin: 0 0 24px; }
+  .login-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: monospace;
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .login-input:focus { outline: none; border-color: var(--green); }
+  .btn {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn:hover { background: var(--green-dark); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn--full { width: 100%; }
+  .btn--ghost {
+    background: transparent;
+    color: var(--green);
+    border: 1px solid var(--green);
+  }
+  .btn--ghost:hover { background: var(--green); color: #fff; }
+  .login-error {
+    color: #b03030;
+    font-size: 13px;
+    margin-top: 12px;
+    min-height: 1em;
+  }
+  .login-help {
+    font-size: 12px;
+    color: var(--hint);
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+  .login-help code {
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+
+  /* ── Табы ── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    background: transparent;
+    border: none;
+    padding: 12px 18px;
+    font-size: 14px;
+    color: var(--hint);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color .15s, border-color .15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab--active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+    font-weight: 500;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel--active { display: block; }
+
+  /* ── Карточки сводки ── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .stat-value {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 32px;
+    color: var(--green);
+  }
+  .stat-sub { font-size: 12px; color: var(--hint); margin-top: 4px; }
+
+  /* ── Распределение оценок ── */
+  .rating-dist {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+  .rating-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .rating-row:last-child { margin-bottom: 0; }
+  .rating-label {
+    flex: 0 0 60px;
+    font-size: 13px;
+    color: var(--hint);
+  }
+  .rating-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .rating-bar-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width .4s;
+  }
+  .rating-count {
+    flex: 0 0 40px;
+    font-size: 13px;
+    text-align: right;
+    color: var(--hint);
+  }
+
+  /* ── Фильтры ── */
+  .filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--hint);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .filter-btn:hover { color: var(--text); }
+  .filter-btn--active {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  /* ── Таблицы / списки ── */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--hint);
+    font-size: 14px;
+  }
+  .loader {
+    text-align: center;
+    padding: 40px;
+    color: var(--hint);
+    font-size: 13px;
+  }
+
+  .feedback-list { display: flex; flex-direction: column; gap: 10px; }
+  .feedback-item {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+  }
+  .feedback-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--hint);
+  }
+  .feedback-stars { color: var(--gold); font-size: 14px; letter-spacing: 1px; }
+  .feedback-stars-empty { color: rgba(0,0,0,0.15); }
+  .feedback-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .feedback-user { font-weight: 500; color: var(--text); }
+
+  .users-table {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+  }
+  .users-table table { width: 100%; border-collapse: collapse; }
+  .users-table th, .users-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .users-table th {
+    background: var(--bg);
+    font-weight: 500;
+    color: var(--hint);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+  .users-table tr:last-child td { border-bottom: none; }
+  .users-table tr:hover td { background: rgba(42,74,56,0.02); }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .badge--active     { background: rgba(42,74,56,0.12);  color: var(--green); }
+  .badge--completed  { background: rgba(196,154,60,0.15); color: #8a6420; }
+  .badge--pending    { background: rgba(0,0,0,0.06);     color: var(--hint); }
+  .badge--cancelled  { background: rgba(176,48,48,0.1);  color: #b03030; }
+
+  @media (max-width: 768px) {
+    h1 { font-size: 24px; }
+    .container { padding: 16px 14px 40px; }
+    .stat-card { padding: 16px; }
+    .stat-value { font-size: 26px; }
+    .users-table { overflow-x: auto; }
+    .users-table table { min-width: 640px; }
+    .feedback-meta { flex-direction: column; align-items: flex-start; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Экран входа ── -->
+<div id="login-screen" class="container">
+  <div class="login-wrap">
+    <h1>Админ-панель</h1>
+    <p class="login-hint">«Тело помнит» — внутренний интерфейс</p>
+    <input type="password" id="token-input" class="login-input" placeholder="JWT токен" autocomplete="off">
+    <button class="btn btn--full" id="login-btn">Войти</button>
+    <div id="login-error" class="login-error"></div>
+    <div class="login-help">
+      Откройте Mini App, в DevTools (Console) выполните <code>localStorage.getItem('tp_jwt')</code> — скопируйте значение в поле выше. Доступ только для Telegram-аккаунтов из <code>ADMIN_TELEGRAM_IDS</code>.
+    </div>
+  </div>
+</div>
+
+<!-- ── Главный экран ── -->
+<div id="app-screen" class="container" style="display:none">
+  <div class="header">
+    <div class="header-title">
+      <h1>Админ-панель</h1>
+      <span class="header-sub">«Тело помнит»</span>
+    </div>
+    <button class="logout-btn" id="logout-btn">Выйти</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab tab--active" data-tab="summary">Сводка</button>
+    <button class="tab" data-tab="feedback">Отзывы</button>
+    <button class="tab" data-tab="users">Пользователи</button>
+  </div>
+
+  <!-- ── Сводка ── -->
+  <div class="tab-panel tab-panel--active" id="panel-summary">
+    <h2>Общие показатели</h2>
+    <div class="summary-grid" id="summary-grid">
+      <div class="loader">Загрузка…</div>
+    </div>
+    <h2 style="margin-top: 32px">Распределение оценок</h2>
+    <div class="rating-dist" id="rating-dist">
+      <div class="loader">Загрузка…</div>
+    </div>
+  </div>
+
+  <!-- ── Отзывы ── -->
+  <div class="tab-panel" id="panel-feedback">
+    <h2>Отзывы пользователей</h2>
+    <div class="filters" id="feedback-filters">
+      <button class="filter-btn filter-btn--active" data-rating="">Все</button>
+      <button class="filter-btn" data-rating="5">★ 5</button>
+      <button class="filter-btn" data-rating="4">★ 4</button>
+      <button class="filter-btn" data-rating="3">★ 3</button>
+      <button class="filter-btn" data-rating="2">★ 2</button>
+      <button class="filter-btn" data-rating="1">★ 1</button>
+    </div>
+    <div id="feedback-list" class="feedback-list">
+      <div class="loader">Загрузка…</div>
+    </div>
+  </div>
+
+  <!-- ── Пользователи ── -->
+  <div class="tab-panel" id="panel-users">
+    <h2>Пользователи</h2>
+    <div id="users-content">
+      <div class="loader">Загрузка…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://api.telo-pomnit.ru';
+const TOKEN_KEY = 'tp_admin_jwt';
+let token = localStorage.getItem(TOKEN_KEY) || '';
+
+const $ = (id) => document.getElementById(id);
+
+async function api(path) {
+  const res = await fetch(API + path, {
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+  if (res.status === 401 || res.status === 403) {
+    throw new Error(res.status === 403 ? 'Нет прав администратора' : 'Токен недействителен');
+  }
+  if (!res.ok) throw new Error('Ошибка ' + res.status);
+  return res.json();
+}
+
+// ── Логин ──
+$('login-btn').addEventListener('click', login);
+$('token-input').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+async function login() {
+  const value = $('token-input').value.trim();
+  if (!value) return;
+  $('login-error').textContent = '';
+  $('login-btn').disabled = true;
+  token = value;
+  try {
+    await api('/admin/stats');
+    localStorage.setItem(TOKEN_KEY, token);
+    showApp();
+  } catch (e) {
+    $('login-error').textContent = e.message;
+    token = '';
+  } finally {
+    $('login-btn').disabled = false;
+  }
+}
+
+$('logout-btn').addEventListener('click', () => {
+  localStorage.removeItem(TOKEN_KEY);
+  token = '';
+  $('login-screen').style.display = '';
+  $('app-screen').style.display = 'none';
+  $('token-input').value = '';
+});
+
+function showApp() {
+  $('login-screen').style.display = 'none';
+  $('app-screen').style.display = '';
+  loadSummary();
+}
+
+// ── Табы ──
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('tab-panel--active'));
+    btn.classList.add('tab--active');
+    const panel = $('panel-' + btn.dataset.tab);
+    panel.classList.add('tab-panel--active');
+    if (btn.dataset.tab === 'summary')   loadSummary();
+    if (btn.dataset.tab === 'feedback')  loadFeedback();
+    if (btn.dataset.tab === 'users')     loadUsers();
+  });
+});
+
+// ── Сводка ──
+async function loadSummary() {
+  try {
+    const [stats, fbStats] = await Promise.all([api('/admin/stats'), api('/admin/feedback/stats')]);
+    const cards = [
+      { label: 'Пользователи',   value: stats.users },
+      { label: 'Записи дневника', value: stats.diary },
+      { label: 'Чекины',          value: stats.checkins },
+      { label: 'Триггеры',        value: stats.triggers },
+      { label: 'Отзывы',          value: stats.feedback },
+      { label: 'Средняя оценка',  value: fbStats.averageRating != null ? fbStats.averageRating.toFixed(2) : '—', sub: fbStats.averageRating != null ? '★'.repeat(Math.round(fbStats.averageRating)) : '' }
+    ];
+    $('summary-grid').innerHTML = cards.map(c => `
+      <div class="stat-card">
+        <div class="stat-label">${c.label}</div>
+        <div class="stat-value">${c.value}</div>
+        ${c.sub ? `<div class="stat-sub">${c.sub}</div>` : ''}
+      </div>
+    `).join('');
+
+    const max = Math.max(1, ...Object.values(fbStats.counts));
+    $('rating-dist').innerHTML = [5,4,3,2,1].map(r => {
+      const count = fbStats.counts[r] || 0;
+      const pct = (count / max) * 100;
+      return `
+        <div class="rating-row">
+          <div class="rating-label">${'★'.repeat(r)}</div>
+          <div class="rating-bar"><div class="rating-bar-fill" style="width:${pct}%"></div></div>
+          <div class="rating-count">${count}</div>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    $('summary-grid').innerHTML = `<div class="empty">${e.message}</div>`;
+  }
+}
+
+// ── Отзывы ──
+let feedbackFilter = '';
+document.querySelectorAll('#feedback-filters .filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#feedback-filters .filter-btn').forEach(b => b.classList.remove('filter-btn--active'));
+    btn.classList.add('filter-btn--active');
+    feedbackFilter = btn.dataset.rating;
+    loadFeedback();
+  });
+});
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+async function loadFeedback() {
+  $('feedback-list').innerHTML = '<div class="loader">Загрузка…</div>';
+  try {
+    const q = feedbackFilter ? '?rating=' + feedbackFilter : '';
+    const { items } = await api('/admin/feedback' + q);
+    if (!items.length) {
+      $('feedback-list').innerHTML = '<div class="empty">Отзывов пока нет</div>';
+      return;
+    }
+    $('feedback-list').innerHTML = items.map(f => {
+      const user = f.user?.name || f.user?.firstName || (f.user?.telegramUsername ? '@' + f.user.telegramUsername : 'Без имени');
+      const date = new Date(f.createdAt).toLocaleString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      const stars = f.rating
+        ? `<span class="feedback-stars">${'★'.repeat(f.rating)}<span class="feedback-stars-empty">${'★'.repeat(5 - f.rating)}</span></span>`
+        : '<span class="feedback-stars-empty">без оценки</span>';
+      return `
+        <div class="feedback-item">
+          <div class="feedback-meta">
+            <span class="feedback-user">${escapeHtml(user)}</span>
+            <span>${stars} · ${date}</span>
+          </div>
+          <div class="feedback-text">${escapeHtml(f.text)}</div>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    $('feedback-list').innerHTML = `<div class="empty">${e.message}</div>`;
+  }
+}
+
+// ── Пользователи ──
+async function loadUsers() {
+  $('users-content').innerHTML = '<div class="loader">Загрузка…</div>';
+  try {
+    const users = await api('/admin/participants');
+    if (!users.length) {
+      $('users-content').innerHTML = '<div class="empty">Нет пользователей</div>';
+      return;
+    }
+    const rows = users.map(u => {
+      const name = u.name || u.firstName || (u.telegramUsername ? '@' + u.telegramUsername : '—');
+      const tg = u.telegramUsername ? '@' + u.telegramUsername : '—';
+      const created = new Date(u.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
+      const enrollment = (u.enrollments || []).find(e => e.status === 'active') || (u.enrollments || [])[0];
+      const status = enrollment?.status || 'pending';
+      return `
+        <tr>
+          <td>${escapeHtml(name)}</td>
+          <td>${escapeHtml(tg)}</td>
+          <td><span class="badge badge--${status}">${status}</span></td>
+          <td>${escapeHtml(enrollment?.stream?.name || '—')}</td>
+          <td>${created}</td>
+        </tr>`;
+    }).join('');
+    $('users-content').innerHTML = `
+      <div class="users-table">
+        <table>
+          <thead>
+            <tr><th>Имя</th><th>Telegram</th><th>Статус</th><th>Поток</th><th>Регистрация</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  } catch (e) {
+    $('users-content').innerHTML = `<div class="empty">${e.message}</div>`;
+  }
+}
+
+// ── Автологин ──
+if (token) {
+  api('/admin/stats').then(showApp).catch(() => {
+    localStorage.removeItem(TOKEN_KEY);
+    token = '';
+  });
+}
+</script>
+</body>
+</html>

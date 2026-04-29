@@ -171,6 +171,66 @@ async function adminRoutes(app) {
     })
   })
 
+  // ─── Обратная связь ──────────────────────────────────────────────────────
+
+  // GET /admin/feedback — список отзывов с фильтрами
+  app.get('/admin/feedback', { preHandler: requireAdmin }, async (request) => {
+    const { rating, from, to, limit = 100, offset = 0 } = request.query
+    const where = {
+      ...(rating ? { rating: Number(rating) } : {}),
+      ...(from || to ? {
+        createdAt: {
+          ...(from && { gte: new Date(from) }),
+          ...(to && { lte: new Date(to) })
+        }
+      } : {})
+    }
+    const [items, total] = await Promise.all([
+      db.feedback.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take: Math.min(Number(limit), 500),
+        skip: Number(offset),
+        include: { user: { select: { id: true, name: true, firstName: true, telegramUsername: true } } }
+      }),
+      db.feedback.count({ where })
+    ])
+    return { items, total }
+  })
+
+  // GET /admin/feedback/stats — счётчики и средний балл
+  app.get('/admin/feedback/stats', { preHandler: requireAdmin }, async () => {
+    const [total, withRating, byRating] = await Promise.all([
+      db.feedback.count(),
+      db.feedback.count({ where: { rating: { not: null } } }),
+      db.feedback.groupBy({
+        by: ['rating'],
+        _count: { _all: true },
+        where: { rating: { not: null } }
+      })
+    ])
+    const sum = byRating.reduce((s, r) => s + r.rating * r._count._all, 0)
+    const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+    byRating.forEach(r => { counts[r.rating] = r._count._all })
+    return {
+      total,
+      averageRating: withRating ? +(sum / withRating).toFixed(2) : null,
+      counts
+    }
+  })
+
+  // GET /admin/stats — общая сводка
+  app.get('/admin/stats', { preHandler: requireAdmin }, async () => {
+    const [users, diary, checkins, feedback, triggers] = await Promise.all([
+      db.user.count({ where: { deletedAt: null } }),
+      db.diaryEntry.count(),
+      db.checkin.count(),
+      db.feedback.count(),
+      db.triggerEntry.count()
+    ])
+    return { users, diary, checkins, feedback, triggers }
+  })
+
   // POST /admin/streams/:id/complete — завершить поток: active → completed, isActive = false
   // Вызывается вручную после последней встречи
   app.post('/admin/streams/:id/complete', { preHandler: requireAdmin }, async (request) => {

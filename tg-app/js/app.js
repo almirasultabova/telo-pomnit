@@ -156,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAiChat();
   initTrigger();
   initCheckin();
+  initFeedback();
 
   function startApp() {
     renderDiaryTab();
@@ -2500,4 +2501,78 @@ function renderQuestionnaireBanner() {
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
     </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// ОБРАТНАЯ СВЯЗЬ
+// ─────────────────────────────────────────────────────────────────────────
+let feedbackRating = 0;
+
+function openFeedback() {
+  feedbackRating = 0;
+  const text = document.getElementById('fb-text');
+  if (text) { text.value = ''; }
+  const counter = document.getElementById('fb-counter');
+  if (counter) counter.textContent = '0';
+  document.querySelectorAll('#fb-stars .fb-star').forEach(s => s.classList.remove('fb-star--active'));
+  const submit = document.getElementById('fb-submit');
+  if (submit) { submit.disabled = true; submit.textContent = 'Отправить'; }
+  const formWrap = document.getElementById('feedback-form-wrap');
+  const thanks   = document.getElementById('feedback-thanks');
+  if (formWrap) formWrap.style.display = '';
+  if (thanks)   thanks.style.display = 'none';
+  goTo('feedback');
+}
+
+function initFeedback() {
+  document.getElementById('open-feedback-btn')?.addEventListener('click', openFeedback);
+
+  const stars = document.querySelectorAll('#fb-stars .fb-star');
+  stars.forEach(star => {
+    star.addEventListener('click', () => {
+      feedbackRating = Number(star.dataset.star);
+      stars.forEach(s => {
+        s.classList.toggle('fb-star--active', Number(s.dataset.star) <= feedbackRating);
+      });
+      haptic('light');
+      updateFeedbackSubmitState();
+    });
+  });
+
+  const text = document.getElementById('fb-text');
+  text?.addEventListener('input', () => {
+    const counter = document.getElementById('fb-counter');
+    if (counter) counter.textContent = String(text.value.length);
+    updateFeedbackSubmitState();
+  });
+
+  document.getElementById('fb-submit')?.addEventListener('click', submitFeedback);
+}
+
+function updateFeedbackSubmitState() {
+  const text = document.getElementById('fb-text');
+  const submit = document.getElementById('fb-submit');
+  if (!submit) return;
+  const hasText = (text?.value || '').trim().length > 0;
+  submit.disabled = !hasText;
+}
+
+async function submitFeedback() {
+  const text = document.getElementById('fb-text');
+  const submit = document.getElementById('fb-submit');
+  const value = (text?.value || '').trim();
+  if (!value) return;
+
+  submit.disabled = true;
+  submit.textContent = 'Отправляем…';
+  try {
+    await Api.sendFeedback({ rating: feedbackRating || null, text: value });
+    haptic('medium');
+    document.getElementById('feedback-form-wrap').style.display = 'none';
+    document.getElementById('feedback-thanks').style.display = '';
+  } catch (e) {
+    submit.disabled = false;
+    submit.textContent = 'Отправить';
+    alert('Не удалось отправить отзыв. Попробуйте ещё раз.');
+  }
 }

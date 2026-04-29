@@ -142,4 +142,12 @@ const Api = {
   async saveQuestionnairePre(streamId, answers) {
     return this._request('POST', '/questionnaires/pre', { streamId, answers });
   },
+
+  // ─── Обратная связь ──────────────────────────────────────────────────────
+
+  async sendFeedback({ rating, text }) {
+    const body = { text };
+    if (rating) body.rating = rating;
+    return this._request('POST', '/feedback', body);
+  },
 };
