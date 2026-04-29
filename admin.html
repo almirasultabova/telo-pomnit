@@ -305,6 +305,57 @@
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
+  /* ── Анкеты ── */
+  .q-grid { display: flex; flex-direction: column; gap: 10px; }
+  .q-item {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+    overflow: hidden;
+  }
+  .q-item summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+  }
+  .q-item summary::-webkit-details-marker { display: none; }
+  .q-item summary::before {
+    content: '▸';
+    color: var(--hint);
+    margin-right: 6px;
+    transition: transform .15s;
+    display: inline-block;
+  }
+  .q-item[open] summary::before { transform: rotate(90deg); }
+  .q-answers {
+    padding: 4px 18px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .q-answer-row {
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .q-answer-row:last-child { border-bottom: none; }
+  .q-answer-key {
+    font-size: 11px;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 4px;
+  }
+  .q-answer-val {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
   .badge--active     { background: rgba(42,74,56,0.12);  color: var(--green); }
   .badge--completed  { background: rgba(196,154,60,0.15); color: #8a6420; }
   .badge--pending    { background: rgba(0,0,0,0.06);     color: var(--hint); }
@@ -350,6 +401,7 @@
   <div class="tabs">
     <button class="tab tab--active" data-tab="summary">Сводка</button>
     <button class="tab" data-tab="feedback">Отзывы</button>
+    <button class="tab" data-tab="questionnaires">Анкеты</button>
     <button class="tab" data-tab="users">Пользователи</button>
   </div>
 
@@ -377,6 +429,19 @@
       <button class="filter-btn" data-rating="1">★ 1</button>
     </div>
     <div id="feedback-list" class="feedback-list">
+      <div class="loader">Загрузка…</div>
+    </div>
+  </div>
+
+  <!-- ── Анкеты ── -->
+  <div class="tab-panel" id="panel-questionnaires">
+    <h2>Анкеты участниц</h2>
+    <div class="filters" id="q-filters">
+      <button class="filter-btn filter-btn--active" data-qtype="">Все</button>
+      <button class="filter-btn" data-qtype="pre">Входная</button>
+      <button class="filter-btn" data-qtype="post">Итоговая</button>
+    </div>
+    <div id="q-list">
       <div class="loader">Загрузка…</div>
     </div>
   </div>
@@ -452,9 +517,20 @@ document.querySelectorAll('.tab').forEach(btn => {
     btn.classList.add('tab--active');
     const panel = $('panel-' + btn.dataset.tab);
     panel.classList.add('tab-panel--active');
-    if (btn.dataset.tab === 'summary')   loadSummary();
-    if (btn.dataset.tab === 'feedback')  loadFeedback();
-    if (btn.dataset.tab === 'users')     loadUsers();
+    if (btn.dataset.tab === 'summary')        loadSummary();
+    if (btn.dataset.tab === 'feedback')       loadFeedback();
+    if (btn.dataset.tab === 'questionnaires') loadQuestionnaires();
+    if (btn.dataset.tab === 'users')          loadUsers();
+  });
+});
+
+let qTypeFilter = '';
+document.querySelectorAll('#q-filters .filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#q-filters .filter-btn').forEach(b => b.classList.remove('filter-btn--active'));
+    btn.classList.add('filter-btn--active');
+    qTypeFilter = btn.dataset.qtype;
+    loadQuestionnaires();
   });
 });
 
@@ -467,6 +543,7 @@ async function loadSummary() {
       { label: 'Записи дневника', value: stats.diary },
       { label: 'Чекины',          value: stats.checkins },
       { label: 'Триггеры',        value: stats.triggers },
+      { label: 'Анкеты',          value: stats.questionnaires ?? 0 },
       { label: 'Отзывы',          value: stats.feedback },
       { label: 'Средняя оценка',  value: fbStats.averageRating != null ? fbStats.averageRating.toFixed(2) : '—', sub: fbStats.averageRating != null ? '★'.repeat(Math.round(fbStats.averageRating)) : '' }
     ];
@@ -535,6 +612,45 @@ async function loadFeedback() {
     }).join('');
   } catch (e) {
     $('feedback-list').innerHTML = `<div class="empty">${e.message}</div>`;
+  }
+}
+
+// ── Анкеты ──
+async function loadQuestionnaires() {
+  $('q-list').innerHTML = '<div class="loader">Загрузка…</div>';
+  try {
+    const q = qTypeFilter ? '?type=' + qTypeFilter : '';
+    const { items, total } = await api('/admin/questionnaires' + q);
+    if (!items.length) {
+      $('q-list').innerHTML = '<div class="empty">Анкет пока нет.<br><br>Анкеты заполняются участницами в Mini App после того, как их зачислили в активный поток. Текущий поток завершён 16 апреля.</div>';
+      return;
+    }
+    const blocks = items.map(it => {
+      const user = it.user?.name || it.user?.firstName || (it.user?.telegramUsername ? '@' + it.user.telegramUsername : 'Без имени');
+      const date = new Date(it.submittedAt).toLocaleString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      const typeLabel = it.type === 'pre' ? 'Входная' : (it.type === 'post' ? 'Итоговая' : it.type);
+      const answers = it.answers && typeof it.answers === 'object' ? it.answers : {};
+      const answerRows = Object.entries(answers).map(([k, v]) => {
+        const value = Array.isArray(v) ? v.join(', ') : (typeof v === 'object' ? JSON.stringify(v) : String(v ?? ''));
+        return `<div class="q-answer-row"><div class="q-answer-key">${escapeHtml(k)}</div><div class="q-answer-val">${escapeHtml(value)}</div></div>`;
+      }).join('');
+      return `
+        <details class="q-item">
+          <summary>
+            <div>
+              <span class="feedback-user">${escapeHtml(user)}</span>
+              <span class="badge badge--${it.type === 'pre' ? 'active' : 'completed'}" style="margin-left:8px">${typeLabel}</span>
+            </div>
+            <span style="font-size:12px;color:var(--hint)">${date}</span>
+          </summary>
+          <div class="q-answers">${answerRows || '<div class="empty">Ответы пустые</div>'}</div>
+        </details>`;
+    }).join('');
+    $('q-list').innerHTML = `
+      <div style="font-size:13px;color:var(--hint);margin-bottom:10px">Всего: ${total}</div>
+      <div class="q-grid">${blocks}</div>`;
+  } catch (e) {
+    $('q-list').innerHTML = `<div class="empty">${e.message}</div>`;
   }
 }
 

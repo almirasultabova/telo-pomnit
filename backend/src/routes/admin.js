@@ -57,7 +57,7 @@ async function adminRoutes(app) {
   // GET /admin/participants — все участницы
   app.get('/admin/participants', { preHandler: requireAdmin }, async (request) => {
     const { search } = request.query
-    return db.user.findMany({
+    const users = await db.user.findMany({
       where: {
         deletedAt: null,
         ...(search ? {
@@ -68,9 +68,21 @@ async function adminRoutes(app) {
           ]
         } : {})
       },
-      include: { enrollments: { include: { stream: true } } },
+      select: {
+        id: true,
+        telegramId: true,
+        telegramUsername: true,
+        firstName: true,
+        lastName: true,
+        name: true,
+        phone: true,
+        role: true,
+        createdAt: true,
+        enrollments: { include: { stream: true } }
+      },
       orderBy: { createdAt: 'desc' }
     })
+    return users.map(u => ({ ...u, telegramId: u.telegramId.toString() }))
   })
 
   // GET /admin/participants/:id — профиль участницы
@@ -221,14 +233,47 @@ async function adminRoutes(app) {
 
   // GET /admin/stats — общая сводка
   app.get('/admin/stats', { preHandler: requireAdmin }, async () => {
-    const [users, diary, checkins, feedback, triggers] = await Promise.all([
+    const [users, diary, checkins, feedback, triggers, questionnaires] = await Promise.all([
       db.user.count({ where: { deletedAt: null } }),
       db.diaryEntry.count(),
       db.checkin.count(),
       db.feedback.count(),
-      db.triggerEntry.count()
+      db.triggerEntry.count(),
+      db.questionnaire.count()
     ])
-    return { users, diary, checkins, feedback, triggers }
+    return { users, diary, checkins, feedback, triggers, questionnaires }
+  })
+
+  // ─── Анкеты ──────────────────────────────────────────────────────────────
+
+  // GET /admin/questionnaires — список с фильтром по типу (pre/post)
+  app.get('/admin/questionnaires', { preHandler: requireAdmin }, async (request) => {
+    const { type, limit = 100, offset = 0 } = request.query
+    const where = type ? { type } : {}
+    const [items, total] = await Promise.all([
+      db.questionnaire.findMany({
+        where,
+        orderBy: { submittedAt: 'desc' },
+        take: Math.min(Number(limit), 500),
+        skip: Number(offset),
+        include: {
+          user: { select: { id: true, name: true, firstName: true, telegramUsername: true } },
+          stream: { select: { id: true, name: true } }
+        }
+      }),
+      db.questionnaire.count({ where })
+    ])
+    return { items, total }
+  })
+
+  // GET /admin/questionnaires/stats — счётчики
+  app.get('/admin/questionnaires/stats', { preHandler: requireAdmin }, async () => {
+    const [total, pre, post] = await Promise.all([
+      db.questionnaire.count(),
+      db.questionnaire.count({ where: { type: 'pre' } }),
+      db.questionnaire.count({ where: { type: 'post' } })
+    ])
+    return { total, pre, post }
   })
 
   // POST /admin/streams/:id/complete — завершить поток: active → completed, isActive = false
