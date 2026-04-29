@@ -124,6 +124,21 @@ bot.command('app', async (ctx) => {
   await ctx.reply('Ваш дневник наблюдений:', { reply_markup: keyboard })
 })
 
+// ─── /admin — открыть админ-панель (только ведущие) ─────────────────────
+
+const ADMIN_PANEL_URL = process.env.ADMIN_PANEL_URL || 'https://telo-pomnit.ru/admin'
+
+bot.command('admin', async (ctx) => {
+  if (!ADMIN_IDS.includes(ctx.from?.id)) {
+    return ctx.reply('Эта команда доступна только ведущим.')
+  }
+  const keyboard = new InlineKeyboard().webApp('Открыть админ-панель', ADMIN_PANEL_URL)
+  await ctx.reply(
+    'Админ-панель «Тело помнит»\n\nСводка, отзывы, пользователи. Авторизация — автоматически по вашему Telegram-аккаунту.',
+    { reply_markup: keyboard }
+  )
+})
+
 // ─── /activate — зачислить участницу (только ведущие) ───────────────────
 
 bot.command('activate', async (ctx) => {
