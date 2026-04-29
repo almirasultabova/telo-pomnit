@@ -116,6 +116,32 @@ function avgOf(arr) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// ОЩУЩЕНИЯ: встроенные + пользовательские
+// ─────────────────────────────────────────────────────────────────────────
+const CUSTOM_SENSATION_PREFIX = 'custom:';
+const CUSTOM_SENSATION_ICON = '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>';
+
+function getCustomSensations() {
+  try {
+    return JSON.parse(localStorage.getItem('tp_custom_sensations') || '[]');
+  } catch { return []; }
+}
+function addCustomSensation(label) {
+  const list = getCustomSensations();
+  if (!list.includes(label)) {
+    list.push(label);
+    localStorage.setItem('tp_custom_sensations', JSON.stringify(list));
+  }
+}
+// Возвращает {id, label, emoji} для любого id — встроенного или custom:<label>
+function getSensation(id) {
+  if (typeof id === 'string' && id.startsWith(CUSTOM_SENSATION_PREFIX)) {
+    return { id, label: id.slice(CUSTOM_SENSATION_PREFIX.length), emoji: CUSTOM_SENSATION_ICON };
+  }
+  return DATA.sensations.find(s => s.id === id) || null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // ИНИЦИАЛИЗАЦИЯ
 // ─────────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -260,7 +286,7 @@ function renderTodayCard() {
       const zone = DATA.zones.find(z => z.id === e.zone);
       const time = new Date(e.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
       const sLabels = (e.sensations || [])
-        .map(id => DATA.sensations.find(s => s.id === id))
+        .map(id => getSensation(id))
         .filter(Boolean)
         .map(s => `<span class="entry-sens-chip">${s.emoji} ${s.label}</span>`)
         .join('');
@@ -299,7 +325,7 @@ function renderRecentEntries() {
 function entryCardHTML(entry) {
   const zone = DATA.zones.find(z => z.id === entry.zone);
   const sLabels = (entry.sensations || [])
-    .map(id => DATA.sensations.find(s => s.id === id))
+    .map(id => getSensation(id))
     .filter(Boolean)
     .map(s => `<span class="entry-sens-chip">${s.emoji} ${s.label}</span>`)
     .join('');
@@ -455,29 +481,75 @@ function renderSensations() {
   // Рендерим кнопки
   const grid = document.getElementById('sensations-grid');
   if (!grid) return;
-  grid.innerHTML = DATA.sensations.map(s => `
+
+  const builtIn = DATA.sensations.map(s => ({ id: s.id, label: s.label, emoji: s.emoji }));
+  const custom  = getCustomSensations().map(label => ({
+    id: CUSTOM_SENSATION_PREFIX + label,
+    label,
+    emoji: CUSTOM_SENSATION_ICON
+  }));
+  const all = [...builtIn, ...custom];
+
+  grid.innerHTML = all.map(s => `
     <button class="sensation-btn" data-sensation="${s.id}">
       <span class="sensation-emoji">${s.emoji}</span>
       <span class="sensation-label">${s.label}</span>
     </button>
-  `).join('');
+  `).join('') + `
+    <div class="sensation-custom-row">
+      <input id="sensation-custom-input" type="text" class="sensation-custom-input" placeholder="Своё ощущение" maxlength="24">
+      <button id="sensation-custom-add" class="sensation-custom-add" type="button">+</button>
+    </div>
+  `;
 
-  // Обработчики клика на ощущения
-  grid.querySelectorAll('.sensation-btn').forEach(b => {
-    b.addEventListener('click', () => {
-      const id = b.dataset.sensation;
+  function attachToggle(btn) {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.sensation;
       haptic('light');
       if (draft.sensations.includes(id)) {
         draft.sensations = draft.sensations.filter(s => s !== id);
-        b.classList.remove('sensation-btn--active');
+        btn.classList.remove('sensation-btn--active');
       } else {
         draft.sensations.push(id);
-        b.classList.add('sensation-btn--active');
+        btn.classList.add('sensation-btn--active');
       }
       const continueBtn = document.getElementById('sensations-continue-btn');
       if (continueBtn) continueBtn.disabled = draft.sensations.length === 0;
     });
-  });
+  }
+  grid.querySelectorAll('.sensation-btn').forEach(attachToggle);
+
+  const input = document.getElementById('sensation-custom-input');
+  const addBtn = document.getElementById('sensation-custom-add');
+  function addCustom() {
+    const raw = (input?.value || '').trim().toLowerCase();
+    if (!raw) return;
+    const label = raw.length > 24 ? raw.slice(0, 24) : raw;
+    const id = CUSTOM_SENSATION_PREFIX + label;
+    // если уже на экране — просто выделяем
+    const existing = grid.querySelector(`.sensation-btn[data-sensation="${CSS.escape(id)}"]`);
+    if (existing) {
+      if (!draft.sensations.includes(id)) {
+        draft.sensations.push(id);
+        existing.classList.add('sensation-btn--active');
+      }
+    } else {
+      addCustomSensation(label);
+      const btn = document.createElement('button');
+      btn.className = 'sensation-btn sensation-btn--active';
+      btn.dataset.sensation = id;
+      btn.innerHTML = `<span class="sensation-emoji">${CUSTOM_SENSATION_ICON}</span><span class="sensation-label">${label}</span>`;
+      grid.insertBefore(btn, grid.querySelector('.sensation-custom-row'));
+      attachToggle(btn);
+      draft.sensations.push(id);
+    }
+    input.value = '';
+    haptic('light');
+    const continueBtn = document.getElementById('sensations-continue-btn');
+    if (continueBtn) continueBtn.disabled = draft.sensations.length === 0;
+  }
+  addBtn?.addEventListener('click', addCustom);
+  input?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addCustom(); } });
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -735,7 +807,7 @@ function renderMirrorCard(entries) {
     sensCounts[s] = (sensCounts[s] || 0) + 1;
   }));
   const topSensId = Object.keys(sensCounts).sort((a,b) => sensCounts[b]-sensCounts[a])[0];
-  const topSens   = DATA.sensations.find(s => s.id === topSensId);
+  const topSens   = getSensation(topSensId);
 
   const phrase = topSens
     ? `На этой неделе тело чаще всего замечало <em>${topSens.label.toLowerCase()}</em> в области <em>«${topZone?.label.toLowerCase() || topZoneId}»</em>`
@@ -835,7 +907,7 @@ function renderTopSensations(entries) {
     .sort((a,b) => b[1]-a[1])
     .slice(0, 3)
     .map(([id, count]) => {
-      const s = DATA.sensations.find(x => x.id === id);
+      const s = getSensation(id);
       return s ? { ...s, count } : null;
     }).filter(Boolean);
 
@@ -960,7 +1032,7 @@ function renderStreamSummary(entries) {
   const sensCounts = {};
   entries.forEach(e => (e.sensations || []).forEach(s => { sensCounts[s] = (sensCounts[s] || 0) + 1; }));
   const topSensId = Object.keys(sensCounts).sort((a, b) => sensCounts[b] - sensCounts[a])[0];
-  const topSens   = DATA.sensations.find(s => s.id === topSensId);
+  const topSens   = getSensation(topSensId);
 
   return `<div class="stream-summary">
     <div class="stream-summary-title">Поток завершён</div>
@@ -1433,7 +1505,7 @@ function exportDiaryPdf() {
     const zone = DATA.zones.find(z => z.id === e.zone);
     const zoneLabel = zone?.label || e.zone;
     const sens = (e.sensations || []).map(id => {
-      const s = DATA.sensations.find(x => x.id === id);
+      const s = getSensation(id);
       return s ? `${s.emoji} ${s.label}` : id;
     }).join(', ');
     const date = new Date(e.date).toLocaleDateString('ru-RU', {

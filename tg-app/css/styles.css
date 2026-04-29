@@ -685,6 +685,42 @@ input, textarea { font-family: inherit; }
 .sensation-emoji { font-size: 22px; line-height: 1; }
 .sensation-label { font-size: 14px; font-weight: 500; color: var(--tg-text); }
 
+.sensation-custom-row {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.sensation-custom-input {
+  flex: 1;
+  background: var(--tg-secondary-bg);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--tg-text);
+  transition: border-color .18s;
+  min-width: 0;
+}
+.sensation-custom-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.sensation-custom-input::placeholder { color: var(--tg-hint); }
+.sensation-custom-add {
+  flex: 0 0 auto;
+  width: 48px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1;
+  transition: transform .12s, opacity .18s;
+}
+.sensation-custom-add:active { transform: scale(0.94); }
+
 /* ─── Заметка ────────────────────────────────────────────────────────────── */
 .note-header-info {
   display: flex;
