@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Админ — Тело помнит</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
     --bg: #f7f4ef;
@@ -575,13 +576,47 @@ async function loadUsers() {
   }
 }
 
-// ── Автологин ──
-if (token) {
-  api('/admin/stats').then(showApp).catch(() => {
-    localStorage.removeItem(TOKEN_KEY);
-    token = '';
-  });
+// ── Автологин через Telegram WebApp ──
+async function tryTelegramAuth() {
+  const tg = window.Telegram?.WebApp;
+  const initData = tg?.initData;
+  if (!initData) return false;
+  try {
+    tg.ready?.();
+    tg.expand?.();
+    const res = await fetch(API + '/auth/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ initData })
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    if (!data?.token) return false;
+    token = data.token;
+    // проверяем, что аккаунт — админ
+    try {
+      await api('/admin/stats');
+      localStorage.setItem(TOKEN_KEY, token);
+      showApp();
+      return true;
+    } catch (e) {
+      $('login-error').textContent = 'Этот Telegram-аккаунт не входит в список администраторов';
+      token = '';
+      return false;
+    }
+  } catch {
+    return false;
+  }
 }
+
+// Сначала пробуем Telegram, потом сохранённый токен
+(async () => {
+  if (await tryTelegramAuth()) return;
+  if (token) {
+    try { await api('/admin/stats'); showApp(); }
+    catch { localStorage.removeItem(TOKEN_KEY); token = ''; }
+  }
+})();
 </script>
 </body>
 </html>
