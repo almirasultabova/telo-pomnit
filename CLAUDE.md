@@ -156,7 +156,19 @@ scp -i c:/tmp/beget_key файл.js root@45.11.93.236:/var/www/telo-pomnit/backe
 ssh -i c:/tmp/beget_key root@45.11.93.236 "pm2 restart telo-backend"
 ```
 
+> При обновлении переменных в `.env` нужен `pm2 restart telo-backend --update-env`. Без флага процесс держит старые значения.
+
 > **Сервер защищён** (UFW, SSH только по ключу, fail2ban, CPU-мониторинг — настроено 2026-04-19 из проекта `agent`). `telo-backend` **намеренно** оставлен под root как закрытый кейс портфолио — не мигрировать под непривилегированного пользователя. Порт `:3000` закрыт снаружи UFW, API доступно через nginx на `api.telo-pomnit.ru`.
+
+## CORS
+
+Whitelist в `backend/src/index.js`:
+- `https://telo-pomnit.ru` + `https://www.telo-pomnit.ru` — лендинг и админка
+- `https://almirasultabova.github.io` — GitHub Pages версия Mini App
+- `https://web.telegram.org` — Telegram Web Client
+- `https://tg-app-telo-pomnit.vercel.app` — Vercel-версия Mini App (используется как кнопка приложения у бота)
+
+> ⚠️ **Не редактируй `index.js` через `sed` на сервере** — локальная копия в репо разойдётся, и при следующем `scp` правка пропадёт. Так уже было 2026-04-30: vercel-домен исчез из CORS, AI-чат показал «Failed to fetch»/«Load failed». Всегда правь локально → `git push` → `scp`. Health-check (см. ниже) ловит этот сбой автоматически.
 
 ## Health-check (мониторинг)
 
