@@ -170,6 +170,10 @@ Whitelist в `backend/src/index.js`:
 
 > ⚠️ **Не редактируй `index.js` через `sed` на сервере** — локальная копия в репо разойдётся, и при следующем `scp` правка пропадёт. Так уже было 2026-04-30: vercel-домен исчез из CORS, AI-чат показал «Failed to fetch»/«Load failed». Всегда правь локально → `git push` → `scp`. Health-check (см. ниже) ловит этот сбой автоматически.
 
+## AI-ассистент
+
+Модель: `gpt-4o-mini` (хардкод в `backend/src/routes/ai.js`). Тариф $0.15/1M input, $0.60/1M output — **~$0.0002 за запрос**, $10 хватит примерно на 40 000 запросов. Для смены модели править строку `model: 'gpt-4o-mini'` в `ai.js`.
+
 ## Health-check (мониторинг)
 
 Серверный cron `0 * * * *` запускает `/var/www/telo-pomnit/backend/scripts/health-check.sh` (копия — `backend/scripts/health-check.sh` в репо). Скрипт проверяет:
