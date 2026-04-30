@@ -157,3 +157,12 @@ ssh -i c:/tmp/beget_key root@45.11.93.236 "pm2 restart telo-backend"
 ```
 
 > **Сервер защищён** (UFW, SSH только по ключу, fail2ban, CPU-мониторинг — настроено 2026-04-19 из проекта `agent`). `telo-backend` **намеренно** оставлен под root как закрытый кейс портфолио — не мигрировать под непривилегированного пользователя. Порт `:3000` закрыт снаружи UFW, API доступно через nginx на `api.telo-pomnit.ru`.
+
+## Health-check (мониторинг)
+
+Серверный cron `0 * * * *` запускает `/var/www/telo-pomnit/backend/scripts/health-check.sh` (копия — `backend/scripts/health-check.sh` в репо). Скрипт проверяет:
+1. `GET /health` → должен вернуть 200
+2. `OPTIONS /ai/chat` с `Origin: https://tg-app-telo-pomnit.vercel.app` → должен вернуть `Access-Control-Allow-Origin` с этим же доменом (защищает от случайной потери vercel-домена в CORS-списке `index.js`, как было 2026-04-30)
+3. PM2-статус `telo-backend === online`
+
+При любом сбое шлёт сообщение в Telegram всем `ADMIN_TELEGRAM_IDS`. Лог — `/var/log/telo-health.log`.
