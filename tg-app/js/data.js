@@ -369,11 +369,11 @@ const DATA = {
 
     hosts: [
       {
-        name: 'Анастасия Хорошавцева',
+        name: 'Елена Ковалёва',
         role: 'Психосоматика · Телесная терапия',
         tg: null,
-        initial: 'А',
-        photo: 'img/nastya.jpg'
+        initial: 'Е',
+        photo: null
       }
     ]
   }
