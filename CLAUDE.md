@@ -18,6 +18,8 @@ telo_pomnit/
 ├── admin.html           # Админ-панель → Vercel /admin (вход по JWT)
 ├── landing.html         # Архив v1 — не используется
 ├── landing2.html        # Архив v2 — не используется
+├── logo.png             # Логотип «Тело помнит» — используется в шапке landing_final.html
+├── APP_MONETIZATION_SALES.md # Стратегия B2B-продажи и монетизации Mini App
 └── project.md           # Описание проекта
 ```
 
@@ -69,6 +71,10 @@ telo_pomnit/
 | `--text` | `#1a110a` |
 | Фон | тёплый крем, белые секции чередуются с кремом |
 | Заголовки | Georgia italic |
+
+### Логотип в шапке
+
+В навигации `landing_final.html` используется `logo.png` (558×187, RGBA). Высота: **64px** на десктопе, **48px** на мобильном (`@media max-width: 768px`). Padding `<nav>` — 6px (2px при `.scrolled`), чтобы шапка оставалась узкой. `.nav-logo` — `inline-flex` с `align-items:center`. В футере и других местах остался текстовый «Тело помнит».
 
 ---
 
