@@ -103,10 +103,11 @@ h1,h2,h3,h4{font-family:Georgia,'Times New Roman',serif;font-style:italic;line-h
 #scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--green);transform-origin:left;transform:scaleX(0);z-index:100;transition:transform .1s linear}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;width:100%;z-index:90;padding:24px 0;transition:all .3s;background:rgba(247,244,239,.92);backdrop-filter:blur(12px)}
-nav.scrolled{padding:12px 0;box-shadow:var(--shadow)}
+nav{position:fixed;top:0;left:0;width:100%;z-index:90;padding:6px 0;transition:all .3s;background:rgba(247,244,239,.92);backdrop-filter:blur(12px)}
+nav.scrolled{padding:2px 0;box-shadow:var(--shadow)}
 .nav-inner{display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-family:Georgia,serif;font-style:italic;font-size:26px;color:var(--green);letter-spacing:.01em}
+.nav-logo{font-family:Georgia,serif;font-style:italic;font-size:26px;color:var(--green);letter-spacing:.01em;display:inline-flex;align-items:center}
+.nav-logo img{height:64px;width:auto;display:block}
 .nav-links{display:flex;align-items:center;gap:32px}
 .nav-links a{font-size:14px;font-weight:500;color:rgba(26,17,10,.75);transition:color .2s}
 .nav-links a:hover{color:var(--green)}
@@ -376,6 +377,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   .mobile-menu{display:block}
   .hero{align-items:flex-start;padding-top:80px}
   .nav-logo{font-size:22px}
+  .nav-logo img{height:48px}
   .section-title{font-size:clamp(24px,5vw,32px)}
   .recognize-grid{grid-template-columns:1fr}
   .comparison-grid{grid-template-columns:1fr}
@@ -572,7 +574,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 <!-- NAVBAR -->
 <nav id="navbar">
   <div class="container nav-inner">
-    <a href="#" class="nav-logo">Тело помнит</a>
+    <a href="#" class="nav-logo" aria-label="Тело помнит"><img src="logo.png" alt="Тело помнит"></a>
     <div class="nav-links">
       <a href="#process">Процесс</a>
       <a href="#results">Результаты</a>
