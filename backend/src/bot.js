@@ -10,7 +10,7 @@ const bot = new Bot(process.env.BOT_TOKEN)
 
 // ─── Константы ────────────────────────────────────────────────────────────
 
-const MINI_APP_URL = process.env.MINI_APP_URL || 'https://almirasultabova.github.io/telo-pomnit/tg-app/'
+const MINI_APP_URL = process.env.MINI_APP_URL || 'https://app.telo-pomnit.ru'
 const ADMIN_IDS = (process.env.ADMIN_TELEGRAM_IDS || '')
   .split(',').map(id => parseInt(id.trim())).filter(Boolean)
 
