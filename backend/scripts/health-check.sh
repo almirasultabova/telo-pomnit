@@ -1,5 +1,5 @@
 #!/bin/bash
-# Health check: проверяет, что бэкенд отвечает на запросы Mini App с vercel-домена
+# Health check: проверяет, что бэкенд отвечает на запросы Mini App
 # Запускается из cron раз в час. При сбое шлёт сообщение в Telegram админам.
 set -u
 
@@ -51,14 +51,14 @@ if [ "$HEALTH" != "200" ]; then
   exit 1
 fi
 
-# 2) CORS preflight для AI-чата с vercel-домена
+# 2) CORS preflight для AI-чата с основного домена Mini App
 HEADERS=$(curl -s -D - -o /dev/null -m 10 -X OPTIONS https://api.telo-pomnit.ru/ai/chat \
-  -H 'Origin: https://tg-app-telo-pomnit.vercel.app' \
+  -H 'Origin: https://app.telo-pomnit.ru' \
   -H 'Access-Control-Request-Method: POST' \
   -H 'Access-Control-Request-Headers: content-type,authorization')
 
-if ! echo "$HEADERS" | grep -qi '^access-control-allow-origin: https://tg-app-telo-pomnit.vercel.app'; then
-  notify "CORS preflight на /ai/chat не возвращает Access-Control-Allow-Origin для vercel-домена. AI-чат покажет 'Failed to fetch'/'Load failed'. Проверь /var/www/telo-pomnit/backend/src/index.js."
+if ! echo "$HEADERS" | grep -qi '^access-control-allow-origin: https://app.telo-pomnit.ru'; then
+  notify "CORS preflight на /ai/chat не возвращает Access-Control-Allow-Origin для app.telo-pomnit.ru. AI-чат покажет 'Failed to fetch'/'Load failed'. Проверь /var/www/telo-pomnit/backend/src/index.js."
   exit 1
 fi
 

@@ -1,6 +1,6 @@
 # Тело помнит — описание проекта
 
-_Обновлено: 8 апреля 2026_
+_Обновлено: 19 мая 2026_
 
 ## Что это за проект
 
@@ -11,9 +11,11 @@ _Обновлено: 8 апреля 2026_
 
 **GitHub:** https://github.com/almirasultabova/telo-pomnit
 **Лендинг:** https://www.telo-pomnit.ru (Vercel)
-**TG Mini App:** https://almirasultabova.github.io/telo-pomnit/tg-app/
+**TG Mini App:** https://app.telo-pomnit.ru
 **Backend API:** https://api.telo-pomnit.ru
 **Разработчик:** Альмира Султанова (SULTANOVA AI)
+
+**Монетизация / B2B-продажа Mini App:** см. `APP_MONETIZATION_SALES.md`
 
 ---
 
@@ -41,7 +43,7 @@ _Обновлено: 8 апреля 2026_
 | Сервис | Где | Детали |
 |---|---|---|
 | Лендинг (`telo-pomnit.ru`) | Vercel | авто-деплой из `main` |
-| TG Mini App | GitHub Pages | авто-деплой из `main` |
+| TG Mini App | Beget VPS (`app.telo-pomnit.ru`) | статика через nginx, деплой через scp |
 | Backend API | Beget VPS `45.11.93.236` | Node.js + PM2, Ubuntu 24.04 |
 | База данных | Beget VPS (локально) | PostgreSQL 16 |
 | DNS | Cloudflare | домен зарегистрирован на reg.ru |
@@ -147,7 +149,7 @@ _Обновлено: 8 апреля 2026_
 
 | Компонент | Меры защиты |
 |---|---|
-| CORS | Whitelist: `telo-pomnit.ru`, `almirasultabova.github.io`, `web.telegram.org` |
+| CORS | Whitelist: `telo-pomnit.ru`, `app.telo-pomnit.ru`, `almirasultabova.github.io`, `web.telegram.org`, `tg-app-telo-pomnit.vercel.app` |
 | Авторизация | HMAC-SHA256 с `timingSafeEqual`, проверка `auth_date` (макс. 24ч), JWT 7 дней |
 | Webhook ЮКасса | IP-фильтр по официальным подсетям ЮКасса |
 | AI-сессии | Проверка `session.userId === request.user.id` перед доступом |
@@ -190,7 +192,7 @@ telo_pomnit/
 ├── landing.html              # Архив v1
 ├── landing2.html             # Архив v2
 ├── vercel.json               # Конфиг Vercel
-├── tg-app/                   # Telegram Mini App → GitHub Pages
+├── tg-app/                   # Telegram Mini App → Beget (app.telo-pomnit.ru)
 │   ├── index.html
 │   ├── js/ (app.js, api.js, storage.js, data.js)
 │   ├── css/styles.css

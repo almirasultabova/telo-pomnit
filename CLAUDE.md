@@ -170,9 +170,10 @@ ssh -i c:/tmp/beget_key root@45.11.93.236 "pm2 restart telo-backend"
 
 Whitelist в `backend/src/index.js`:
 - `https://telo-pomnit.ru` + `https://www.telo-pomnit.ru` — лендинг и админка
-- `https://almirasultabova.github.io` — GitHub Pages версия Mini App
+- `https://app.telo-pomnit.ru` — Mini App (основной, Beget VPS)
+- `https://almirasultabova.github.io` — GitHub Pages версия Mini App (резерв)
 - `https://web.telegram.org` — Telegram Web Client
-- `https://tg-app-telo-pomnit.vercel.app` — Vercel-версия Mini App (используется как кнопка приложения у бота)
+- `https://tg-app-telo-pomnit.vercel.app` — Vercel-версия Mini App (резерв)
 
 > ⚠️ **Не редактируй `index.js` через `sed` на сервере** — локальная копия в репо разойдётся, и при следующем `scp` правка пропадёт. Так уже было 2026-04-30: vercel-домен исчез из CORS, AI-чат показал «Failed to fetch»/«Load failed». Всегда правь локально → `git push` → `scp`. Health-check (см. ниже) ловит этот сбой автоматически.
 
@@ -184,7 +185,7 @@ Whitelist в `backend/src/index.js`:
 
 Серверный cron `0 * * * *` запускает `/var/www/telo-pomnit/backend/scripts/health-check.sh` (копия — `backend/scripts/health-check.sh` в репо). Скрипт проверяет:
 1. `GET /health` → должен вернуть 200
-2. `OPTIONS /ai/chat` с `Origin: https://tg-app-telo-pomnit.vercel.app` → должен вернуть `Access-Control-Allow-Origin` с этим же доменом (защищает от случайной потери vercel-домена в CORS-списке `index.js`, как было 2026-04-30)
+2. `OPTIONS /ai/chat` с `Origin: https://app.telo-pomnit.ru` → должен вернуть `Access-Control-Allow-Origin` с этим же доменом (защищает от случайной потери домена в CORS-списке `index.js`, как было 2026-04-30)
 3. PM2-статус `telo-backend === online`
 
 При любом сбое шлёт сообщение в Telegram всем `ADMIN_TELEGRAM_IDS`. Лог — `/var/log/telo-health.log`.
