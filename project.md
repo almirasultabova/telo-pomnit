@@ -126,7 +126,7 @@ _Обновлено: 19 мая 2026_
 
 ### Frontend (лендинг)
 - Vanilla HTML/CSS/JS, без зависимостей
-- GitHub → Vercel (авто-деплой)
+- GitHub → Vercel (авто-деплой из `main`)
 
 ### Telegram Mini App
 - Vanilla JS SPA
@@ -149,7 +149,7 @@ _Обновлено: 19 мая 2026_
 
 | Компонент | Меры защиты |
 |---|---|
-| CORS | Whitelist: `telo-pomnit.ru`, `app.telo-pomnit.ru`, `almirasultabova.github.io`, `web.telegram.org`, `tg-app-telo-pomnit.vercel.app` |
+| CORS | Основной: `app.telo-pomnit.ru`, `telo-pomnit.ru`, `web.telegram.org`; резерв: `almirasultabova.github.io`, `tg-app-telo-pomnit.vercel.app` |
 | Авторизация | HMAC-SHA256 с `timingSafeEqual`, проверка `auth_date` (макс. 24ч), JWT 7 дней |
 | Webhook ЮКасса | IP-фильтр по официальным подсетям ЮКасса |
 | AI-сессии | Проверка `session.userId === request.user.id` перед доступом |
@@ -194,7 +194,7 @@ telo_pomnit/
 ├── vercel.json               # Конфиг Vercel
 ├── tg-app/                   # Telegram Mini App → Beget (app.telo-pomnit.ru)
 │   ├── index.html
-│   ├── js/ (app.js, api.js, storage.js, data.js)
+│   ├── js/ (app.js, api.js, storage.js, data.js, telegram-web-app.js)
 │   ├── css/styles.css
 │   └── img/ (body-front.png, body-rear.png)
 ├── backend/                  # API сервер → Beget VPS

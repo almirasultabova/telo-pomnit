@@ -16,7 +16,7 @@ tg-app/
 ```
 
 Порядок подключения скриптов в index.html:
-1. `telegram-web-app.js` (CDN Telegram)
+1. `telegram-web-app.js` (локальная копия в `js/` — не CDN, чтобы не зависеть от telegram.org)
 2. `data.js`
 3. `storage.js`
 4. `api.js`
@@ -268,7 +268,19 @@ tg.expand();   // на весь экран
 
 ## Деплой
 
-GitHub Pages — авто-деплой после `git push origin main`.
-URL: `https://almirasultabova.github.io/telo-pomnit/tg-app/`
+Beget VPS — статика отдаётся через nginx с `/var/www/telo-app/`.
+URL: `https://app.telo-pomnit.ru`
+
+```bash
+# Скопировать файлы на сервер
+scp -i c:/tmp/beget_key -r ./tg-app/. root@45.11.93.236:/var/www/telo-app/
+```
+
+> Никогда не редактируй файлы на сервере напрямую — локальная копия разойдётся с сервером.
+
+**telegram-web-app.js** отдаётся локально (`js/telegram-web-app.js`). Обновлять раз в 2–3 месяца:
+```bash
+ssh -i c:/tmp/beget_key root@45.11.93.236 "curl -o /var/www/telo-app/js/telegram-web-app.js https://telegram.org/js/telegram-web-app.js"
+```
 
 Для теста в браузере: открыть `index.html` напрямую — Telegram SDK не сломает приложение (работает в режиме заглушки).
