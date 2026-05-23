@@ -19,13 +19,17 @@ const Api = {
     return h;
   },
 
-  async _request(method, path, body) {
+  async _request(method, path, body, timeoutMs = 8000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const res = await fetch(API_URL + path, {
         method,
         headers: this._headers(),
         body: body ? JSON.stringify(body) : undefined,
+        signal: controller.signal,
       });
+      clearTimeout(timer);
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         const error = new Error(err.error || 'Ошибка сервера');
@@ -34,6 +38,7 @@ const Api = {
       }
       return res.status === 204 ? null : res.json();
     } catch (e) {
+      clearTimeout(timer);
       console.error('[API]', method, path, e.message);
       throw e;
     }
