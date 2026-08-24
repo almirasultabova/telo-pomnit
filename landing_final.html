@@ -276,9 +276,9 @@ picture{display:block;width:100%}
 .gallery-body p{font-size:13px;color:var(--muted)}
 
 /* HOSTS */
-.hosts-grid{display:grid;grid-template-columns:1fr;gap:64px;max-width:600px;margin:0 auto}
+.hosts-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px}
 .host-card{display:flex;gap:28px;align-items:flex-start}
-.host-img-wrap{width:200px;flex-shrink:0;border-radius:20px;overflow:hidden;box-shadow:var(--shadow-hover)}
+.host-img-wrap{width:160px;flex-shrink:0;border-radius:20px;overflow:hidden;box-shadow:var(--shadow-hover)}
 .host-img-wrap img{width:100%;aspect-ratio:3/4;object-fit:cover}
 .host-role{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}
 .host-name{font-family:Georgia,serif;font-style:italic;font-size:22px;margin-bottom:12px}
@@ -926,7 +926,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
         </div>
         <div>
           <p class="safety-item-title">Профессиональная опора</p>
-          <p class="safety-item-text">Специалист ведёт группу, обеспечивая безопасность и поддержку на каждом этапе.</p>
+          <p class="safety-item-text">Два специалиста ведут группу, обеспечивая безопасность и поддержку на каждом этапе.</p>
         </div>
       </div>
       <div class="safety-divider">
@@ -1136,7 +1136,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   <div class="container">
     <div style="margin-bottom:56px;text-align:center" class="reveal">
       <span class="label">Кто ведёт</span>
-      <h2 class="section-title">Ведущая программы</h2>
+      <h2 class="section-title">Ведущие программы</h2>
     </div>
     <div class="hosts-grid">
       <div class="host-card reveal">
@@ -1147,8 +1147,29 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
           </picture>
         </div>
         <div>
+          <span class="host-role">Глубина</span>
           <p class="host-name">Анастасия Хорошавцева</p>
           <p class="host-bio">Специалист по психосоматике и телесной терапии с 5-летним опытом практики и более 100+ довольных клиентов. В своей работе использует методы регрессии, трансовые состояния, психосоматический анализ и телесно-ориентированные практики.</p>
+          <div class="host-links">
+            <a href="#" class="host-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Написать
+            </a>
+            <a href="#" class="host-link">Канал</a>
+          </div>
+        </div>
+      </div>
+      <div class="host-card reveal reveal-delay-1">
+        <div class="host-img-wrap">
+          <picture>
+            <source srcset="almira.webp" type="image/webp">
+            <img src="almira.jpg" alt="Альмира Султанова" loading="lazy" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block">
+          </picture>
+        </div>
+        <div>
+          <span class="host-role">Внедрение</span>
+          <p class="host-name">Альмира Султанова</p>
+          <p class="host-bio">Коуч и специалист по поведенческим изменениям. Переводит глубинные инсайты в конкретные действия. Работает с тем, чтобы новый способ реагирования не остался «на сессии», а закрепился в реальных ситуациях — на работе, в отношениях, в теле.</p>
           <div class="host-links">
             <a href="#" class="host-link">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>

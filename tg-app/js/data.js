@@ -369,11 +369,18 @@ const DATA = {
 
     hosts: [
       {
-        name: 'Ведущая программы',
-        role: 'Психосоматолог · Телесная терапия',
+        name: 'Анастасия Хорошавцева',
+        role: 'Психосоматика · Телесная терапия',
         tg: null,
-        initial: 'В',
-        photo: null
+        initial: 'А',
+        photo: 'img/nastya.jpg'
+      },
+      {
+        name: 'Альмира Султанова',
+        role: 'Коуч · Внедрение изменений',
+        tg: null,
+        initial: 'А',
+        photo: 'img/almira.jpg'
       }
     ]
   }
