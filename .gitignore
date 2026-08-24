@@ -8,8 +8,14 @@ desktop.ini
 .idea/
 *.swp
 
+# Dependencies
+node_modules/
+
 # Secrets
 .env
+
+# Claude Code — личные настройки, не для коммита
+.claude/settings.local.json
 
 # Logs
 *.log

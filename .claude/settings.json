@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(C:/Users/almsu/AppData/Local/Programs/Python/Python313/python.exe c:/tmp/ssh_run.py \"cat /var/www/telo-pomnit/backend/src/index.js | head -20\" 15)",
+      "Bash(C:/Users/almsu/AppData/Local/Programs/Python/Python313/python.exe c:/tmp/ssh_run.py:*)"
+    ]
+  }
+}

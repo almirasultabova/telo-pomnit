@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тело помнит — защита проекта</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #f7f4ef;
+      --green: #2a4a38;
+      --green-light: rgba(42,74,56,0.08);
+      --gold: #c49a3c;
+      --text: #1a110a;
+      --muted: #6b5744;
+      --white: #ffffff;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ── SLIDES ── */
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 100px;
+      opacity: 0;
+      transition: opacity 0.45s ease;
+      pointer-events: none;
+    }
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ── NAV ── */
+    .nav-dots {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 9px;
+      z-index: 200;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(42,74,56,0.25);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .dot.active {
+      background: var(--green);
+      width: 26px;
+      border-radius: 4px;
+    }
+    .slide-counter {
+      position: fixed;
+      top: 22px; right: 32px;
+      font-size: 13px;
+      color: var(--muted);
+      z-index: 200;
+      transition: color 0.3s;
+    }
+    .nav-btn {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.85);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+      z-index: 200;
+      transition: opacity 0.2s, background 0.3s;
+      opacity: 0.6;
+    }
+    .nav-btn:hover { opacity: 1; }
+    .nav-prev { left: 24px; }
+    .nav-next { right: 24px; }
+    .nav-btn svg { width: 20px; height: 20px; }
+
+    /* dark slides: problem + tech */
+    body.dark-nav .dot { background: rgba(255,255,255,0.3); }
+    body.dark-nav .dot.active { background: rgba(255,255,255,0.9); width: 26px; border-radius: 4px; }
+    body.dark-nav .slide-counter { color: rgba(255,255,255,0.5); }
+    body.dark-nav .nav-btn { background: rgba(255,255,255,0.15); }
+    body.dark-nav .nav-btn svg { stroke: white; }
+
+    /* ── LABEL ── */
+    .label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    /* ── PHONE FRAME ── */
+    .phone {
+      background: #1c1c1e;
+      border-radius: 46px;
+      padding: 10px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.15);
+      flex-shrink: 0;
+    }
+    .phone img {
+      border-radius: 38px;
+      display: block;
+      width: 100%;
+    }
+    .phone-lg { width: 250px; }
+    .phone-md { width: 210px; }
+
+    /* ════════════════════════════════
+       SLIDE 1 — TITLE
+    ════════════════════════════════ */
+    .s-title { background: var(--bg); }
+    .s-title .inner {
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      gap: 70px;
+      align-items: center;
+      max-width: 860px;
+    }
+    .photo-circle {
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid var(--green);
+      flex-shrink: 0;
+    }
+    .photo-circle img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+    .title-info h1 {
+      font-family: Georgia, serif;
+      font-size: 40px;
+      font-style: italic;
+      color: var(--green);
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+    .title-info .role {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .title-info .what {
+      font-family: Georgia, serif;
+      font-size: 22px;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.45;
+      margin-bottom: 28px;
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      background: var(--green);
+      color: white;
+      font-size: 12px;
+      padding: 5px 14px;
+      border-radius: 20px;
+    }
+
+    /* ════════════════════════════════
+       SLIDE 2 — PROBLEM
+    ════════════════════════════════ */
+    .s-problem { background: var(--green); }
+    .s-problem .inner {
+      max-width: 1060px;
+      width: 100%;
+      text-align: center;
+    }
+    .s-problem .label { color: var(--gold); }
+    .s-problem h2 {
+      font-family: Georgia, serif;
+      font-size: 44px;
+      font-style: italic;
+      color: white;
+      line-height: 1.25;
+      margin-bottom: 36px;
+    }
+    .prob-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      text-align: left;
+    }
+    .prob-card {
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 28px 26px;
+    }
+    .prob-card .num {
+      font-family: Georgia, serif;
+      font-size: 38px;
+      font-style: italic;
+      color: var(--gold);
+      margin-bottom: 14px;
+      line-height: 1;
+    }
+    .prob-card p {
+      font-size: 17px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.65;
+    }
+
+    /* ════════════════════════════════
+       SLIDE 3 — SOLUTION
+    ════════════════════════════════ */
+    .s-solution { background: var(--bg); }
+    .s-solution .inner {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 80px;
+      align-items: center;
+      max-width: 1000px;
+      width: 100%;
+    }
+    .s-solution h2 {
+      font-family: Georgia, serif;
+      font-size: 38px;
+      font-style: italic;
+      color: var(--green);
+      line-height: 1.28;
+      margin-bottom: 22px;
+    }
+    .s-solution p {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* ════════════════════════════════
+       SLIDES 4-6 — FEATURES
+    ════════════════════════════════ */
+    .s-feature { background: var(--bg); }
+    .s-feature .inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 70px;
+      align-items: center;
+      max-width: 1100px;
+      width: 100%;
+    }
+    .feature-text h2 {
+      font-family: Georgia, serif;
+      font-size: 36px;
+      font-style: italic;
+      color: var(--green);
+      line-height: 1.28;
+      margin-bottom: 20px;
+    }
+    .feature-text p {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .feature-text .highlight {
+      display: inline-block;
+      background: var(--green-light);
+      border-left: 3px solid var(--green);
+      padding: 12px 18px;
+      border-radius: 0 10px 10px 0;
+      font-size: 16px;
+      color: var(--green);
+      margin-top: 8px;
+      font-style: italic;
+      font-family: Georgia, serif;
+    }
+    .phones-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    /* ════════════════════════════════
+       SLIDE 7 — LANDING
+    ════════════════════════════════ */
+    .s-landing { background: var(--bg); }
+    .s-landing .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      max-width: 1100px;
+      width: 100%;
+    }
+    .s-landing h2 {
+      font-family: Georgia, serif;
+      font-size: 36px;
+      font-style: italic;
+      color: var(--green);
+      line-height: 1.28;
+      margin-bottom: 24px;
+    }
+    .s-landing p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .site-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .site-feat {
+      background: var(--green-light);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .site-feat::before {
+      content: '✦';
+      color: var(--gold);
+      flex-shrink: 0;
+      font-size: 12px;
+    }
+    .browser-stack {
+      position: relative;
+      width: 100%;
+    }
+    .browser {
+      background: #e8e4de;
+      border-radius: 12px;
+      padding: 28px 8px 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      position: relative;
+    }
+    .browser::before {
+      content: '';
+      position: absolute;
+      top: 10px; left: 12px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ff5f57;
+      box-shadow: 14px 0 0 #febc2e, 28px 0 0 #28c840;
+    }
+    .browser img {
+      border-radius: 6px;
+      width: 100%;
+      display: block;
+    }
+    .browser-back {
+      position: absolute;
+      top: -16px; right: -16px;
+      z-index: -1;
+      width: 100%;
+      opacity: 0.5;
+      transform: rotate(2deg);
+    }
+
+    /* ════════════════════════════════
+       SLIDE 8 — TECH
+    ════════════════════════════════ */
+    .s-tech { background: var(--green); }
+    .s-tech .inner { max-width: 1000px; width: 100%; }
+    .s-tech h2 {
+      font-family: Georgia, serif;
+      font-size: 40px;
+      font-style: italic;
+      color: white;
+      margin-bottom: 40px;
+    }
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .tech-card {
+      background: rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 24px 22px;
+    }
+    .tech-card h3 {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .tech-card ul { list-style: none; }
+    .tech-card li {
+      font-size: 15px;
+      color: rgba(255,255,255,0.8);
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .tech-card li:last-child { border-bottom: none; }
+
+    /* ════════════════════════════════
+       SLIDE 8 — CTA
+    ════════════════════════════════ */
+    .s-cta { background: var(--bg); }
+    .s-cta .inner {
+      text-align: center;
+      max-width: 600px;
+    }
+    .s-cta h2 {
+      font-family: Georgia, serif;
+      font-size: 46px;
+      font-style: italic;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+    .s-cta .sub {
+      font-size: 17px;
+      color: var(--muted);
+      margin-bottom: 36px;
+    }
+    .qr-frame {
+      width: 220px;
+      margin: 0 auto 18px;
+      background: white;
+      padding: 14px;
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    }
+    .qr-frame img { width: 100%; display: block; border-radius: 8px; }
+    .bot-handle {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--green);
+      margin-bottom: 28px;
+      letter-spacing: 0.5px;
+    }
+    .cta-btn {
+      display: inline-block;
+      background: var(--green);
+      color: white;
+      font-size: 16px;
+      padding: 14px 36px;
+      border-radius: 40px;
+      text-decoration: none;
+    }
+
+    /* ════════════════════════════════
+       SLIDE 3 — FOR WHOM
+    ════════════════════════════════ */
+    .s-forwhom { background: var(--bg); }
+    .s-forwhom .inner {
+      max-width: 1020px;
+      width: 100%;
+    }
+    .s-forwhom h2 {
+      font-family: Georgia, serif;
+      font-size: 40px;
+      font-style: italic;
+      color: var(--green);
+      line-height: 1.25;
+      margin-bottom: 36px;
+    }
+    .forwhom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+    .forwhom-left {}
+    .forwhom-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .forwhom-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 17px;
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .forwhom-list li::before {
+      content: '✦';
+      color: var(--gold);
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .forwhom-right {}
+    .transform-card {
+      background: var(--green);
+      border-radius: 24px;
+      padding: 36px 32px;
+      color: white;
+    }
+    .transform-card h3 {
+      font-family: Georgia, serif;
+      font-size: 13px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 22px;
+    }
+    .transform-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .transform-row:last-child { margin-bottom: 0; }
+    .transform-arrow {
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: var(--gold);
+    }
+    .transform-row .was {
+      font-size: 15px;
+      color: rgba(255,255,255,0.55);
+      text-decoration: line-through;
+      margin-bottom: 3px;
+    }
+    .transform-row .now {
+      font-size: 15px;
+      color: rgba(255,255,255,0.92);
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ SLIDE 1: WHO I AM ═══ -->
+  <div class="slide s-title active" id="slide-1">
+    <div class="inner">
+      <div class="photo-circle">
+        <img src="slides/photo.jpg" alt="Альмира Султанова">
+      </div>
+      <div class="title-info">
+        <h1>Султанова<br>Альмира</h1>
+        <p class="role">Предприниматель · разработчик на вайбкодинге</p>
+        <p class="what">За время курса построила полноценный цифровой продукт с нуля — лендинг и Telegram Mini App. Теперь хочу делать это для других — сайты, приложения, боты.</p>
+        <div class="tags">
+          <span class="tag">Telegram Mini App</span>
+          <span class="tag">Backend + База данных</span>
+          <span class="tag">AI-ассистент</span>
+          <span class="tag">telo-pomnit.ru</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 2: PROBLEM ═══ -->
+  <div class="slide s-problem" id="slide-2">
+    <div class="inner">
+      <span class="label">Проблема — замечена на реальных потоках</span>
+      <h2>Между встречами<br>участница остаётся одна</h2>
+      <div class="prob-cards">
+        <div class="prob-card">
+          <div class="num">01</div>
+          <p>Не ведут дневник — нет привычки, нет инструмента под рукой</p>
+        </div>
+        <div class="prob-card">
+          <div class="num">02</div>
+          <p>В трудный момент не пишут в группу — «неудобно беспокоить»</p>
+        </div>
+        <div class="prob-card">
+          <div class="num">03</div>
+          <p>В конце говорят «что-то изменилось, но не могу описать» — не видят всей картины сами</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 3: FOR WHOM ═══ -->
+  <div class="slide s-forwhom" id="slide-3">
+    <div class="inner">
+      <span class="label">Для кого этот продукт</span>
+      <h2>Умная женщина, которая<br>устала понимать и не меняться</h2>
+      <div class="forwhom-grid">
+        <div class="forwhom-left">
+          <ul class="forwhom-list">
+            <li>Прошла терапию, читала книги — паттерны поведения не изменились</li>
+            <li>Живёт в хроническом напряжении: тело реагирует раньше, чем успевает подумать</li>
+            <li>Всё понимает «в голове», но снова выбирает те же сценарии</li>
+            <li>Хочет изменений не в теории, а в реальной жизни — в теле, в решениях, в отношениях</li>
+          </ul>
+        </div>
+        <div class="forwhom-right">
+          <div class="transform-card">
+            <h3>Что меняется за 5 недель</h3>
+            <div class="transform-row">
+              <div class="transform-arrow">→</div>
+              <div>
+                <div class="was">«Ничего не изменилось»</div>
+                <div class="now">Видит прогресс в цифрах — до и после в анкете</div>
+              </div>
+            </div>
+            <div class="transform-row">
+              <div class="transform-arrow">→</div>
+              <div>
+                <div class="was">«Неудобно беспокоить»</div>
+                <div class="now">AI-ассистент всегда рядом — без неловкости</div>
+              </div>
+            </div>
+            <div class="transform-row">
+              <div class="transform-arrow">→</div>
+              <div>
+                <div class="was">«Не успела завести дневник»</div>
+                <div class="now">Стрик и уведомления — дневник становится привычкой</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 4: LANDING ═══ -->
+  <div class="slide s-landing" id="slide-4">
+    <div class="inner">
+      <div>
+        <span class="label">Лендинг — telo-pomnit.ru</span>
+        <h2>Я создала полный продукт —<br>от продажи до поддержки</h2>
+        <p>Лендинг + Telegram Mini App + Backend. Всё связано в одну цепочку: человек приходит на сайт, читает, проходит самодиагностику и оплачивает прямо там. После оплаты автоматически приходит письмо — и открывается доступ в приложение.</p>
+        <div class="site-features">
+          <div class="site-feat">Интерактивная карта тела</div>
+          <div class="site-feat">Дышащая анимация</div>
+          <div class="site-feat">Квиз-самодиагностика</div>
+          <div class="site-feat">Фоновая музыка</div>
+          <div class="site-feat">Оплата через ЮКасса</div>
+          <div class="site-feat">Публичная оферта + ИНН</div>
+        </div>
+      </div>
+      <div class="browser-stack">
+        <div class="browser browser-back">
+          <img src="slides/slides.site2.jpg" alt="Сайт">
+        </div>
+        <div class="browser" style="position:relative; z-index:1;">
+          <img src="slides/slides.site1.jpg" alt="Лендинг">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 5: SOLUTION ═══ -->
+  <div class="slide s-solution" id="slide-5">
+    <div class="inner">
+      <div>
+        <span class="label">Telegram Mini App</span>
+        <h2>Личное приложение<br>у каждой участницы</h2>
+        <p>Открывается прямо в Telegram — без установки, без входа по паролю. Там, где участница уже есть, одним нажатием.</p>
+        <p>Три раздела: <strong>Дневник тела</strong>, <strong>Мой путь</strong> и <strong>Мой поток</strong> — плюс AI-ассистент для поддержки между встречами.</p>
+      </div>
+      <div class="phone phone-lg">
+        <img src="slides/screen-home.jpg" alt="Главный экран">
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 6: DIARY ═══ -->
+  <div class="slide s-feature" id="slide-6">
+    <div class="inner">
+      <div class="feature-text">
+        <span class="label">Дневник тела</span>
+        <h2>Три инструмента<br>для ежедневной работы</h2>
+        <p><strong>Дневник тела</strong> — отмечает зону напряжения, ощущения, заметку. Одна минута. Стрик не даёт пропустить.</p>
+        <p><strong>Ежедневный чекин</strong> — оценка тела, зона напряжения, настроение. Короткий пульс на каждый день.</p>
+        <p><strong>AI-ассистент</strong> — если случилось что-то сложное, а писать ведущей неловко. Помогает назвать чувство прямо сейчас.</p>
+        <span class="highlight">«Я не буду беспокоить наставника так поздно» — теперь не проблема</span>
+      </div>
+      <div class="phones-row">
+        <div class="phone phone-md">
+          <img src="slides/screen-diary.jpg" alt="Дневник">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 7: STOP REACTIONS ═══ -->
+  <div class="slide s-feature" id="slide-7">
+    <div class="inner">
+      <div class="feature-text">
+        <span class="label">Зафиксировать реакцию</span>
+        <h2>Тело реагирует<br>раньше мысли</h2>
+        <p>Когда случилось что-то острое — участница фиксирует не только «что я чувствую», а как именно отреагировало тело.</p>
+        <p>Ситуация → тип реакции → зона тела → интенсивность → заметка. Четыре типа реакций из соматической методологии:</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;">
+          <div class="site-feat" style="background:rgba(42,74,56,0.08); color:var(--green);">❄️ Freeze — замирание</div>
+          <div class="site-feat" style="background:rgba(42,74,56,0.08); color:var(--green);">⚡ Fight — борьба</div>
+          <div class="site-feat" style="background:rgba(42,74,56,0.08); color:var(--green);">🌀 Flight — бегство</div>
+          <div class="site-feat" style="background:rgba(42,74,56,0.08); color:var(--green);">🤝 Fawn — угождение</div>
+        </div>
+        <span class="highlight" style="margin-top:16px; display:inline-block;">Паттерн становится видимым — не в голове, а в данных</span>
+      </div>
+      <div class="phones-row">
+        <div class="phone phone-md">
+          <img src="slides/screen-diary.jpg" alt="Зафиксировать реакцию">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 8: ANALYTICS ═══ -->
+  <div class="slide s-feature" id="slide-8">
+    <div class="inner">
+      <div class="feature-text">
+        <span class="label">Мой путь</span>
+        <h2>Прогресс, который<br>теперь видно в цифрах</h2>
+        <p>Карта напряжений за весь поток: где болело чаще, что уходит, что остаётся. «Зеркало недели» — итог словами.</p>
+        <p>Топ ощущений, статистика встреч, стрик. И главное — <strong>анкета до и после потока</strong>: участница сравнивает своё состояние в начале и в конце. Прогресс виден в цифрах, не на ощущение.</p>
+        <span class="highlight">«Ничего не изменилось» — теперь это можно проверить</span>
+      </div>
+      <div class="phones-row">
+        <div class="phone phone-md">
+          <img src="slides/screen-path1.jpg" alt="Карта тела">
+        </div>
+        <div class="phone phone-md">
+          <img src="slides/screen-path2.jpg" alt="Статистика">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 9: STREAM ═══ -->
+  <div class="slide s-feature" id="slide-9">
+    <div class="inner">
+      <div class="feature-text">
+        <span class="label">Мой поток</span>
+        <h2>Расписание и доступы<br>в одном месте</h2>
+        <p>Следующая встреча — всегда на виду. Ссылка на Zoom появляется автоматически перед встречей. Всё расписание потока с описанием каждой темы.</p>
+        <p>Кнопка входа в групповой чат. Ничего не теряется в переписке, ничего не надо искать.</p>
+        <span class="highlight">Полная инфраструктура потока в одном экране</span>
+      </div>
+      <div class="phones-row">
+        <div class="phone phone-md">
+          <img src="slides/screen-stream1.jpg" alt="Мой поток">
+        </div>
+        <div class="phone phone-md">
+          <img src="slides/screen-stream2.jpg" alt="Расписание">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 10: TECH ═══ -->
+  <div class="slide s-tech" id="slide-10">
+    <div class="inner">
+      <span class="label" style="color: var(--gold);">Что под капотом</span>
+      <h2>Полный продукт с нуля — за время курса</h2>
+      <div class="tech-grid">
+
+        <div class="tech-card">
+          <h3>Лендинг</h3>
+          <ul>
+            <li>Vanilla HTML / CSS / JS</li>
+            <li>Vercel — авто-деплой</li>
+            <li>telo-pomnit.ru</li>
+            <li>Оплата через ЮКасса</li>
+            <li>Welcome-письмо на почту</li>
+          </ul>
+        </div>
+        <div class="tech-card">
+          <h3>Mini App</h3>
+          <ul>
+            <li>Vanilla JS SPA</li>
+            <li>GitHub Pages</li>
+            <li>Telegram initData + JWT</li>
+            <li>AI: GPT-4o-mini</li>
+            <li>Дневник · Чекин · Реакции</li>
+            <li>Анкеты до / после потока</li>
+          </ul>
+        </div>
+        <div class="tech-card">
+          <h3>Backend</h3>
+          <ul>
+            <li>Node.js + Fastify</li>
+            <li>PostgreSQL + Prisma</li>
+            <li>Grammy Telegram бот</li>
+            <li>Персональные уведомления</li>
+            <li>GDPR-согласие в базе</li>
+            <li>Beget VPS + PM2 + SSL</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:28px; font-size:16px; color:var(--gold); font-family:Georgia,serif; font-style:italic; text-align:center;">
+        Один человек. С нуля. За 5 недель курса.
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 11: CTA ═══ -->
+  <div class="slide s-cta" id="slide-11">
+    <div class="inner">
+      <span class="label">Что дальше</span>
+      <h2>«Тело помнит»</h2>
+      <p class="sub">Два потока уже прошли — без сайта и без приложения. Теперь инструмент есть.</p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; margin-top:8px;">
+        <div>
+          <div class="qr-frame" style="width:180px; margin:0 auto 12px;">
+            <img src="slides/qr.jpg" alt="QR — @BODY_REMEMBERS_BOT">
+          </div>
+          <p class="bot-handle" style="margin-bottom:8px;">@BODY_REMEMBERS_BOT</p>
+          <a class="cta-btn" style="font-size:14px; padding:10px 24px;" href="https://telo-pomnit.ru">telo-pomnit.ru</a>
+        </div>
+        <div style="text-align:left; border-left:2px solid var(--gold); padding-left:28px;">
+          <p style="font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:16px;">Открыта к заказам</p>
+          <p style="font-family:Georgia,serif; font-style:italic; font-size:22px; color:var(--green); line-height:1.4; margin-bottom:16px;">Делаю сайты, Telegram Mini App и ботов для бизнеса</p>
+          <p style="font-size:15px; color:var(--muted); line-height:1.6;">Если у вас есть идея — давайте обсудим.<br>Пишите в Telegram:</p>
+          <p style="font-size:17px; font-weight:600; color:var(--green); margin-top:10px;">@AlmiraSultanova_AI</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ NAVIGATION ═══ -->
+  <div class="nav-dots" id="dots"></div>
+  <div class="slide-counter" id="counter">1 / 11</div>
+
+  <button class="nav-btn nav-prev" id="btnPrev" onclick="changeSlide(-1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#2a4a38" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </button>
+  <button class="nav-btn nav-next" id="btnNext" onclick="changeSlide(1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#2a4a38" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </button>
+
+  <script>
+    const TOTAL = 11;
+    const DARK_SLIDES = [2, 10]; // 1-based slide numbers with dark background
+    let current = 0;
+
+    const dotsEl = document.getElementById('dots');
+    const counterEl = document.getElementById('counter');
+
+    // Build dots
+    for (let i = 0; i < TOTAL; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => goTo(i);
+      dotsEl.appendChild(d);
+    }
+
+    function goTo(n) {
+      document.getElementById('slide-' + (current + 1)).classList.remove('active');
+      dotsEl.children[current].classList.remove('active');
+      current = Math.max(0, Math.min(TOTAL - 1, n));
+      document.getElementById('slide-' + (current + 1)).classList.add('active');
+      dotsEl.children[current].classList.add('active');
+      counterEl.textContent = (current + 1) + ' / ' + TOTAL;
+      document.body.classList.toggle('dark-nav', DARK_SLIDES.includes(current + 1));
+    }
+
+    function changeSlide(dir) { goTo(current + dir); }
+
+    // Keyboard
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); changeSlide(-1); }
+    });
+
+    // Click on slide area
+    document.addEventListener('click', e => {
+      if (e.target.closest('.nav-btn') || e.target.closest('.nav-dots') || e.target.closest('a')) return;
+      changeSlide(e.clientX > window.innerWidth / 2 ? 1 : -1);
+    });
+  </script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 # TESTING.md — Руководство тестировщика
 
-_Обновлено: 16 марта 2026_
+_Обновлено: 24 августа 2026_
 
-Проект «Тело помнит» состоит из трёх частей: **лендинг** (Vercel), **Telegram Mini App** (GitHub Pages), **Backend API** (Beget VPS).
+Проект «Тело помнит» состоит из трёх частей: **лендинг** (Vercel), **Telegram Mini App** (Beget VPS), **Backend API** (Beget VPS).
 
 ---
 
@@ -12,8 +12,10 @@ _Обновлено: 16 марта 2026_
 |---|---|---|
 | `landing_final.html` | Vercel | https://www.telo-pomnit.ru |
 | `gaid-body-stress.html` | Vercel | https://www.telo-pomnit.ru/guide |
-| `tg-app/` | GitHub Pages | https://almirasultabova.github.io/telo-pomnit/tg-app/ |
+| `tg-app/` | Beget VPS (nginx), деплой вручную через `scp` | https://app.telo-pomnit.ru |
 | `backend/` | Beget VPS | https://api.telo-pomnit.ru |
+
+> GitHub Pages (`almirasultabova.github.io`) и Vercel-версия (`tg-app-telo-pomnit.vercel.app`) остались в CORS-whitelist как резервные адреса, но основной адрес Mini App — `app.telo-pomnit.ru` на Beget.
 
 ---
 
@@ -68,10 +70,11 @@ python -m http.server 8080
 ### Порядок загрузки скриптов (`index.html`)
 
 ```
-1. telegram-web-app.js (CDN Telegram)
+1. js/telegram-web-app.js (локальная копия, не CDN)
 2. js/data.js
-3. js/storage.js
-4. js/app.js
+3. js/api.js
+4. js/storage.js
+5. js/app.js
 ```
 
 Если скрипты перепутаны — приложение не запустится.
@@ -83,11 +86,18 @@ F12 → Application → Local Storage → localhost → выделить всё 
 ```
 
 Ключи для сброса:
+- `tp_jwt`
 - `tp_diary_entries`
 - `tp_diag_result`
+- `tp_trigger_entries`
+- `tp_checkins`
 - `tp_onboarding_done`
 - `tp_offer_seen`
 - `tp_attended`
+- `tp_questionnaire_done`
+- `tp_q_sheet_shown`
+- `tp_consent_given`
+- `tp_custom_sensations`
 
 ---
 
@@ -175,9 +185,9 @@ F12 → Application → Local Storage → localhost → выделить всё 
 - [ ] Карточка пользователя (имя из Telegram или заглушка)
 - [ ] Статистика (записей, стрик)
 - [ ] Кнопка «Войти в групповой чат» ведёт на chatUrl
-- [ ] Расписание 9 встреч с 19 марта по 16 апреля 2026
+- [ ] Расписание 9 встреч потока (актуальные даты — в `tg-app/js/data.js`, `DATA.program.schedule`)
 - [ ] При нажатии на встречу — нижний лист с деталями
-- [ ] Карточки ведущих (Анастасия, Альмира) с ссылками в Telegram
+- [ ] Карточки ведущих (Анастасия, Альмира) — без ссылок в Telegram (`tg: null`)
 
 ---
 
@@ -222,7 +232,7 @@ curl https://api.telo-pomnit.ru/health
 | POST | `/diary` | Новая запись |
 | GET | `/checkins/today` | Чекин за сегодня |
 | POST | `/checkins` | Новый чекин |
-| POST | `/ai-chat` | Сообщение AI-ассистенту |
+| POST | `/ai/chat` | Сообщение AI-ассистенту |
 | POST | `/create-payment` | Создать платёж ЮКасса → вернуть URL |
 | POST | `/webhook/yukassa` | Webhook от ЮКассы после оплаты |
 | POST | `/send-welcome` | Вручную отправить welcome-письмо |
@@ -240,10 +250,17 @@ curl http://localhost:3000/health  # {"status":"ok"}
 
 ## Часть 4: Деплой
 
-### Лендинг и TG app (автоматически)
+### Лендинг (автоматически)
 ```bash
 git push origin main
-# Vercel и GitHub Pages обновятся за ~1-2 минуты
+# Vercel обновится за ~1-2 минуты
+```
+
+### Telegram Mini App (вручную, scp)
+```bash
+git push origin main   # синхронизировать репозиторий
+scp -i c:/tmp/beget_key -r ./tg-app/. root@45.11.93.236:/var/www/telo-app/
+# Автодеплоя нет — git push сам по себе Mini App не обновляет
 ```
 
 ### Backend (Claude делает автоматически через SSH-ключ)
