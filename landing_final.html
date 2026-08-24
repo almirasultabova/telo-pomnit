@@ -2034,27 +2034,5 @@ document.getElementById('pay-modal').addEventListener('click', function(e) {
   if (e.target === this) this.style.display = 'none';
 });
 </script>
-<script>
-// Набор закрыт — блокируем все кнопки записи и скрываем счётчик
-document.addEventListener('DOMContentLoaded', function() {
-  // Скрываем обратный счётчик
-  var countdown = document.getElementById('hero-countdown');
-  if (countdown) countdown.style.display = 'none';
-
-  // Скрываем старую цену (зачёркнутую)
-  var priceOld = document.getElementById('price-old');
-  if (priceOld) priceOld.style.display = 'none';
-
-  // Заменяем все кнопки записи
-  document.querySelectorAll('.enroll-btn').forEach(function(btn) {
-    btn.removeAttribute('onclick');
-    btn.disabled = true;
-    btn.textContent = 'Набор закрыт';
-    btn.style.opacity = '0.5';
-    btn.style.cursor = 'default';
-    btn.style.pointerEvents = 'none';
-  });
-});
-</script>
 </body>
 </html>
