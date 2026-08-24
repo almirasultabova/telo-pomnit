@@ -452,6 +452,39 @@ cron.schedule('0 0 * * *', async () => {
   }
 }, { timezone: 'UTC' })
 
+// Cron: каждую ночь в 03:15 МСК (00:15 UTC) — физически удаляем данные пользователей,
+// запросивших удаление аккаунта (GDPR/ФЗ-152, DELETE /gdpr/delete-me) 30+ дней назад.
+// Профиль уже обезличен в момент запроса (routes/gdpr.js); здесь стираются записи с
+// личным содержимым. Сам User и Enrollment (платёж) не удаляются — нужны для бухгалтерии.
+cron.schedule('15 0 * * *', async () => {
+  try {
+    const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    const users = await db.user.findMany({
+      where: { deletedAt: { not: null, lt: cutoff } },
+      select: { id: true }
+    })
+    if (users.length === 0) return
+    const userIds = users.map(u => u.id)
+
+    const [diary, triggers, checkins, diagnostic, questionnaires, feedback, aiChats] =
+      await Promise.all([
+        db.diaryEntry.deleteMany({ where: { userId: { in: userIds } } }),
+        db.triggerEntry.deleteMany({ where: { userId: { in: userIds } } }),
+        db.checkin.deleteMany({ where: { userId: { in: userIds } } }),
+        db.diagnosticResult.deleteMany({ where: { userId: { in: userIds } } }),
+        db.questionnaire.deleteMany({ where: { userId: { in: userIds } } }),
+        db.feedback.deleteMany({ where: { userId: { in: userIds } } }),
+        db.aiChatSession.deleteMany({ where: { userId: { in: userIds } } })
+      ])
+
+    const total = diary.count + triggers.count + checkins.count + diagnostic.count +
+      questionnaires.count + feedback.count + aiChats.count
+    console.log(`[cron] GDPR hard-delete: ${users.length} аккаунтов, ${total} записей стёрто`)
+  } catch (e) {
+    console.error('[cron] Ошибка GDPR hard-delete:', e.message)
+  }
+}, { timezone: 'UTC' })
+
 // ─── Регистрация публичных команд в Telegram ──────────────────────────────
 
 bot.api.setMyCommands([

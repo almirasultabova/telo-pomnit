@@ -226,19 +226,52 @@ const Storage = {
   // ─── Синхронизация с бэкендом ─────────────────────────────────────────────
 
   /** Загрузить данные с сервера и положить в localStorage.
-   *  Вызывается при старте приложения после авторизации. */
+   *  Вызывается при старте приложения после авторизации.
+   *  Восстанавливает дневник, диагностику, триггеры и чекины — так localStorage
+   *  всегда можно полностью восстановить с сервера, даже если он был очищен
+   *  (переустановка Telegram, чистка кэша, смена устройства). */
   async initFromApi() {
     if (typeof Api === 'undefined' || !Api.isAuthed()) return;
     try {
-      const [diary, diag] = await Promise.allSettled([
+      const [diary, diag, triggers, checkins] = await Promise.allSettled([
         Api.getDiary(),
         Api.getDiagResult(),
+        Api.getTriggers(),
+        Api.getCheckins(),
       ]);
       if (diary.status === 'fulfilled' && diary.value?.entries?.length) {
         localStorage.setItem(KEYS.DIARY, JSON.stringify(diary.value.entries));
       }
       if (diag.status === 'fulfilled' && diag.value) {
         localStorage.setItem(KEYS.DIAG, JSON.stringify(diag.value));
+      }
+      if (triggers.status === 'fulfilled' && triggers.value?.length) {
+        const entries = triggers.value.map(t => ({
+          id: new Date(t.createdAt).getTime(),
+          date: t.createdAt,
+          situation: t.situation,
+          reactionType: t.reactionType,
+          zone: t.zone,
+          sensations: t.sensations || [],
+          intensity: t.intensity,
+          note: t.note || ''
+        }));
+        localStorage.setItem(KEYS.TRIGGERS, JSON.stringify(entries));
+      }
+      if (checkins.status === 'fulfilled' && checkins.value?.length) {
+        // Сервер хранит только среднюю оценку (bodyScore), не 5 исходных ползунков —
+        // восстановленные чекины дают верный тренд, но не точные значения по каждой шкале.
+        const list = checkins.value.map(c => ({
+          id: new Date(c.createdAt).getTime(),
+          date: c.createdAt,
+          tension: c.bodyScore,
+          anxiety: c.bodyScore,
+          energy: c.bodyScore,
+          safety: c.bodyScore,
+          bodyContact: c.bodyScore,
+          note: c.note || ''
+        })).reverse();
+        localStorage.setItem(KEYS.CHECKINS, JSON.stringify(list));
       }
     } catch {
       // Нет связи — работаем с локальным кэшем

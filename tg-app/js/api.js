@@ -106,6 +106,10 @@ const Api = {
     return this._request('GET', '/checkins/today');
   },
 
+  async getCheckins() {
+    return this._request('GET', '/checkins?limit=200');
+  },
+
   async saveCheckin(data) {
     return this._request('POST', '/checkins', data);
   },
