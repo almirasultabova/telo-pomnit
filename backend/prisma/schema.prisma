@@ -184,6 +184,15 @@ model Feedback {
   @@map("feedback")
 }
 
+model WaitlistEntry {
+  id               String   @id @default(uuid())
+  email            String
+  telegramUsername String   @map("telegram_username")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@map("waitlist_entries")
+}
+
 model PendingEnrollment {
   id               String   @id @default(uuid())
   telegramUsername String   @map("telegram_username")

@@ -513,6 +513,24 @@ async function notifyAdminsAboutFeedback(feedback, user) {
   }
 }
 
+// ─── Уведомления админам о заявках в лист ожидания ────────────────────────
+
+async function notifyAdminsAboutWaitlist(entry) {
+  const adminIds = (process.env.ADMIN_TELEGRAM_IDS || '')
+    .split(',').map(id => id.trim()).filter(Boolean)
+  if (!adminIds.length) return
+
+  const text = `📋 Новая заявка в лист ожидания\n\nEmail: ${entry.email}\nTelegram: @${entry.telegramUsername}`
+
+  for (const id of adminIds) {
+    try {
+      await bot.api.sendMessage(Number(id), text)
+    } catch (err) {
+      console.error('[bot] notify admin failed:', id, err.message)
+    }
+  }
+}
+
 // ─── Запуск ───────────────────────────────────────────────────────────────
 
-module.exports = { bot, sendDailyReminder, notifyAdminsAboutFeedback }
+module.exports = { bot, sendDailyReminder, notifyAdminsAboutFeedback, notifyAdminsAboutWaitlist }
