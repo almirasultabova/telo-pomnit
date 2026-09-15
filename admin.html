@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Админ — Тело помнит</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://app.telo-pomnit.ru/js/telegram-web-app.js"></script>
 <style>
   :root {
     --bg: #f7f4ef;
@@ -458,7 +458,9 @@
 <script>
 const API = 'https://api.telo-pomnit.ru';
 const TOKEN_KEY = 'tp_admin_jwt';
-let token = localStorage.getItem(TOKEN_KEY) || '';
+// На app.telo-pomnit.ru доступен и токен основной Mini App.
+// Это резервный вход, если Telegram SDK не передал initData повторно.
+let token = localStorage.getItem(TOKEN_KEY) || localStorage.getItem('tp_jwt') || '';
 
 const $ = (id) => document.getElementById(id);
 

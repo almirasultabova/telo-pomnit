@@ -103,7 +103,7 @@ _Обновлено: 24 августа 2026_
 | `gaid-body-stress.html` | Гайд (маршрут `/guide`) |
 | `offer.html` | Публичная оферта |
 | `privacy.html` | Политика конфиденциальности (маршрут `/privacy`) |
-| `admin.html` | Админ-панель (маршрут `/admin`) |
+| `admin.html` | Админ-панель: основной адрес `app.telo-pomnit.ru/admin.html`, резервный маршрут `/admin` на Vercel |
 
 ### Telegram Mini App (`tg-app/`)
 
@@ -214,7 +214,7 @@ telo_pomnit/
 ├── gaid-body-stress.html     # Гайд → Vercel /guide
 ├── offer.html                # Публичная оферта
 ├── privacy.html               # Политика конфиденциальности → Vercel /privacy
-├── admin.html                 # Админ-панель → Vercel /admin
+├── admin.html                 # Админ-панель → Mini App /admin.html, резерв Vercel /admin
 ├── vercel.json               # Конфиг Vercel
 ├── tg-app/                   # Telegram Mini App → Beget (app.telo-pomnit.ru)
 │   ├── index.html

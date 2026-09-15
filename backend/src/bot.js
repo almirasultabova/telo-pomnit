@@ -126,7 +126,7 @@ bot.command('app', async (ctx) => {
 
 // ─── /admin — открыть админ-панель (только ведущие) ─────────────────────
 
-const ADMIN_PANEL_URL = process.env.ADMIN_PANEL_URL || 'https://telo-pomnit.ru/admin'
+const ADMIN_PANEL_URL = process.env.ADMIN_PANEL_URL || 'https://app.telo-pomnit.ru/admin.html'
 
 bot.command('admin', async (ctx) => {
   if (!ADMIN_IDS.includes(ctx.from?.id)) {

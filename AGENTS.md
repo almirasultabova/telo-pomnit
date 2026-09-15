@@ -27,7 +27,7 @@ telo_pomnit/
 
 ### Админ-панель (admin.html)
 
-Самодостаточная страница (HTML + inline CSS/JS), доступная по `/admin`. Вход — JWT-токен из Mini App (берётся через `localStorage.getItem('tp_jwt')` в DevTools). Доступ только для Telegram-аккаунтов из `ADMIN_TELEGRAM_IDS`.
+Самодостаточная страница (HTML + inline CSS/JS). Основной адрес для Telegram — `https://app.telo-pomnit.ru/admin.html` (копия файла развёрнута рядом с Mini App), резервный адрес на Vercel — `/admin`. Вход автоматический через Telegram `initData` или JWT-токен Mini App из того же `localStorage`. Доступ только для Telegram-аккаунтов из `ADMIN_TELEGRAM_IDS`.
 
 Четыре вкладки:
 - **Сводка** — счётчики (пользователи, дневник, чекины, триггеры, анкеты, отзывы) + распределение оценок отзывов
@@ -41,7 +41,7 @@ telo_pomnit/
 
 ### Команда `/admin` в боте
 
-Бот (`bot.js`) принимает команду `/admin` от Telegram-аккаунтов из `ADMIN_TELEGRAM_IDS` и присылает inline-кнопку с `webApp(ADMIN_PANEL_URL)` (по умолчанию `https://telo-pomnit.ru/admin`). Открытая через эту кнопку панель авторизуется автоматически: `admin.html` подключает `telegram-web-app.js`, читает `initData`, отправляет на `POST /auth/telegram` и сохраняет JWT в `localStorage.tp_admin_jwt`. Вне Telegram остаётся форма ручного ввода JWT.
+Бот (`bot.js`) принимает команду `/admin` от Telegram-аккаунтов из `ADMIN_TELEGRAM_IDS` и присылает inline-кнопку с `webApp(ADMIN_PANEL_URL)` (по умолчанию `https://app.telo-pomnit.ru/admin.html`). Открытая через эту кнопку панель авторизуется автоматически: `admin.html` подключает локальную копию `telegram-web-app.js`, читает `initData`, отправляет на `POST /auth/telegram` и сохраняет JWT в `localStorage.tp_admin_jwt`. На домене Mini App также используется существующий `localStorage.tp_jwt` как резерв. Вне Telegram остаётся форма ручного ввода JWT.
 
 ### Префикс админ-маршрутов
 
