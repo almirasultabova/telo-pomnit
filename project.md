@@ -1,6 +1,6 @@
 # Тело помнит — описание проекта
 
-_Обновлено: 24 августа 2026_
+_Обновлено: 18 сентября 2026_
 
 ## Что это за проект
 
@@ -10,7 +10,7 @@ _Обновлено: 24 августа 2026_
 5 недель, 9 живых встреч, Zoom + закрытый Telegram-чат.
 
 **GitHub:** https://github.com/almirasultabova/telo-pomnit
-**Лендинг:** https://www.telo-pomnit.ru (Vercel)
+**Лендинг:** https://telo-pomnit.ru (Beget VPS)
 **TG Mini App:** https://app.telo-pomnit.ru
 **Backend API:** https://api.telo-pomnit.ru
 **Разработчик:** Альмира Султанова (SULTANOVA AI)
@@ -43,7 +43,7 @@ _Обновлено: 24 августа 2026_
 
 | Сервис | Где | Детали |
 |---|---|---|
-| Лендинг (`telo-pomnit.ru`) | Vercel | авто-деплой из `main` |
+| Лендинг (`telo-pomnit.ru`) | Beget VPS `45.11.93.236` | статика через nginx из `/var/www/telo-site`, деплой через scp |
 | TG Mini App | Beget VPS (`app.telo-pomnit.ru`) | статика через nginx, деплой через scp |
 | Backend API | Beget VPS `45.11.93.236` | Node.js + PM2, Ubuntu 24.04 |
 | База данных | Beget VPS (локально) | PostgreSQL 16 |
@@ -94,7 +94,7 @@ _Обновлено: 24 августа 2026_
 
 ## Страницы и файлы
 
-### Лендинг (Vercel)
+### Лендинг (Beget VPS)
 
 | Файл | Что это |
 |---|---|
@@ -103,7 +103,7 @@ _Обновлено: 24 августа 2026_
 | `gaid-body-stress.html` | Гайд (маршрут `/guide`) |
 | `offer.html` | Публичная оферта |
 | `privacy.html` | Политика конфиденциальности (маршрут `/privacy`) |
-| `admin.html` | Админ-панель: основной адрес `app.telo-pomnit.ru/admin.html`, резервный маршрут `/admin` на Vercel |
+| `admin.html` | Админ-панель: основной адрес `app.telo-pomnit.ru/admin.html`, резервный маршрут `/admin` на основном домене |
 
 ### Telegram Mini App (`tg-app/`)
 
@@ -150,7 +150,8 @@ _Обновлено: 24 августа 2026_
 
 ### Frontend (лендинг)
 - Vanilla HTML/CSS/JS, без зависимостей
-- GitHub → Vercel (авто-деплой из `main`)
+- Продакшн: Beget VPS, nginx, `/var/www/telo-site`
+- Vercel сохранён как резервная копия; DNS продакшн-домена на него не указывает
 
 ### Telegram Mini App
 - Vanilla JS SPA
@@ -209,13 +210,14 @@ _Обновлено: 24 августа 2026_
 
 ```
 telo_pomnit/
-├── landing_final.html        # Основной лендинг → Vercel /
-├── thanks.html               # Страница «Спасибо» → Vercel /thanks
-├── gaid-body-stress.html     # Гайд → Vercel /guide
+├── landing_final.html        # Основной лендинг → Beget /
+├── thanks.html               # Страница «Спасибо» → Beget /thanks
+├── gaid-body-stress.html     # Гайд → Beget /guide
 ├── offer.html                # Публичная оферта
-├── privacy.html               # Политика конфиденциальности → Vercel /privacy
-├── admin.html                 # Админ-панель → Mini App /admin.html, резерв Vercel /admin
-├── vercel.json               # Конфиг Vercel
+├── privacy.html               # Политика конфиденциальности → Beget /privacy
+├── admin.html                 # Админ-панель → Mini App /admin.html, резерв Beget /admin
+├── deploy/nginx/              # Конфигурация nginx для основного домена
+├── vercel.json               # Резервный конфиг Vercel
 ├── tg-app/                   # Telegram Mini App → Beget (app.telo-pomnit.ru)
 │   ├── index.html
 │   ├── js/ (app.js, api.js, storage.js, data.js, telegram-web-app.js)

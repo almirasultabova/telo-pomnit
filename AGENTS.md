@@ -14,12 +14,12 @@
 
 ```
 telo_pomnit/
-├── landing_final.html   # Основной лендинг (продакшн) → Vercel /
-├── thanks.html          # Страница «Спасибо» после оплаты → Vercel /thanks
+├── landing_final.html   # Основной лендинг (продакшн) → Beget /
+├── thanks.html          # Страница «Спасибо» после оплаты → Beget /thanks
 ├── offer.html           # Публичная оферта
-├── gaid-body-stress.html # Гайд → Vercel /guide
-├── admin.html           # Админ-панель → Vercel /admin (вход по JWT)
-├── privacy.html         # Политика конфиденциальности → Vercel /privacy
+├── gaid-body-stress.html # Гайд → Beget /guide
+├── admin.html           # Админ-панель → Beget /admin (вход по JWT)
+├── privacy.html         # Политика конфиденциальности → Beget /privacy
 ├── logo.png             # Логотип «Тело помнит» — используется в шапке landing_final.html
 ├── APP_MONETIZATION_SALES.md # Стратегия B2B-продажи и монетизации Mini App
 └── project.md           # Описание проекта
@@ -27,7 +27,7 @@ telo_pomnit/
 
 ### Админ-панель (admin.html)
 
-Самодостаточная страница (HTML + inline CSS/JS). Основной адрес для Telegram — `https://app.telo-pomnit.ru/admin.html` (копия файла развёрнута рядом с Mini App), резервный адрес на Vercel — `/admin`. Вход автоматический через Telegram `initData` или JWT-токен Mini App из того же `localStorage`. Доступ только для Telegram-аккаунтов из `ADMIN_TELEGRAM_IDS`.
+Самодостаточная страница (HTML + inline CSS/JS). Основной адрес для Telegram — `https://app.telo-pomnit.ru/admin.html` (копия файла развёрнута рядом с Mini App), резервный адрес — `https://telo-pomnit.ru/admin`. Вход автоматический через Telegram `initData` или JWT-токен Mini App из того же `localStorage`. Доступ только для Telegram-аккаунтов из `ADMIN_TELEGRAM_IDS`.
 
 Четыре вкладки:
 - **Сводка** — счётчики (пользователи, дневник, чекины, триггеры, анкеты, отзывы) + распределение оценок отзывов
@@ -171,6 +171,10 @@ ssh -i c:/tmp/beget_key root@45.11.93.236 "pm2 restart telo-backend"
 ## Telegram Mini App
 
 Статика отдаётся с Beget VPS через nginx (`/var/www/telo-app/`), домен `app.telo-pomnit.ru`. Деплой — вручную через `scp` (см. `tg-app/CLAUDE.md`), НЕ через git push/автодеплой.
+
+## Лендинг
+
+Продакшн-статика отдаётся с Beget VPS через nginx из `/var/www/telo-site/`. Конфигурация хранится в `deploy/nginx/telo-pomnit.ru.conf`, SSL — Let's Encrypt с автообновлением Certbot. DNS в Cloudflare: корневой A → `45.11.93.236`, `www` CNAME → `telo-pomnit.ru`, обе записи DNS only. Деплой — вручную через `scp`; Vercel оставлен только как резерв.
 
 ## CORS
 
