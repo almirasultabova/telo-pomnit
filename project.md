@@ -53,6 +53,25 @@ _Обновлено: 18 сентября 2026_
 **Backend URL:** `https://api.telo-pomnit.ru`
 **Деплой бэкенда:** через SSH-ключ (`c:/tmp/beget_key`) — Claude делает сам
 
+### Продакшн-лендинг
+
+- Корень сайта на VPS: `/var/www/telo-site/`
+- Конфигурация nginx: `/etc/nginx/sites-available/telo-pomnit.ru`
+- Версия конфигурации в репозитории: `deploy/nginx/telo-pomnit.ru.conf`
+- HTTPS: сертификат Let's Encrypt для `telo-pomnit.ru` и `www.telo-pomnit.ru`, автообновление через Certbot
+- Vercel не участвует в выдаче продакшн-сайта и сохранён только как резерв
+
+Актуальные DNS-записи в Cloudflare:
+
+| Тип | Имя | Значение | Прокси |
+|---|---|---|---|
+| A | `telo-pomnit.ru` | `45.11.93.236` | DNS only |
+| CNAME | `www` | `telo-pomnit.ru` | DNS only |
+| A | `api` | `45.11.93.236` | DNS only |
+| A | `app` | `45.11.93.236` | DNS only |
+
+Деплой лендинга выполняется вручную через `scp`. После загрузки обязательно проверить `nginx -t`, главную страницу, `/guide`, `/privacy` и статические изображения в Microsoft Edge. `body-glow.webp` в лендинге не использовать: 18 сентября 2026 он вызывал `STATUS_BREAKPOINT` в Edge; продакшн использует `body-glow.png`.
+
 ---
 
 ## Поток 1 — расписание

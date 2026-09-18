@@ -1,8 +1,8 @@
 # TESTING.md — Руководство тестировщика
 
-_Обновлено: 24 августа 2026_
+_Обновлено: 18 сентября 2026_
 
-Проект «Тело помнит» состоит из трёх частей: **лендинг** (Vercel), **Telegram Mini App** (Beget VPS), **Backend API** (Beget VPS).
+Проект «Тело помнит» состоит из трёх частей: **лендинг** (Beget VPS), **Telegram Mini App** (Beget VPS), **Backend API** (Beget VPS).
 
 ---
 
@@ -10,12 +10,12 @@ _Обновлено: 24 августа 2026_
 
 | Файл / папка | Где работает | URL |
 |---|---|---|
-| `landing_final.html` | Vercel | https://www.telo-pomnit.ru |
-| `gaid-body-stress.html` | Vercel | https://www.telo-pomnit.ru/guide |
+| `landing_final.html` | Beget VPS (nginx), деплой вручную через `scp` | https://telo-pomnit.ru |
+| `gaid-body-stress.html` | Beget VPS (nginx) | https://telo-pomnit.ru/guide |
 | `tg-app/` | Beget VPS (nginx), деплой вручную через `scp` | https://app.telo-pomnit.ru |
 | `backend/` | Beget VPS | https://api.telo-pomnit.ru |
 
-> GitHub Pages (`almirasultabova.github.io`) и Vercel-версия (`tg-app-telo-pomnit.vercel.app`) остались в CORS-whitelist как резервные адреса, но основной адрес Mini App — `app.telo-pomnit.ru` на Beget.
+> Vercel сохранён как резерв, но DNS `telo-pomnit.ru` и `www.telo-pomnit.ru` направлен на Beget. GitHub Pages (`almirasultabova.github.io`) и Vercel-версия Mini App (`tg-app-telo-pomnit.vercel.app`) остаются в CORS-whitelist только как резервные адреса.
 
 ---
 
@@ -253,11 +253,19 @@ curl http://localhost:3000/health  # {"status":"ok"}
 
 ## Часть 4: Деплой
 
-### Лендинг (автоматически)
+### Лендинг (вручную, scp)
 ```bash
-git push origin main
-# Vercel обновится за ~1-2 минуты
+# Публикация изменённых файлов статики:
+scp -i c:/tmp/beget_key landing_final.html thanks.html gaid-body-stress.html offer.html privacy.html admin.html root@45.11.93.236:/var/www/telo-site/
+
+# Проверка конфигурации и доступности:
+ssh -i c:/tmp/beget_key root@45.11.93.236 "nginx -t && systemctl reload nginx"
+curl -I https://telo-pomnit.ru/
+curl -I https://telo-pomnit.ru/guide
+curl -I https://telo-pomnit.ru/privacy
 ```
+
+Изображения и аудио при изменении копируются в тот же каталог `/var/www/telo-site/`. `git push` сам по себе продакшн-лендинг не обновляет. После публикации открыть сайт в Microsoft Edge и проверить Console/Network. `landing_final.html` должен запрашивать `body-glow.png`, а не `body-glow.webp`.
 
 ### Telegram Mini App (вручную, scp)
 ```bash
@@ -285,3 +293,5 @@ ssh -i c:/tmp/beget_key root@45.11.93.236 \
 | API возвращает 401 | JWT истёк или initData невалидна |
 | Бот не отвечает | `pm2 logs telo-backend` на сервере |
 | HTTPS не работает | `nginx -t && systemctl reload nginx` на сервере |
+| Сайт долго грузится или `ERR_CONNECTION_RESET` | Проверить Cloudflare DNS: A корня → `45.11.93.236`, CNAME `www` → `telo-pomnit.ru`, обе DNS only |
+| Edge показывает `STATUS_BREAKPOINT` на силуэте тела | Убедиться, что лендинг использует `body-glow.png`; `body-glow.webp` отключён из-за сбоя Edge |

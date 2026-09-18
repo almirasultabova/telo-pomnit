@@ -176,6 +176,8 @@ ssh -i c:/tmp/beget_key root@45.11.93.236 "pm2 restart telo-backend"
 
 Продакшн-статика отдаётся с Beget VPS через nginx из `/var/www/telo-site/`. Конфигурация хранится в `deploy/nginx/telo-pomnit.ru.conf`, SSL — Let's Encrypt с автообновлением Certbot. DNS в Cloudflare: корневой A → `45.11.93.236`, `www` CNAME → `telo-pomnit.ru`, обе записи DNS only. Деплой — вручную через `scp`; Vercel оставлен только как резерв.
 
+После изменения лендинга нужно скопировать затронутые HTML/медиафайлы в `/var/www/telo-site/`, выполнить `nginx -t` и проверить продакшн в Microsoft Edge. `git push` не обновляет продакшн-лендинг автоматически. Не возвращать `<source srcset="body-glow.webp">`: этот файл вызывал `STATUS_BREAKPOINT` в Edge; используется `body-glow.png`.
+
 ## CORS
 
 Whitelist в `backend/src/index.js`:

@@ -1,6 +1,6 @@
 # PLAN.md — Статус задач «Тело помнит»
 
-_Обновлено: 24 августа 2026_
+_Обновлено: 18 сентября 2026_
 
 ---
 
@@ -11,7 +11,9 @@ _Обновлено: 24 августа 2026_
 - [x] Backend задеплоен на `https://api.telo-pomnit.ru`
 - [x] Домен `telo-pomnit.ru` — Cloudflare DNS, SSL через Let's Encrypt
 - [x] GitHub репозиторий — https://github.com/almirasultabova/telo-pomnit
-- [x] Лендинг на Vercel — https://www.telo-pomnit.ru
+- [x] Лендинг перенесён с Vercel на Beget VPS — `https://telo-pomnit.ru`, nginx `/var/www/telo-site`, SSL Let's Encrypt
+- [x] DNS продакшн-лендинга: A `telo-pomnit.ru` → `45.11.93.236`, CNAME `www` → `telo-pomnit.ru` (DNS only)
+- [x] Проблемный `body-glow.webp` отключён; в Edge используется стабильный `body-glow.png`
 - [x] TG Mini App перенесён с GitHub Pages на Beget VPS — `https://app.telo-pomnit.ru` (деплой вручную через `scp`)
 - [x] `telegram-web-app.js` отдаётся локально, не с CDN telegram.org
 - [x] Hourly health-check (cron + Telegram-алерты админам, 3 ретрая) — `backend/scripts/health-check.sh`

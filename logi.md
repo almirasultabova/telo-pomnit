@@ -100,6 +100,8 @@
 ---
 
 ### [2026-03-16] Сайт не открывался в России без VPN
+> **Архивная конфигурация. Не применять сейчас.** С 18 сентября 2026 продакшн-лендинг работает на Beget VPS. Актуальные DNS-записи: A `telo-pomnit.ru` → `45.11.93.236`, CNAME `www` → `telo-pomnit.ru`, обе DNS only. См. `project.md`.
+
 **Симптом:** `https://telo-pomnit.ru/` не грузился в России, но работал через VPN и на `telo-pomnit.vercel.app`
 **Причина:** A-запись домена указывала на старый Vercel IP `216.198.79.1` — один адрес, заблокированный у российских провайдеров. `vercel.app` использует несколько IP включая `64.29.17.3`, который доступен из России.
 **Исправление:**
@@ -167,11 +169,11 @@
 
 | Что | Как работает |
 |---|---|
-| Кэш HTML | `Cache-Control: no-store` в `vercel.json` — HTML не кэшируется на CDN |
+| Кэш HTML | Продакшн отдаётся напрямую nginx на Beget; `vercel.json` относится только к резервному размещению |
 | Reveal-анимации | `.reveal{opacity:1}` по умолчанию видимы; класс `.animate` добавляется JS для анимации появления |
 | Loading screen | Скрыт через `style="display:none"` в HTML; JS показывает его на 1.5 сек |
-| Изображения | Все используют `loading="lazy"` кроме hero-силуэта; форматы: webp + jpg/png fallback |
-| Домен | `telo-pomnit.ru` → Cloudflare → Vercel → `landing_final.html` |
+| Изображения | Все используют `loading="lazy"` кроме hero-силуэта; для силуэта используется `body-glow.png`, потому что WebP вызывал `STATUS_BREAKPOINT` в Edge |
+| Домен | `telo-pomnit.ru` → Cloudflare DNS only → Beget VPS `45.11.93.236` → nginx → `/var/www/telo-site/landing_final.html` |
 
 ---
 
@@ -180,8 +182,9 @@
 | Файл | Описание |
 |---|---|
 | `landing_final.html` | Основной лендинг (production) |
-| `vercel.json` | Rewrites и cache-headers |
-| `body-glow.webp` | Силуэт тела — hero + body map (298KB) |
+| `vercel.json` | Резервная конфигурация Vercel; не управляет продакшн-доменом |
+| `body-glow.png` | Силуэт тела — hero + body map; активный продакшн-формат |
+| `body-glow.webp` | Оставлен в репозитории, но не подключён к лендингу из-за сбоя Edge |
 | `nastya.webp` | Фото Анастасии (48KB) |
 | `almira.webp` | Фото Альмиры (77KB) |
 | `gaid-body-stress.html` | Гайд (route: `/guide`) |
