@@ -316,12 +316,17 @@ picture{display:block;width:100%}
 .case-body .case-result{font-family:Georgia,serif;font-style:italic;color:var(--green)}
 
 /* TESTIMONIALS */
-.testimonials-slider{position:relative;overflow:hidden}
-.testimonials-track{display:flex;transition:transform .5s ease}
-.testimonial-slide{min-width:100%;padding:0 8px}
-.testimonial-card{background:var(--white);padding:40px 48px;border-radius:28px;border-top:4px solid var(--gold);box-shadow:var(--shadow);max-width:680px;margin:0 auto}
-.testimonial-text{font-family:Georgia,serif;font-style:italic;font-size:18px;line-height:1.65;margin-bottom:20px;color:var(--text)}
-.testimonial-name{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.proof-cases{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:980px;margin:0 auto}
+.proof-case{background:var(--white);border-radius:28px;padding:36px;border:1px solid rgba(42,74,56,.08);box-shadow:var(--shadow);display:flex;flex-direction:column}
+.proof-case-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding-bottom:20px;border-bottom:1px solid var(--bg);margin-bottom:24px}
+.proof-case-name{font-family:Georgia,serif;font-style:italic;font-size:24px;color:var(--green-dark)}
+.proof-case-format{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-text);text-align:right;max-width:180px}
+.proof-case-stage{margin-bottom:22px}
+.proof-case-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.proof-case-stage p{font-size:15px;line-height:1.65;color:var(--text)}
+.proof-case-result{background:var(--green-light);border-radius:16px;padding:20px;margin-top:auto}
+.proof-case-result p{font-family:Georgia,serif;font-style:italic;font-size:17px;line-height:1.55;color:var(--green-dark)}
+.proof-note{font-size:12px;color:var(--muted);text-align:center;max-width:700px;margin:26px auto 0;line-height:1.55}
 .slider-controls{display:flex;justify-content:center;gap:16px;margin-top:40px;align-items:center}
 .slider-btn{width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(42,74,56,.2);display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .2s;cursor:pointer;background:#fff}
 .slider-btn:hover{background:var(--green);color:#fff;border-color:var(--green)}
@@ -423,7 +428,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   .final-cta-btns{flex-direction:column;align-items:center}
   .week-ghost{font-size:clamp(48px,12vw,96px)}
   .case-box{padding:32px 28px}
-  .testimonial-card{padding:32px 28px}
+  .proof-cases{grid-template-columns:1fr}
 }
 @media(max-width:540px){
   .hero-facts{flex-direction:column;align-items:center;gap:8px}
@@ -433,7 +438,9 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   .hero-btns .btn{width:100%}
   .gallery-grid{grid-template-columns:1fr}
   .case-box{padding:24px 20px}
-  .testimonial-card{padding:24px 20px}
+  .proof-case{padding:26px 20px}
+  .proof-case-head{flex-direction:column;gap:6px}
+  .proof-case-format{text-align:left;max-width:none}
   .pricing-card{padding:24px 20px}
   .final-cta-btns .btn{width:100%}
   .hero-countdown{padding:12px 16px}
@@ -1222,57 +1229,51 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 <section class="section section--bg">
   <div class="container">
     <div style="margin-bottom:48px;text-align:center" class="reveal">
-      <span class="label">Участницы о программе</span>
-      <h2 class="section-title">Что изменилось</h2>
+      <span class="label">Реальные истории</span>
+      <h2 class="section-title">С чем пришли участницы — и что изменилось</h2>
+      <p class="section-sub" style="max-width:680px;margin:0 auto">Не обещаем одинаковый результат всем. Показываем конкретный опыт женщин, которые проходили групповую программу «Тело помнит».</p>
     </div>
-    <div class="testimonials-slider reveal">
-      <div class="testimonials-track" id="testimonials-track">
-        <div class="testimonial-slide">
-          <div class="testimonial-card">
-            <p class="testimonial-text">«Спустя месяц стала замечать, что улучшилась интуиция — не могу объяснить как, но работает однозначно. Стала замедлять себя, когда чувствую, что тороплюсь.»</p>
-            <p class="testimonial-name">Алена</p>
-          </div>
+    <div class="proof-cases reveal">
+      <article class="proof-case">
+        <div class="proof-case-head">
+          <h3 class="proof-case-name">Елена</h3>
+          <span class="proof-case-format">участница групповой программы</span>
         </div>
-        <div class="testimonial-slide">
-          <div class="testimonial-card">
-            <p class="testimonial-text">«До программы прошла серьёзную психологическую работу. Когнитивно многое было разобрано — тело продолжало держать напряжение. После — ощущение лёгкости.»</p>
-            <p class="testimonial-name">Елена</p>
-          </div>
+        <div class="proof-case-stage">
+          <span class="proof-case-label">До программы</span>
+          <p>Прошла серьёзную психологическую работу, обучалась психотерапии и сама стала психологом. Причины были понятны, но в теле сохранялись напряжение и ощущение незавершённости.</p>
         </div>
-        <div class="testimonial-slide">
-          <div class="testimonial-card">
-            <p class="testimonial-text">«После практик — состояние как после глубокого сна. Ощущение восстановленности и лёгкости. Посмотрела на мужа другими глазами.»</p>
-            <p class="testimonial-name">Наталья</p>
-          </div>
+        <div class="proof-case-stage">
+          <span class="proof-case-label">В работе</span>
+          <p>Училась замечать телесную реакцию, отстаивать границы и опираться не только на анализ, но и на собственные чувства.</p>
         </div>
-        <div class="testimonial-slide">
-          <div class="testimonial-card">
-            <p class="testimonial-text">«Наполнилась женской энергией, почувствовала как энергия течёт в теле. Снялись старые блоки, зажимы. Смогла вернуться к себе настоящей.»</p>
-            <p class="testimonial-name">Катя</p>
-          </div>
+        <div class="proof-case-result">
+          <span class="proof-case-label">Что отметила после</span>
+          <p>«Появились лёгкость, облегчение в теле, больше энергии и опоры на себя. Стало проще выдерживать сложные процессы и защищать свои границы.»</p>
         </div>
-        <div class="testimonial-slide">
-          <div class="testimonial-card">
-            <p class="testimonial-text">«Всю жизнь подстраивалась. Внутри копилось: зажим в шее, тяжесть в груди. На одной из встреч, когда ведущая спросила: "Что вы сейчас чувствуете?" — я впервые ответила честно. Это было начало.»</p>
-            <p class="testimonial-name">Марина</p>
-          </div>
+      </article>
+      <article class="proof-case">
+        <div class="proof-case-head">
+          <h3 class="proof-case-name">Наталья, около 40 лет</h3>
+          <span class="proof-case-format">участница групповой программы</span>
         </div>
-        <div class="testimonial-slide">
-          <div class="testimonial-card">
-            <p class="testimonial-text">«Я пришла с хроническим "у меня всё хорошо". Ушла с умением замечать, когда это неправда — прямо в теле, ещё до того, как это становится словами.»</p>
-            <p class="testimonial-name">Регина</p>
-          </div>
+        <div class="proof-case-stage">
+          <span class="proof-case-label">До программы</span>
+          <p>Жила с хроническим напряжением и тяжёлым конфликтом в браке. Думала о разводе, чувствовала давление и не могла спокойно отстаивать своё мнение.</p>
         </div>
-      </div>
-      <div class="slider-controls">
-        <button class="slider-btn" id="slider-prev" aria-label="Назад">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <div class="slider-dots" id="slider-dots"></div>
-        <button class="slider-btn" id="slider-next" aria-label="Вперёд">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
+        <div class="proof-case-stage">
+          <span class="proof-case-label">В работе</span>
+          <p>Разбирала привычку не защищать себя, пробовала новую стратегию и возвращала себе право на голос и собственное мнение.</p>
+        </div>
+        <div class="proof-case-result">
+          <span class="proof-case-label">Что отметила после</span>
+          <p>«После практик — состояние как после глубокого сна, восстановленность и лёгкость. Я посмотрела на мужа другими глазами и снова почувствовала любовь.»</p>
+        </div>
+      </article>
+    </div>
+    <p class="proof-note">Это личный опыт конкретных участниц, а не гарантия результата. Медицинские вопросы программа не диагностирует и не лечит.</p>
+    <div class="results-cta reveal">
+      <button onclick="openWaitlistModal(this)" class="btn btn--primary enroll-btn" data-cta="cases">Хочу понять, подходит ли мне программа</button>
     </div>
   </div>
 </section>
@@ -1697,36 +1698,6 @@ function trackGoal(name, params) {
       }
     });
   });
-})();
-
-// Testimonials slider
-(function(){
-  var track = document.getElementById('testimonials-track');
-  var dotsWrap = document.getElementById('slider-dots');
-  var slides = track.querySelectorAll('.testimonial-slide');
-  var total = slides.length;
-  var current = 0;
-  // create dots
-  for(var i=0;i<total;i++){
-    var d = document.createElement('button');
-    d.className = 'slider-dot' + (i===0?' active':'');
-    d.setAttribute('data-i', i);
-    d.setAttribute('aria-label', 'Слайд ' + (i+1));
-    dotsWrap.appendChild(d);
-  }
-  function go(n){
-    current = (n + total) % total;
-    track.style.transform = 'translateX(-' + current*100 + '%)';
-    dotsWrap.querySelectorAll('.slider-dot').forEach(function(d,i){ d.classList.toggle('active', i===current); });
-  }
-  document.getElementById('slider-prev').addEventListener('click', function(){ go(current-1); });
-  document.getElementById('slider-next').addEventListener('click', function(){ go(current+1); });
-  dotsWrap.addEventListener('click', function(e){
-    var d = e.target.closest('.slider-dot');
-    if(d) go(parseInt(d.getAttribute('data-i')));
-  });
-  // auto
-  setInterval(function(){ go(current+1); }, 5000);
 })();
 
 // FAQ accordion
