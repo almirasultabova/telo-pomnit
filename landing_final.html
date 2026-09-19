@@ -303,6 +303,9 @@ picture{display:block;width:100%}
 .host-role{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-text);margin-bottom:8px;display:block}
 .host-name{font-family:Georgia,serif;font-style:italic;font-size:22px;margin-bottom:12px}
 .host-bio{color:var(--muted);font-size:14px;line-height:1.65;margin-bottom:20px}
+.host-value-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin:0 0 20px}
+.host-value-list li{display:flex;gap:8px;font-size:13px;line-height:1.5;color:var(--text)}
+.host-value-list li::before{content:"✓";color:var(--green);font-weight:700;flex-shrink:0}
 .host-links{display:flex;gap:10px;flex-wrap:wrap}
 .host-link{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1.5px solid rgba(42,74,56,.2);border-radius:8px;font-size:12px;color:var(--text);transition:all .2s}
 .host-link:hover{background:rgba(42,74,56,.05)}
@@ -353,6 +356,11 @@ picture{display:block;width:100%}
 .pricing-bonus-list li svg{color:var(--gold)}
 .pricing-btns{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
 .pricing-note{text-align:center;font-size:12px;color:var(--muted);font-style:italic}
+.pricing-week{text-align:center;color:var(--green-dark);font-size:14px;font-weight:600;margin:-18px 0 26px}
+.signup-path{max-width:760px;margin:32px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.signup-step{background:rgba(255,255,255,.62);border:1px solid rgba(42,74,56,.1);border-radius:16px;padding:18px;text-align:left}
+.signup-step-num{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-text);display:block;margin-bottom:7px}
+.signup-step p{font-size:13px;line-height:1.55;color:var(--muted)}
 
 /* FAQ */
 .faq-list{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:4px}
@@ -419,6 +427,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   .hosts-grid{grid-template-columns:1fr;gap:40px}
   .host-card{flex-direction:column}
   .host-img-wrap{width:100%;max-width:200px}
+  .signup-path{grid-template-columns:1fr}
   .bodymap-wrap{flex-direction:column;align-items:center}
   .bodymap-img-wrap{width:260px}
   .decision-grid{grid-template-columns:1fr}
@@ -1008,9 +1017,9 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 <section id="process" class="section section--white" style="overflow:hidden">
   <div class="container">
     <div class="process-header reveal">
-      <span class="label">5 недель трансформации</span>
-      <h2 class="section-title">Путь к новому состоянию</h2>
-      <p class="section-sub">Последовательно исследуем привычные реакции и переносим новые способы действовать в повседневную жизнь.</p>
+      <span class="label">Как проходит программа</span>
+      <h2 class="section-title">Что вы сможете делать иначе через каждую неделю</h2>
+      <p class="section-sub">Без обещания мгновенной «трансформации». Каждая неделя добавляет один практический навык, который вы пробуете между встречами.</p>
     </div>
     <div class="process-steps">
 
@@ -1021,11 +1030,11 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
             <span class="week-step-line"></span>
             <span class="week-step-tag">Неделя 1</span>
           </div>
-          <h3>Тело и безопасность</h3>
-          <p>Начинаем с фундамента. Учимся замечать сигналы тела до сильного перенапряжения и находить доступные способы вернуть себе ощущение опоры.</p>
+          <h3>Замечать, что вы уже на пределе</h3>
+          <p>Разбираемся, как именно ваше тело показывает усталость, тревогу и перегруз. Подбираем способы вернуться в более устойчивое состояние без давления на себя.</p>
           <div class="week-step-shift">
-            <span class="week-step-shift-label">Shift / Сдвиг</span>
-            <p>«Я в безопасности. Моё тело — мой союзник, а не враг.»</p>
+            <span class="week-step-shift-label">К концу недели</span>
+            <p>Вы раньше замечаете момент, когда пора остановиться, отдохнуть или попросить о помощи.</p>
           </div>
         </div>
       </div>
@@ -1037,11 +1046,11 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
             <span class="week-step-line"></span>
             <span class="week-step-tag">Неделя 2</span>
           </div>
-          <h3>Паттерны и стратегии</h3>
-          <p>Исследуем вашу привычную реакцию на стресс: замирание, резкость, избегание или уход в работу. Учимся замечать телесные сигналы, которые появляются до автоматического действия.</p>
+          <h3>Узнавать свою автоматическую реакцию</h3>
+          <p>Смотрите, что вы обычно делаете под давлением: замираете, соглашаетесь, становитесь резкой, избегаете разговора или уходите в работу.</p>
           <div class="week-step-shift">
-            <span class="week-step-shift-label">Shift / Сдвиг</span>
-            <p>«Я вижу, как я выживаю, и готов попробовать жить иначе.»</p>
+            <span class="week-step-shift-label">К концу недели</span>
+            <p>Вы понимаете не только причину реакции, но и её первые сигналы — до привычного поступка.</p>
           </div>
         </div>
       </div>
@@ -1053,11 +1062,11 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
             <span class="week-step-line"></span>
             <span class="week-step-tag">Неделя 3</span>
           </div>
-          <h3>Точка выбора</h3>
-          <p>Вы учитесь замечать момент между триггером и привычной реакцией. Внимание к телу помогает сделать паузу и попробовать другое решение.</p>
+          <h3>Брать паузу до ответа</h3>
+          <p>Тренируетесь не отвечать автоматически. Возвращаете себе несколько секунд, чтобы понять: я действительно согласна или сейчас снова предаю своё «нет»?</p>
           <div class="week-step-shift">
-            <span class="week-step-shift-label">Shift / Сдвиг</span>
-            <p>«Между стимулом и реакцией есть зазор. В этом зазоре — моя свобода.»</p>
+            <span class="week-step-shift-label">К концу недели</span>
+            <p>У вас появляется конкретная пауза между чужой просьбой, давлением или конфликтом и вашим ответом.</p>
           </div>
         </div>
       </div>
@@ -1069,11 +1078,11 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
             <span class="week-step-line"></span>
             <span class="week-step-tag">Неделя 4</span>
           </div>
-          <h3>Новый телесный опыт</h3>
-          <p>Пробуем действовать из новой опоры. Не из страха или вины, а из ощущения собственного центра. Закрепляем новый отклик через телесные практики и реальные диалоги внутри группы.</p>
+          <h3>Говорить и действовать по-новому</h3>
+          <p>Пробуете обозначать границы, отказывать, просить о помощи и говорить о чувствах раньше, чем накопятся обида и раздражение.</p>
           <div class="week-step-shift">
-            <span class="week-step-shift-label">Shift / Сдвиг</span>
-            <p>«Я могу говорить "нет" и чувствовать силу, а не вину.»</p>
+            <span class="week-step-shift-label">К концу недели</span>
+            <p>Новое поведение перестаёт быть теорией: вы пробуете его в безопасной группе и в обычной жизни.</p>
           </div>
         </div>
       </div>
@@ -1085,11 +1094,11 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
             <span class="week-step-line"></span>
             <span class="week-step-tag">Неделя 5</span>
           </div>
-          <h3>Интеграция и жизнь</h3>
-          <p>Переносим опыт в реальность. Фиксируем наблюдения и составляем личный маршрут, чтобы продолжать практику после завершения группы.</p>
+          <h3>Не потерять результат после программы</h3>
+          <p>Собираете личную карту сигналов, способов самоподдержки и новых действий. Определяете, что продолжите делать после завершения группы.</p>
           <div class="week-step-shift">
-            <span class="week-step-shift-label">Shift / Сдвиг</span>
-            <p>«Я больше не живу автоматически. Я выбираю себя каждый день.»</p>
+            <span class="week-step-shift-label">К концу недели</span>
+            <p>У вас остаётся понятный маршрут: как заметить реакцию, вернуть себе опору и выбрать следующий шаг.</p>
           </div>
         </div>
       </div>
@@ -1155,7 +1164,8 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   <div class="container">
     <div style="margin-bottom:56px;text-align:center" class="reveal">
       <span class="label">Кто ведёт</span>
-      <h2 class="section-title">Ведущие программы</h2>
+      <h2 class="section-title">Две ведущие — две разные задачи</h2>
+      <p class="section-sub" style="max-width:680px;margin:0 auto">Анастасия помогает разобраться с реакцией и провести практику. Альмира помогает не оставить результат внутри встречи и перенести его в конкретные действия.</p>
     </div>
     <div class="hosts-grid">
       <div class="host-card reveal">
@@ -1166,9 +1176,14 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
           </picture>
         </div>
         <div>
-          <span class="host-role">Глубина</span>
+          <span class="host-role">Разбор и практика</span>
           <p class="host-name">Анастасия Костылева</p>
-          <p class="host-bio">Соединяет психологическое консультирование, психосоматический подход и телесные практики. Ведёт глубокую работу с автоматическими реакциями и помогает участницам сохранять безопасный для себя темп.</p>
+          <p class="host-bio">Работает через психологическое консультирование, психосоматический подход и телесные практики. Помогает увидеть связь между ситуацией, чувствами и реакцией тела — без давления и форсирования.</p>
+          <ul class="host-value-list">
+            <li>ведёт психосоматические разборы и телесные практики</li>
+            <li>помогает распознать автоматическую реакцию</li>
+            <li>следит за бережным темпом работы</li>
+          </ul>
           <div class="host-links">
             <a href="https://t.me/akhoroshavtseva" target="_blank" rel="noopener" class="host-link">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -1185,9 +1200,14 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
           </picture>
         </div>
         <div>
-          <span class="host-role">Внедрение</span>
+          <span class="host-role">Действие и внедрение</span>
           <p class="host-name">Альмира Султанова</p>
-          <p class="host-bio">Соавтор программы и навигатор внедрения. Помогает перевести новое понимание в конкретные действия и закрепить другой способ реагирования в работе, отношениях и повседневной жизни. Высшее образование — управление персоналом, БашГУ, диплом с отличием, 2021 год.</p>
+          <p class="host-bio">Соавтор программы и навигатор внедрения. Помогает превратить выводы после разбора в понятный следующий шаг в отношениях, работе и повседневной жизни.</p>
+          <ul class="host-value-list">
+            <li>помогает сформулировать конкретное новое действие</li>
+            <li>поддерживает внедрение между встречами</li>
+            <li>высшее образование — управление персоналом, БашГУ, диплом с отличием, 2021 год</li>
+          </ul>
           <div class="host-links">
             <a href="https://t.me/Almira_Sultanova" target="_blank" rel="noopener" class="host-link">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -1407,8 +1427,8 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   <div class="container">
     <div style="text-align:center;margin-bottom:48px" class="reveal">
       <span class="label">Стоимость</span>
-      <h2 class="section-title">Участие в группе</h2>
-      <p class="section-sub">Живая работа, поддержка между встречами и инструменты, которые помогают переносить изменения в повседневную жизнь.</p>
+      <h2 class="section-title">5 недель живой работы и поддержки</h2>
+      <p class="section-sub">Вы оплачиваете не доступ к записям, а процесс: встречи, практику, обратную связь и сопровождение между ними.</p>
     </div>
     <div class="pricing-card reveal">
       <div class="pricing-card-stripe"></div>
@@ -1418,26 +1438,27 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
         <span class="price-old" id="price-old">15 000 ₽</span>
       </div>
       <span class="pricing-hint" id="pricing-hint">Раннее бронирование — до 8 октября включительно</span>
+      <p class="pricing-week" id="pricing-week">2 400 ₽ за неделю сопровождения при раннем бронировании</p>
       <ul class="pricing-features">
         <li>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          9 живых встреч
+          9 живых встреч: разборы, практика и итоговая интеграция
         </li>
         <li>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Психосоматические разборы
+          Психосоматические разборы реальных ситуаций участниц
         </li>
         <li>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Телесные практики
+          Телесные практики, которые можно повторять самостоятельно
         </li>
         <li>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Интеграционная неделя
+          Личный маршрут: ваши сигналы, способы опоры и новые действия
         </li>
         <li>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Закрытый чат сопровождения
+          Закрытый Telegram-чат и поддержка между встречами
         </li>
         <li style="background:rgba(42,74,56,.04);margin:-4px -8px;padding:12px 8px;border-radius:12px;border:1px solid rgba(42,74,56,.1)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--gold)"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
@@ -1453,6 +1474,20 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
       </div>
       <p class="pricing-note">Старт 15 октября · Запись до 14 октября включительно</p>
     </div>
+    <div class="signup-path reveal" aria-label="Как проходит запись">
+      <div class="signup-step">
+        <span class="signup-step-num">Шаг 1</span>
+        <p>Вы оставляете email и Telegram. Оплата на этом этапе не списывается.</p>
+      </div>
+      <div class="signup-step">
+        <span class="signup-step-num">Шаг 2</span>
+        <p>Анастасия пишет в течение дня, отвечает на вопросы и помогает понять, подходит ли формат.</p>
+      </div>
+      <div class="signup-step">
+        <span class="signup-step-num">Шаг 3</span>
+        <p>Если вы решаете участвовать, получаете ссылку на оплату и инструкции перед стартом.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1466,47 +1501,40 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
     </div>
     <div class="faq-list reveal">
       <div class="faq-item">
-        <button class="faq-q">Это терапия или нет?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><p class="faq-a-inner">«Тело помнит» — онлайн-групповая практическая программа с психологическим и телесным подходом. Она не является медицинской услугой и не заменяет индивидуальную психотерапию или консультацию врача.</p></div>
+        <button class="faq-q">Я уже была в терапии. Зачем мне ещё одна программа?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Если вы уже понимаете причины своих реакций, здесь не придётся начинать всё заново. Фокус программы — заметить реакцию в моменте, попробовать другой ответ и перенести его в конкретные разговоры, решения и отношения. Программа может дополнять личную терапию, но не заменяет её.</p></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Что если мне станет хуже?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><p class="faq-a-inner">Во время практик могут подниматься сильные чувства. Вы можете остановиться, не выполнять упражнение и сообщить ведущей о своём состоянии. Если вам нужна медицинская или индивидуальная психологическая помощь, программа её не заменяет.</p></div>
+        <button class="faq-q">А если мне не поможет?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Одинаковый результат гарантировать невозможно: у каждой участницы своя ситуация и свой темп. До оплаты Анастасия свяжется с вами и поможет понять, соответствует ли программа вашему запросу. Если нужен другой формат или индивидуальная помощь, об этом скажут прямо.</p></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Боюсь начать самодиагностику<span class="faq-icon">+</span></button>
-        <div class="faq-a"><p class="faq-a-inner">В «Тело помнит» не поощряется самодиагностика. Телесные реакции объясняются, а не драматизируются. Задача — научиться слышать тело, а не бояться его.</p></div>
+        <button class="faq-q">Мне придётся рассказывать группе всё личное?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Нет. Вы сами решаете, чем делиться и насколько глубоко идти. Можно отказаться от упражнения, остановиться или не выносить ситуацию на общий разбор. Степень открытости регулируете вы.</p></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">А если я не попаду на разбор?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><p class="faq-a-inner">Каждая попадает на разбор 1–2 раза. Но разбор одного человека работает на всё поле группы — участницы узнают себя в процессах других.</p></div>
+        <button class="faq-q">Нужно ли верить в психосоматику и телесные практики?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Нет. На практике вы наблюдаете конкретные вещи: дыхание, напряжение, импульс замолчать или согласиться, желание отстраниться. Задача — не принять теорию на веру, а проверить, помогает ли внимание к телу раньше замечать собственную реакцию.</p></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Я боюсь, что жизнь развалится<span class="faq-icon">+</span></button>
-        <div class="faq-a"><p class="faq-a-inner">Задача программы — не подталкивать к резким решениям, а помочь раньше замечать свои реакции и выбирать следующий шаг осознаннее. Темп изменений вы регулируете сами.</p></div>
+        <button class="faq-q">Что если во время практики поднимутся сильные чувства?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Вы можете остановиться, не выполнять упражнение и сообщить ведущей о своём состоянии. Работа не должна происходить через преодоление себя. Если вам нужна медицинская или индивидуальная психологическая помощь, программа её не заменяет.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Я никогда не была в терапии. Справлюсь?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><p class="faq-a-inner">Да. Программа подходит как для тех, кто только начинает путь, так и для тех, кто уже работал с психологом. Программа начинается с базовой безопасности и идёт в глубину постепенно.</p></div>
+        <div class="faq-a"><p class="faq-a-inner">Предварительная подготовка не нужна. Программа начинается с наблюдения за понятными телесными сигналами и постепенно переходит к привычным реакциям и новым действиям. Если по вашей ситуации лучше начать с индивидуального формата, Анастасия скажет об этом до оплаты.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Нужно ли включать камеру на встречах?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><p class="faq-a-inner">Это ваш выбор. Создаются условия, в которых вы можете регулировать степень своего присутствия. Телесные практики можно делать с выключенной камерой — главное, что вы здесь.</p></div>
+        <div class="faq-a"><p class="faq-a-inner">Нет, это ваш выбор. Телесные практики можно выполнять с выключенной камерой. При этом для живого разбора контакт с ведущей важен — комфортный формат можно заранее обсудить с Анастасией.</p></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Что такое телесная практика?<span class="faq-icon">+</span></button>
-        <div class="faq-a"><div class="faq-a-inner">
-          <p style="margin-bottom:12px"><strong>Телесная практика</strong> — это упражнение, в котором внимание направляется на дыхание, ощущения, движение и границы. Она помогает заметить, как вы реагируете на напряжение, и попробовать более подходящий способ быть с собой в этот момент.</p>
-          <p style="margin-bottom:10px;color:var(--green);font-style:italic">Телесные практики помогают:</p>
-          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;padding:0">
-            <li style="display:flex;gap:8px">— раньше замечать напряжение и усталость</li>
-            <li style="display:flex;gap:8px">— распознавать тревогу и стремление всё контролировать</li>
-            <li style="display:flex;gap:8px">— восстановить контакт с собственными чувствами</li>
-            <li style="display:flex;gap:8px">— исследовать привычные реакции на стресс</li>
-            <li style="display:flex;gap:8px">— находить доступные способы вернуть себе опору</li>
-          </ul>
-          <p style="margin-top:12px;font-style:italic">Это не спорт и не массаж. Это — диалог с собой через тело.</p>
-        </div></div>
+        <button class="faq-q">Что произойдёт после заявки?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Оплата сразу не списывается. Анастасия напишет вам в Telegram в течение дня, ответит на вопросы и уточнит, подходит ли программа под ваш запрос. Если вы решите участвовать, получите ссылку на оплату и дальнейшие инструкции.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Это терапия или медицинская услуга?<span class="faq-icon">+</span></button>
+        <div class="faq-a"><p class="faq-a-inner">Нет. «Тело помнит» — групповая практическая онлайн-программа с психологическим и телесным подходом. Она не диагностирует и не лечит заболевания, не заменяет врача, медицинскую помощь или индивидуальную психотерапию.</p></div>
       </div>
     </div>
   </div>
@@ -1721,6 +1749,7 @@ function trackGoal(name, params) {
   var priceMain = document.getElementById('price-main');
   var priceOld = document.getElementById('price-old');
   var hint = document.getElementById('pricing-hint');
+  var priceWeek = document.getElementById('pricing-week');
   var countdown = document.getElementById('hero-countdown');
   var label = document.getElementById('countdown-label');
   var cDays = document.getElementById('c-days');
@@ -1734,9 +1763,10 @@ function trackGoal(name, params) {
       // early bird phase
       priceMain.textContent = '12\u00a0000\u00a0\u20bd';
       priceOld.style.display = '';
-      hint.textContent = '\u0420\u0430\u043d\u0435\u0435 \u0431\u0440\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u2014 \u0434\u043e 8 \u043e\u043a\u0442\u044f\u0431\u0440\u044f \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u0435\u043b\u044c\u043d\u043e';
+      hint.textContent = '\u0420\u0430\u043d\u043d\u0435\u0435 \u0431\u0440\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u2014 \u0434\u043e 8 \u043e\u043a\u0442\u044f\u0431\u0440\u044f \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u0435\u043b\u044c\u043d\u043e';
+      priceWeek.textContent = '2 400 ₽ за неделю сопровождения при раннем бронировании';
       var diff = priceDeadline.getTime() - now;
-      label.textContent = '\u0420\u0430\u043d\u0435\u0435 \u0431\u0440\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0437\u0430 12 000 \u20bd \u0434\u0435\u0439\u0441\u0442\u0432\u0443\u0435\u0442 \u0435\u0449\u0451';
+      label.textContent = '\u0420\u0430\u043d\u043d\u0435\u0435 \u0431\u0440\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0437\u0430 12 000 \u20bd \u0434\u0435\u0439\u0441\u0442\u0432\u0443\u0435\u0442 \u0435\u0449\u0451';
       cDays.textContent = Math.floor(diff/86400000);
       cHours.textContent = pad(Math.floor(diff/3600000)%24);
       cMins.textContent = pad(Math.floor(diff/60000)%60);
@@ -1747,6 +1777,7 @@ function trackGoal(name, params) {
       priceMain.textContent = '15\u00a0000\u00a0\u20bd';
       priceOld.style.display = 'none';
       hint.textContent = '\u0421\u0442\u0430\u0440\u0442 \u2014 15 \u043e\u043a\u0442\u044f\u0431\u0440\u044f';
+      priceWeek.textContent = '3 000 ₽ за неделю сопровождения';
       var diff2 = launch.getTime() - now;
       label.textContent = '\u0414\u043e \u0437\u0430\u043f\u0443\u0441\u043a\u0430 \u043e\u0441\u0442\u0430\u043b\u043e\u0441\u044c';
       cDays.textContent = Math.floor(diff2/86400000);
@@ -1760,6 +1791,7 @@ function trackGoal(name, params) {
       priceMain.textContent = '';
       priceOld.style.display = 'none';
       hint.textContent = '\u041d\u0430\u0431\u043e\u0440 \u0432 \u044d\u0442\u043e\u0442 \u043f\u043e\u0442\u043e\u043a \u0437\u0430\u043a\u0440\u044b\u0442';
+      priceWeek.style.display = 'none';
       document.querySelectorAll('.enroll-btn').forEach(function(btn){
         btn.textContent = 'Набор закрыт';
         btn.disabled = true;
