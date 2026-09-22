@@ -189,7 +189,13 @@ model WaitlistEntry {
   email            String
   telegramUsername String   @map("telegram_username")
   createdAt        DateTime @default(now()) @map("created_at")
+  // Legacy entries stay outside the queue; only new applications opt in.
+  notificationPending  Boolean  @default(false) @map("notification_pending")
+  notificationRetryAt  DateTime? @map("notification_retry_at")
+  notificationAttempts Int      @default(0) @map("notification_attempts")
+  notifiedAdminIds      String[] @default([]) @map("notified_admin_ids")
 
+  @@index([notificationPending, notificationRetryAt])
   @@map("waitlist_entries")
 }
 

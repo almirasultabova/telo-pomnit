@@ -1,6 +1,40 @@
 # TESTING.md — Руководство тестировщика
 
-_Обновлено: 18 сентября 2026_
+_Обновлено: 22 сентября 2026_
+
+## Концепция и очередь заявок — регрессия 22 сентября 2026
+
+Новая версия: `/landing_concept.html`, основной `/` не заменён. Проверено в Edge headless на 375×812, 768×1024 и 1440×1000: нет JS-ошибок и горизонтального overflow; HTML-вложенность и уникальность ID проверены отдельно. Проверки API формы — только перехват ответов, без реальных заявок.
+
+Повторяемые сценарии:
+
+1. Hero → условия; закреплённая ссылка после hero и скрытие у условий/футера.
+2. Все четыре ситуации → соответствующая неделя (3/4/1/4); возврат к выбранной кнопке.
+3. Форма: `@username`, `username`, `https://t.me/username`; 500/429/network error → прямой Telegram доступен, поля сохраняются; mocked 200 → успех; Escape возвращает фокус.
+4. `Date.now` до 9 октября МСК → 12 000; с 9 октября → 15 000; с 15 октября → следующий набор и Telegram, без устаревшей цены.
+5. Без JS контент виден, CTA ведут в Telegram. Reduced motion не скрывает контент.
+6. Админка с mocked API: вкладка заявок, страницы, pending-фильтр, 500 → обновление, XSS-строки отображаются как текст. Старые вкладки работают.
+7. Очередь с mocked DB/Telegram: частичная доставка; успешному получателю не повторять; гонка immediate/cron; пустые получатели; повтор cron; истёкший резерв. Проверены изолированно, настоящие сообщения не отправлялись.
+
+### Точечная миграция очереди
+
+Перед публикацией backend сохранить закрытую резервную копию `waitlist_entries` и изменяемых файлов. Проверить, что удалённые файлы совпадают с исходной локальной версией. Добавление колонок не удаляет заявки и не включает старые записи в отправку.
+
+```sql
+BEGIN;
+ALTER TABLE "waitlist_entries"
+  ADD COLUMN "notification_pending" BOOLEAN NOT NULL DEFAULT false,
+  ADD COLUMN "notification_retry_at" TIMESTAMP(3),
+  ADD COLUMN "notification_attempts" INTEGER NOT NULL DEFAULT 0,
+  ADD COLUMN "notified_admin_ids" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[];
+CREATE INDEX "waitlist_entries_notification_pending_notification_retry_at_idx"
+  ON "waitlist_entries" ("notification_pending", "notification_retry_at");
+COMMIT;
+```
+
+Затем обновить схему, выполнить установленный `prisma generate`, обновить JS, `node --check`, `pm2 restart telo-backend`. Проверить `/health`, закрытость `/admin/waitlist`, nginx и обе копии admin.html (лендинг и Mini App). SQL не идемпотентен: повторять только после проверки колонок, не запускать второй раз автоматически.
+
+Метрика в концепции пока НЕ включена. События подготовлены по документации [reachGoal](https://yandex.ru/support/metrica/ru/objects/reachgoal); для активации нужны согласованный privacy/consent flow и цели `participation_view`, `application_open`, `application_success`, `application_error`, `telegram_click` в счётчике. Никакие ответы интерактива или контакты не входят в payload целей.
 
 Проект «Тело помнит» состоит из трёх частей: **лендинг** (Beget VPS), **Telegram Mini App** (Beget VPS), **Backend API** (Beget VPS).
 
@@ -48,7 +82,7 @@ python -m http.server 8080
 - [ ] Пустой email / Telegram — показывает ошибку, не даёт отправить
 - [ ] После отправки — `POST /waitlist`, модалка показывает «Заявка отправлена», без редиректа
 - [ ] Админам (`ADMIN_TELEGRAM_IDS`) приходит уведомление в Telegram с email и Telegram заявки
-- [ ] До 11 октября цена в модалке показывает 12 000 ₽, после — 15 000 ₽ (даты — плейсхолдер для Потока 2, могут измениться)
+- [ ] До 9 октября 2026 (МСК) цена 12 000 ₽, с 9 октября — 15 000 ₽, с 15 октября запись закрыта
 - [ ] Все кнопки «Написать/Задать вопрос в Telegram» ведут на `t.me/akhoroshavtseva`
 
 > Оплата через ЮКассу (`POST /create-payment`, `thanks.html`) технически работает и покрыта роутом `payment.js`, но на лендинге сейчас никуда не подключена — решили не собирать оплату для Потока 2, только контакты.

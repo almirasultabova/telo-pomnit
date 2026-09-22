@@ -26,11 +26,12 @@ telo_pomnit/
 
 Самодостаточная страница (HTML + inline CSS/JS). Основной адрес для Telegram — `https://app.telo-pomnit.ru/admin.html` (копия файла развёрнута рядом с Mini App), резервный адрес — `https://telo-pomnit.ru/admin`. Вход автоматический через Telegram `initData` или JWT-токен Mini App из того же `localStorage`. Доступ только для Telegram-аккаунтов из `ADMIN_TELEGRAM_IDS`.
 
-Четыре вкладки:
+Пять вкладок:
 - **Сводка** — счётчики (пользователи, дневник, чекины, триггеры, анкеты, отзывы) + распределение оценок отзывов
 - **Отзывы** — список с фильтром по рейтингу
 - **Анкеты** — список всех заполненных анкет (раскрывающиеся блоки со всеми ответами), фильтр `pre`/`post`
 - **Пользователи** — таблица с именем, telegram, статусом enrollment, потоком, датой регистрации
+- **Заявки** — контакты с лендинга, пагинация и контроль доставки уведомлений. Статус доставки не означает, что ведущая уже ответила. API: `GET /admin/waitlist` под `requireAdmin`.
 
 Бэкенд-маршруты под `requireAdmin`: `GET /admin/stats`, `GET /admin/feedback`, `GET /admin/feedback/stats`, `GET /admin/participants`, `GET /admin/questionnaires`, `GET /admin/questionnaires/stats`.
 

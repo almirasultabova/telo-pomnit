@@ -29,7 +29,7 @@ async function waitlistRoutes(app) {
     }
 
     const entry = await db.waitlistEntry.create({
-      data: { email, telegramUsername }
+      data: { email, telegramUsername, notificationPending: true, notificationRetryAt: new Date() }
     })
 
     notifyAdminsAboutWaitlist(entry).catch(err => {

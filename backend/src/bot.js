@@ -516,21 +516,75 @@ async function notifyAdminsAboutFeedback(feedback, user) {
 // ─── Уведомления админам о заявках в лист ожидания ────────────────────────
 
 async function notifyAdminsAboutWaitlist(entry) {
-  const adminIds = (process.env.ADMIN_TELEGRAM_IDS || '')
-    .split(',').map(id => id.trim()).filter(Boolean)
-  if (!adminIds.length) return
+  const now = new Date()
+  const leaseUntil = new Date(now.getTime() + 10 * 60 * 1000)
+  // An atomic lease prevents the immediate send and cron from sending together.
+  const claimed = await db.waitlistEntry.updateMany({
+    where: { id: entry.id, notificationPending: true, notificationRetryAt: { lte: now } },
+    data: { notificationRetryAt: leaseUntil, notificationAttempts: { increment: 1 } }
+  })
+  if (!claimed.count) return
 
-  const text = `📋 Новая заявка в лист ожидания\n\nEmail: ${entry.email}\nTelegram: @${entry.telegramUsername}`
+  try {
+    const current = await db.waitlistEntry.findUnique({ where: { id: entry.id } })
+    if (!current) return
+    const adminIds = [...new Set((process.env.ADMIN_TELEGRAM_IDS || '')
+      .split(',').map(id => id.trim()).filter(id => /^\d+$/.test(id)))]
+    if (!adminIds.length) throw new Error('No waitlist notification recipients configured')
+    const delivered = new Set(current.notifiedAdminIds)
+    const text = `📋 Новая заявка на участие\n\nEmail: ${current.email}\nTelegram: @${current.telegramUsername}\nЗаявка: ${current.id}`
 
-  for (const id of adminIds) {
-    try {
-      await bot.api.sendMessage(Number(id), text)
-    } catch (err) {
-      console.error('[bot] notify admin failed:', id, err.message)
+    for (const id of adminIds) {
+      if (delivered.has(id)) continue
+      try {
+        await bot.api.sendMessage(Number(id), text, {}, AbortSignal.timeout(15000))
+      } catch (err) {
+        console.error('[waitlist] delivery failed:', current.id, id, err.error_code || err.name)
+        continue
+      }
+      // Persist each recipient separately, so retries don't notify successful recipients again.
+      await db.waitlistEntry.update({ where: { id: current.id }, data: { notifiedAdminIds: { push: id } } })
+      delivered.add(id)
     }
+    if (adminIds.every(id => delivered.has(id))) {
+      await db.waitlistEntry.update({
+        where: { id: current.id }, data: { notificationPending: false, notificationRetryAt: null }
+      })
+      return
+    }
+    throw new Error('Some waitlist notification recipients remain pending')
+  } catch (err) {
+    console.error('[waitlist] will retry:', entry.id, err.message)
+    const current = await db.waitlistEntry.findUnique({ where: { id: entry.id } })
+    if (!current) return
+    const minutes = [1, 5, 15, 60, 360][Math.min(Math.max(current.notificationAttempts - 1, 0), 4)]
+    await db.waitlistEntry.update({
+      where: { id: entry.id }, data: { notificationRetryAt: new Date(Date.now() + minutes * 60 * 1000) }
+    })
   }
 }
 
+let waitlistDrainRunning = false
+async function retryWaitlistNotifications() {
+  if (waitlistDrainRunning) return
+  waitlistDrainRunning = true
+  try {
+    const entries = await db.waitlistEntry.findMany({
+      where: { notificationPending: true, notificationRetryAt: { lte: new Date() } },
+      orderBy: [{ notificationRetryAt: 'asc' }, { id: 'asc' }], take: 20, select: { id: true }
+    })
+    for (const entry of entries) {
+      try { await notifyAdminsAboutWaitlist(entry) }
+      catch (err) { console.error('[waitlist] retry failed:', entry.id, err.message) }
+    }
+  } catch (err) {
+    console.error('[waitlist] queue unavailable:', err.message)
+  } finally {
+    waitlistDrainRunning = false
+  }
+}
+cron.schedule('* * * * *', retryWaitlistNotifications, { timezone: 'UTC' })
+
 // ─── Запуск ───────────────────────────────────────────────────────────────
 
-module.exports = { bot, sendDailyReminder, notifyAdminsAboutFeedback, notifyAdminsAboutWaitlist }
+module.exports = { bot, sendDailyReminder, notifyAdminsAboutFeedback, notifyAdminsAboutWaitlist, retryWaitlistNotifications }

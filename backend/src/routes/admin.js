@@ -2,6 +2,26 @@ const db = require('../db')
 const { requireAdmin } = require('../services/auth')
 
 async function adminRoutes(app) {
+  // Saved applications remain visible even when a Telegram notification fails.
+  app.get('/admin/waitlist', {
+    preHandler: requireAdmin,
+    schema: { querystring: {
+      type: 'object',
+      properties: {
+        pending: { type: 'boolean' },
+        page: { type: 'integer', minimum: 1, maximum: 100000, default: 1 }
+      }
+    } }
+  }, async (request) => {
+    const { pending, page = 1 } = request.query
+    const where = pending === undefined ? {} : { notificationPending: pending }
+    const [entries, total] = await Promise.all([
+      db.waitlistEntry.findMany({ where, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], take: 50, skip: (page - 1) * 50 }),
+      db.waitlistEntry.count({ where })
+    ])
+    return { entries, total, page, pageSize: 50 }
+  })
+
   // GET /admin/streams — все потоки
   app.get('/admin/streams', { preHandler: requireAdmin }, async () => {
     return db.stream.findMany({ orderBy: { startDate: 'desc' } })

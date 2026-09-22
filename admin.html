@@ -120,6 +120,7 @@
   /* ── Табы ── */
   .tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 4px;
     margin-bottom: 24px;
     border-bottom: 1px solid var(--border);
@@ -361,6 +362,15 @@
   .badge--pending    { background: rgba(0,0,0,0.06);     color: var(--hint); }
   .badge--cancelled  { background: rgba(176,48,48,0.1);  color: #b03030; }
 
+  .waitlist-note { font-size: 14px; color: var(--hint); line-height: 1.6; margin-bottom: 18px; }
+  .waitlist-card { overflow-wrap: anywhere; }
+  .waitlist-contact { margin: 10px 0; font-size: 15px; line-height: 1.7; }
+  .waitlist-contact a { color: var(--green); text-decoration: underline; }
+  .waitlist-meta { font-size: 12px; line-height: 1.6; color: var(--hint); margin-top: 8px; }
+  .waitlist-pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 20px 0; }
+  .waitlist-pagination span { font-size: 13px; color: var(--hint); }
+  #panel-waitlist button:disabled { opacity: .5; cursor: default; }
+
   @media (max-width: 768px) {
     h1 { font-size: 24px; }
     .container { padding: 16px 14px 40px; }
@@ -369,6 +379,12 @@
     .users-table { overflow-x: auto; }
     .users-table table { min-width: 640px; }
     .feedback-meta { flex-direction: column; align-items: flex-start; gap: 4px; }
+  }
+  @media (max-width: 480px) {
+    .tab { padding: 12px; }
+    .waitlist-pagination { gap: 10px; }
+    .waitlist-pagination span { flex-basis: 100%; order: -1; }
+    .waitlist-pagination button { flex: 1; }
   }
 </style>
 </head>
@@ -403,6 +419,7 @@
     <button class="tab" data-tab="feedback">Отзывы</button>
     <button class="tab" data-tab="questionnaires">Анкеты</button>
     <button class="tab" data-tab="users">Пользователи</button>
+    <button class="tab" data-tab="waitlist">Заявки</button>
   </div>
 
   <!-- ── Сводка ── -->
@@ -451,6 +468,22 @@
     <h2>Пользователи</h2>
     <div id="users-content">
       <div class="loader">Загрузка…</div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="panel-waitlist">
+    <h2>Заявки с сайта</h2>
+    <p class="waitlist-note">Здесь сохраняются заявки, даже если Telegram временно не доставил уведомление. Статус показывает доставку уведомления ведущим, а не то, ответила ли ведущая участнице. Время указано по Москве.</p>
+    <div class="filters" id="waitlist-filters" role="group" aria-label="Доставка уведомлений о заявках">
+      <button type="button" class="filter-btn filter-btn--active" data-pending="" aria-pressed="true">Все заявки</button>
+      <button type="button" class="filter-btn" data-pending="true" aria-pressed="false">Ждут доставки уведомления</button>
+      <button type="button" class="filter-btn" id="waitlist-refresh">Обновить</button>
+    </div>
+    <div id="waitlist-list" class="feedback-list" aria-busy="false"></div>
+    <div class="waitlist-pagination">
+      <button type="button" class="filter-btn" id="waitlist-prev" disabled>Назад</button>
+      <span id="waitlist-page" role="status" aria-live="polite"></span>
+      <button type="button" class="filter-btn" id="waitlist-next" disabled>Дальше</button>
     </div>
   </div>
 </div>
@@ -523,6 +556,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     if (btn.dataset.tab === 'feedback')       loadFeedback();
     if (btn.dataset.tab === 'questionnaires') loadQuestionnaires();
     if (btn.dataset.tab === 'users')          loadUsers();
+    if (btn.dataset.tab === 'waitlist')       loadWaitlist();
   });
 });
 
@@ -586,6 +620,76 @@ document.querySelectorAll('#feedback-filters .filter-btn').forEach(btn => {
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+// ── Заявки: только чтение, без повторной отправки сообщений из панели ──
+let waitlistPage = 1, waitlistFilter = '', waitlistRequest = 0;
+document.querySelectorAll('#waitlist-filters [data-pending]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#waitlist-filters [data-pending]').forEach(other => {
+      other.classList.toggle('filter-btn--active', other === btn);
+      other.setAttribute('aria-pressed', String(other === btn));
+    });
+    waitlistFilter = btn.dataset.pending;
+    waitlistPage = 1;
+    loadWaitlist();
+  });
+});
+$('waitlist-refresh').addEventListener('click', () => loadWaitlist());
+$('waitlist-prev').addEventListener('click', () => { if (waitlistPage > 1) { waitlistPage--; loadWaitlist(); } });
+$('waitlist-next').addEventListener('click', () => { waitlistPage++; loadWaitlist(); });
+
+function waitlistDate(value) {
+  const date = new Date(value);
+  return value && Number.isFinite(date.getTime())
+    ? date.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    : '—';
+}
+
+async function loadWaitlist() {
+  const request = ++waitlistRequest;
+  const list = $('waitlist-list');
+  list.setAttribute('aria-busy', 'true');
+  list.innerHTML = '<div class="loader">Загрузка заявок…</div>';
+  $('waitlist-prev').disabled = true;
+  $('waitlist-next').disabled = true;
+  $('waitlist-page').textContent = 'Загрузка…';
+  try {
+    const query = new URLSearchParams({ page: String(waitlistPage) });
+    if (waitlistFilter) query.set('pending', waitlistFilter);
+    const { entries, total, page, pageSize } = await api('/admin/waitlist?' + query);
+    if (request !== waitlistRequest) return;
+    const pages = Math.max(1, Math.ceil(total / pageSize));
+    // A retry may finish while the last filtered page is open.
+    if (page > pages) { waitlistPage = pages; return loadWaitlist(); }
+    waitlistPage = page;
+    list.innerHTML = entries.length ? entries.map(entry => {
+      const username = String(entry.telegramUsername || '').replace(/^@/, '');
+      const contact = /^[A-Za-z0-9_]{5,32}$/.test(username)
+        ? `<a href="https://t.me/${encodeURIComponent(username)}" target="_blank" rel="noopener noreferrer">${escapeHtml('@' + username)}</a>`
+        : escapeHtml(username || 'Не указан');
+      const delivered = Array.isArray(entry.notifiedAdminIds) ? entry.notifiedAdminIds.length : 0;
+      const pending = entry.notificationPending === true;
+      const label = pending
+        ? (delivered ? 'Уведомление доставлено частично' : 'Уведомление ожидает доставки')
+        : (delivered ? 'Уведомление доставлено' : 'Историческая заявка: доставка не отслеживалась');
+      const attempts = Number.isInteger(entry.notificationAttempts) ? entry.notificationAttempts : 0;
+      return `<article class="feedback-item waitlist-card">
+        <div class="feedback-meta"><span class="feedback-user">${escapeHtml(waitlistDate(entry.createdAt))}</span><span class="badge badge--${pending ? 'pending' : delivered ? 'active' : 'completed'}">${escapeHtml(label)}</span></div>
+        <div class="waitlist-contact">Telegram: ${contact}<br>Email: ${escapeHtml(entry.email || 'Не указан')}</div>
+        <div class="waitlist-meta">ID заявки: ${escapeHtml(entry.id)}<br>Попыток доставки: ${attempts}. Получателей с подтверждённой доставкой: ${delivered}.${pending ? '<br>Повторная попытка не раньше: ' + escapeHtml(waitlistDate(entry.notificationRetryAt)) + '.' : ''}</div>
+      </article>`;
+    }).join('') : '<div class="empty">' + (waitlistFilter ? 'Нет заявок, ожидающих доставки уведомления' : 'Заявок пока нет') + '</div>';
+    $('waitlist-page').textContent = `Страница ${page} из ${pages} · Заявок: ${total}`;
+    $('waitlist-prev').disabled = page <= 1;
+    $('waitlist-next').disabled = page >= pages;
+  } catch (e) {
+    if (request !== waitlistRequest) return;
+    list.innerHTML = `<div class="empty" role="alert">${escapeHtml(e.message)}. Нажмите «Обновить», чтобы повторить загрузку.</div>`;
+    $('waitlist-page').textContent = 'Не удалось загрузить заявки';
+  } finally {
+    if (request === waitlistRequest) list.setAttribute('aria-busy', 'false');
+  }
 }
 
 async function loadFeedback() {
