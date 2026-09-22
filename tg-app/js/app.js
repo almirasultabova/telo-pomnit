@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
           Api.getMe()
         ]);
         if (access.status === 'fulfilled') {
-          aiAccessGranted = !!access.value?.canWrite;
+          applyProgramAccess(access.value);
         }
         if (me.status === 'fulfilled' && me.value?.enrollment?.stream?.id) {
           checkAndShowQuestionnaire(me.value.enrollment.stream.id);
@@ -235,13 +235,14 @@ function switchTab(tab) {
   // Обновляем содержимое при переключении
   if (tab === 'diary')   renderDiaryTab();
   if (tab === 'diag')    renderMyPathTab();
-  if (tab === 'profile') renderProfileTab();
+  if (tab === 'profile') {renderProfileTab();refreshProgramAccess().then(renderProfileTab);}
 }
 
 // ─────────────────────────────────────────────────────────────────────────
 // ВКЛАДКА: ДНЕВНИК
 // ─────────────────────────────────────────────────────────────────────────
 function renderDiaryTab() {
+  renderAccessNotice();
   renderStreak();
   renderTodayCard();
   renderRecentEntries();
@@ -357,6 +358,7 @@ function startDiaryEntry() {
 document.addEventListener('click', e => {
   if (e.target.closest('#ai-chat-btn')) {
     renderAiChat();
+    refreshAiScreen();
     goTo('ai-chat');
     haptic();
     return;
@@ -1235,94 +1237,86 @@ function renderProfileTab() {
   renderHosts();
 }
 
-function renderNextMeeting() {
-  const container = document.getElementById('next-meeting-card');
-  if (!container) return;
-
-  const now = new Date();
-  const next = DATA.program.schedule.find(m => {
-    const [y, mo, d] = m.date.split('-').map(Number);
-    const [h, min] = m.time.split(':').map(Number);
-    return new Date(y, mo - 1, d, h, min) > now;
-  });
-
-  if (!next) {
-    container.innerHTML = `<div class="next-meeting-card next-meeting-card--done">
-      <div class="next-meeting-label">Программа завершена</div>
-      <div class="next-meeting-title">Спасибо за работу 🌿</div>
-    </div>`;
-    return;
-  }
-
-  const weekTopic = DATA.program.weekTopics.find(w => w.num === next.week);
-  const dateObj = new Date(next.date + 'T' + next.time);
-  const dayNames = ['вс','пн','вт','ср','чт','пт','сб'];
-  const monthNames = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-  const dayName = dayNames[dateObj.getDay()];
-  const dateStr = `${dateObj.getDate()} ${monthNames[dateObj.getMonth()]}`;
-
-  container.innerHTML = `
-    <div class="next-meeting-card">
-      <div class="next-meeting-label">Следующая встреча</div>
-      <div class="next-meeting-title">${next.type}</div>
-      <div class="next-meeting-date">📅 ${dayName}, ${dateStr} · ${next.time}</div>
-      ${weekTopic ? `<div class="next-meeting-week">Неделя ${next.week} — ${weekTopic.title}</div>` : ''}
-    </div>`;
+let programAccess = null;
+let selectedProgramId = null;
+function escapeAccessText(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-
-function renderZoomBtn() {
-  const container = document.getElementById('zoom-btn-wrap');
-  if (!container) return;
-
-  const zoomUrl = DATA.program.zoomUrl;
-  if (zoomUrl) {
-    container.innerHTML = `<button class="btn btn--outline btn--full mb-16" data-ext-link="${zoomUrl}">
-      🎥 Войти в Zoom
-    </button>`;
-  } else {
-    container.innerHTML = `<div class="zoom-pending mb-16">
-      🎥 Ссылка на Zoom появится перед встречей
-    </div>`;
+function accessDate(value) {
+  return new Date(value).toLocaleString('ru-RU', {timeZone:'Europe/Moscow',day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function applyProgramAccess(access) {
+  programAccess=access;
+  aiAccessGranted=access.ai?.canWrite === true;
+  if(!access.streams?.some(s=>s.id===selectedProgramId)) selectedProgramId=(access.streams?.find(s=>s.canAttend)||access.streams?.find(s=>s.phase==='upcoming')||access.streams?.[0])?.id || null;
+  renderAccessNotice();
+}
+function renderAccessNotice() {
+  const text=programAccess?.ai?.message || 'Не удалось проверить доступ к AI. Дневник и реакции остаются доступны.';
+  const aiNotice=document.getElementById('ai-access-notice');
+  if(aiNotice) aiNotice.textContent=text;
+  const button=document.getElementById('ai-chat-btn');
+  if(button) {
+    let note=document.getElementById('diary-access-notice');
+    if(!note){note=document.createElement('p');note.id='diary-access-notice';note.className='access-notice';button.after(note);}
+    note.textContent=text;
   }
 }
-
-function renderSchedule() {
-  const container = document.getElementById('schedule-section');
-  if (!container) return;
-
-  const now = new Date();
-  const monthNames = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
-
-  const items = DATA.program.schedule.map(m => {
-    const [y, mo, d] = m.date.split('-').map(Number);
-    const [h, min]   = m.time.split(':').map(Number);
-    const isPast     = new Date(y, mo - 1, d, h, min) < now;
-    const isAttended = Storage.isAttended(m.id);
-    const dateStr    = `${d} ${monthNames[mo - 1]}`;
-
-    const attendBtn = isPast ? `
-      <button class="attend-btn ${isAttended ? 'attend-btn--on' : ''}"
-        onclick="toggleAttend(event,${m.id})">${isAttended ? '✓' : '+'}</button>` : '';
-
-    return `<div class="schedule-item-wrap">
-      <button class="schedule-item ${isPast ? 'schedule-item--past' : ''} ${isAttended ? 'schedule-item--attended' : ''}"
-        onclick="showMeetingDetail(${m.id})">
-        <div class="schedule-item-left">
-          <div class="schedule-item-date">${dateStr} · ${m.time}</div>
-          <div class="schedule-item-type">${m.type}</div>
-          ${m.practice ? `<div class="schedule-item-practice">${m.practice}</div>` : ''}
-        </div>
-        <svg class="schedule-item-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-      </button>${attendBtn}
-    </div>`;
-  }).join('');
-
-  container.innerHTML = `
-    <div class="section-label mt-16 mb-4">Расписание встреч</div>
-    <div class="attend-hint">После встречи появится кнопка + — отметь присутствие</div>
-    <div class="schedule-list">${items}</div>`;
+function currentProgram(){return programAccess?.streams?.find(s=>s.id===selectedProgramId);}
+async function refreshProgramAccess(){
+  try {applyProgramAccess(await Api.getAccess());}
+  catch {programAccess=null;aiAccessGranted=null;renderAccessNotice();}
 }
-
+function renderNextMeeting(){
+  const el=document.getElementById('next-meeting-card');
+  if(!el)return;
+  const streams=programAccess?.streams||[];
+  el.innerHTML='<div class="access-program"><div class="section-label">Моя программа</div><p>Дневник, реакции и ваша история остаются бесплатными после завершения.</p></div>';
+  if(!programAccess){
+    const p=document.createElement('p');p.textContent='Расписание не загружено. Проверьте соединение и обновите доступ.';el.append(p);
+  }else if(!streams.length){
+    const p=document.createElement('p');p.textContent='У вас пока нет оплаченной программы. Бесплатными инструментами уже можно пользоваться.';el.append(p);
+  }else{
+    const label=document.createElement('label');label.textContent='Выберите свой поток';label.htmlFor='owned-stream-select';el.append(label);
+    const select=document.createElement('select');select.id='owned-stream-select';select.className='access-select';
+    streams.forEach(stream=>{const option=document.createElement('option');option.value=stream.id;option.textContent=stream.name+(stream.phase==='completed'?' · архив':'');select.append(option);});
+    select.value=selectedProgramId;select.addEventListener('change',()=>{selectedProgramId=select.value;renderZoomBtn();renderSchedule();});el.append(select);
+  }
+  const refresh=document.createElement('button');refresh.className='btn btn--ghost btn--sm';refresh.textContent='Обновить доступ и расписание';
+  refresh.addEventListener('click',async()=>{refresh.disabled=true;await refreshProgramAccess();renderProfileTab();});el.append(refresh);
+}
+function appendAccessLink(container,url,label){
+  if(!url)return;
+  try {if(new URL(url).protocol!=='https:')return;}catch{return;}
+  const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.className='btn btn--outline btn--full mb-8';a.textContent=label;container.append(a);
+}
+function renderZoomBtn(){
+  const container=document.getElementById('zoom-btn-wrap');if(!container)return;container.replaceChildren();
+  const chat=document.getElementById('chat-btn');if(chat){chat.hidden=true;chat.removeAttribute('data-tg-link');}
+  const stream=currentProgram();if(!stream)return;
+  if(stream.canAttend)appendAccessLink(container,stream.zoomLink,'Войти в Zoom');
+  if(stream.canReadRecordings)appendAccessLink(container,stream.chatLink,stream.phase==='completed'?'Чат и материалы своего потока':'Чат своего потока');
+}
+function renderSchedule(){
+  const container=document.getElementById('schedule-section');if(!container)return;
+  const stream=currentProgram();container.replaceChildren();
+  if(stream){
+    const intro=document.createElement('p');intro.className='access-notice';
+    intro.textContent=stream.canReadRecordings?'Записи встреч доступны до '+accessDate(new Date(new Date(stream.recordingsExpiresAt).getTime()-1))+'. После завершения программы поддержка ведущих не продолжается.':'Доступ к записям встреч ещё не начался или уже завершился. Личный дневник остаётся доступным.';
+    container.append(intro);
+    (stream.meetings||[]).forEach(meeting=>{
+      const details=document.createElement('details');details.className='access-meeting';
+      const summary=document.createElement('summary');summary.textContent=accessDate(meeting.date)+' · '+(meeting.topic||'Встреча '+meeting.number);details.append(summary);
+      for(const text of [meeting.description,meeting.prepare]){if(text){const p=document.createElement('p');p.textContent=text;details.append(p);}}
+      if(stream.canAttend)appendAccessLink(details,meeting.zoomLink,'Zoom этой встречи');
+      container.append(details);
+    });
+    if(!stream.meetings?.length){const p=document.createElement('p');p.textContent='Расписание этого потока уточняется. Старое расписание сюда не переносится.';container.append(p);}
+  }
+  const next=document.createElement('div');next.className='access-program';
+  next.innerHTML='<div class="section-label">Следующая группа</div><p>Даты и условия нового набора — на сайте. Покупка нового потока не обнуляет ваш дневник.</p>';
+  appendAccessLink(next,'https://telo-pomnit.ru/landing_concept.html','Посмотреть следующий набор');container.append(next);
+}
 function toggleAttend(event, meetingId) {
   event.stopPropagation();
   const wasAdded = Storage.toggleAttended(meetingId);
@@ -1468,7 +1462,7 @@ function showOfferModal() {
   document.getElementById('offer-subscribe-btn').addEventListener('click', () => {
     Storage.setOfferSeen();
     closeOfferModal();
-    const url = DATA.program.chatUrl;
+    const url = 'https://t.me/akhoroshavtseva';
     tg?.openTelegramLink?.(url) || window.open(url, '_blank');
     haptic('medium');
   });
@@ -1592,89 +1586,85 @@ function initAiChat() {
   }
 }
 
-function renderAiChat() {
-  const container = document.getElementById('ai-messages');
-  const inputBar  = document.getElementById('ai-input-bar');
-  if (!container) return;
-
-  if (aiAccessGranted === false) {
-    container.innerHTML = `
-      <div class="ai-locked">
-        <div class="ai-locked-icon">🌿</div>
-        <div class="ai-locked-title">Доступ к ассистенту</div>
-        <div class="ai-locked-text">AI-ассистент доступен участницам программы.<br><br>Ссылка придёт после зачисления в поток.</div>
-      </div>`;
-    if (inputBar) inputBar.style.display = 'none';
-    return;
-  }
-
-  if (inputBar) inputBar.style.display = '';
-
-  if (!aiMessages.length) {
-    container.innerHTML = `
-      <div class="ai-welcome">
-        <div class="ai-welcome-icon">🌿</div>
-        <div class="ai-welcome-text">Привет. Я здесь, чтобы помочь вам наблюдать за телом между встречами.<br><br>Что вы замечаете в себе прямо сейчас?</div>
-      </div>`;
-  } else {
-    renderAiMessages();
+let aiPending=false;
+let aiScreenRequest=0;
+async function refreshAiScreen(){
+  if(aiPending)return;
+  const request=++aiScreenRequest;
+  await refreshProgramAccess();
+  if(request!==aiScreenRequest)return;
+  renderAiChat();
+  try{
+    const sessions=await Api.getAiSessions();
+    if(request!==aiScreenRequest)return;
+    const select=document.getElementById('ai-history-select');
+    select.replaceChildren(new Option('Новый диалог',''));
+    sessions.forEach(session=>select.add(new Option(accessDate(session.createdAt),session.sessionId)));
+    select.value=aiSessionId||'';
+  }catch{
+    document.getElementById('ai-access-notice').textContent+=' Историю не удалось загрузить — можно повторить.';
   }
 }
-
-function renderAiMessages() {
-  const container = document.getElementById('ai-messages');
-  if (!container) return;
-  container.innerHTML = aiMessages.map(m => `
-    <div class="ai-msg ai-msg--${m.role}">
-      <div class="ai-msg-text">${m.content.replace(/</g,'&lt;')}</div>
-    </div>`).join('');
-  container.scrollTop = container.scrollHeight;
-}
-
-async function sendAiMessage() {
-  const input = document.getElementById('ai-input');
-  const message = input?.value?.trim();
-  if (!message) return;
-
-  // Если токена нет — пробуем авторизоваться ещё раз (сервер мог перезапускаться)
-  if (!Api.isAuthed()) {
-    try {
-      await Api.auth();
-    } catch (e) {
-      // auth failed — продолжаем, ошибка придёт от самого запроса
-    }
-  }
-
-  input.value = '';
-  input.style.height = 'auto';
-
-  aiMessages.push({ role: 'user', content: message });
+document.getElementById('ai-access-refresh')?.addEventListener('click',refreshAiScreen);
+document.getElementById('ai-history-select')?.addEventListener('change',async e=>{
+  if(aiPending)return;
+  const id=e.target.value;const request=++aiScreenRequest;
+  if(!id){aiSessionId=null;aiMessages=[];renderAiChat();return;}
+  e.target.disabled=true;
+  try{
+    const session=await Api.getAiSession(id);
+    if(request!==aiScreenRequest)return;
+    aiSessionId=session.sessionId;aiMessages=Array.isArray(session.messages)?session.messages:[];renderAiChat();
+  }catch{document.getElementById('ai-access-notice').textContent='Не удалось загрузить диалог. Попробуйте ещё раз.';}
+  finally{e.target.disabled=aiPending;}
+});
+function renderAiChat(){
+  renderAccessNotice();
+  const bar=document.getElementById('ai-input-bar');
+  if(bar)bar.style.display=aiAccessGranted===true||document.getElementById('ai-input')?.value?'':'none';
+  document.getElementById('ai-send-btn').disabled=aiPending||aiAccessGranted!==true;
   renderAiMessages();
-  haptic('light');
-
-  // Индикатор загрузки
-  const container = document.getElementById('ai-messages');
-  const typing = document.createElement('div');
-  typing.className = 'ai-msg ai-msg--assistant';
-  typing.innerHTML = '<div class="ai-msg-text ai-typing"><span></span><span></span><span></span></div>';
-  container?.appendChild(typing);
-  container.scrollTop = container.scrollHeight;
-
-  try {
-    const res = await Api.aiChat(message, aiSessionId);
-    aiSessionId = res.sessionId;
-    typing.remove();
-    aiMessages.push({ role: 'assistant', content: res.reply });
-    renderAiMessages();
-    hapticNotify('success');
-  } catch (e) {
-    typing.remove();
-    const errEl = document.createElement('div');
-    errEl.className = 'ai-msg ai-msg--assistant';
-    errEl.innerHTML = '<div class="ai-msg-text" style="color:var(--danger)">' + (e.message || 'Ошибка') + '</div>';
-    container?.appendChild(errEl);
-  }
 }
+function renderAiMessages(){
+  const container=document.getElementById('ai-messages');if(!container)return;
+  container.replaceChildren();
+  if(!aiMessages.length){
+    const welcome=document.createElement('p');welcome.className='ai-welcome-text';
+    welcome.textContent=aiAccessGranted===true?'Что вы замечаете в себе прямо сейчас?':'Здесь можно читать сохранённые диалоги. Для нового сообщения нужен действующий доступ к AI.';
+    container.append(welcome);
+  }
+  aiMessages.forEach(message=>{
+    const row=document.createElement('div');row.className='ai-msg ai-msg--'+(message.role==='user'?'user':'assistant');
+    const text=document.createElement('div');text.className='ai-msg-text';text.textContent=String(message.content||'');row.append(text);container.append(row);
+  });
+  container.scrollTop=container.scrollHeight;
+}
+async function sendAiMessage(){
+  const input=document.getElementById('ai-input'),message=input?.value?.trim();
+  if(!message||aiPending)return;
+  aiPending=true;
+  const button=document.getElementById('ai-send-btn'),select=document.getElementById('ai-history-select');
+  button.disabled=true;select.disabled=true;
+  try{
+    await refreshProgramAccess();
+    if(aiAccessGranted!==true){renderAiChat();return;}
+    const res=await Api.aiChat(message,aiSessionId);
+    aiSessionId=res.sessionId;aiMessages.push({role:'user',content:message},{role:'assistant',content:res.reply});
+    input.value='';input.style.height='auto';renderAiMessages();hapticNotify('success');
+    if(!Array.from(select.options).some(o=>o.value===aiSessionId))select.add(new Option('Текущий диалог',aiSessionId));
+    select.value=aiSessionId;
+  }catch(e){
+    if(e.code==='AI_ACCESS_REQUIRED'){aiAccessGranted=false;if(programAccess)programAccess.ai=e.access;renderAiChat();}
+    document.getElementById('ai-access-notice').textContent=e.message||'Не удалось отправить. Ваш текст сохранён в поле ввода.';
+  }finally{aiPending=false;button.disabled=aiAccessGranted!==true;select.disabled=false;}
+}
+document.addEventListener('visibilitychange',async()=>{
+  if(!document.hidden && Api.isAuthed()){
+    await refreshProgramAccess();
+    if(currentScreen==='ai-chat'&&!aiPending)renderAiChat();
+    if(activeTab==='profile')renderProfileTab();
+  }
+});
 
 // ─────────────────────────────────────────────────────────────────────────
 // СТОП-РЕАКЦИЯ — дневник триггеров

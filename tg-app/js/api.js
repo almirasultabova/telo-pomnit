@@ -34,6 +34,8 @@ const Api = {
         const err = await res.json().catch(() => ({}));
         const error = new Error(err.error || 'Ошибка сервера');
         error.status = res.status;
+        error.code = err.code;
+        error.access = err.access;
         throw error;
       }
       return res.status === 204 ? null : res.json();
@@ -139,8 +141,11 @@ const Api = {
   async aiChat(message, sessionId) {
     const body = { message };
     if (sessionId) body.sessionId = sessionId;
-    return this._request('POST', '/ai/chat', body);
+    return this._request('POST', '/ai/chat', body, 60000);
   },
+
+  async getAiSessions() { return this._request('GET', '/ai/sessions'); },
+  async getAiSession(sessionId) { return this._request('GET', '/ai/sessions/' + encodeURIComponent(sessionId)); },
 
   // ─── Анкеты ───────────────────────────────────────────────────────────────
 

@@ -3,6 +3,7 @@
 
 const db = require('../db')
 const { requireAuth } = require('../services/auth')
+const { getProgramAccess } = require('./me')
 const OpenAI = require('openai')
 const { v4: uuidv4 } = require('uuid')
 
@@ -15,6 +16,14 @@ const SYSTEM_PROMPT = `Ты — мягкий, внимательный помо�
 Если переданы данные из дневника — используй их для персонального, точного ответа.`
 
 async function aiRoutes(app) {
+  app.get('/ai/sessions', { preHandler: requireAuth }, async request => {
+    return db.aiChatSession.findMany({ where: { userId: request.user.id }, orderBy: { createdAt: 'desc' }, select: { sessionId: true, createdAt: true } })
+  })
+  app.get('/ai/sessions/:sessionId', { preHandler: requireAuth }, async (request, reply) => {
+    const session = await db.aiChatSession.findFirst({ where: { sessionId: request.params.sessionId, userId: request.user.id }, select: { sessionId: true, messages: true, createdAt: true } })
+    if (!session) return reply.code(404).send({ error: 'Диалог не найден' })
+    return session
+  })
   app.post('/ai/chat', {
     preHandler: requireAuth,
     schema: {
@@ -29,6 +38,8 @@ async function aiRoutes(app) {
     }
   }, async (request, reply) => {
     const { message, sessionId } = request.body
+    const access = await getProgramAccess(request.user)
+    if (!access.ai.canWrite) return reply.code(403).send({ code: 'AI_ACCESS_REQUIRED', error: access.ai.message, access: access.ai })
 
     // Загружаем или создаём сессию
     let session = null

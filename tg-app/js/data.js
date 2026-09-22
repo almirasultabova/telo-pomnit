@@ -296,8 +296,9 @@ const DATA = {
     weeks: 5,
     meetings: 9,
     format: 'Zoom + закрытый чат',
-    nextStart: '16 апреля 2026',
-    chatUrl: 'https://t.me/+IwJSzSom75M0ZDcy',
+    nextStart: '15 октября 2026',
+    landingUrl: 'https://telo-pomnit.ru/landing_concept.html',
+    chatUrl: null, // Closed links are returned only by the authenticated server.
     zoomUrl: null, // добавить постоянную ссылку Zoom когда появится
 
     // 5 недель программы
