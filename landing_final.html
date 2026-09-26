@@ -873,189 +873,6 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   </div>
 </section>
 
-<!-- BREATHING -->
-<div class="breathing-section reveal" hidden>
-  <div class="breathing-ring-wrap">
-    <div class="breathing-glow"></div>
-    <div class="breathing-ring-outer"></div>
-    <div class="breathing-ring"><span id="breath-label">Вдох</span></div>
-  </div>
-  <p class="breathing-phase" id="breath-phase">Вдох — 4 секунды</p>
-  <p class="breathing-hint">Настройтесь на ритм своего тела</p>
-</div>
-
-<!-- SELF CHECK -->
-<section class="section section--bg" hidden>
-  <div class="container">
-    <div class="selfcheck-box reveal">
-      <span class="label" style="text-align:center;display:block">Быстрая проверка</span>
-      <h2 class="section-title" style="text-align:center;margin-bottom:12px">Какие реакции вам знакомы?</h2>
-      <p class="section-sub" style="text-align:center;margin-bottom:36px">Отметьте пункты, которые откликаются вам сейчас:</p>
-      <div class="selfcheck-items" id="selfcheck-items">
-        <button class="selfcheck-item" data-idx="0">
-          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-          <span>Часто чувствую напряжение в плечах или челюсти, даже когда отдыхаю</span>
-        </button>
-        <button class="selfcheck-item" data-idx="1">
-          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-          <span>В стрессовых ситуациях я «замираю» или соглашаюсь, а потом жалею</span>
-        </button>
-        <button class="selfcheck-item" data-idx="2">
-          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-          <span>Я всё понимаю головой, но тело продолжает реагировать по-старому</span>
-        </button>
-        <button class="selfcheck-item" data-idx="3">
-          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-          <span>После напряжённого разговора мне трудно уснуть, расслабиться или перестать прокручивать его в голове</span>
-        </button>
-        <button class="selfcheck-item" data-idx="4">
-          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-          <span>Мне сложно говорить «нет» без чувства вины или страха</span>
-        </button>
-        <button class="selfcheck-item" data-idx="5">
-          <span class="check-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
-          <span>Я часто чувствую себя уставшей, даже если физически не перегружена</span>
-        </button>
-      </div>
-      <div class="selfcheck-result" id="selfcheck-result">
-        <p class="selfcheck-result-title" id="selfcheck-title">Вы уже начали замечать сигналы тела.</p>
-        <p class="selfcheck-result-text">Это не приговор, а точка входа. На встречах вы научитесь находить паузу в этих реакциях и выбирать новый способ жизни.</p>
-        <a href="#pricing" class="btn btn--primary">Хочу на программу</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- COMPARISON -->
-<section class="section section--white" hidden>
-  <div class="container">
-    <div style="text-align:center;margin-bottom:48px" class="reveal">
-      <span class="label">Как устроена работа</span>
-      <h2 class="section-title">Почему одного понимания иногда недостаточно</h2>
-    </div>
-    <div class="comparison-wrap reveal">
-    <div class="comparison-grid">
-      <div class="comparison-col comparison-col--old">
-        <h3 class="comparison-head">Когда остаётся только понимание</h3>
-        <ul class="comparison-list">
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.3;color:var(--muted)"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <span style="color:var(--muted)">Вы уже понимаете, почему реагируете именно так</span>
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.3;color:var(--muted)"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <span style="color:var(--muted)">Но в напряжённый момент привычная реакция включается раньше мысли</span>
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.3;color:var(--muted)"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <span style="color:var(--muted)">И новое понимание трудно перенести в конкретный разговор или поступок</span>
-          </li>
-        </ul>
-      </div>
-      <div class="comparison-col comparison-col--new">
-        <span class="comparison-badge">На программе</span>
-        <h3 class="comparison-head">Понимание превращается в действие</h3>
-        <ul class="comparison-list">
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--green)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <span>Работает с точкой включения автоматизма в теле</span>
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--green)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <span>Создаёт физическую паузу для нового выбора</span>
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--green)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <span>Закрепляет результат через действие в моменте</span>
-          </li>
-        </ul>
-      </div>
-    </div><!-- /comparison-grid -->
-    <p class="comparison-note">В программе к разговору добавляются наблюдение за телесной реакцией, практика паузы и проба нового действия.</p>
-    </div><!-- /comparison-wrap -->
-  </div>
-</section>
-
-<!-- SAFETY -->
-<section class="section section--white" hidden>
-  <div class="container">
-    <div class="safety-box reveal">
-      <div class="safety-glow"></div>
-      <span class="label safety-label">Безопасность</span>
-      <h2 class="section-title safety-title">Как устроена бережная работа в группе</h2>
-      <div class="safety-grid">
-        <div>
-          <p class="safety-item-title">Конфиденциальность</p>
-          <p class="safety-item-text">Всё, что происходит в группе, остаётся внутри. Создаётся пространство, где можно быть настоящей.</p>
-        </div>
-        <div>
-          <p class="safety-item-title">Бережный темп</p>
-          <p class="safety-item-text">Без форсирования глубины. Каждый идёт в своём ритме, регулируя уровень открытости.</p>
-        </div>
-        <div>
-          <p class="safety-item-title">Две ведущие</p>
-          <p class="safety-item-text">Анастасия ведёт психологическую и телесную часть. Альмира помогает переносить изменения в повседневную жизнь.</p>
-        </div>
-      </div>
-      <div class="safety-divider">
-        <p class="safety-quote">Не нужно рассказывать больше, чем вы готовы. Практику можно остановить в любой момент, а степень открытости вы регулируете сами.</p>
-        <a href="https://t.me/akhoroshavtseva" target="_blank" class="btn btn--white">Задать вопрос о формате</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- RESULTS -->
-<section id="results-archive" class="section section--bg" hidden>
-  <div class="container">
-    <div style="max-width:760px;margin:0 auto 48px;text-align:center" class="reveal">
-      <span class="label">Зачем идти</span>
-      <h2 class="section-title">Чтобы в важный момент поступить иначе — не только понять, почему всё снова произошло по-старому</h2>
-      <p class="section-sub">Вы платите не за информацию. Вы получаете пространство, где новый способ реагировать можно заметить, попробовать и перенести в свою жизнь с поддержкой двух ведущих.</p>
-    </div>
-    <div class="results-reasons reveal">
-      <article class="reason-card">
-        <span class="reason-mark">01</span>
-        <h3>Поймать автоматизм до того, как он выберет за вас</h3>
-        <p>Замечать телесный сигнал в начале реакции — пока вы ещё можете остановиться, взять паузу и решить, что подходит именно вам.</p>
-      </article>
-      <article class="reason-card">
-        <span class="reason-mark">02</span>
-        <h3>Не ждать, пока накопленное выйдет срывом</h3>
-        <p>Раньше говорить «нет», просить о помощи, обозначать границы и не доводить себя до состояния, когда сил уже не осталось.</p>
-      </article>
-      <article class="reason-card">
-        <span class="reason-mark">03</span>
-        <h3>Закрепить новый ответ в обычной жизни</h3>
-        <p>Не оставить инсайт на встрече, а попробовать другое действие в работе и отношениях — с чатом, приложением и навигацией Альмиры между встречами.</p>
-      </article>
-    </div>
-    <div class="results-two">
-      <ul class="results-list reveal">
-        <li>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          не соглашаться автоматически, когда внутри уже есть «нет»
-        </li>
-        <li>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          говорить о важном до обиды, срыва или молчаливого ухода
-        </li>
-        <li>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          замечать перегруз до того, как тело заставит остановиться
-        </li>
-        <li>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          возвращаться к себе после стресса, а не носить реакцию внутри днями
-        </li>
-      </ul>
-      <div class="results-callout reveal reveal-delay-1">
-        <p>Если ничего не менять, тело, отношения и работа продолжают платить за каждый раз, когда вы терпите, молчите и берёте лишнее. Программа нужна, чтобы перестать делать это автоматически.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- PROCESS -->
 <section id="process" class="section section--white" style="overflow:hidden">
   <div class="container">
@@ -1150,58 +967,6 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   </div>
 </section>
 
-<!-- GALLERY -->
-<section class="section section--white">
-  <div class="container">
-    <div class="reveal" style="margin-bottom:40px;text-align:center">
-      <span class="label">Как это выглядит</span>
-      <h2 class="section-title">Атмосфера и формат</h2>
-    </div>
-    <div class="gallery-grid reveal">
-      <div class="gallery-card">
-        <picture>
-          <source srcset="body-practice.webp" type="image/webp">
-          <img class="gallery-img" src="body%20practice.jpg" alt="Телесная практика" loading="lazy">
-        </picture>
-        <div class="gallery-body">
-          <h3>Телесная практика</h3>
-          <p>мягко, безопасно, в своём темпе</p>
-        </div>
-      </div>
-      <div class="gallery-card">
-        <picture>
-          <source srcset="Live%20work%20in%20Zoom.webp" type="image/webp">
-          <img class="gallery-img" src="Live%20work%20in%20Zoom.png" alt="Живая работа в Zoom" loading="lazy">
-        </picture>
-        <div class="gallery-body">
-          <h3>Живая работа в Zoom</h3>
-          <p>структура + контакт</p>
-        </div>
-      </div>
-      <div class="gallery-card">
-        <picture>
-          <source srcset="Body%20contact%20(1).webp" type="image/webp">
-          <img class="gallery-img" src="Body%20contact.png" alt="Контакт с телом" loading="lazy">
-        </picture>
-        <div class="gallery-body">
-          <h3>Контакт с телом</h3>
-          <p>формируется привычка замечать сигналы</p>
-        </div>
-      </div>
-      <div class="gallery-card">
-        <picture>
-          <source srcset="Enclosed-space.webp" type="image/webp">
-          <img class="gallery-img" src="Enclosed%20space.jpg" alt="Закрытое пространство" loading="lazy">
-        </picture>
-        <div class="gallery-body">
-          <h3>Закрытое пространство</h3>
-          <p>поддержка и навигация</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- HOSTS -->
 <section class="section section--bg">
   <div class="container">
@@ -1263,8 +1028,60 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
   </div>
 </section>
 
-<!-- CASE STUDY -->
+<!-- GALLERY -->
 <section class="section section--white">
+  <div class="container">
+    <div class="reveal" style="margin-bottom:40px;text-align:center">
+      <span class="label">Как это выглядит</span>
+      <h2 class="section-title">Атмосфера и формат</h2>
+    </div>
+    <div class="gallery-grid reveal">
+      <div class="gallery-card">
+        <picture>
+          <source srcset="body-practice.webp" type="image/webp">
+          <img class="gallery-img" src="body%20practice.jpg" alt="Телесная практика" loading="lazy">
+        </picture>
+        <div class="gallery-body">
+          <h3>Телесная практика</h3>
+          <p>мягко, безопасно, в своём темпе</p>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <picture>
+          <source srcset="Live%20work%20in%20Zoom.webp" type="image/webp">
+          <img class="gallery-img" src="Live%20work%20in%20Zoom.png" alt="Живая работа в Zoom" loading="lazy">
+        </picture>
+        <div class="gallery-body">
+          <h3>Живая работа в Zoom</h3>
+          <p>структура + контакт</p>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <picture>
+          <source srcset="Body%20contact%20(1).webp" type="image/webp">
+          <img class="gallery-img" src="Body%20contact.png" alt="Контакт с телом" loading="lazy">
+        </picture>
+        <div class="gallery-body">
+          <h3>Контакт с телом</h3>
+          <p>формируется привычка замечать сигналы</p>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <picture>
+          <source srcset="Enclosed-space.webp" type="image/webp">
+          <img class="gallery-img" src="Enclosed%20space.jpg" alt="Закрытое пространство" loading="lazy">
+        </picture>
+        <div class="gallery-body">
+          <h3>Закрытое пространство</h3>
+          <p>поддержка и навигация</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDY -->
+<section class="section section--bg">
   <div class="container">
     <div style="max-width:800px;margin:0 auto">
       <div style="margin-bottom:40px;text-align:center" class="reveal">
@@ -1289,7 +1106,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,.55);padding:64px 0;t
 </section>
 
 <!-- TESTIMONIALS -->
-<section class="section section--bg">
+<section class="section section--white">
   <div class="container">
     <div style="margin-bottom:48px;text-align:center" class="reveal">
       <span class="label">Реальные истории</span>
