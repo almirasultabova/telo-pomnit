@@ -1,0 +1,9 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [
+      "/home/agent/projects/telo-pomnit/landing_final.html"
+    ],
+    "ignoreValues": []
+  }
+}
