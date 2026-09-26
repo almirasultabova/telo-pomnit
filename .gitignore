@@ -8,6 +8,18 @@ desktop.ini
 .idea/
 *.swp
 
+# Obsidian — локальные настройки и состояние хранилища
+.obsidian/
+
+# Частные и тяжёлые исходники: OneDrive и восстановимый архив
+media/library/
+База знаний/Источники/Личный бренд/
+archive/site/Личный бренд/
+
+# Пересоздаваемые сборки, скриншоты и локальные журналы проверок
+output/
+.playwright-cli/
+
 # Dependencies
 node_modules/
 

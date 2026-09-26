@@ -1,4 +1,6 @@
 {
+  "buildCommand": "node scripts/build-static.mjs",
+  "outputDirectory": "output/site",
   "rewrites": [
     { "source": "/", "destination": "/landing_final.html" },
     { "source": "/guide", "destination": "/gaid-body-stress.html" },

@@ -15,7 +15,7 @@ const STREAM = {
   startDate: new Date('2026-03-26T15:00:00Z'), // 26 марта, 18:00 МСК
   endDate:   new Date('2026-04-23T15:00:00Z'), // 23 апреля, 18:00 МСК
   zoomLink:  null,   // добавь ссылку когда будет: 'https://zoom.us/j/...'
-  chatLink:  'https://t.me/+IwJSzSom75M0ZDcy',
+  chatLink:  process.env.STREAM_CHAT_LINK || null,
 }
 
 // 9 встреч — точное расписание программы (МСК = UTC+3)
