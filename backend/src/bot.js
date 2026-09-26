@@ -124,6 +124,18 @@ bot.command('app', async (ctx) => {
   await ctx.reply('Ваш дневник наблюдений:', { reply_markup: keyboard })
 })
 
+// ─── /reserve — проверить резервное мини-приложение (только ведущие) ─────
+
+const RESERVE_APP_URL = 'https://tg-app-telo-pomnit.vercel.app/'
+
+bot.command('reserve', async (ctx) => {
+  if (!ADMIN_IDS.includes(ctx.from?.id)) {
+    return ctx.reply('Эта команда доступна только ведущим.')
+  }
+  const keyboard = new InlineKeyboard().webApp('Открыть резервное приложение', RESERVE_APP_URL)
+  await ctx.reply('Резервное приложение для проверки:', { reply_markup: keyboard })
+})
+
 // ─── /admin — открыть админ-панель (только ведущие) ─────────────────────
 
 const ADMIN_PANEL_URL = process.env.ADMIN_PANEL_URL || 'https://app.telo-pomnit.ru/admin.html'
