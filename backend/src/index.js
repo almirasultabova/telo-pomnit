@@ -13,6 +13,7 @@ app.register(require('@fastify/cors'), {
     'https://almirasultabova.github.io',
     'https://web.telegram.org',
     'https://tg-app-telo-pomnit.vercel.app',
+    'https://telo-pomnit-t6my-almirasultabovas-projects.vercel.app',
     'https://app.telo-pomnit.ru'
   ],
   credentials: true

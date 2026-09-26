@@ -52,7 +52,11 @@ foreach ($area in @('site', 'app')) {
     $folder = if ($Built) { Join-Path $repository "output/$area" } else { Join-Path $repository $area }
     $webRoot = if ($Built) { $folder } else { $repository }
     if (-not (Test-Path -LiteralPath $folder -PathType Container)) { $issues.Add("Нет каталога: $folder"); continue }
-    $files = Get-ChildItem -LiteralPath $folder -File -Recurse | Where-Object { $_.Extension -in @('.html', '.css', '.js') }
+    $generatedApp = (Join-Path $repository 'app/.vercel-build') + [IO.Path]::DirectorySeparatorChar
+    $files = Get-ChildItem -LiteralPath $folder -File -Recurse | Where-Object {
+        $_.Extension -in @('.html', '.css', '.js') -and
+        ($Built -or $area -ne 'app' -or -not $_.FullName.StartsWith($generatedApp, [StringComparison]::OrdinalIgnoreCase))
+    }
     foreach ($file in $files) {
         $checked++
         $text = Get-Content -LiteralPath $file.FullName -Raw -Encoding UTF8

@@ -111,7 +111,7 @@ powershell -NoProfile -File scripts/check-structure.ps1 -Built
 
 Сборки: `output/site/` → `/var/www/telo-site/`, `output/app/` → `/var/www/telo-app/`. Никогда не публиковать корень проекта, библиотеку исходников, архивы или `.env`. Перед публикацией сайта выполнить согласование редакции, после — `nginx -t` и проверку продакшна в Microsoft Edge.
 
-GitHub: `https://github.com/almirasultabova/telo-pomnit`, рабочая ветка `main`. `git push` не публикует статику. Сервер: `root@45.11.93.236`, ключ `c:/tmp/beget_key`. Бэкенд: `/var/www/telo-pomnit/backend/`; после правки env — `pm2 restart telo-backend --update-env`. Не редактировать backend index.js через sed на сервере: сначала локально, затем публикация.
+GitHub: `https://github.com/almirasultabova/telo-pomnit`, рабочая ветка `main`. `git push` не обновляет Beget, но запускает подключённые Git-развёртывания Vercel. Перед изменением структуры проверять их Root Directory и настройки сборки; статус резервного проекта — в инструкции развёртывания. Сервер: `root@45.11.93.236`, ключ `c:/tmp/beget_key`. Бэкенд: `/var/www/telo-pomnit/backend/`; после правки env — `pm2 restart telo-backend --update-env`. Не редактировать backend index.js через sed на сервере: сначала локально, затем публикация.
 
 Процесс backend намеренно оставлен под root; не мигрировать его без отдельной задачи. Модель AI `gpt-4o-mini` сохраняется. Не менять CORS whitelist и префиксы admin при уборке. Все подробности в инструкции развёртывания.
 

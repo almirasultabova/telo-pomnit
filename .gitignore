@@ -18,6 +18,7 @@ archive/site/Личный бренд/
 
 # Пересоздаваемые сборки, скриншоты и локальные журналы проверок
 output/
+app/.vercel-build/
 .playwright-cli/
 
 # Dependencies

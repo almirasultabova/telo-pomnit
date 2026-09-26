@@ -4,7 +4,10 @@ import { fileURLToPath } from 'node:url';
 
 // One public manifest is shared by local builds and the Vercel reserve.
 const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const output = path.join(repository, 'output');
+// Vercel's app project uses app/ as its root while shared media stays at repository root.
+const output = process.argv.includes('--vercel-app')
+  ? path.join(repository, 'app', '.vercel-build')
+  : path.join(repository, 'output');
 const mediaExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif', '.ico', '.mp3', '.mp4', '.webm', '.woff', '.woff2']);
 const pages = ['landing_final.html', 'thanks.html', 'offer.html', 'privacy.html', 'gaid-body-stress.html', 'admin.html', 'presentation.html'];
 
