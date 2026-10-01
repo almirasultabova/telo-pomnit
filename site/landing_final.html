@@ -158,17 +158,29 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
 @media(max-width:1050px) and (min-width:769px){.canopy-section{padding-left:5vw;padding-right:5vw}.canopy-layout{gap:4vw;grid-template-columns:1.1fr 1fr}.canopy-cards article{padding:18px}.canopy-art{height:400px}}
 @media(max-width:768px){.journey{height:540svh}.canopy-section{padding:80px 7vw}.canopy-layout{display:flex;flex-direction:column;gap:30px;align-items:stretch}.canopy-copy{display:contents}.canopy-eyebrow{order:0;margin-bottom:-12px}.canopy-copy h2{order:1;font-size:clamp(37px,6.5vw,50px);margin:0}.canopy-intro{order:2;margin:0}.canopy-art{order:3;height:370px}.canopy-cards{order:4}.canopy-art figcaption p{font-size:26px}}
 @media(max-width:480px){.canopy-section{padding:65px 7vw}.canopy-layout{gap:24px}.canopy-eyebrow{font-size:9px;margin-bottom:-6px}.canopy-copy h2{font-size:36px;line-height:1.16}.canopy-intro{font-size:15px;line-height:1.8}.canopy-art{height:320px;border-radius:8px}.canopy-art figcaption{left:20px;right:20px;bottom:22px}.canopy-art figcaption p{font-size:23px}.canopy-cards{grid-template-columns:1fr;gap:12px}.canopy-cards article{padding:22px}.canopy-cards p{font-size:15px}.canopy-cards .canopy-label{font-size:10px}}
+
+/* J-101: doorway → full tree → canopy frame → full tree and roots. */
+.entry-screen{height:220svh;overflow:visible;background:var(--cream);isolation:auto}
+.entry-stage{position:sticky;top:0;height:100svh;min-height:560px;overflow:hidden;isolation:isolate;background:#172219}
+.entry-tree{position:absolute;inset:0;z-index:0}.entry-tree img{position:absolute;display:block;max-width:none}.entry-screen.is-docking .entry-tree{visibility:hidden}.entry-screen.is-docking .entry-stage{background:var(--cream)}.journey.is-returning .world{visibility:hidden}.journey.is-returning .stage{background:var(--cream)}
+.canopy-bridge{position:fixed;top:0;left:0;width:100vw;height:100svh;z-index:12;overflow:hidden;pointer-events:none;opacity:0;visibility:hidden;background:#253a28;will-change:transform,width,height;border-radius:0}.canopy-bridge img{position:absolute;max-width:none;display:block;will-change:width,height,transform}
+.canopy-section{z-index:1}.canopy-bridge+ .canopy-section .canopy-art{isolation:isolate}
+.canopy-section.is-morphing .canopy-art figcaption{opacity:0}.canopy-section.is-morphing .canopy-art img{visibility:hidden}.canopy-section.is-morphing .canopy-art{background:var(--cream)}
+@media(max-width:768px){.entry-screen{height:200svh}}
+@media(prefers-reduced-motion:reduce){.entry-screen{height:100svh}.entry-stage{position:relative}.entry-tree,.canopy-bridge{display:none!important}}
 </style>
 </head>
 <body>
 <a class="skip-main" href="#presence">Перейти к описанию программы</a>
-<noscript><style>.no-js,.menu-toggle,.entry-actions button,.scroll-cue,.chapter-nav,.transport,.progress-track{display:none!important}.topbar{position:relative;background:#17251b;display:block;padding:20px 7vw}.topbar .wordmark{display:inline-block}.topbar-right{display:block;margin-top:14px}.site-menu{display:flex!important;position:static;flex-direction:row;flex-wrap:wrap;box-shadow:none;background:none;color:inherit;padding:0;gap:8px 18px}.site-menu a{font-size:14px;padding:5px 0}.topbar .skip{display:none}.hero-copy{top:15%!important;opacity:1!important}.stage{min-height:650px}.journey{display:none!important}.entry-screen{min-height:650px}.tree-image,.scene-copy{display:none!important}#practice{--practice-image:url("/media/site/threshold/practice-space.jpg")}</style></noscript>
+<noscript><style>.no-js,.menu-toggle,.entry-actions button,.scroll-cue,.chapter-nav,.transport,.progress-track{display:none!important}.topbar{position:relative;background:#17251b;display:block;padding:20px 7vw}.topbar .wordmark{display:inline-block}.topbar-right{display:block;margin-top:14px}.site-menu{display:flex!important;position:static;flex-direction:row;flex-wrap:wrap;box-shadow:none;background:none;color:inherit;padding:0;gap:8px 18px}.site-menu a{font-size:14px;padding:5px 0}.topbar .skip{display:none}.hero-copy{top:15%!important;opacity:1!important}.stage{min-height:650px}.journey{display:none!important}.entry-screen{height:100svh!important;min-height:650px}.entry-stage{position:relative!important;min-height:650px}.entry-tree,.canopy-bridge{display:none!important}.tree-image,.scene-copy{display:none!important}#practice{--practice-image:url("/media/site/threshold/practice-space.jpg")}</style></noscript>
 <header class="topbar" id="topbar">
  <a class="wordmark" href="#start" aria-label="Тело помнит — к началу">тело<span>помнит</span></a>
  <div class="topbar-right"><button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="siteMenu">☰</button><nav class="site-menu" id="siteMenu" aria-label="Разделы страницы"><a href="#life">Ведущие</a><a href="#rhythm">Пять недель</a><a href="#voices">Опыт</a><a href="#conditions">Участие</a></nav><a class="skip" href="#presence">О программе <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a></div>
 </header>
 <main>
 <section class="entry-screen" id="start" data-tone="dark" aria-label="Порог">
+ <div class="entry-stage">
+  <div class="entry-tree" aria-hidden="true"><img src="/media/site/threshold/tree-roots.jpg" alt="" width="1086" height="1448" decoding="async"></div>
   <div class="portal-window" id="portalWindow" aria-hidden="true"><div class="portal" id="portal" aria-hidden="true"><img id="portalImage" src="/media/site/threshold/portal.jpg" alt="" width="1672" height="941" fetchpriority="high"></div></div>
   <div class="veil" id="veil"></div>
   <div class="hero-copy" id="heroCopy">
@@ -179,7 +191,9 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
    <div class="entry-actions"><button type="button" class="entry-link" id="enter" aria-label="Продолжить к дереву">Войти в историю <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button><a class="entry-offer" href="#conditions">Условия участия <span aria-hidden="true">↗</span></a></div>
   </div>
   <div class="scroll-cue" id="scrollCue"><i aria-hidden="true"></i><span>Начать с себя</span></div>
+ </div>
 </section>
+<div class="canopy-bridge" id="canopyBridge" aria-hidden="true"><img src="/media/site/threshold/tree-roots.jpg" alt="" width="1086" height="1448" decoding="async"></div>
 <section class="canopy-section" id="canopy" tabindex="-1" data-tone="light" aria-labelledby="canopyTitle">
  <div class="canopy-layout">
   <div class="canopy-copy"><div class="canopy-eyebrow">Метафора дерева</div><h2 id="canopyTitle">То, что видно снаружи:<br>крона и ветви нашей жизни</h2><p class="canopy-intro">В повседневности мы обычно замечаем только крону — внешние проявления, поступки и результаты. Когда ветка сохнет, бесполезно красить листья. Важно взглянуть, что питает всё дерево.</p>
@@ -305,6 +319,7 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateOffer();});
  const el = Object.fromEntries(['stage','portal','portalImage','treeImage','treeShade','veil','lightpass','endwash','heroCopy','treeCopy','rootCopy','scrollCue','motes','topbar','chapterNav','progress','presence','enter','autoplay','playLabel','playIcon','assetWarning'].map(id=>[id,$(id)]));
  const recognition=[...document.querySelectorAll('.recognition-copy')];
+ const entry=$('start'),canopy=$('canopy'),bridge=$('canopyBridge'),bridgeImage=bridge.querySelector('img'),entryTree=document.querySelector('.entry-tree');
  const journey=$('rootJourney'), chapterButtons=[...document.querySelectorAll('[data-scene]')];
  const reduce=matchMedia('(prefers-reduced-motion: reduce)');
  const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
@@ -323,6 +338,37 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   render();
  }
  function fadeCopy(node,visibility,offset=0){opacity(node,visibility);node.inert=visibility<.1;node.style.transform=reduce.matches?'none':`translate3d(0,${offset}px,0)`;node.setAttribute('aria-hidden',visibility<.1?'true':'false');}
+ function bridgeFrame(frame,image,radius=0){
+  bridge.style.visibility='visible';bridge.style.opacity='1';
+  bridge.style.transform=`translate3d(${frame.x}px,${frame.y}px,0)`;
+  bridge.style.width=frame.w+'px';bridge.style.height=frame.h+'px';bridge.style.borderRadius=radius+'px';
+  bridgeImage.style.width=image.w+'px';bridgeImage.style.height=image.h+'px';
+  bridgeImage.style.transform=`translate3d(${image.x}px,${image.y}px,0)`;
+ }
+ const mix=(a,b,t)=>a+(b-a)*t;
+ function coverImage(w,h){const ratio=(el.treeImage.naturalHeight||1448)/(el.treeImage.naturalWidth||1086);const iw=Math.max(w,h/ratio),ih=iw*ratio;return {w:iw,h:ih,x:(w-iw)/2,y:(h-ih)*.06};}
+ function entryImage(d){const iw=Math.max(d.w,d.h*1.8),ih=iw*((el.treeImage.naturalHeight||1448)/(el.treeImage.naturalWidth||1086));return {w:iw,h:ih,x:(d.w-iw)*.7,y:(d.h-ih)*.06};}
+ function renderBridge(d){
+  bridge.style.visibility='hidden';bridge.style.opacity='0';canopy.classList.remove('is-morphing');canopy.style.transform='';entry.classList.toggle('is-docking',!reduce.matches&&scrollY>=entry.offsetHeight-d.h);journey.classList.remove('is-returning');
+  const entrance=entryImage(d),entranceImage=entryTree.querySelector('img');entranceImage.style.width=entrance.w+'px';entranceImage.style.height=entrance.h+'px';entranceImage.style.transform=`translate3d(${entrance.x}px,${entrance.y}px,0)`;
+  if(reduce.matches)return;
+  const dockStart=entry.offsetHeight-d.h,dockEnd=canopy.offsetTop-96;
+  if(scrollY>=dockStart&&scrollY<dockEnd)canopy.style.transform=`translate3d(0,${scrollY-dockEnd}px,0)`;
+  const card=canopy.querySelector('.canopy-art').getBoundingClientRect();
+  const exitStart=journey.offsetTop-d.h*.35,exitEnd=journey.offsetTop;
+  if(scrollY>=dockStart&&scrollY<dockEnd){
+   const t=smooth(range(scrollY,dockStart,dockEnd));
+   const frame={x:mix(0,card.left,t),y:mix(0,card.top,t),w:mix(d.w,card.width,t),h:mix(d.h,card.height,t)};
+   const to=coverImage(card.width,card.height),image={w:mix(entrance.w,to.w,t),h:mix(entrance.h,to.h,t),x:mix(entrance.x,to.x,t),y:mix(entrance.y,to.y,t)};
+   bridgeFrame(frame,image,12*t);canopy.classList.add('is-morphing');entry.classList.add('is-docking');
+   document.documentElement.dataset.threshold='dock';
+  }else if(scrollY>=exitStart&&scrollY<exitEnd){
+   const t=smooth(range(scrollY,exitStart,exitEnd)),from=coverImage(card.width,card.height);
+   const frame={x:mix(card.left,0,t),y:mix(Math.max(0,Math.min(card.top,d.h-card.height)),0,t),w:mix(card.width,d.w,t),h:mix(card.height,d.h,t)};
+   const image={w:mix(from.w,d.iw,t),h:mix(from.h,d.ih,t),x:mix(from.x,d.w<769?d.w*.76-d.iw*.66:(d.w-d.iw)/2,t),y:mix(from.y,d.startY,t)};
+   bridgeFrame(frame,image,12*(1-t));bridge.style.opacity=smooth(range(t,0,.18)).toFixed(4);journey.classList.add('is-returning');canopy.classList.add('is-morphing');document.documentElement.dataset.threshold='return';
+  }else document.documentElement.dataset.threshold=scrollY<dockStart?'door':scrollY<exitStart?'read':'roots';
+ }
  function render(){
   frame=0;
   const d=dimensions;if(!d.h)return;
@@ -333,26 +379,27 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
 
   const beforeJourney=scrollY<journey.offsetTop;
   const inCanopy=scrollY>= $("canopy").offsetTop-120 && beforeJourney;
-  const p=beforeJourney?0:.25+.75*clamp((scrollY-journey.offsetTop)/d.distance),mobile=d.w<769,enter=smooth(range(p,.025,.215));
-  const aperture=smooth(range(p,.145,.225));
-  const portalFade=reduce.matches?1-smooth(range(p,.19,.21)):(aperture>=1?0:1);
+  const p=beforeJourney?0:.25+.75*clamp((scrollY-journey.offsetTop)/d.distance),mobile=d.w<769;
   const descent=smooth(range(p,.73,.93));
   const approach=reduce.matches?0:smooth(range(p,.39,.71));
   const treeScale=1+approach*(mobile?.20:.32)*(1-descent);
   const camY=reduce.matches?(p<.82?d.startY:d.endY):d.startY+(d.endY-d.startY)*descent;
-  const zoom=reduce.matches?1:1+enter*(mobile?1.6:2.2);
-  const drift=reduce.matches?0:d.w*(mobile?.03:-.03)*enter;
+  const doorway=reduce.matches?0:clamp(scrollY/Math.max(1,entry.offsetHeight-d.h));
+  const doorwayZoom=smooth(range(doorway,.035,.65));
+  const doorwayOpen=smooth(range(doorway,.40,.74));
+  const zoom=1+doorwayZoom*(mobile?1.6:2.2);
+  const drift=d.w*(mobile?.03:-.03)*doorwayZoom;
   el.portal.style.transform=`translate3d(${drift}px,0,0) scale(${zoom})`;
-  opacity(el.portal,portalFade);
-  const radius=aperture*145;
-  const mask=aperture===0?'none':`radial-gradient(ellipse at 77% 46%, transparent ${Math.max(0,radius-2)}%, #000 ${radius+2}%)`;
+  opacity(el.portal,doorwayOpen>=1?0:1);
+  const radius=doorwayOpen*145;
+  const mask=doorwayOpen===0?'none':`radial-gradient(ellipse at 77% 46%, transparent ${Math.max(0,radius-2)}%, #000 ${radius+2}%)`;
   $('portalWindow').style.maskImage=reduce.matches?'none':mask;
   $('portalWindow').style.webkitMaskImage=reduce.matches?'none':mask;
   el.treeImage.style.transform=`translate3d(${-approach*d.w*.025*(1-descent)}px,${camY}px,0) scale(${treeScale})`;
-  opacity(el.veil,1-smooth(range(p,.16,.22)));
+  opacity(el.veil,reduce.matches?1:1-smooth(range(doorway,.25,.48)));
   opacity(el.treeShade,smooth(range(p,.205,.235)));
-  const hero=1-smooth(range(p,.015,.095));
-  opacity(el.heroCopy,hero);el.heroCopy.style.transform=reduce.matches?'none':`translate3d(${-enter*60}px,${-enter*45}px,0)`;
+  const hero=reduce.matches?1:1-smooth(range(doorway,.02,.24));
+  opacity(el.heroCopy,hero);el.heroCopy.style.transform=reduce.matches?'none':`translate3d(${-doorwayZoom*60}px,${-doorwayZoom*45}px,0)`;
   el.heroCopy.inert=hero<.1;el.heroCopy.setAttribute('aria-hidden',hero<.1?'true':'false');el.heroCopy.style.pointerEvents=hero<.1?'none':'auto';
   const treeText=smooth(range(p,.215,.235))*(1-smooth(range(p,.34,.36)));
   const rootText=smooth(range(p,.83,.85));
@@ -374,12 +421,14 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   const sections=[...document.querySelectorAll('[data-tone]')];
   const current=sections.filter(n=>n.getBoundingClientRect().top<=80).at(-1);
   const past=scrollY>=journey.offsetTop+journey.offsetHeight-innerHeight*.2;
-  const light=Boolean(current&&current.dataset.tone==='light');
+  const light=Boolean((current&&current.dataset.tone==='light')||(beforeJourney&&doorway>.74));
   el.topbar.classList.toggle('dark',past&&current?.dataset.tone==='dark');
-  const hideTransport=p>=.99||(inCanopy&&!playing);
+  renderBridge(d);
+  const morphing=["dock","return"].includes(document.documentElement.dataset.threshold);
+  const hideTransport=p>=.99||((inCanopy||morphing)&&!playing);
   document.querySelector('.transport').classList.toggle('hidden',hideTransport);document.querySelector('.transport').inert=hideTransport;
   document.querySelector('.progress-track').style.opacity=p>=.99?'0':'1';
-  el.chapterNav.classList.toggle('hidden',p>=.99||inCanopy);el.chapterNav.inert=p>=.99||inCanopy;
+  el.chapterNav.classList.toggle('hidden',p>=.99||inCanopy||morphing);el.chapterNav.inert=p>=.99||inCanopy||morphing;
   el.topbar.classList.toggle("tree-light",p>.22&&p<.73);
   el.topbar.classList.toggle('light',light);el.chapterNav.classList.toggle('light',light);
   el.progress.style.transform=`scaleX(${clamp(scrollY/(document.documentElement.scrollHeight-innerHeight))})`;
@@ -405,7 +454,7 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   travel(sceneY(.36+next*.072+.036),reduce.matches?0:450);
  }));
  chapterButtons.forEach(button=>button.addEventListener('click',()=>showScene(Number(button.dataset.scene))));
- el.enter.addEventListener('click',()=>travel($('canopy').offsetTop-96,reduce.matches?0:1400));
+ el.enter.addEventListener('click',()=>travel($('canopy').offsetTop-96,reduce.matches?0:3600));
  el.autoplay.addEventListener('click',()=>{
   if(playing||tweening){stop();return;}
   if(!ready)return;
