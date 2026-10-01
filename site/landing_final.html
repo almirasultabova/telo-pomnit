@@ -16,7 +16,15 @@
 <link rel="canonical" href="https://telo-pomnit.ru/">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="icon" href="data:,">
-<link rel="preload" href="/media/site/threshold/portal.jpg" as="image">
+<script>
+// HTTP uses public /media paths; a directly opened file uses its local project media.
+window.teloAssetPath=path=>{
+ if(location.protocol!=='file:')return path;
+ const directory=new URL(location.pathname.includes('/output/site/')?'./':'../',location.href);
+ return new URL(path.replace(/^\//,''),directory).href;
+};
+const scenePreload=document.createElement('link');scenePreload.rel='preload';scenePreload.as='image';scenePreload.href=window.teloAssetPath('/media/site/threshold/portal.jpg');document.head.append(scenePreload);
+</script>
 <style>
 :root{--cream:#f7f4ef;--green:#2a4a38;--ink:#1a211a;--gold:#c49a3c;--line:rgba(247,244,239,.3);--display:Georgia,'Times New Roman',serif;--body:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
 *{box-sizing:border-box}html{scroll-behavior:auto;background:#132017}body{margin:0;font-family:var(--body);color:var(--cream);overflow-x:clip}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}a{color:inherit;text-decoration:none}button:focus-visible,a:focus-visible{outline:2px solid #eacb85;outline-offset:6px}button:disabled{cursor:wait;opacity:.5}button svg,a svg{width:20px;height:20px;flex:none}button svg{pointer-events:none}::selection{background:#c49a3c;color:#17251b}
@@ -204,6 +212,13 @@
 <script>
 (() => {
  'use strict';
+ const assetPath=window.teloAssetPath;
+ if(location.protocol==='file:'){
+  document.querySelectorAll('img[src^="/media/"]').forEach(img=>img.src=assetPath(img.getAttribute('src')));
+  document.querySelectorAll('style').forEach(style=>{style.textContent=style.textContent.replace(/url\((['"]?)(\/media\/[^)'"\s]+)\1\)/g,(_,quote,path)=>`url("${assetPath(path)}")`);});
+  document.querySelectorAll('a[href^="/media/"]').forEach(a=>a.href=assetPath(a.getAttribute('href')));
+  document.querySelectorAll('a[href="/offer.html"],a[href="/privacy"]').forEach(a=>a.href=new URL(a.getAttribute('href')==='/privacy'?'privacy.html':'offer.html',location.href).href);
+ }
  const menuButton=document.querySelector('.menu-toggle'), siteMenu=document.getElementById('siteMenu');
  function closeMenu(){menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-label','Открыть меню');siteMenu.classList.remove('is-open');document.getElementById('topbar').classList.remove('menu-open');requestRender();}
  menuButton.addEventListener('click',()=>{const open=menuButton.getAttribute('aria-expanded')!=='true';menuButton.setAttribute('aria-expanded',String(open));siteMenu.classList.toggle('is-open',open);menuButton.setAttribute('aria-label',open?'Закрыть меню':'Открыть меню');document.getElementById('topbar').classList.toggle('menu-open',open);requestRender();});
@@ -212,7 +227,7 @@
 
  // The distant practice artwork is requested only near its section.
  const practice=document.getElementById('practice');
- const loadPractice=()=>practice.style.setProperty('--practice-image',"url('/media/site/threshold/practice-space.jpg')");
+ const loadPractice=()=>practice.style.setProperty('--practice-image',`url("${assetPath('/media/site/threshold/practice-space.jpg')}")`);
  if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){loadPractice();observer.disconnect();}},{rootMargin:'1000px'});observer.observe(practice);}else loadPractice();
  const $ = id => document.getElementById(id);
  // Display the agreed dated offer in Moscow time; this does not charge a payment.
