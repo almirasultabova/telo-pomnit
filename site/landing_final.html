@@ -159,6 +159,13 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
 @media(max-width:768px){.journey{height:540svh}.canopy-section{padding:80px 7vw}.canopy-layout{display:flex;flex-direction:column;gap:30px;align-items:stretch}.canopy-copy{display:contents}.canopy-eyebrow{order:0;margin-bottom:-12px}.canopy-copy h2{order:1;font-size:clamp(37px,6.5vw,50px);margin:0}.canopy-intro{order:2;margin:0}.canopy-art{order:3;height:370px}.canopy-cards{order:4}.canopy-art figcaption p{font-size:26px}}
 @media(max-width:480px){.canopy-section{padding:65px 7vw}.canopy-layout{gap:24px}.canopy-eyebrow{font-size:9px;margin-bottom:-6px}.canopy-copy h2{font-size:36px;line-height:1.16}.canopy-intro{font-size:15px;line-height:1.8}.canopy-art{height:320px;border-radius:8px}.canopy-art figcaption{left:20px;right:20px;bottom:22px}.canopy-art figcaption p{font-size:23px}.canopy-cards{grid-template-columns:1fr;gap:12px}.canopy-cards article{padding:22px}.canopy-cards p{font-size:15px}.canopy-cards .canopy-label{font-size:10px}}
 
+/* J-107: soften desktop navigation only while viewing the entrance. */
+@media(min-width:769px){.topbar.hero-nav .site-menu a,.topbar.hero-nav .skip{opacity:.85}.topbar.hero-nav .site-menu a:hover,.topbar.hero-nav .site-menu a:focus-visible,.topbar.hero-nav .skip:hover,.topbar.hero-nav .skip:focus-visible{opacity:1}}
+/* J-104: one entrance action. */
+.entry-screen .entry-actions{align-items:center}
+.entry-screen .entry-actions .entry-offer{width:auto;min-height:44px;padding:10px 0;border:0;border-radius:0;background:none;backdrop-filter:none;font-size:12px;color:#d0c8b7;gap:8px}
+.entry-screen .entry-actions .entry-offer:hover{background:none;color:var(--cream);text-decoration:underline;text-underline-offset:5px}
+@media(max-width:480px){.entry-screen .entry-actions{gap:2px}.entry-screen .entry-actions .entry-offer{align-self:flex-start}}
 /* J-101: doorway → full tree → canopy frame → full tree and roots. */
 .entry-screen{height:220svh;overflow:visible;background:var(--cream);isolation:auto}
 .entry-stage{position:sticky;top:0;height:100svh;min-height:560px;overflow:hidden;isolation:isolate;background:#172219}
@@ -166,13 +173,301 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
 .canopy-bridge{position:fixed;top:0;left:0;width:100vw;height:100svh;z-index:12;overflow:hidden;pointer-events:none;opacity:0;visibility:hidden;background:#253a28;will-change:transform,width,height;border-radius:0}.canopy-bridge img{position:absolute;max-width:none;display:block;will-change:width,height,transform}
 .canopy-section{z-index:1}.canopy-bridge+ .canopy-section .canopy-art{isolation:isolate}
 .canopy-section.is-morphing .canopy-art figcaption{opacity:0}.canopy-section.is-morphing .canopy-art img{visibility:hidden}.canopy-section.is-morphing .canopy-art{background:var(--cream)}
-@media(max-width:768px){.entry-screen{height:200svh}}
+@media(max-width:768px){.entry-screen{height:165svh}}
 @media(prefers-reduced-motion:reduce){.entry-screen{height:100svh}.entry-stage{position:relative}.entry-tree,.canopy-bridge{display:none!important}}
+</style>
+<style>/* J-111: compact editorial explanation; the old journey is retained but inactive. */
+#rootJourney[hidden],#canopyBridge[hidden]{display:none!important}
+.approach-section{background:var(--cream);color:#2a4a38;padding:78px 7vw 72px;scroll-margin-top:96px;position:relative;isolation:isolate}
+.approach-section:before{content:"";position:absolute;inset:-139px 0 auto;height:140px;background:linear-gradient(180deg,transparent,var(--cream));z-index:-1;pointer-events:none}
+/* The doorway releases into the explanation in one short, overlapping dissolve. */
+.has-approach-transition main{background:var(--cream)}
+.has-approach-transition .approach-section{margin-top:-55svh;z-index:1;opacity:var(--approach-arrival,1)}
+.has-approach-transition .entry-stage:after{content:"";position:absolute;inset:0;z-index:8;background:var(--cream);opacity:var(--approach-release,0);pointer-events:none}
+.has-approach-transition .approach-intro-copy{transform:translateY(var(--approach-copy-shift,0px))}
+.has-approach-transition .approach-art{transform:translateY(var(--approach-art-shift,0px)) scale(var(--approach-art-scale,1));transform-origin:70% 50%}
+#canopy:focus{outline:none}
+#canopy:focus-visible #approachTitle{text-decoration:underline;text-decoration-color:#c49a3c;text-decoration-thickness:1px;text-underline-offset:8px}
+.approach-intro{position:relative;isolation:isolate}
+.approach-intro:before,.approach-intro:after{content:"";position:absolute;top:-78px;left:-7vw;width:min(15vw,190px);aspect-ratio:1;background:url('/media/site/threshold/olive-foreground.webp') left top/100% auto no-repeat;pointer-events:none;z-index:1;transform-origin:0 0;animation:approach-breeze 10.5s cubic-bezier(.45,0,.55,1) infinite}
+.approach-intro:after{left:auto;right:-7vw;width:min(20vw,260px);scale:-1 1;transform-origin:50% 0;animation-duration:11.8s;animation-delay:-4s}
+@keyframes approach-breeze{0%,100%{transform:translate(0,0) rotate(0deg)}35%{transform:translate(3px,1px) rotate(.55deg)}70%{transform:translate(1px,3px) rotate(.2deg)}}
+.approach-intro{display:grid;grid-template-columns:.7fr 1.3fr;gap:4vw;align-items:center}
+.approach-eyebrow{font-size:10px;line-height:1.65;letter-spacing:.13em;margin:0 0 18px}
+.approach-section h2,.approach-section h3{font-family:var(--display);font-weight:400;letter-spacing:-.025em}
+.approach-section h2{font-size:clamp(35px,3.1vw,49px);line-height:1.13;margin:0 0 24px}
+.approach-intro-copy>p:not(.approach-eyebrow){font-size:15px;line-height:1.8;margin:0 0 18px;max-width:540px}
+.approach-art{margin:0;position:relative;width:106%;min-width:0}
+.approach-art figcaption{display:contents}
+.approach-art figcaption span{position:absolute;left:3%;font-size:10px;line-height:1.6;letter-spacing:.08em;padding:6px 9px;max-width:94%;pointer-events:none;color:#f7f4ef;background:#173326d9;border:1px solid #f7f4ef66;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.approach-art figcaption span:after{content:"";display:block;width:42px;height:1px;background:currentColor;opacity:.65;margin-top:5px}
+.approach-art img{mask-image:linear-gradient(90deg,transparent,#000 1.5%,#000 98.5%,transparent)}
+.approach-visible{top:54%}
+.approach-unseen{top:82%}
+.approach-usual{color:#53614f}
+.approach-usual h3{color:#53614f}
+.approach-usual li strong{font-weight:500}
+.approach-science>div>p.approach-science-eyebrow{font-size:10px;letter-spacing:.13em;line-height:1.65;margin:8px 0 18px}.approach-art img{display:block;width:100%;height:auto;object-fit:contain}
+/* Comparison 1C: a shared light editorial field, imagery only at the edges. */
+.approach-comparison{display:grid;grid-template-columns:1fr 1fr;gap:7vw;position:relative;isolation:isolate;margin:56px -7vw 0;padding:64px 19vw 150px 12vw;background:var(--cream)}
+.approach-comparison>div{padding:0;min-width:0}
+.approach-comparison .approach-wider{padding:0;background:none;color:#254431;border:0}
+.approach-comparison .approach-wider span{color:#435541}
+.approach-wider .approach-eyebrow{color:#52613d}
+.approach-comparison .approach-wider h3{color:#254431}
+.approach-comparison .approach-wider ul{border-left:1px solid #bc9b5945;padding-left:24px}
+.approach-comparison .approach-wider li{position:relative}
+.approach-comparison .approach-wider li:before{content:"";position:absolute;left:-28px;top:8px;width:7px;height:7px;border-radius:50%;background:#a38b51;box-shadow:0 0 0 5px var(--cream)}
+.approach-wider .approach-key{margin-top:28px;padding:0 0 0 22px}
+.comparison-visual{display:block;position:absolute;z-index:-1;pointer-events:none}
+.comparison-visual img{display:block;width:100%;height:100%;object-fit:cover}
+.comparison-leaf{left:0;bottom:0;width:clamp(280px,29vw,430px);height:280px;mask-image:radial-gradient(ellipse at 24% 58%,#000 18%,#000b 42%,transparent 73%)}
+.comparison-roots{right:0;top:60px;bottom:0;width:clamp(200px,22vw,340px);mask-image:linear-gradient(90deg,transparent,#000 72%),linear-gradient(180deg,transparent,#000 22%,#000 78%,transparent);mask-composite:intersect}
+.comparison-roots img{object-position:80% bottom}
+.approach-section h3{font-size:clamp(28px,2.4vw,37px);line-height:1.15;margin:0 0 22px}
+.approach-comparison ul{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.approach-comparison li{font-size:14px;line-height:1.65}
+.approach-comparison strong{display:block;font-weight:600}.approach-comparison span{display:block;color:#596657}
+.approach-note{font-size:14px;line-height:1.75;margin:22px 0 0;max-width:520px}
+.approach-key{font-family:var(--display);font-size:23px;line-height:1.4;border-left:1px solid var(--gold);padding-left:20px;margin:24px 0 0}
+/* Compact reference composition: shared field, close columns, quiet row markers. */
+.approach-comparison{gap:4.5vw;margin-top:38px;padding:34px 14vw 38px 13vw}
+.approach-comparison .approach-eyebrow{font-size:10px;letter-spacing:.1em;margin-bottom:10px}
+.approach-comparison h3{font-size:clamp(27px,2.2vw,32px);line-height:1.12;margin-bottom:20px}
+.approach-comparison .approach-wider{border-left:1px solid #9e9b854d;padding-left:32px}
+.approach-comparison ul{gap:12px;counter-reset:comparison-row}
+.approach-comparison li{position:relative;padding-left:46px;font-size:14px;line-height:1.5;counter-increment:comparison-row}
+.approach-comparison li:before,.approach-comparison .approach-wider li:before{content:counter(comparison-row,decimal-leading-zero);position:absolute;left:0;top:0;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#a68e5010;color:#897143;font-size:10px;letter-spacing:.04em;box-shadow:none}
+.approach-comparison .approach-wider li:before{background:#2a4a3810;color:#365a43}
+.approach-comparison .approach-wider ul{border:0;padding:0}
+.approach-comparison .approach-note{font-family:var(--display);font-size:19px;font-style:italic;line-height:1.35;margin:18px 0 0 46px}
+.approach-comparison .approach-key{font-size:21px;line-height:1.3;margin:18px 0 0 46px;border:0;padding:0}
+.approach-comparison .comparison-leaf{width:clamp(180px,19vw,280px);height:270px;bottom:0;mask-image:linear-gradient(90deg,#000,transparent 95%),linear-gradient(180deg,transparent,#000 40%,#000 82%,transparent);mask-composite:intersect}
+.approach-comparison .comparison-roots{top:0;width:clamp(180px,20vw,290px)}
+.approach-translator{margin-top:40px}
+.approach-translator-heading{display:flex;justify-content:space-between;gap:30px;align-items:baseline}
+.approach-translator-heading h3{margin-bottom:18px}.approach-translator-heading p{font-size:14px;line-height:1.7;margin:0 0 18px;max-width:310px}
+.approach-tabs{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid #2a4a3840;padding-bottom:16px}
+.approach-tabs button{border:0;border-bottom:2px solid transparent;background:transparent;color:#2a4a38;min-height:44px;padding:10px 17px;font-size:13px;line-height:1.5;border-radius:0;transition:background .2s,color .2s,border-color .2s}
+.approach-tabs button[aria-selected=true]{background:#2a4a380b;color:#2a4a38;border-color:var(--gold);font-weight:600}
+.approach-tabs button:hover{background:#2a4a3810}
+.approach-tabs button:focus-visible,.approach-science summary:focus-visible{outline:2px solid #75592d;outline-offset:4px}
+.approach-panels{padding-top:24px}.approach-case[hidden]{display:none!important}
+.approach-case-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px 42px}
+.approach-case article{position:relative;padding-left:35px}
+.approach-case article:last-child{background:#2a4a380d;padding:18px 22px 20px 48px}
+.approach-case article:last-child .approach-no{left:17px;top:21px}
+.approach-case article:last-child h4{color:#2a4a38}
+.approach-case:not([hidden]){animation:approach-case-in .22s ease-out both}
+@keyframes approach-case-in{from{opacity:.55;transform:translateY(5px)}to{opacity:1;transform:none}}
+.approach-no{position:absolute;left:0;top:3px;font-size:10px;letter-spacing:.08em;color:#8b704e}
+.approach-case h4{font-size:14px;font-weight:600;line-height:1.5;margin:0 0 10px}
+.approach-case p{font-size:15px;line-height:1.8;margin:0;color:#4d5d4d}
+.approach-science{border-top:1px solid #2a4a3840;border-bottom:1px solid #2a4a3840;margin-top:30px;overflow-anchor:none}
+.approach-science summary{cursor:pointer;padding:20px 0;min-height:44px;font-size:15px;line-height:1.65}
+.approach-science>div{max-width:800px;padding:6px 0 26px}.approach-science>div>p:not(.approach-key){font-size:15px;line-height:1.85;margin:0 0 18px}
+.approach-fallback details{border-top:1px solid #2a4a3840;margin-top:22px}
+.approach-fallback summary{padding:18px 0;cursor:pointer;min-height:44px}
+.approach-fallback p{font-size:15px;line-height:1.8}
+@media(max-width:768px){
+ .approach-intro:before,.approach-intro:after{top:-65px;width:130px}
+ .approach-section:before{inset:-89px 0 auto;height:90px}
+ .approach-art img{mask-image:none}
+ .approach-art figcaption span:after{display:none}
+ .approach-section{padding:65px 7vw}
+ .approach-art{display:flex;flex-direction:column;gap:8px;width:100%}
+ .approach-art img{order:1}
+ .approach-art figcaption span{position:static;align-self:flex-start;padding:5px 8px;background:#f7f4efe6;color:#2a4a38;border-color:#2a4a3833;font-size:9px;max-width:100%}
+ .approach-art .approach-visible{order:0}
+ .approach-art .approach-unseen{order:2}
+ .approach-intro{display:flex;flex-direction:column;gap:20px;align-items:stretch}
+ .approach-section h2{font-size:clamp(35px,5.5vw,43px)}
+ .approach-intro-copy>p:not(.approach-eyebrow){font-size:16px;max-width:none}
+ .approach-comparison{grid-template-columns:1fr;gap:0;margin-top:35px;padding:28px 7vw 0}
+ .approach-comparison>div,.approach-comparison .approach-wider{padding:0;border:0}
+ .approach-comparison .approach-wider{padding:20px 0 0}
+ .comparison-visual{position:relative;z-index:0;inset:auto;width:calc(100% + 14vw);margin-left:-7vw}
+ .comparison-leaf{height:170px;margin-top:18px;mask-image:radial-gradient(ellipse at 28% 54%,#000 14%,#000a 40%,transparent 73%)}
+ .comparison-leaf img{object-position:center 67%}
+ .comparison-roots{height:240px;margin-top:22px;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 66%,transparent)}
+ .comparison-roots img{object-position:80% 88%}
+ .approach-comparison li,.approach-note{font-size:15px}
+ .approach-translator-heading{display:block}.approach-translator-heading p{max-width:none;font-size:15px}
+ .approach-tabs{flex-wrap:nowrap;overflow-x:auto;padding:5px 5px 16px;margin-left:-5px;margin-right:-5px;scrollbar-width:thin}
+ .approach-tabs button{flex-shrink:0;white-space:nowrap}
+ .approach-case-grid{grid-template-columns:1fr;gap:25px}
+ .approach-case p{font-size:15px}.approach-case h4{font-size:15px}
+}
+@media(max-width:480px){
+ .approach-intro:before,.approach-intro:after{top:-55px;width:110px}
+ .approach-section{padding:55px 7vw}
+ .approach-section h2{font-size:35px}.approach-section h3{font-size:31px}
+ .approach-key{font-size:24px}.approach-case article{padding-left:28px}
+ .approach-tabs button{font-size:13px;padding:10px 13px}
+ .approach-case article:last-child{padding:18px 18px 20px 42px}
+}
+@media(max-width:768px){
+ .approach-comparison{gap:0;margin-top:28px;padding:24px 7vw 0}
+ .approach-comparison h3{font-size:29px;margin-bottom:18px}
+ .approach-comparison .approach-wider{border-left:0;border-top:1px solid #9e9b854d;padding:22px 0 0}
+ .approach-comparison li{font-size:15px;padding-left:42px;line-height:1.45}
+ .approach-comparison ul{gap:13px}
+ .approach-comparison .approach-note,.approach-comparison .approach-key{margin-left:42px;font-size:21px}
+ .approach-comparison .comparison-leaf{width:calc(100% + 14vw);height:100px;margin-top:12px;mask-image:radial-gradient(ellipse at 26% 53%,#000 10%,#0008 42%,transparent 73%)}
+ .approach-comparison .comparison-roots{width:calc(100% + 14vw);height:135px;margin-top:14px;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 65%,transparent)}
+}
+@media(prefers-reduced-motion:reduce){.approach-intro:before,.approach-intro:after{animation:none}.approach-case:not([hidden]){animation:none}.approach-tabs button{transition:none}}
+@media(prefers-reduced-motion:reduce){.has-approach-transition .approach-section{margin-top:0;opacity:1}.has-approach-transition .entry-stage:after{display:none}.has-approach-transition .approach-intro-copy,.has-approach-transition .approach-art{transform:none}.approach-section:before{display:none}}
+/* Crown / roots: approved copy and editorial hierarchy, scoped to comparison. */
+.approach-comparison .approach-usual .approach-eyebrow{color:#827052}
+.approach-comparison .approach-usual h3{color:#514b32}
+.approach-comparison .approach-usual strong{color:#4c4936;font-weight:600}
+.approach-comparison .approach-usual span{color:#6a6b61}
+.approach-comparison .approach-wider{border:0;padding-left:18px}
+.approach-comparison .approach-wider .approach-eyebrow{color:#896c37}
+.approach-comparison .approach-wider h3,.approach-comparison .approach-wider strong{color:#254431}
+.approach-comparison .approach-wider strong{font-weight:650}
+.approach-comparison .approach-wider span{color:#61665b}
+.approach-comparison li{counter-increment:none;padding-left:42px}
+.approach-comparison li:before{display:none}
+.comparison-symbol{position:absolute;left:4px;top:3px;width:24px;height:24px;color:#947844}
+.comparison-root-steps{position:relative}
+.comparison-root-line{position:absolute;left:0;top:8px;width:28px;height:calc(100% - 22px);overflow:visible;pointer-events:none}
+.comparison-root-line path{stroke:#8f9878;stroke-width:1;vector-effect:non-scaling-stroke}
+.comparison-root-line .comparison-root-twig{stroke:#b5a37a;stroke-width:.7}
+.approach-comparison .approach-wider li:before{content:"";display:block;left:10px;top:7px;width:7px;height:7px;background:#9b8549;border:1px solid var(--cream);box-shadow:0 0 0 2px #f7f4efb3}
+.approach-comparison .approach-note{color:#74664d;font-size:19px}
+.approach-comparison .approach-key{color:#254431;font-size:21px}
+@media(max-width:768px){.approach-comparison .approach-wider{padding:22px 0 0}.approach-comparison .approach-note{font-size:20px}}
+@media(prefers-reduced-motion:no-preference){
+ .comparison-motion:not(.comparison-entered)>:is(.approach-eyebrow,h3,ul,.approach-note,.approach-key,.comparison-root-steps){opacity:0}
+ .comparison-motion.comparison-entered>.approach-eyebrow,.comparison-motion.comparison-entered>h3{animation:comparison-text-in .5s ease-out both}
+ .comparison-motion.comparison-entered li{animation:comparison-text-in .5s ease-out both;animation-delay:calc(.16s + var(--row)*.16s)}
+ .comparison-motion.comparison-entered>:is(.approach-note,.approach-key){animation:comparison-text-in .5s ease-out .9s both}
+ .comparison-motion.comparison-entered .comparison-root-line path{stroke-dasharray:1;animation:comparison-root-draw .95s ease-out .15s both}
+ .comparison-visual.comparison-motion:not(.comparison-entered){opacity:0}
+ .comparison-visual.comparison-entered{animation:comparison-image-in .7s ease-out both}
+}
+@keyframes comparison-text-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes comparison-image-in{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+@keyframes comparison-root-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+/* Reference comparison: clearly distinct surfaces in the site's existing palette. */
+.approach-comparison{gap:24px;padding:30px 9vw 36px;margin-top:38px;align-items:stretch}
+.approach-comparison>div{position:static;padding:28px 30px 26px;border-radius:4px;display:flex;flex-direction:column}
+.approach-comparison .approach-usual{background:#efebe2eb;border:1px solid #83765025}
+.approach-comparison .approach-wider{padding:28px 30px 26px;background:#2a4031;color:#f7f4ef;border:1px solid #2a4031}
+.approach-comparison h3{font-size:clamp(27px,2.05vw,31px);line-height:1.15;margin-bottom:24px}
+.approach-comparison .approach-usual h3{color:#4b432b}
+.approach-comparison .approach-wider h3{color:#f7f4ef}
+.approach-comparison .approach-wider .approach-eyebrow{color:#d2ba84}
+.approach-comparison ul{gap:18px;margin-bottom:24px}
+.approach-comparison li{padding-left:17px;font-size:15px;line-height:1.65}
+.approach-comparison li strong,.approach-comparison li span{display:inline}
+.approach-comparison .approach-usual strong{color:#4b4738;font-weight:650}
+.approach-comparison .approach-usual span{color:#626253}
+.approach-comparison .approach-wider strong{color:#faf6e9;font-weight:650}
+.approach-comparison .approach-wider span{color:#e4e8dc}
+.approach-comparison li:before,.approach-comparison .approach-wider li:before{content:"";display:block;position:absolute;left:0;top:9px;width:5px;height:5px;border:0;border-radius:50%;background:#978466;box-shadow:none}
+.approach-comparison .approach-wider li:before{background:#b4c4a7}
+.approach-comparison .approach-note,.approach-comparison .approach-key{font-family:var(--display);font-size:18px;font-style:italic;line-height:1.45;margin:auto 0 0;padding:16px 0 0;border:0;border-top:1px solid #83765030}
+.approach-comparison .approach-wider .approach-key{color:#decda8;border-top-color:#e1ce9a35}
+.approach-comparison .comparison-leaf{width:17vw;height:200px;opacity:.75}
+.approach-comparison .comparison-roots{width:16vw;opacity:.7}
+@media(max-width:768px){
+ .approach-comparison{gap:18px;padding:24px 5vw 0}
+ .approach-comparison>div,.approach-comparison .approach-wider{padding:24px 21px}
+ .approach-comparison h3{font-size:29px;margin-bottom:20px}
+ .approach-comparison li{font-size:15px;line-height:1.55}
+ .approach-comparison .comparison-visual{width:calc(100% + 42px);margin-left:-21px;margin-bottom:-24px}
+ .approach-comparison .comparison-leaf{height:85px;opacity:1}
+ .approach-comparison .comparison-roots{height:100px;opacity:1;mask-image:linear-gradient(180deg,transparent,#000 55%,#000)}
+}
+/* Compact density: content determines height, no viewport-sized panels. */
+.approach-comparison{padding:16px 9vw 18px;gap:20px;margin-top:26px}
+.approach-comparison>div,.approach-comparison .approach-wider{padding:20px 24px 18px}
+.approach-comparison .approach-eyebrow{font-size:9px;margin-bottom:9px}
+.approach-comparison h3{font-size:clamp(24px,1.85vw,27px);margin-bottom:16px}
+.approach-comparison ul{gap:12px;margin-bottom:16px}
+.approach-comparison li{font-size:14px;line-height:1.5}
+.approach-comparison .approach-note,.approach-comparison .approach-key{font-size:17px;line-height:1.3;padding-top:11px}
+.approach-comparison .comparison-leaf{height:160px}
+@media(max-width:768px){
+ .approach-comparison{padding:16px 5vw 0;gap:14px}
+ .approach-comparison>div,.approach-comparison .approach-wider{padding:19px 20px}
+ .approach-comparison h3{font-size:26px;margin-bottom:16px}
+ .approach-comparison li{font-size:15px;line-height:1.5}
+ .approach-comparison .approach-note,.approach-comparison .approach-key{font-size:18px}
+ .approach-comparison .comparison-visual{width:calc(100% + 40px);margin-left:-20px;margin-bottom:-19px}
+ .approach-comparison .comparison-leaf{height:55px;margin-top:8px}
+ .approach-comparison .comparison-roots{height:65px;margin-top:8px}
+}
+.approach-examples{margin-top:24px;border-top:1px solid #2a4a3833;border-bottom:1px solid #2a4a3833;overflow-anchor:none}
+.approach-examples>summary{display:flex;align-items:center;justify-content:space-between;gap:18px;cursor:pointer;list-style:none;padding:18px 0;min-height:60px;color:#2a4a38;font-family:var(--display);font-size:clamp(24px,2vw,29px);line-height:1.2}
+.approach-examples>summary::-webkit-details-marker{display:none}
+.approach-examples>summary svg{width:22px;height:22px;flex:none;color:#8b704e;transition:transform .2s ease}
+.approach-examples[open]>summary svg{transform:rotate(180deg)}
+.approach-examples>summary:focus-visible{outline:2px solid #75592d;outline-offset:4px}
+.approach-examples .approach-translator{margin-top:0;padding:4px 0 24px}
+@media(max-width:480px){.approach-examples>summary{font-size:25px;padding:16px 0}}
+@media(prefers-reduced-motion:reduce){.approach-examples>summary svg{transition:none}}
+/* Tighten only the disclosure rows and their join to presence. */
+.approach-section{padding-bottom:24px}
+.approach-examples{margin-top:12px}
+.approach-examples>summary{padding:12px 0;min-height:48px}
+.approach-examples+.approach-science{margin-top:0;border-top:0}
+.approach-examples+.approach-science>summary{padding:13px 0;min-height:48px}
+.approach-section~#presence{padding-top:36px}
+@media(max-width:768px){.approach-section{padding-bottom:20px}.approach-section~#presence{padding-top:28px}}
+.approach-examples>summary{gap:28px;padding:17px 0;align-items:center}
+.examples-summary-copy{display:grid;gap:7px;max-width:840px}
+.examples-kicker{font-family:var(--body);font-size:11px;font-weight:600;line-height:1.4;letter-spacing:.06em;color:#8b704e}
+.examples-title{font-family:var(--display);font-size:clamp(24px,2vw,29px);line-height:1.15}
+.examples-description{font-family:var(--body);font-size:14px;line-height:1.5;color:#596657}
+.examples-toggle{display:inline-flex;align-items:center;justify-content:center;gap:14px;flex:none;min-height:44px;padding:10px 16px;border:1px solid #2a4a3845;color:#2a4a38;font-family:var(--body);font-size:13px;line-height:1.4;background:#2a4a3807}
+.examples-toggle .examples-collapse{display:none}
+.approach-examples[open] .examples-expand{display:none}
+.approach-examples[open] .examples-collapse{display:inline}
+@media(max-width:768px){.approach-examples>summary{gap:15px;flex-wrap:wrap}.examples-summary-copy{max-width:100%}.examples-title{font-size:25px}.examples-description{font-size:14px}.examples-toggle{margin-left:auto}}
+/* Owner preference: soft corners on interface surfaces. */
+.examples-toggle,.menu-toggle{border-radius:999px}
+.approach-comparison>div{border-radius:16px;overflow:hidden}
+.approach-tabs button{border-radius:10px}
+.approach-case article:last-child{border-radius:12px}
+.approach-art figcaption span{border-radius:8px}
+.arrival-section{position:relative;isolation:isolate;background:var(--cream);color:var(--green);padding:30px 7vw 28px;scroll-margin-top:90px}
+.arrival-section:before{content:"";position:absolute;left:0;top:45px;width:110px;height:200px;z-index:-1;background:url('/media/site/threshold/olive-foreground.webp') top left/170px auto no-repeat;opacity:.32;pointer-events:none}
+.arrival-heading{margin-bottom:23px}
+.arrival-heading h2{font:400 clamp(34px,3vw,46px)/1.08 var(--display);letter-spacing:-.025em;margin:0 0 10px}
+.arrival-heading p{font-size:16px;line-height:1.6;margin:0;color:#596657}
+.arrival-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;position:relative;margin-bottom:20px}
+.arrival-tabs:before{content:"";position:absolute;left:20px;right:20px;top:50%;height:1px;background:#b1986260;z-index:-1}
+.arrival-tabs button{min-width:0;display:flex;align-items:center;gap:11px;background:var(--cream);color:#52604d;border:1px solid #a990573a;border-radius:999px;padding:13px 15px;min-height:80px;font:400 20px/1.1 var(--display);text-align:left;transition:background .2s,color .2s}
+.arrival-tabs button svg{width:25px;height:25px;color:#9b7d47}
+.arrival-tabs button[aria-selected=true]{background:#2a4a38;color:var(--cream);border-color:#2a4a38}
+.arrival-tabs button[aria-selected=true] svg{color:#e4d4ad}
+.arrival-number{font:400 10px/1.5 var(--body);letter-spacing:.12em;color:#927545;flex:none}
+.arrival-tabs button[aria-selected=true] .arrival-number{color:#ded1ad}
+.arrival-tabs button:focus-visible,.arrival-navigation button:focus-visible{outline:2px solid #947545;outline-offset:4px}
+.arrival-content{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+.arrival-situations,.arrival-group{border:1px solid #a9905733;border-radius:18px;padding:24px 28px;background:#faf8f36b}
+.arrival-panel[hidden]{display:none}
+.arrival-content h3{font:400 clamp(25px,2.1vw,32px)/1.13 var(--display);margin:10px 0 17px;color:#2a4a38}
+.arrival-panel p{font:400 clamp(22px,1.9vw,28px)/1.45 var(--display);font-style:italic;border-left:1px solid #b29558;padding-left:22px;margin:0;color:#5b604e}
+.arrival-group{background:#2a4a3808}
+.arrival-group h3{margin-top:0;font-size:27px}
+.arrival-group p{font-size:15px;line-height:1.65;margin:0 0 13px;color:#596657}
+.arrival-group p:last-child{margin-bottom:0}
+.arrival-navigation{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
+.arrival-navigation button{border:1px solid #a9905750;border-radius:50%;width:42px;height:42px;background:transparent;color:#927545;font-size:22px}
+.arrival-navigation .arrival-next{background:#2a4a38;color:var(--cream);border-color:#2a4a38}
+@media(max-width:768px){.arrival-section{padding:24px 7vw}.arrival-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.arrival-tabs:before{display:none}.arrival-tabs button{min-height:62px;font-size:19px;padding:12px}.arrival-tabs button:last-child{grid-column:1/-1}.arrival-content{grid-template-columns:1fr;gap:12px}.arrival-situations,.arrival-group{padding:20px}.arrival-heading h2{font-size:35px}.arrival-section:before{display:none}.arrival-group p{font-size:15px}.arrival-panel p{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.arrival-tabs button{transition:none}}
+@media(max-width:480px){.arrival-tabs{grid-template-columns:1fr;gap:8px}.arrival-tabs button{min-height:53px;padding:11px 15px;font-size:20px}.arrival-tabs button:last-child{grid-column:auto}}
 </style>
 </head>
 <body>
 <a class="skip-main" href="#presence">Перейти к описанию программы</a>
-<noscript><style>.no-js,.menu-toggle,.entry-actions button,.scroll-cue,.chapter-nav,.transport,.progress-track{display:none!important}.topbar{position:relative;background:#17251b;display:block;padding:20px 7vw}.topbar .wordmark{display:inline-block}.topbar-right{display:block;margin-top:14px}.site-menu{display:flex!important;position:static;flex-direction:row;flex-wrap:wrap;box-shadow:none;background:none;color:inherit;padding:0;gap:8px 18px}.site-menu a{font-size:14px;padding:5px 0}.topbar .skip{display:none}.hero-copy{top:15%!important;opacity:1!important}.stage{min-height:650px}.journey{display:none!important}.entry-screen{height:100svh!important;min-height:650px}.entry-stage{position:relative!important;min-height:650px}.entry-tree,.canopy-bridge{display:none!important}.tree-image,.scene-copy{display:none!important}#practice{--practice-image:url("/media/site/threshold/practice-space.jpg")}</style></noscript>
+<noscript><style>.no-js,.menu-toggle,.entry-actions button,.scroll-cue,.chapter-nav,.transport,.progress-track{display:none!important}.topbar{position:relative;background:#17251b;display:block;padding:20px 7vw}.topbar .wordmark{display:inline-block}.topbar-right{display:block;margin-top:14px}.site-menu{display:flex!important;position:static;flex-direction:row;flex-wrap:wrap;box-shadow:none;background:none;color:inherit;padding:0;gap:8px 18px}.site-menu a{font-size:14px;padding:5px 0}.topbar .skip{display:none}.hero-copy{top:15%!important;opacity:1!important}.stage{min-height:650px}.journey{display:none!important}.approach-tabs{display:none!important}.entry-screen{height:100svh!important;min-height:650px}.entry-stage{position:relative!important;min-height:650px}.entry-tree,.canopy-bridge{display:none!important}.tree-image,.scene-copy{display:none!important}#practice{--practice-image:url("/media/site/threshold/practice-space.jpg")}</style></noscript>
 <header class="topbar" id="topbar">
  <a class="wordmark" href="#start" aria-label="Тело помнит — к началу">тело<span>помнит</span></a>
  <div class="topbar-right"><button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="siteMenu">☰</button><nav class="site-menu" id="siteMenu" aria-label="Разделы страницы"><a href="#life">Ведущие</a><a href="#rhythm">Пять недель</a><a href="#voices">Опыт</a><a href="#conditions">Участие</a></nav><a class="skip" href="#presence">О программе <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a></div>
@@ -184,30 +479,38 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   <div class="portal-window" id="portalWindow" aria-hidden="true"><div class="portal" id="portal" aria-hidden="true"><img id="portalImage" src="/media/site/threshold/portal.jpg" alt="" width="1672" height="941" fetchpriority="high"></div></div>
   <div class="veil" id="veil"></div>
   <div class="hero-copy" id="heroCopy">
-   <p class="entry-intro">Живая терапевтическая группа</p>
+   <p class="entry-intro">Живая онлайн-группа для женщин</p>
    <h1>Так, как сейчас,<br>я <em>больше не хочу.</em></h1>
    <p class="hero-after">А как по-другому —<br>ещё не знаю.</p>
    <p class="entry-facts"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="m15 10 6-3v10l-6-3"/></svg>5 недель · 9 встреч в Zoom</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18"/></svg>15 октября — 12 ноября 2026</span></p>
-   <div class="entry-actions"><button type="button" class="entry-link" id="enter" aria-label="Продолжить к дереву">Войти в историю <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button><a class="entry-offer" href="#conditions">Условия участия <span aria-hidden="true">↗</span></a></div>
+   <div class="entry-actions"><button type="button" class="entry-link" id="enter" aria-label="Продолжить к дереву">Войти в историю <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
   </div>
-  <div class="scroll-cue" id="scrollCue"><i aria-hidden="true"></i><span>Начать с себя</span></div>
+  <div class="scroll-cue" id="scrollCue"><i aria-hidden="true"></i><span>Листайте</span></div>
  </div>
 </section>
-<div class="canopy-bridge" id="canopyBridge" aria-hidden="true"><img src="/media/site/threshold/tree-roots.jpg" alt="" width="1086" height="1448" decoding="async"></div>
-<section class="canopy-section" id="canopy" tabindex="-1" data-tone="light" aria-labelledby="canopyTitle">
- <div class="canopy-layout">
-  <div class="canopy-copy"><div class="canopy-eyebrow">Метафора дерева</div><h2 id="canopyTitle">То, что видно снаружи:<br>крона и ветви нашей жизни</h2><p class="canopy-intro">В повседневности мы обычно замечаем только крону — внешние проявления, поступки и результаты. Когда ветка сохнет, бесполезно красить листья. Важно взглянуть, что питает всё дерево.</p>
-   <div class="canopy-cards">
-    <article><span class="canopy-number">01</span><h3>Решения</h3><p class="canopy-label">То, что мы объявляем миру</p><p>Согласиться на проект, разорвать контакт, отложить задуманное, сменить направление.</p></article>
-    <article><span class="canopy-number">02</span><h3>Отношения</h3><p class="canopy-label">Внешний рисунок связи</p><p>Как мы разговариваем, когда замыкаемся, где готовы уступать, а где вспыхиваем.</p></article>
-    <article><span class="canopy-number">03</span><h3>Действия</h3><p class="canopy-label">Повседневное поведение</p><p>Привычный график, бесконечная занятость, забота обо всех вокруг ценой собственного истощения.</p></article>
-    <article><span class="canopy-number">04</span><h3>Реакции</h3><p class="canopy-label">То, что прорывается наружу</p><p>Внезапная усталость, ком в горле во время диалога, желание исчезнуть или защищаться.</p></article>
-   </div>
-  </div>
-  <figure class="canopy-art"><img src="/media/site/threshold/tree-roots.jpg" alt="Крона и ствол дерева из визуальной истории «Тело помнит»" width="1086" height="1448" loading="lazy"><figcaption><span>Проявленная часть</span><p>Ветви стремятся к свету, но их сила рождается там, куда не падает прямой взгляд.</p></figcaption></figure>
+<div class="canopy-bridge" hidden id="canopyBridge" aria-hidden="true"><img src="/media/site/threshold/tree-roots.jpg" alt="" width="1086" height="1448" decoding="async"></div>
+<section class="approach-section" id="canopy" tabindex="-1" data-tone="light" aria-labelledby="approachTitle">
+ <div class="approach-intro">
+  <div class="approach-intro-copy"><p class="approach-eyebrow">СУТЬ ПОДХОДА</p><h2 id="approachTitle">Почему бесполезно красить пожелтевшие листья</h2><p>Если у дерева сохнут листья, можно заниматься только тем, что видно снаружи. А можно посмотреть шире — что происходит со всей системой.</p><p>С человеком бывает похоже. Иногда мы пытаемся изменить поступок или реакцию, хотя в происходящем участвуют и мысли, чувства, телесные ощущения и сама ситуация.</p></div>
+  <figure class="approach-art"><img src="/media/site/threshold/tree-roots-wide.png" alt="Дерево целиком: крона над линией поверхности и разветвлённые корни под ней" width="1774" height="887" decoding="async" loading="lazy"><figcaption><span class="approach-visible">ТО, ЧТО ВИДНО</span><span class="approach-unseen">ТО, ЧТО НЕ ВСЕГДА ЗАМЕЧАЕМ СРАЗУ</span></figcaption></figure>
  </div>
+ <div class="approach-comparison">
+  <div class="approach-usual"><p class="approach-eyebrow">КАК МЫ ОБЫЧНО ПЫТАЕМСЯ РЕШИТЬ ТРУДНОСТИ:</p><h3>Попытки починить верхушку (Крону)</h3><ul><li style="--row:0"><strong>Читаем книги и инструкции:</strong> <span>«10 способов говорить нет», «как быть уверенной».</span></li><li style="--row:1"><strong>Давим силой воли:</strong> <span>«с понедельника перестану нервничать и возьму себя в руки».</span></li><li style="--row:2"><strong>Ругаем себя задним числом:</strong> <span>«опять я смалодушничала, почему я такая слабая».</span></li></ul><p class="approach-note">Итог: на пару дней хватает, но при первом стрессе тело срывается в привычный спазм.</p><picture class="comparison-visual comparison-leaf" aria-hidden="true"><img src="/media/site/threshold/comparison-leaf.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></picture></div>
+  <div class="approach-wider"><p class="approach-eyebrow">КАК РАБОТАЕТ НАША ГРУППА:</p><h3>Внимание к основанию и питанию (Корни)</h3><ul><li style="--row:0"><strong>Замечаем телесный сигнал раньше ума:</strong> <span>перехваченное дыхание, сжатие в животе, замирание.</span></li><li style="--row:1"><strong>Снимаем вину:</strong> <span>реакция тела — не слабость, а закрепившийся биологический способ защиты.</span></li><li style="--row:2"><strong>Даём физическую опору:</strong> <span>когда нервная система чувствует безопасность, поведение меняется естественно.</span></li></ul><p class="approach-key">Итог: устойчивые изменения без насилия над собой, которые остаются в реальной жизни.</p><picture class="comparison-visual comparison-roots" aria-hidden="true"><img src="/media/site/threshold/comparison-roots.webp" alt="" width="1024" height="1536" loading="lazy" decoding="async"></picture></div>
+ </div>
+ <details class="approach-examples"><summary><span class="examples-summary-copy"><span class="examples-kicker">Наглядный переводчик в примерах</span><span class="examples-title">Посмотрите, как это работает в вашей жизни:</span><span class="examples-description">Нажмите на знакомую ситуацию, чтобы увидеть, что происходит на поверхности и что скрыто в корнях:</span></span><span class="examples-toggle"><span class="examples-expand">Развернуть</span><span class="examples-collapse">Свернуть</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg></span></summary><div class="approach-translator">
+  <div class="approach-tabs" role="tablist" aria-label="Жизненные ситуации"><button type="button" id="approachTab0" role="tab" aria-selected="true" aria-controls="approachCase0" tabindex="0">Не могу отказать</button><button type="button" id="approachTab1" role="tab" aria-selected="false" aria-controls="approachCase1" tabindex="-1">Замираю в конфликте</button><button type="button" id="approachTab2" role="tab" aria-selected="false" aria-controls="approachCase2" tabindex="-1">Не могу расслабиться</button><button type="button" id="approachTab3" role="tab" aria-selected="false" aria-controls="approachCase3" tabindex="-1">Тело остаётся напряжённым</button></div>
+  <div class="approach-panels"><div class="approach-case" id="approachCase0" role="tabpanel" aria-labelledby="approachTab0"><div class="approach-case-grid"><article><span class="approach-no">01</span><h4>Что происходит</h4><p>Снова согласилась, хотя хотела отказаться. Потом злюсь на себя.</p></article><article><span class="approach-no">02</span><h4>Как я пытаюсь это решить</h4><p>Надо стать жёстче. В следующий раз просто скажу нет.</p></article><article><span class="approach-no">03</span><h4>На что ещё можно обратить внимание</h4><p>Что произошло в момент просьбы?<br>Что я почувствовала?<br>Что заметила в теле?<br>Чего мне хотелось?</p></article><article><span class="approach-no">04</span><h4>Что можно исследовать в группе</h4><p>Сам момент реакции — и какой другой ответ хочется попробовать в реальной ситуации.</p></article></div></div><div class="approach-case" id="approachCase1" role="tabpanel" aria-labelledby="approachTab1" hidden><div class="approach-case-grid"><article><span class="approach-no">01</span><h4>Что происходит</h4><p>Когда на меня повышают голос или критикуют, я словно теряюсь и не нахожу слов.</p></article><article><span class="approach-no">02</span><h4>Как я пытаюсь это решить</h4><p>Почему я опять ничего не сказала? Надо было ответить вот так…</p></article><article><span class="approach-no">03</span><h4>На что ещё можно обратить внимание</h4><p>Что происходит со мной в момент напряжения?<br>Как меняются дыхание, голос, ощущения в теле?<br>Что я чувствую?<br>Что хочется сделать — уйти, замолчать, защищаться?</p></article><article><span class="approach-no">04</span><h4>Что можно исследовать в группе</h4><p>Учимся замечать реакцию не только после разговора, но и внутри собственного опыта — и смотреть, что помогает вернуть возможность выбирать ответ.</p></article></div></div><div class="approach-case" id="approachCase2" role="tabpanel" aria-labelledby="approachTab2" hidden><div class="approach-case-grid"><article><span class="approach-no">01</span><h4>Что происходит</h4><p>Дела закончились, но я всё равно продолжаю что-то делать. Когда останавливаюсь — становится не по себе.</p></article><article><span class="approach-no">02</span><h4>Как я пытаюсь это решить</h4><p>Надо научиться отдыхать. Убрать телефон. Запланировать выходной.</p></article><article><span class="approach-no">03</span><h4>На что ещё можно обратить внимание</h4><p>Что я замечаю, когда действительно останавливаюсь?<br>Какие чувства появляются?<br>Что происходит в теле?<br>Какие мысли заставляют снова чем-то заняться?</p></article><article><span class="approach-no">04</span><h4>Что можно исследовать в группе</h4><p>Можно не заставлять себя расслабляться, а сначала познакомиться с тем, что происходит именно в момент остановки.</p></article></div></div><div class="approach-case" id="approachCase3" role="tabpanel" aria-labelledby="approachTab3" hidden><div class="approach-case-grid"><article><span class="approach-no">01</span><h4>Что происходит</h4><p>К вечеру я замечаю, что всё тело напряжено: сжаты челюсти, подняты плечи, трудно отпустить день.</p></article><article><span class="approach-no">02</span><h4>Как я пытаюсь это решить</h4><p>Надо расслабиться. Сходить на массаж. Потерпеть до выходных.</p></article><article><span class="approach-no">03</span><h4>На что ещё можно обратить внимание</h4><p>В какие моменты напряжение усиливается?<br>Что происходило перед этим?<br>Какие чувства я замечаю?<br>Когда напряжение становится меньше?<br>Что помогает телу чувствовать больше опоры?</p></article><article><span class="approach-no">04</span><h4>Что можно исследовать в группе</h4><p>Мы не назначаем напряжению одну психологическую причину. Оно становится одним из сигналов, на который можно обратить внимание вместе с ситуацией, чувствами и вашим опытом.</p></article></div></div></div><noscript><div class="approach-fallback"><details><summary>Замираю в конфликте</summary><h4>Что происходит</h4><p>Когда на меня повышают голос или критикуют, я словно теряюсь и не нахожу слов.</p><h4>Как я пытаюсь это решить</h4><p>Почему я опять ничего не сказала? Надо было ответить вот так…</p><h4>На что ещё можно обратить внимание</h4><p>Что происходит со мной в момент напряжения?<br>Как меняются дыхание, голос, ощущения в теле?<br>Что я чувствую?<br>Что хочется сделать — уйти, замолчать, защищаться?</p><h4>Что можно исследовать в группе</h4><p>Учимся замечать реакцию не только после разговора, но и внутри собственного опыта — и смотреть, что помогает вернуть возможность выбирать ответ.</p></details><details><summary>Не могу расслабиться</summary><h4>Что происходит</h4><p>Дела закончились, но я всё равно продолжаю что-то делать. Когда останавливаюсь — становится не по себе.</p><h4>Как я пытаюсь это решить</h4><p>Надо научиться отдыхать. Убрать телефон. Запланировать выходной.</p><h4>На что ещё можно обратить внимание</h4><p>Что я замечаю, когда действительно останавливаюсь?<br>Какие чувства появляются?<br>Что происходит в теле?<br>Какие мысли заставляют снова чем-то заняться?</p><h4>Что можно исследовать в группе</h4><p>Можно не заставлять себя расслабляться, а сначала познакомиться с тем, что происходит именно в момент остановки.</p></details><details><summary>Тело остаётся напряжённым</summary><h4>Что происходит</h4><p>К вечеру я замечаю, что всё тело напряжено: сжаты челюсти, подняты плечи, трудно отпустить день.</p><h4>Как я пытаюсь это решить</h4><p>Надо расслабиться. Сходить на массаж. Потерпеть до выходных.</p><h4>На что ещё можно обратить внимание</h4><p>В какие моменты напряжение усиливается?<br>Что происходило перед этим?<br>Какие чувства я замечаю?<br>Когда напряжение становится меньше?<br>Что помогает телу чувствовать больше опоры?</p><h4>Что можно исследовать в группе</h4><p>Мы не назначаем напряжению одну психологическую причину. Оно становится одним из сигналов, на который можно обратить внимание вместе с ситуацией, чувствами и вашим опытом.</p></details></div></noscript>
+ </div></details>
+ <details class="approach-science"><summary>Почему мы обращаем внимание на тело?</summary><div><p class="approach-eyebrow approach-science-eyebrow">ИНТЕРОЦЕПЦИЯ</p><p>Когда мы сталкиваемся со значимой или стрессовой ситуацией, реакция может проявляться не только в мыслях и эмоциях, но и физиологически — например в дыхании, сердцебиении или мышечном напряжении.</p><p>Способность замечать внутренние сигналы организма называют интероцепцией.</p><p>Но ощущение само по себе не является диагнозом или готовой расшифровкой причины. Поэтому в программе мы рассматриваем телесные сигналы вместе с контекстом, чувствами и опытом женщины.</p><p class="approach-key">Тело даёт информацию.<br>Мы не назначаем её смысл за вас.</p></div></details>
 </section>
-<section class="journey" id="rootJourney" data-tone="dark" aria-label="Путешествие к дереву и его корням">
+<section class="arrival-section" id="arrival" tabindex="-1" data-tone="light" aria-labelledby="arrivalTitle">
+ <div class="arrival-heading"><h2 id="arrivalTitle">С чем можно прийти</h2><p>Можно говорить о том, что пока трудно объяснить.</p></div>
+ <div class="arrival-tabs" role="tablist" aria-label="С чем можно прийти"><button type="button" role="tab" id="arrivalTab0" aria-controls="arrivalPanel0" aria-selected="true" tabindex="0"><span class="arrival-number">01</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17 V11 C4 3 17 2 19 9 L21 13 H18 V20 H10 V16"/></svg><span>Трудно сказать о своём.</span></button><button type="button" role="tab" id="arrivalTab1" aria-controls="arrivalPanel1" aria-selected="false" tabindex="-1"><span class="arrival-number">02</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8 C5 3 19 3 19 10 C19 15 14 16 9 14 L4 18 L6 12"/></svg><span>Не получается расслабиться.</span></button><button type="button" role="tab" id="arrivalTab2" aria-controls="arrivalPanel2" aria-selected="false" tabindex="-1"><span class="arrival-number">03</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12 C7 12 6 5 10 5 C14 5 10 19 15 19 C18 19 17 12 21 12"/></svg><span>Беспокоят боль или самочувствие.</span></button><button type="button" role="tab" id="arrivalTab3" aria-controls="arrivalPanel3" aria-selected="false" tabindex="-1"><span class="arrival-number">04</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20 V5 M5 10 C11 10 12 4 19 4 M5 12 C12 12 13 19 20 19"/></svg><span>Трудно понять, чего вы хотите.</span></button><button type="button" role="tab" id="arrivalTab4" aria-controls="arrivalPanel4" aria-selected="false" tabindex="-1"><span class="arrival-number">05</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21 V11 M12 13 C4 14 3 7 4 4 C11 4 13 8 12 13 M12 10 C12 4 17 2 21 3 C21 9 17 12 12 10"/></svg><span>Хочется лучше узнать себя.</span></button></div>
+ <div class="arrival-content"><div class="arrival-situations"><article class="arrival-panel" role="tabpanel" id="arrivalPanel0" aria-labelledby="arrivalTab0" ><span class="arrival-number">01</span><h3>Трудно сказать о своём.</h3><p>Соглашаетесь, хотя хотели отказать.<br>Или молчите о том, что вас задевает.</p></article><article class="arrival-panel" role="tabpanel" id="arrivalPanel1" aria-labelledby="arrivalTab1" hidden><span class="arrival-number">02</span><h3>Не получается расслабиться.</h3><p>Дел уже нет,<br>а напряжение остаётся.</p></article><article class="arrival-panel" role="tabpanel" id="arrivalPanel2" aria-labelledby="arrivalTab2" hidden><span class="arrival-number">03</span><h3>Беспокоят боль или самочувствие.</h3><p>Хочется уделить внимание себе<br>и тому, что вы переживаете.</p></article><article class="arrival-panel" role="tabpanel" id="arrivalPanel3" aria-labelledby="arrivalTab3" hidden><span class="arrival-number">04</span><h3>Трудно понять, чего вы хотите.</h3><p>Есть важное решение,<br>но выбрать пока не получается.</p></article><article class="arrival-panel" role="tabpanel" id="arrivalPanel4" aria-labelledby="arrivalTab4" hidden><span class="arrival-number">05</span><h3>Хочется лучше узнать себя.</h3><p>Различать свои чувства, понимать желания,<br>иначе общаться с собой и близкими.</p></article></div><div class="arrival-group"><h3>Группа. И место для каждой.</h3><p>Вы рассказываете о том, что волнует. Вместе с ведущей обращаетесь к чувствам, образам и ощущениям в теле — и исследуете, как переживаете свою ситуацию.</p><p>Замечаете, что чувствуете и чего хотите. Ищете слова для того, что было трудно объяснить, и пробуете по-другому отнестись к себе и своей ситуации.</p></div></div>
+ <div class="arrival-navigation"><button type="button" class="arrival-previous" aria-label="Предыдущая ситуация">←</button><button type="button" class="arrival-next" aria-label="Следующая ситуация">→</button></div>
+</section>
+<section class="journey" hidden id="rootJourney" data-tone="dark" aria-label="Путешествие к дереву и его корням">
  <div class="stage" id="stage">
   <div class="world" aria-hidden="true"><img class="tree-image" id="treeImage" src="/media/site/threshold/tree-roots.jpg" alt="" width="1086" height="1448" decoding="async"><div class="tree-shade" id="treeShade"></div></div>
 
@@ -267,7 +570,7 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
 </main>
 <aside class="mobile-contact" id="mobileContact" aria-label="Связаться с ведущей" hidden><span>Анастасия<span>Личный чат в Telegram</span></span><a href="https://t.me/akhoroshavtseva" target="_blank" rel="noopener">Обсудить участие <span aria-hidden="true">↗</span></a></aside>
 <nav class="chapter-nav" id="chapterNav" aria-label="Сцены"><button type="button" data-scene="0" aria-label="Порог" aria-current="step"><span class="dot"></span></button><button type="button" data-scene="0.28" aria-label="Дерево"><span class="dot"></span></button><button type="button" data-scene="0.55" aria-label="Узнавание"><span class="dot"></span></button><button type="button" data-scene="0.89" aria-label="Корни"><span class="dot"></span></button><button type="button" data-scene="1" aria-label="О программе"><span class="dot"></span></button></nav>
-<div class="transport" role="group" aria-label="Просмотр движения"><button id="autoplay" type="button" aria-label="Посмотреть движение автоматически"><svg id="playIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m8 4 12 8-12 8z"/></svg><span id="playLabel">Посмотреть движение</span></button><button class="replay" type="button" id="replay" aria-label="Вернуться к началу"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></svg></button></div>
+<div class="transport hidden" role="group" aria-label="Просмотр движения"><button id="autoplay" type="button" aria-label="Посмотреть движение автоматически"><svg id="playIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m8 4 12 8-12 8z"/></svg><span id="playLabel">Посмотреть движение</span></button><button class="replay" type="button" id="replay" aria-label="Вернуться к началу"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></svg></button></div>
 <div class="progress-track" aria-hidden="true"><span id="progress"></span></div>
 <p class="asset-warning" id="assetWarning" role="alert" hidden>Изображение не загрузилось. <a href="#presence" style="text-decoration:underline">Перейти к описанию программы →</a></p>
 <script>
@@ -320,6 +623,7 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
  const el = Object.fromEntries(['stage','portal','portalImage','treeImage','treeShade','veil','lightpass','endwash','heroCopy','treeCopy','rootCopy','scrollCue','motes','topbar','chapterNav','progress','presence','enter','autoplay','playLabel','playIcon','assetWarning'].map(id=>[id,$(id)]));
  const recognition=[...document.querySelectorAll('.recognition-copy')];
  const entry=$('start'),canopy=$('canopy'),bridge=$('canopyBridge'),bridgeImage=bridge.querySelector('img'),entryTree=document.querySelector('.entry-tree');
+ document.documentElement.classList.add('has-approach-transition');
  const journey=$('rootJourney'), chapterButtons=[...document.querySelectorAll('[data-scene]')];
  const reduce=matchMedia('(prefers-reduced-motion: reduce)');
  const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
@@ -329,7 +633,8 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
  let lastChapter=-1;
  const opacity=(node,value)=>node.style.opacity=value.toFixed(4);
  function measure(){
-  const w=el.stage.clientWidth,h=el.stage.clientHeight;
+  const entranceStage=document.querySelector('.entry-stage');
+  const w=entranceStage.clientWidth,h=entranceStage.clientHeight;
   const ratio=(el.treeImage.naturalHeight||1448)/(el.treeImage.naturalWidth||1086);
   const iw=Math.max(w,h*1.6),ih=iw*ratio;
   dimensions={w,h,iw,ih,distance:journey.offsetHeight-h,startY:h-ih*.47,endY:h-ih};
@@ -349,25 +654,19 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
  function coverImage(w,h){const ratio=(el.treeImage.naturalHeight||1448)/(el.treeImage.naturalWidth||1086);const iw=Math.max(w,h/ratio),ih=iw*ratio;return {w:iw,h:ih,x:(w-iw)/2,y:(h-ih)*.06};}
  function entryImage(d){const iw=Math.max(d.w,d.h*1.8),ih=iw*((el.treeImage.naturalHeight||1448)/(el.treeImage.naturalWidth||1086));return {w:iw,h:ih,x:(d.w-iw)*.7,y:(d.h-ih)*.06};}
  function renderBridge(d){
-  bridge.style.visibility='hidden';bridge.style.opacity='0';canopy.classList.remove('is-morphing');canopy.style.transform='';entry.classList.toggle('is-docking',!reduce.matches&&scrollY>=entry.offsetHeight-d.h);journey.classList.remove('is-returning');
-  const entrance=entryImage(d),entranceImage=entryTree.querySelector('img');entranceImage.style.width=entrance.w+'px';entranceImage.style.height=entrance.h+'px';entranceImage.style.transform=`translate3d(${entrance.x}px,${entrance.y}px,0)`;
-  if(reduce.matches)return;
-  const dockStart=entry.offsetHeight-d.h,dockEnd=canopy.offsetTop-96;
-  if(scrollY>=dockStart&&scrollY<dockEnd)canopy.style.transform=`translate3d(0,${scrollY-dockEnd}px,0)`;
-  const card=canopy.querySelector('.canopy-art').getBoundingClientRect();
-  const exitStart=journey.offsetTop-d.h*.35,exitEnd=journey.offsetTop;
-  if(scrollY>=dockStart&&scrollY<dockEnd){
-   const t=smooth(range(scrollY,dockStart,dockEnd));
-   const frame={x:mix(0,card.left,t),y:mix(0,card.top,t),w:mix(d.w,card.width,t),h:mix(d.h,card.height,t)};
-   const to=coverImage(card.width,card.height),image={w:mix(entrance.w,to.w,t),h:mix(entrance.h,to.h,t),x:mix(entrance.x,to.x,t),y:mix(entrance.y,to.y,t)};
-   bridgeFrame(frame,image,12*t);canopy.classList.add('is-morphing');entry.classList.add('is-docking');
-   document.documentElement.dataset.threshold='dock';
-  }else if(scrollY>=exitStart&&scrollY<exitEnd){
-   const t=smooth(range(scrollY,exitStart,exitEnd)),from=coverImage(card.width,card.height);
-   const frame={x:mix(card.left,0,t),y:mix(Math.max(0,Math.min(card.top,d.h-card.height)),0,t),w:mix(card.width,d.w,t),h:mix(card.height,d.h,t)};
-   const image={w:mix(from.w,d.iw,t),h:mix(from.h,d.ih,t),x:mix(from.x,d.w<769?d.w*.76-d.iw*.66:(d.w-d.iw)/2,t),y:mix(from.y,d.startY,t)};
-   bridgeFrame(frame,image,12*(1-t));bridge.style.opacity=smooth(range(t,0,.18)).toFixed(4);journey.classList.add('is-returning');canopy.classList.add('is-morphing');document.documentElement.dataset.threshold='return';
-  }else document.documentElement.dataset.threshold=scrollY<dockStart?'door':scrollY<exitStart?'read':'roots';
+  bridge.style.visibility='hidden';bridge.style.opacity='0';
+  entry.classList.remove('is-docking');
+  const entrance=entryImage(d),img=entryTree.querySelector('img');
+  img.style.width=entrance.w+'px';img.style.height=entrance.h+'px';
+  img.style.transform='translate3d('+entrance.x+'px,'+entrance.y+'px,0)';
+  const thresholdEnd=entry.offsetTop+entry.offsetHeight-d.h;
+  const arrival=reduce.matches?1:smooth(range(scrollY,thresholdEnd-d.h*.05,thresholdEnd+d.h*.42));
+  entry.style.setProperty('--approach-release',smooth(range(arrival,0,.5)).toFixed(4));
+  canopy.style.setProperty('--approach-arrival',smooth(range(arrival,.08,.72)).toFixed(4));
+  canopy.style.setProperty('--approach-copy-shift',((1-arrival)*18).toFixed(2)+'px');
+  canopy.style.setProperty('--approach-art-shift',((1-arrival)*32).toFixed(2)+'px');
+  canopy.style.setProperty('--approach-art-scale',(1+(1-arrival)*.025).toFixed(4));
+  document.documentElement.dataset.threshold=scrollY<entry.offsetHeight-d.h?'door':'read';
  }
  function render(){
   frame=0;
@@ -377,16 +676,16 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   const story=document.getElementById('weekStory');
   if(story){const rect=story.getBoundingClientRect();const progress=reduce.matches?1:clamp((innerHeight*.85-rect.top)/(rect.height+innerHeight*.3));story.style.setProperty('--week-progress',progress.toFixed(3));document.querySelectorAll('.week-beat').forEach((n,i)=>n.classList.toggle('is-current',reduce.matches||Math.floor(progress*3)===i||(progress===1&&i===2)));document.querySelectorAll('.calendar-path article').forEach(n=>n.classList.toggle('week-seen',reduce.matches||n.getBoundingClientRect().top<innerHeight*.8));}
 
-  const beforeJourney=scrollY<journey.offsetTop;
-  const inCanopy=scrollY>= $("canopy").offsetTop-120 && beforeJourney;
-  const p=beforeJourney?0:.25+.75*clamp((scrollY-journey.offsetTop)/d.distance),mobile=d.w<769;
+  const beforeJourney=scrollY<canopy.offsetTop;
+  const inCanopy=canopy.getBoundingClientRect().top<innerHeight&&scrollY<el.presence.offsetTop;
+  const p=beforeJourney?0:1,mobile=d.w<769;
   const descent=smooth(range(p,.73,.93));
   const approach=reduce.matches?0:smooth(range(p,.39,.71));
   const treeScale=1+approach*(mobile?.20:.32)*(1-descent);
   const camY=reduce.matches?(p<.82?d.startY:d.endY):d.startY+(d.endY-d.startY)*descent;
   const doorway=reduce.matches?0:clamp(scrollY/Math.max(1,entry.offsetHeight-d.h));
-  const doorwayZoom=smooth(range(doorway,.035,.65));
-  const doorwayOpen=smooth(range(doorway,.40,.74));
+  const doorwayZoom=smooth(range(doorway,.35,.94));
+  const doorwayOpen=smooth(range(doorway,.65,.94));
   const zoom=1+doorwayZoom*(mobile?1.6:2.2);
   const drift=d.w*(mobile?.03:-.03)*doorwayZoom;
   el.portal.style.transform=`translate3d(${drift}px,0,0) scale(${zoom})`;
@@ -396,9 +695,9 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   $('portalWindow').style.maskImage=reduce.matches?'none':mask;
   $('portalWindow').style.webkitMaskImage=reduce.matches?'none':mask;
   el.treeImage.style.transform=`translate3d(${-approach*d.w*.025*(1-descent)}px,${camY}px,0) scale(${treeScale})`;
-  opacity(el.veil,reduce.matches?1:1-smooth(range(doorway,.25,.48)));
+  opacity(el.veil,reduce.matches?1:1-smooth(range(doorway,.35,.65)));
   opacity(el.treeShade,smooth(range(p,.205,.235)));
-  const hero=reduce.matches?1:1-smooth(range(doorway,.02,.24));
+  const hero=reduce.matches?1:1-smooth(range(doorway,.35,.60));
   opacity(el.heroCopy,hero);el.heroCopy.style.transform=reduce.matches?'none':`translate3d(${-doorwayZoom*60}px,${-doorwayZoom*45}px,0)`;
   el.heroCopy.inert=hero<.1;el.heroCopy.setAttribute('aria-hidden',hero<.1?'true':'false');el.heroCopy.style.pointerEvents=hero<.1?'none':'auto';
   const treeText=smooth(range(p,.215,.235))*(1-smooth(range(p,.34,.36)));
@@ -420,19 +719,22 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   opacity(el.endwash,0);
   const sections=[...document.querySelectorAll('[data-tone]')];
   const current=sections.filter(n=>n.getBoundingClientRect().top<=80).at(-1);
-  const past=scrollY>=journey.offsetTop+journey.offsetHeight-innerHeight*.2;
+  const past=scrollY>=el.presence.offsetTop;
   const light=Boolean((current&&current.dataset.tone==='light')||(beforeJourney&&doorway>.74));
   el.topbar.classList.toggle('dark',past&&current?.dataset.tone==='dark');
   renderBridge(d);
   const morphing=["dock","return"].includes(document.documentElement.dataset.threshold);
-  const hideTransport=p>=.99||((inCanopy||morphing)&&!playing);
+  const inHero=scrollY<entry.offsetHeight-d.h;
+  el.topbar.classList.toggle('hero-nav',inHero);
+  const heroDebug=new URLSearchParams(location.search).get('debug')==='hero';
+  const hideTransport=(!heroDebug&&inHero)||p>=.99||((inCanopy||morphing)&&!playing);
   document.querySelector('.transport').classList.toggle('hidden',hideTransport);document.querySelector('.transport').inert=hideTransport;
   document.querySelector('.progress-track').style.opacity=p>=.99?'0':'1';
   el.chapterNav.classList.toggle('hidden',p>=.99||inCanopy||morphing);el.chapterNav.inert=p>=.99||inCanopy||morphing;
   el.topbar.classList.toggle("tree-light",p>.22&&p<.73);
   el.topbar.classList.toggle('light',light);el.chapterNav.classList.toggle('light',light);
   el.progress.style.transform=`scaleX(${clamp(scrollY/(document.documentElement.scrollHeight-innerHeight))})`;
-  const chapter=inCanopy?1:p<.22?0:p<.36?1:p<.73?2:p<.965?3:4;
+  const chapter=beforeJourney?0:scrollY<el.presence.offsetTop?1:4;
   if(chapter!==lastChapter){chapterButtons.forEach((b,i)=>{if(i===chapter)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});lastChapter=chapter;}
   // A small read-only state makes the local prototype's camera positions verifiable.
   document.documentElement.dataset.scene=['portal','tree','recognition','roots','presence'][chapter];
@@ -446,8 +748,8 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   function tick(now){const t=clamp((now-started)/duration);const ease=automatic?t:smooth(t);scrollTo(0,from+(target-from)*ease);render();if(t<1)autoFrame=requestAnimationFrame(tick);else{tweening=false;setPlaying(false);autoFrame=0;}}
   autoFrame=requestAnimationFrame(tick);
  }
- function sceneY(progress){return journey.offsetTop+dimensions.distance*clamp((progress-.25)/.75);}
- function showScene(index){const target=index===0?0:index===.28?$('canopy').offsetTop-96:index===1?el.presence.offsetTop:sceneY(index);travel(target,reduce.matches?0:1700);}
+ function sceneY(progress){return canopy.offsetTop-96;}
+ function showScene(index){const target=index===0?0:index===1?el.presence.offsetTop:canopy.offsetTop-96;travel(target,reduce.matches?0:1700);}
  ['previousSituation','nextSituation'].forEach((id,i)=>$(id).addEventListener('click',()=>{
   const current=Number(document.documentElement.dataset.recognition)||0;
   const next=Math.max(0,Math.min(4,current+(i===0?-1:1)));
@@ -476,8 +778,67 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
  for(let i=0;i<14;i++){const mote=document.createElement('i');mote.style.cssText=`--x:${16+(i*37)%80}%;--y:${14+(i*23)%70}%;--duration:${5+i%6}s;--delay:-${i*.73}s`;el.motes.append(mote);}
  el.enter.disabled=true;el.autoplay.disabled=true;
  Promise.all([el.portalImage,el.treeImage].map(img=>img.decode())).then(()=>{ready=true;el.enter.disabled=false;el.autoplay.disabled=false;measure();}).catch(()=>{el.assetWarning.hidden=false;el.enter.disabled=false;measure();});
+ // One selected case; reserve the tallest case to avoid page jumps on switch.
+ const tabs=[...document.querySelectorAll('.approach-tabs [role=tab]')];
+ const panels=[...document.querySelectorAll('.approach-case')];
+ const panelBox=document.querySelector('.approach-panels');
+ function sizeCases(){
+  if(!panelBox.clientWidth)return;
+  const selected=panels.findIndex(n=>!n.hidden);
+  panelBox.style.minHeight='';
+  const sizes=panels.map(n=>{
+   n.hidden=false;n.style.position='absolute';n.style.visibility='hidden';
+   n.style.width=panelBox.clientWidth+'px';
+   const h=n.offsetHeight;
+   n.style.position='';n.style.visibility='';n.style.width='';n.hidden=true;
+   return h;
+  });
+  panels[Math.max(0,selected)].hidden=false;
+  panelBox.style.minHeight=Math.max(...sizes)+24+'px';
+ }
+ function selectCase(index,focus=false){
+  tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;panels[i].hidden=i!==index;});
+  if(focus){tabs[index].focus({preventScroll:true});tabs[index].scrollIntoView({block:'nearest',inline:'nearest'});}
+ }
+ tabs.forEach((tab,i)=>{
+  tab.addEventListener('click',()=>selectCase(i));
+  tab.addEventListener('keydown',event=>{
+   let next;
+   if(event.key==='ArrowRight')next=(i+1)%tabs.length;
+   if(event.key==='ArrowLeft')next=(i+tabs.length-1)%tabs.length;
+   if(event.key==='Home')next=0;if(event.key==='End')next=tabs.length-1;
+   if(next!==undefined){event.preventDefault();selectCase(next,true);}
+  });
+ });
+ let caseWidth=0;
+ new ResizeObserver(entries=>{const w=entries[0].contentRect.width;if(Math.abs(w-caseWidth)>.5){caseWidth=w;sizeCases();}}).observe(panelBox);
+ document.querySelector('.approach-examples').addEventListener('toggle',event=>{if(event.currentTarget.open)requestAnimationFrame(sizeCases);});
+ document.fonts.ready.then(sizeCases);
+ sizeCases();
  measure();
 })();
 </script>
+<script>
+/* Each side enters once; mobile reading does not trigger the offscreen side early. */
+(()=>{
+ if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const nodes=document.querySelectorAll('.approach-comparison>div,.approach-comparison .comparison-visual');
+ const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+  if(!entry.isIntersecting)return;
+  entry.target.classList.add('comparison-entered');observer.unobserve(entry.target);
+ }),{threshold:.12});
+ nodes.forEach(node=>{node.classList.add('comparison-motion');observer.observe(node)});
+})();
+</script>
+<script>
+(()=>{
+ const block=document.querySelector('#arrival'),tabs=[...block.querySelectorAll('[role=tab]')],panels=[...block.querySelectorAll('[role=tabpanel]')];
+ let index=0;
+ function select(next,focus=false){index=(next+tabs.length)%tabs.length;tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;panels[i].hidden=i!==index});if(focus)tabs[index].focus({preventScroll:true});}
+ tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>select(i));tab.addEventListener('keydown',event=>{let next;if(event.key==='ArrowRight')next=index+1;if(event.key==='ArrowLeft')next=index-1;if(event.key==='Home')next=0;if(event.key==='End')next=tabs.length-1;if(next!==undefined){event.preventDefault();select(next,true)}})});
+ block.querySelector('.arrival-previous').addEventListener('click',()=>select(index-1));block.querySelector('.arrival-next').addEventListener('click',()=>select(index+1));
+})();
+</script>
+<noscript><style>.arrival-tabs,.arrival-navigation{display:none}.arrival-panel[hidden]{display:block!important}.arrival-panel+.arrival-panel{margin-top:26px}</style></noscript>
 </body>
 </html>
