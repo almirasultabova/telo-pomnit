@@ -434,40 +434,353 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
 .approach-tabs button{border-radius:10px}
 .approach-case article:last-child{border-radius:12px}
 .approach-art figcaption span{border-radius:8px}
-.arrival-section{position:relative;isolation:isolate;background:var(--cream);color:var(--green);padding:30px 7vw 28px;scroll-margin-top:90px}
-.arrival-section:before{content:"";position:absolute;left:0;top:45px;width:110px;height:200px;z-index:-1;background:url('/media/site/threshold/olive-foreground.webp') top left/170px auto no-repeat;opacity:.32;pointer-events:none}
-.arrival-heading{margin-bottom:23px}
-.arrival-heading h2{font:400 clamp(34px,3vw,46px)/1.08 var(--display);letter-spacing:-.025em;margin:0 0 10px}
-.arrival-heading p{font-size:16px;line-height:1.6;margin:0;color:#596657}
-.arrival-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;position:relative;margin-bottom:20px}
-.arrival-tabs:before{content:"";position:absolute;left:20px;right:20px;top:50%;height:1px;background:#b1986260;z-index:-1}
-.arrival-tabs button{min-width:0;display:flex;align-items:center;gap:11px;background:var(--cream);color:#52604d;border:1px solid #a990573a;border-radius:999px;padding:13px 15px;min-height:80px;font:400 20px/1.1 var(--display);text-align:left;transition:background .2s,color .2s}
-.arrival-tabs button svg{width:25px;height:25px;color:#9b7d47}
-.arrival-tabs button[aria-selected=true]{background:#2a4a38;color:var(--cream);border-color:#2a4a38}
-.arrival-tabs button[aria-selected=true] svg{color:#e4d4ad}
-.arrival-number{font:400 10px/1.5 var(--body);letter-spacing:.12em;color:#927545;flex:none}
-.arrival-tabs button[aria-selected=true] .arrival-number{color:#ded1ad}
-.arrival-tabs button:focus-visible,.arrival-navigation button:focus-visible{outline:2px solid #947545;outline-offset:4px}
-.arrival-content{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
-.arrival-situations,.arrival-group{border:1px solid #a9905733;border-radius:18px;padding:24px 28px;background:#faf8f36b}
+/* J-150: AI Studio inquiries in the threshold's tree-to-roots scene. */
+.arrival-section{position:relative;isolation:isolate;background:var(--cream);color:var(--green);padding:42px 7vw 48px;scroll-margin-top:100px}
+.arrival-reading{position:relative;z-index:2;width:72%;max-width:850px}
+.arrival-root-scene{position:absolute;inset:0 0 0 auto;width:38%;pointer-events:none;z-index:0}
+.arrival-root-frame{position:sticky;top:100px;height:calc(100svh - 125px);max-height:800px;overflow:hidden}
+.arrival-root-frame img{width:100%;height:150%;object-fit:cover;object-position:72% 65%;transform:translateY(calc(var(--root-depth,0) * -26%));will-change:transform}
+.arrival-root-frame:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--cream),#f7f4efba 12%,#f7f4ef00 45%),linear-gradient(180deg,var(--cream),#f7f4ef00 15%,#f7f4ef00 78%,var(--cream))}
+.arrival-root-light{position:absolute;inset:0;background:radial-gradient(ellipse at 75% 37%,#c49a3c44,transparent 65%);opacity:calc(.7 - var(--root-depth,0)*.4);transition:opacity .3s}
+.arrival-heading{margin-bottom:24px;max-width:690px}
+.inquiry-kicker{display:block;font:500 10px/1.6 var(--body);letter-spacing:.14em;text-transform:uppercase;color:#8c7651}
+.arrival-heading h2{font:400 clamp(32px,3vw,44px)/1.12 var(--display);letter-spacing:-.025em;margin:10px 0 16px;color:#57452e}
+.arrival-heading p{font:400 14px/1.65 var(--body);margin:0 0 9px;color:#596052}
+.arrival-heading .arrival-reassurance{font-weight:500;color:var(--green)}
+.arrival-heading .arrival-note{font:italic 19px/1.35 var(--display);margin:14px 0 0;color:#756448}
+.arrival-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:18px;position:relative}
+.arrival-tabs button{display:flex;align-items:center;gap:8px;min-width:0;min-height:52px;padding:10px 12px;background:#f7f4eff5;color:var(--green);border:1px solid #b5a17a50;border-radius:999px;font:500 12px/1.35 var(--body);text-align:left;cursor:pointer;transition:background .2s,color .2s}
+.arrival-number{font:400 10px/1.5 var(--body);letter-spacing:.08em;color:#947545;flex:none}
+.arrival-tabs button[aria-selected=true]{background:var(--green);border-color:var(--green);color:var(--cream)}
+.arrival-tabs button[aria-selected=true] .arrival-number{color:#e2c78d}
+.arrival-content{display:block;border:1px solid #b5a17a40;border-radius:18px;background:#f7f4eff5;overflow:hidden}
+.arrival-panel{display:grid;grid-template-columns:1fr 1fr;gap:0}
 .arrival-panel[hidden]{display:none}
-.arrival-content h3{font:400 clamp(25px,2.1vw,32px)/1.13 var(--display);margin:10px 0 17px;color:#2a4a38}
-.arrival-panel p{font:400 clamp(22px,1.9vw,28px)/1.45 var(--display);font-style:italic;border-left:1px solid #b29558;padding-left:22px;margin:0;color:#5b604e}
-.arrival-group{background:#2a4a3808}
-.arrival-group h3{margin-top:0;font-size:27px}
-.arrival-group p{font-size:15px;line-height:1.65;margin:0 0 13px;color:#596657}
-.arrival-group p:last-child{margin-bottom:0}
-.arrival-navigation{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
-.arrival-navigation button{border:1px solid #a9905750;border-radius:50%;width:42px;height:42px;background:transparent;color:#927545;font-size:22px}
-.arrival-navigation .arrival-next{background:#2a4a38;color:var(--cream);border-color:#2a4a38}
-@media(max-width:768px){.arrival-section{padding:24px 7vw}.arrival-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.arrival-tabs:before{display:none}.arrival-tabs button{min-height:62px;font-size:19px;padding:12px}.arrival-tabs button:last-child{grid-column:1/-1}.arrival-content{grid-template-columns:1fr;gap:12px}.arrival-situations,.arrival-group{padding:20px}.arrival-heading h2{font-size:35px}.arrival-section:before{display:none}.arrival-group p{font-size:15px}.arrival-panel p{font-size:24px}}
-@media(prefers-reduced-motion:reduce){.arrival-tabs button{transition:none}}
-@media(max-width:480px){.arrival-tabs{grid-template-columns:1fr;gap:8px}.arrival-tabs button{min-height:53px;padding:11px 15px;font-size:20px}.arrival-tabs button:last-child{grid-column:auto}}
+.inquiry-story{padding:24px}
+.inquiry-story h3{font:400 clamp(26px,2.1vw,31px)/1.15 var(--display);margin:0 0 15px;color:var(--green)}
+.inquiry-story blockquote{font:italic 21px/1.35 var(--display);color:#57452e;margin:0 0 16px;padding-left:15px;border-left:2px solid #c49a3c90}
+.inquiry-description,.inquiry-work p{font:400 14px/1.65 var(--body);color:#596052;margin:0}
+.inquiry-work{margin-top:20px;padding-top:16px;border-top:1px solid #b5a17a40}
+.inquiry-work>span{display:block;font:500 10px/1.55 var(--body);letter-spacing:.07em;text-transform:uppercase;color:#8c7651;margin-bottom:7px}
+.inquiry-work p{color:var(--green)}
+.inquiry-signals{padding:27px 24px 24px;border-left:1px solid #b5a17a40;background:#2a4a3804;display:flex;flex-direction:column}
+.inquiry-signals ul{list-style:none;padding:0;margin:18px 0 20px;display:grid;gap:18px}
+.inquiry-signals li{display:flex;align-items:flex-start;gap:11px;font:400 14px/1.5 var(--body);color:#596052}
+.inquiry-signals strong{font-weight:500;color:var(--green)}
+.signal-mark{flex:none;width:28px;height:28px;border:1px solid #b5a17a50;border-radius:50%;display:grid;place-items:center;color:#927545;font:400 9px/1 var(--body)}
+.inquiry-foot{display:flex;justify-content:space-between;gap:10px;padding-top:12px;border-top:1px solid #b5a17a40;margin-top:auto;font:400 10px/1.5 var(--body);color:#756448}
+.inquiry-bottom{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:14px 0 28px}
+.inquiry-bottom>p{font:500 10px/1.5 var(--body);letter-spacing:.09em;text-transform:uppercase;color:#8c7651;margin:0}
+.arrival-navigation{display:flex;gap:8px;flex:none}
+.arrival-navigation button{width:38px;height:38px;border:1px solid #b5a17a60;border-radius:50%;background:var(--cream);color:var(--green);font-size:20px;cursor:pointer}
+.arrival-navigation .arrival-next{background:var(--green);color:var(--cream);border-color:var(--green)}
+.inquiry-questions{padding-top:20px;border-top:1px solid #b5a17a40}
+.inquiry-questions>h3{font:400 26px/1.15 var(--display);color:#57452e;margin:8px 0}
+.inquiry-question-hint{font:400 11px/1.5 var(--body);color:#756448;margin:0 0 17px}
+.inquiry-faq{border-top:1px solid #b5a17a40;background:#f7f4eff5}
+.inquiry-faq:last-child{border-bottom:1px solid #b5a17a40}
+.inquiry-faq summary{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;padding:14px 2px;list-style:none;font:400 20px/1.3 var(--display);color:var(--green)}
+.inquiry-faq summary::-webkit-details-marker{display:none}
+.inquiry-faq small{display:block;font:400 11px/1.55 var(--body);margin-top:4px;color:#756448}
+.faq-chevron{width:24px;height:24px;display:grid;place-items:center;border:1px solid #b5a17a60;border-radius:50%;font:400 18px/1 var(--body);flex:none}
+.inquiry-faq[open] .faq-chevron{transform:rotate(180deg);background:var(--green);color:var(--cream)}
+.inquiry-faq>p{font:400 14px/1.65 var(--body);color:#596052;margin:0;padding:0 28px 18px 2px}
+.arrival-botanical-note{position:absolute;right:3vw;bottom:32px;width:170px;font:italic 19px/1.4 var(--display);color:#756448;margin:0}
+.arrival-tabs button:focus-visible,.arrival-navigation button:focus-visible,.arrival-panel:focus-visible,.inquiry-faq summary:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+/* The adjacent illustration continues below ground instead of restarting at the crown. */
+.arrival-section~#presence .session-art img{position:absolute;bottom:0;height:200%;object-position:50% 100%}
+@keyframes inquiry-change{from{opacity:.4;transform:translateY(5px)}to{opacity:1;transform:none}}
+.arrival-panel:not([hidden]){animation:inquiry-change .22s ease-out}
+.arrival-section[data-inquiry="1"] .arrival-root-light{background:radial-gradient(ellipse at 60% 55%,#c49a3c44,transparent 65%)}
+.arrival-section[data-inquiry="2"] .arrival-root-light{background:radial-gradient(ellipse at 75% 70%,#c49a3c44,transparent 65%)}
+.arrival-section[data-inquiry="3"] .arrival-root-light{background:radial-gradient(ellipse at 40% 65%,#c49a3c44,transparent 65%)}
+@media(max-width:1100px){.arrival-reading{width:78%}.arrival-root-scene{width:33%}.arrival-tabs button{padding:10px;font-size:11px}.inquiry-story,.inquiry-signals{padding:20px}.arrival-botanical-note{right:2vw;width:135px;font-size:17px}}
+@media(max-width:768px){.arrival-section{padding:30px 6vw 32px}.arrival-reading{width:100%;max-width:none}.arrival-root-scene{width:100%;opacity:.12}.arrival-root-frame{top:80px;height:70svh}.arrival-root-frame:after{background:linear-gradient(90deg,var(--cream),#f7f4efb8 75%),linear-gradient(180deg,var(--cream),transparent 30%,var(--cream))}.arrival-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.arrival-tabs button{font-size:12px;padding:12px;min-height:49px}.arrival-panel{grid-template-columns:1fr 1fr}.arrival-heading h2{font-size:clamp(32px,5vw,40px)}.arrival-botanical-note{display:none}.inquiry-story blockquote{font-size:22px}}
+@media(max-width:480px){.arrival-section{padding:25px 5vw 30px}.arrival-panel{grid-template-columns:1fr}.inquiry-story,.inquiry-signals{padding:20px}.inquiry-signals{border-left:0;border-top:1px solid #b5a17a40}.arrival-heading p,.inquiry-description,.inquiry-work p,.inquiry-signals li,.inquiry-faq>p{font-size:14px;line-height:1.65}.inquiry-signals ul{gap:14px;margin-bottom:16px}.inquiry-bottom{gap:12px}.inquiry-bottom>p{max-width:200px;font-size:9px}.inquiry-questions>h3{font-size:25px}.inquiry-faq summary{font-size:21px}.arrival-root-frame{height:65svh}.arrival-heading{margin-bottom:21px}}
+@media(prefers-reduced-motion:reduce){.arrival-root-frame img{transform:none;will-change:auto}.arrival-tabs button{transition:none}.arrival-panel:not([hidden]){animation:none}}
+
+/* J-139: full AI Studio copy in the agreed landscape and two-column composition. */
+.approach-section{padding-top:0}
+.approach-landscape{display:flex;align-items:center;min-height:100svh;margin:0 -7vw;padding:120px 7vw 115px;gap:0;background:linear-gradient(0deg,var(--cream) 0%,#f7f4ef00 18%),linear-gradient(90deg,#f7f4efef 0%,#f7f4efda 24%,#f7f4efad 39%,#f7f4ef00 64%),url('/media/site/threshold/tree-roots.jpg') 70% 0%/cover}
+.approach-landscape:before,.approach-landscape:after{display:none}
+.approach-landscape .approach-intro-copy{width:43%;max-width:580px;position:relative;z-index:2}
+.approach-landscape h2{font-size:clamp(39px,3.7vw,59px);line-height:1.12}
+.approach-landscape .approach-intro-copy>p:not(.approach-eyebrow){font-size:16px;line-height:1.85;margin-bottom:0}
+.approach-tree-caption{position:absolute;right:7vw;bottom:70px;width:29%;max-width:400px;margin:0;padding:18px 21px;background:#173326b8;border:1px solid #f7f4ef40;border-radius:16px;backdrop-filter:blur(9px);color:#f7f4ef}
+.approach-tree-caption span{font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.approach-tree-caption p{font:italic 22px/1.35 var(--display);margin:10px 0 0}
+.approach-comparison .approach-source-text{font-size:16px;line-height:1.8;margin:0;color:#565948}
+.approach-comparison .approach-wider .approach-source-text{color:#e7ebdf}
+.approach-principle{border-top:1px solid #e1ce9a35;padding-top:24px;margin-top:25px}
+.approach-comparison .comparison-visual{position:relative;inset:auto;width:100%;height:110px;margin:16px 0 -18px;z-index:0;flex:none;mask-image:linear-gradient(180deg,transparent,#0009 55%,#000)}
+.approach-comparison .comparison-leaf{margin-top:auto}
+.approach-comparison{align-items:start}.approach-comparison .comparison-leaf{margin-top:22px}
+.approach-next{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:26px 20px 34px;color:#52614d;text-decoration:none}
+.approach-next>span:first-child{font-size:10px;letter-spacing:.13em;text-transform:uppercase}
+.approach-next p{font:italic 25px/1.4 var(--display);margin:0;max-width:580px}
+.approach-next>span:last-child{font-size:24px}
+@media(max-width:768px){.approach-landscape{min-height:0;padding:100px 7vw 38px;display:block;background:linear-gradient(0deg,var(--cream) 0%,#f7f4ef00 24%),linear-gradient(90deg,#f7f4eff0,#f7f4efb8 63%,#f7f4ef30),url('/media/site/threshold/tree-roots.jpg') 68% 0%/cover}.approach-landscape .approach-intro-copy{width:70%;max-width:520px}.approach-landscape h2{font-size:clamp(38px,5.6vw,48px)}.approach-tree-caption{position:relative;right:auto;bottom:auto;width:70%;max-width:400px;margin:35px 0 0}.approach-tree-caption p{font-size:22px}.approach-comparison .comparison-visual{width:100%;margin:16px 0 -19px;height:80px}}
+@media(max-width:480px){.approach-landscape{padding-top:95px;background:linear-gradient(0deg,var(--cream) 0%,#f7f4ef00 30%),linear-gradient(90deg,#f7f4eff5,#f7f4efda 70%,#f7f4efa0),url('/media/site/threshold/tree-roots.jpg') 65% 0%/cover}.approach-landscape .approach-intro-copy,.approach-tree-caption{width:100%}.approach-landscape h2{font-size:39px}.approach-landscape .approach-intro-copy>p:not(.approach-eyebrow){font-size:16px;line-height:1.75}.approach-next p{font-size:23px}.approach-comparison .approach-source-text{font-size:16px}}
+
+/* J-140: read the introduction in the original entry-tree scene, without a second tree. */
+.entry-explanation{position:absolute;inset:0;z-index:7;margin:0;min-height:0;padding:120px 7vw 115px;background:linear-gradient(0deg,#f7f4ef44,transparent 28%),linear-gradient(90deg,#f7f4efef 0%,#f7f4efda 24%,#f7f4ef9c 39%,transparent 64%);opacity:0;pointer-events:none;visibility:hidden;color:var(--green)}
+.entry-explanation h2{font-family:var(--display);font-weight:400;letter-spacing:-.025em;margin:0 0 24px}
+.entry-explanation.is-readable{visibility:visible;pointer-events:auto}
+.entry-explanation .approach-intro-copy{transform:none!important}
+.has-approach-transition .approach-section{margin-top:0;opacity:1}
+.has-approach-transition .entry-stage:after,.approach-section:before{display:none}
+.approach-comparison{margin-top:0}
+@media(max-width:768px){.entry-explanation{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:18px;padding:92px 7vw 26px;background:linear-gradient(90deg,#f7f4eff2,#f7f4efca 65%,#f7f4ef50)}.entry-explanation .approach-intro-copy{width:100%;max-width:530px}.entry-explanation .approach-tree-caption{width:100%;max-width:530px;margin:0}.entry-explanation h2{font-size:clamp(32px,5.4vw,44px);margin-bottom:17px}.entry-explanation .approach-intro-copy>p:not(.approach-eyebrow){font-size:16px;line-height:1.65}.entry-explanation .approach-tree-caption p{font-size:20px;line-height:1.3}}
+@media(max-width:480px){.entry-explanation h2{font-size:34px}.entry-explanation .approach-eyebrow{margin-bottom:12px}.entry-explanation .approach-tree-caption{padding:13px 16px}}
+@media(max-height:700px) and (max-width:768px){.entry-explanation{justify-content:flex-start;overflow-y:auto;padding-top:85px;padding-bottom:20px}.entry-explanation h2{font-size:30px}.entry-explanation .approach-intro-copy>p:not(.approach-eyebrow){font-size:15px;line-height:1.55}}
+@media(prefers-reduced-motion:reduce){.entry-screen{height:auto}.entry-stage{height:auto;overflow:visible}.entry-explanation{position:relative;inset:auto;min-height:650px;margin-top:650px;opacity:1;visibility:visible;background:linear-gradient(90deg,#f7f4eff0,#f7f4efb0),url('/media/site/threshold/tree-roots.jpg') 70% 0%/cover}}
+
+/* J-141: quieter scale in the existing tree scene; approved copy is unchanged. */
+.entry-explanation{padding:116px 7vw 82px}
+.entry-explanation .approach-intro-copy{width:37%;max-width:480px}
+.entry-explanation h2{font-size:clamp(34px,2.65vw,44px);line-height:1.15;letter-spacing:-.018em;color:#57452e;margin-bottom:23px;text-wrap:balance}
+.entry-explanation .approach-intro-copy>p:not(.approach-eyebrow){font-size:15px;line-height:1.8;max-width:455px}
+.entry-explanation .approach-eyebrow{font-size:10px;letter-spacing:.12em;margin-bottom:18px;color:#7b7059}
+.entry-explanation .approach-tree-caption{width:23%;max-width:310px;right:8vw;bottom:90px;padding:15px 18px;background:#173326ad}
+.entry-explanation .approach-tree-caption span{font-size:9px}
+.entry-explanation .approach-tree-caption p{font-size:19px;line-height:1.4}
+@media(max-width:768px){.entry-explanation{padding:94px 7vw 30px;gap:21px}.entry-explanation .approach-intro-copy{width:77%;max-width:455px}.entry-explanation h2{font-size:clamp(31px,4.5vw,37px);margin-bottom:20px}.entry-explanation .approach-intro-copy>p:not(.approach-eyebrow){font-size:15px;line-height:1.75}.entry-explanation .approach-tree-caption{width:77%;max-width:350px;right:auto;bottom:auto;padding:13px 16px}.entry-explanation .approach-tree-caption p{font-size:18px}}
+@media(max-width:480px){.entry-explanation .approach-intro-copy,.entry-explanation .approach-tree-caption{width:100%}.entry-explanation h2{font-size:30px;line-height:1.18}.entry-explanation .approach-eyebrow{margin-bottom:13px}.entry-explanation .approach-tree-caption{max-width:310px}.entry-explanation .approach-tree-caption p{font-size:18px}}
+@media(max-height:700px) and (max-width:768px){.entry-explanation{padding-top:85px;padding-bottom:20px;gap:16px}.entry-explanation h2{font-size:28px}.entry-explanation .approach-intro-copy>p:not(.approach-eyebrow){font-size:15px;line-height:1.6}}
+
+/* J-142: three balanced explanations in a single desktop row. */
+.approach-comparison{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:18px;margin-top:0;padding:34px 7vw 18px}
+.approach-comparison>div,.approach-comparison .approach-wider{padding:24px 24px 20px;display:flex;flex-direction:column;border-radius:16px}
+.approach-comparison .approach-usual{background:#efebe2;border:1px solid #a5957030}
+.approach-comparison .approach-wider{background:#ecefe7;color:#2a4a38;border:1px solid #87977a35}
+.approach-comparison .approach-group{background:#2a4031;color:#f7f4ef;border:1px solid #2a4031}
+.approach-comparison .approach-eyebrow{font-size:9px;line-height:1.6;letter-spacing:.11em;margin-bottom:12px}
+.approach-comparison h3{font-size:clamp(24px,1.85vw,29px);line-height:1.2;margin-bottom:18px;color:#57452e}
+.approach-comparison .approach-wider h3{color:#2a4a38}
+.approach-comparison .approach-group h3{color:#f7f4ef}
+.approach-comparison .approach-wider .approach-eyebrow{color:#788268}
+.approach-comparison .approach-group .approach-eyebrow{color:#d2ba84}
+.approach-comparison .approach-source-text,.approach-comparison .approach-wider .approach-source-text{font-size:15px;line-height:1.75;margin:0;color:#596050}
+.approach-comparison .approach-group .approach-source-text{color:#e5e9df}
+.approach-comparison .comparison-visual,.approach-comparison .comparison-leaf{height:70px;width:100%;margin:18px 0 -20px;flex:none;opacity:.75}
+.approach-comparison .comparison-roots{height:70px}
+@media(max-width:1024px) and (min-width:769px){.approach-comparison{gap:12px;padding-left:4vw;padding-right:4vw}.approach-comparison>div,.approach-comparison .approach-wider{padding:21px 18px}.approach-comparison h3{font-size:25px}}
+@media(max-width:768px){.approach-comparison{grid-template-columns:1fr;gap:14px;padding:24px 5vw 12px}.approach-comparison>div,.approach-comparison .approach-wider{padding:22px 23px}.approach-comparison h3{font-size:28px;margin-bottom:16px}.approach-comparison .approach-source-text,.approach-comparison .approach-wider .approach-source-text{font-size:16px;line-height:1.7}.approach-comparison .comparison-visual,.approach-comparison .comparison-leaf{height:55px;margin-bottom:-22px}}
+@media(max-width:480px){.approach-comparison h3{font-size:26px}.approach-comparison>div,.approach-comparison .approach-wider{padding:21px 20px}}
+@media(min-width:769px){.approach-comparison h3{min-height:2.4em}}
+
+/* J-143: a continuous editorial explanation, read top to bottom. */
+.approach-editorial{display:grid;grid-template-columns:minmax(240px,.72fr) minmax(0,1.65fr);gap:45px;max-width:1170px;margin:0 auto;padding:28px 0 12px;background:transparent;align-items:center}
+.approach-editorial .approach-system-image{margin:0;min-width:0;align-self:center;border-radius:18px;overflow:hidden;background:#e8e6dc;box-shadow:0 8px 28px #233c2510}
+.approach-system-image img{display:block;width:100%;height:auto;object-fit:contain}
+.approach-editorial>.approach-reading{display:block;background:none;border:0;border-radius:0;padding:0;color:var(--green);min-width:0}
+.approach-step{position:relative;padding:0 0 18px 26px;border-bottom:1px solid #887b5530;margin:0 0 18px}
+.approach-step:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.approach-step:before{content:'';position:absolute;left:0;top:6px;width:6px;height:6px;border-radius:50%;background:#ae925b}
+.approach-step:after{content:'';position:absolute;left:2.5px;top:18px;bottom:-10px;width:1px;background:#ae925b40}
+.approach-step:last-child:after{display:none}
+.approach-editorial .approach-eyebrow{font-size:10px;letter-spacing:.09em;line-height:1.5;color:#857253;margin:0 0 6px}
+.approach-editorial h3{font:500 clamp(24px,1.9vw,29px)/1.15 var(--display);letter-spacing:-.015em;color:#344c37;margin:0 0 9px;min-height:0}
+.approach-editorial .approach-source-text{font-size:16px;line-height:1.6;color:#555e50;margin:0;max-width:720px}
+.approach-editorial .comparison-visual{display:none}
+@media(max-width:1024px) and (min-width:769px){.approach-editorial{grid-template-columns:minmax(220px,.65fr) minmax(0,1.5fr);gap:30px}.approach-editorial h3{font-size:26px}.approach-editorial .approach-source-text{font-size:16px;line-height:1.6}}
+@media(max-width:768px){.approach-editorial{grid-template-columns:1fr;gap:25px;padding:22px 0 8px;max-width:620px}.approach-editorial .approach-system-image{width:100%;height:240px;background:#e8e6dc}.approach-system-image img{height:100%;width:100%;object-fit:contain}.approach-editorial>.approach-reading{padding:0}.approach-step{padding-left:22px;margin-bottom:20px;padding-bottom:20px}.approach-editorial h3{font-size:27px}.approach-editorial .approach-source-text{font-size:16px;line-height:1.65}}
+@media(max-width:480px){.approach-editorial{gap:22px}.approach-editorial .approach-system-image{height:210px}.approach-editorial h3{font-size:25px}.approach-editorial .approach-source-text{font-size:16px;line-height:1.6}}
+
+.approach-system-image picture{display:block;width:100%}
+@media(max-width:768px){.approach-editorial .approach-system-image{height:auto;background:transparent;box-shadow:none}.approach-system-image img{height:auto;width:100%;object-fit:contain}}
+
+/* J-144: a quiet green conclusion inside the continuous reading path. */
+.approach-editorial .approach-source-text{font-size:15px;line-height:1.6}
+.approach-editorial h3{font-size:clamp(23px,1.75vw,27px)}
+.approach-reading .approach-step:last-child{background:#e6ecdf;border:1px solid #8b9b7630;border-radius:14px;padding:17px 20px;margin-top:2px}
+.approach-reading .approach-step:last-child:before,.approach-reading .approach-step:last-child:after{display:none}
+.approach-reading .approach-step:last-child .approach-eyebrow{color:#65764e}
+.approach-reading .approach-step:last-child h3{color:#2a4a38}
+.approach-reading .approach-step:last-child .approach-source-text{color:#465841}
+@media(max-width:768px){.approach-editorial h3{font-size:25px}.approach-editorial .approach-source-text{font-size:15px;line-height:1.65}.approach-reading .approach-step:last-child{padding:18px 20px}}
+@media(max-width:480px){.approach-editorial h3{font-size:24px}}
+
+/* J-145: established brand green and a tighter continuous reading rhythm. */
+.approach-reading .approach-step:last-child{background:var(--green);border-color:var(--green);color:var(--cream);padding:15px 18px;margin-top:0}
+.approach-reading .approach-step:last-child .approach-eyebrow{color:#ddbd86}
+.approach-reading .approach-step:last-child h3{color:var(--cream)}
+.approach-reading .approach-step:last-child .approach-source-text{color:#eee8dc}
+.approach-step{padding-bottom:12px;margin-bottom:12px}
+.approach-step:after{bottom:-6px}
+.approach-editorial{padding-top:18px;padding-bottom:4px}
+.approach-next{padding:18px 20px 20px;gap:7px}
+@media(max-width:768px){.approach-step{margin-bottom:13px;padding-bottom:13px}.approach-editorial{padding-top:16px;padding-bottom:4px;gap:18px}.approach-reading .approach-step:last-child{padding:16px 18px}}
+/* J-151: visible semantic layers restored from the owner's reference. */
+.arrival-tabs button{gap:7px;font-size:12px;padding:11px 12px}
+.tab-icon{flex:none;width:18px;height:18px;display:flex;color:#947545}
+.tab-icon svg,.signal-mark svg,.work-icon svg,.faq-chevron svg{width:100%;height:100%}
+.arrival-tabs button[aria-selected=true] .tab-icon{color:#e2c78d}
+.arrival-content{background:none;border:0;border-radius:0;overflow:visible}
+.arrival-panel{gap:18px;align-items:start}
+.inquiry-story,.inquiry-signals{border:1px solid #b5a17a50;border-radius:16px;background:#faf7f2;padding:24px}
+.inquiry-badge{display:inline-flex;align-items:center;gap:9px;border:1px solid #b5a17a40;background:#efe9df80;border-radius:999px;padding:5px 10px;font:500 10px/1.3 var(--body);letter-spacing:.07em;color:#57452e;text-transform:uppercase;margin-bottom:13px}
+.inquiry-badge>span{color:#927545}
+.inquiry-story h3{margin:0 0 18px;font-size:30px}
+.inquiry-story blockquote{border-left:2px solid #a58a5b;padding:2px 0 2px 16px;margin:0 0 18px;font-size:21px;line-height:1.4}
+.inquiry-description{font-size:15px;line-height:1.65;color:#50594d}
+.inquiry-work{display:flex;gap:12px;align-items:start;background:#efe9df;border:1px solid #b5a17a40;border-radius:13px;padding:16px;margin-top:24px}
+.work-icon{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:50%;background:#faf7f2;color:var(--green);padding:6px}
+.work-copy>span{display:block;font:600 10px/1.5 var(--body);letter-spacing:.08em;text-transform:uppercase;color:#57452e;margin-bottom:7px}
+.inquiry-work p{font-size:15px;line-height:1.65;color:var(--green)}
+.inquiry-signals{border-left:1px solid #b5a17a50}
+.inquiry-signals>.inquiry-kicker{font-size:11px;letter-spacing:.08em;color:#655136}
+.inquiry-signals ul{gap:21px;margin:22px 0}
+.inquiry-signals li{gap:12px;font-size:15px;line-height:1.6;color:#50594d}
+.signal-mark{width:34px;height:34px;background:#efe9df80;border-color:#b5a17a50;color:var(--green);padding:8px}
+.inquiry-signals strong{display:block;font-weight:600;margin-bottom:3px}
+.inquiry-foot{font-size:11px;color:#655136;padding-top:15px;margin-top:5px}
+.inquiry-bottom{padding:0 0 20px;margin:18px 0 0;align-items:center}
+.inquiry-bottom>p{font-size:11px;color:#655136;letter-spacing:.055em;max-width:80%}
+.inquiry-questions{padding:24px 0 0;margin:0;border-top:1px solid #b5a17a60}
+.inquiry-questions>.inquiry-kicker{font-size:11px;color:#655136}
+.inquiry-questions>h3{margin:9px 0 12px;font-size:28px;line-height:1.2;max-width:650px}
+.inquiry-question-hint{color:#50594d;font-size:12px;margin-bottom:19px}
+.inquiry-faq{border:1px solid #b5a17a50;border-radius:13px;margin:0 0 12px;background:#faf7f2;overflow:hidden}
+.inquiry-faq:last-child{border:1px solid #b5a17a50;margin-bottom:0}
+.inquiry-faq summary{padding:17px 19px;gap:20px;font-size:23px;line-height:1.25}
+.inquiry-faq small{font-size:13px;line-height:1.55;color:#50594d;margin-top:8px}
+.faq-chevron{width:38px;height:38px;padding:10px;background:var(--green);border:1px solid var(--green);color:var(--cream)}
+.inquiry-faq[open] .faq-chevron{transform:rotate(180deg)}
+.inquiry-faq[open] summary{padding-bottom:15px}
+.inquiry-faq>p{border-top:1px solid #b5a17a40;padding:15px 19px 19px;margin:0;color:#50594d;font-size:15px;line-height:1.7}
+.arrival-botanical-note{position:static;display:flex;align-items:center;gap:14px;width:auto;margin:22px 0 0;background:var(--green);color:var(--cream);border-radius:13px;padding:16px 20px;font:italic 22px/1.4 var(--display)}
+.arrival-botanical-note>span:first-child{width:26px;height:26px;flex:none;color:#e2c78d}
+.arrival-botanical-note svg{width:100%;height:100%}
+@media(max-width:1100px){.arrival-tabs button{font-size:11px;padding:10px;gap:6px}.tab-icon{width:16px;height:16px}.inquiry-story,.inquiry-signals{padding:20px}.inquiry-work{padding:14px;gap:10px}.work-icon{width:26px;height:26px}.arrival-panel{gap:14px}}
+@media(max-width:768px){.arrival-tabs button{font-size:13px;padding:12px;gap:8px}.tab-icon{width:18px;height:18px}.inquiry-story h3{font-size:29px}.arrival-botanical-note{display:flex;font-size:22px}.arrival-panel{gap:14px}}
+@media(max-width:480px){.arrival-panel{gap:14px}.inquiry-story,.inquiry-signals{padding:20px}.inquiry-story blockquote{font-size:22px}.arrival-tabs button{font-size:12px;padding:11px;gap:6px}.inquiry-description,.inquiry-work p,.inquiry-signals li,.inquiry-faq>p{font-size:15px;line-height:1.65}.inquiry-work{padding:14px;margin-top:21px}.inquiry-signals ul{gap:19px}.inquiry-signals strong{margin-bottom:3px}.inquiry-bottom>p{font-size:10px;max-width:65%}.inquiry-questions>h3{font-size:27px}.inquiry-faq summary{font-size:23px;padding:16px;gap:12px}.inquiry-faq small{font-size:13px}.faq-chevron{width:36px;height:36px;padding:9px}.inquiry-faq>p{padding:15px 16px 17px}.arrival-botanical-note{font-size:22px;padding:16px;gap:12px}}
+
+/* J-151 owner correction: compact reading, emphasis through shape rather than size. */
+.arrival-panel{grid-template-columns:1.08fr 1fr;gap:16px}
+.inquiry-story,.inquiry-signals{padding:22px}
+.inquiry-story h3{font-size:26px;margin-bottom:14px}
+.inquiry-badge{margin-bottom:11px;font-size:9px}
+.inquiry-story blockquote{font-size:16px;line-height:1.45;padding-left:14px;margin-bottom:15px}
+.inquiry-description,.inquiry-work p,.inquiry-signals li,.inquiry-faq>p{font-size:14px;line-height:1.65}
+.inquiry-work{margin-top:19px;padding:14px;gap:10px}
+.inquiry-signals ul{gap:17px;margin:17px 0}
+.inquiry-questions>h3{font-size:25px}
+.inquiry-faq summary{font-size:20px;padding:15px 17px}
+.inquiry-faq small{font-size:12px;margin-top:6px}
+.inquiry-faq>p{padding:14px 17px 17px}
+.arrival-botanical-note{font-size:19px;padding:14px 18px;margin-top:18px}
+@media(max-width:768px){.inquiry-story,.inquiry-signals{padding:20px}.inquiry-story h3{font-size:25px}.inquiry-story blockquote{font-size:17px}.arrival-panel{gap:12px}}
+@media(max-width:480px){.arrival-panel{grid-template-columns:1fr}.inquiry-story,.inquiry-signals{padding:18px}.inquiry-story blockquote{font-size:16px;line-height:1.5}.inquiry-story h3{font-size:26px}.inquiry-description,.inquiry-work p,.inquiry-signals li,.inquiry-faq>p{font-size:14px;line-height:1.65}.inquiry-faq summary{font-size:21px;padding:15px;gap:12px}.inquiry-faq>p{padding:14px 15px 17px}.inquiry-questions>h3{font-size:25px}.arrival-botanical-note{font-size:19px;padding:14px}}
+
+/* J-154: a continuous reading route through all four AI Studio depths. */
+.roots-section{position:relative;isolation:isolate;background:#183528;color:var(--cream);padding:56px 7vw 54px;scroll-margin-top:90px}
+.roots-section:before{content:"";position:absolute;top:0;left:0;right:0;height:20px;background:linear-gradient(var(--cream),#f7f4ef00);opacity:.24;pointer-events:none}
+.root-legacy-anchor{position:absolute;top:0}
+.roots-heading{max-width:800px;margin:0 0 32px}
+.roots-kicker{display:block;font:500 11px/1.5 var(--body);letter-spacing:.15em;text-transform:uppercase;color:#e2c78d}
+.roots-heading h2{font:400 clamp(30px,2.7vw,36px)/1.14 var(--display);letter-spacing:-.015em;margin:10px 0 16px;max-width:740px;color:var(--cream)}
+.roots-heading p{font:400 14px/1.65 var(--body);color:#e0dfd3;margin:0;max-width:790px}
+.roots-layout{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.55fr);gap:5vw;align-items:start}
+.roots-aside{align-self:stretch;min-width:0}
+.roots-sticky{position:sticky;top:100px}
+.roots-art{position:relative;height:clamp(230px,35svh,360px);overflow:hidden;border-radius:100px 100px 14px 14px;border:1px solid #e2c78d40;background:#0c1e14;margin-bottom:20px}
+.roots-art img{position:absolute;bottom:0;left:0;width:100%;height:185%;object-fit:cover;object-position:center bottom;transform:translateY(calc((1 - var(--depth-progress,0)) * 15%));filter:brightness(.9);will-change:transform}
+.roots-art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#18352844,transparent 25%,#0c1e1430)}
+.roots-spot{position:absolute;inset:0;background:radial-gradient(ellipse at 55% calc(20% + var(--depth-progress,0)*65%),#e8b35444,transparent 47%);mix-blend-mode:screen}
+.root-nav-heading{display:flex;justify-content:space-between;gap:10px;font:500 10px/1.5 var(--body);letter-spacing:.06em;color:#d2cfbd;text-transform:uppercase;margin-bottom:12px}
+.root-nav-heading>span:last-child{color:#e2c78d}
+.root-nav{position:relative;display:grid;gap:8px}
+.root-nav:before{content:"";position:absolute;left:20px;top:20px;bottom:20px;width:1px;background:#e2c78d55;z-index:-1}
+.root-nav a{display:flex;align-items:center;gap:12px;border:1px solid #f7f4ef30;border-radius:12px;background:#183528;color:#eee8da;text-decoration:none;padding:11px 12px;font:400 19px/1.15 var(--display);transition:background .2s,border-color .2s}
+.root-nav a[aria-current]{background:var(--green);border-color:#e2c78d;box-shadow:inset 3px 0 #e2c78d}
+.root-nav small{display:block;font:400 10px/1.5 var(--body);color:#e2c78d;margin-bottom:3px}
+.root-nav-icon{display:flex;flex:none;width:23px;height:23px;color:#e2c78d}
+.root-nav-arrow{margin-left:auto;font:400 17px/1 var(--body)}
+.roots-guidance{font:400 12px/1.5 var(--body);color:#d2cfbd;margin:13px 0 0;padding-left:1px}
+.roots-reading{min-width:0}
+.root-node{position:relative;border-top:1px solid #e2c78d55;padding:22px 0 26px;scroll-margin-top:110px}
+.root-node:first-child{padding-top:0;border-top:0}
+.root-node-header{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.root-node-number{flex:none;display:flex;align-items:center;justify-content:center;gap:7px;color:#e2c78d;border:1px solid #e2c78d70;border-radius:10px;padding:9px;font:400 11px/1 var(--body)}
+.root-node-number svg{width:18px;height:18px}
+.root-meter{display:block;font:400 10px/1.5 var(--body);color:#e2c78d;letter-spacing:.07em;margin-bottom:3px}
+.root-node h3{font:400 25px/1.15 var(--display);color:var(--cream);margin:0}
+.root-focus{font:400 11px/1.5 var(--body);color:#d2cfbd;margin:0 0 17px;padding-left:1px}
+.root-question{font:400 23px/1.25 var(--display);color:var(--cream);margin:0 0 13px}
+.root-discovery{font:400 14px/1.65 var(--body);color:#e0dfd3;margin:0 0 19px}
+.root-explanations{display:grid;grid-template-columns:1fr 1.15fr;gap:18px;align-items:start;margin-bottom:16px}
+.root-trap{border-left:2px solid #c49a3c;padding:4px 0 4px 14px}
+.root-trap>span,.root-tool>div>span,.root-anchor>div>span{display:block;font:500 10px/1.5 var(--body);color:#e2c78d;letter-spacing:.025em;margin-bottom:7px}
+.root-trap p,.root-tool p{font:400 14px/1.6 var(--body);color:#e0dfd3;margin:0}
+.root-tool{display:flex;gap:10px;background:var(--green);border:1px solid #e2c78d55;border-radius:12px;padding:15px}
+.root-tool-icon{width:24px;height:24px;flex:none;color:#e2c78d;margin-top:1px}
+.root-anchor{display:flex;gap:12px;background:#0f281d;border:1px solid #f7f4ef30;border-radius:12px;padding:13px 15px}
+.root-anchor-icon{width:21px;height:21px;flex:none;color:#e2c78d}
+.root-anchor p{font:italic 16px/1.4 var(--display);color:var(--cream);margin:0}
+.root-node-footer{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:15px;font:400 11px/1.5 var(--body);color:#d2cfbd}
+.root-node-footer a{display:inline-flex;align-items:center;gap:12px;color:#e2c78d;text-decoration:none;border-bottom:1px solid #e2c78d70;padding:4px 0}
+.roots-summary{display:flex;gap:14px;border:1px solid #e2c78d70;background:var(--green);border-radius:14px;padding:20px;margin-top:4px}
+.root-summary-icon{width:28px;height:28px;flex:none;color:#e2c78d}
+.roots-summary h3{font:400 24px/1.2 var(--display);margin:0 0 9px;color:var(--cream)}
+.roots-summary p{font:400 14px/1.65 var(--body);color:#e0dfd3;margin:0}
+.root-gentle{display:inline-block;margin-top:12px;border:1px solid #e2c78d70;border-radius:999px;padding:4px 10px;font:400 10px/1.5 var(--body);color:#e2c78d}
+.root-nav-icon svg,.root-tool-icon svg,.root-anchor-icon svg,.root-summary-icon svg{width:100%;height:100%}
+.root-nav a:focus-visible,.root-node-footer a:focus-visible,.root-node:focus-visible{outline:2px solid #e2c78d;outline-offset:5px}
+@media(max-width:1100px){.roots-layout{grid-template-columns:minmax(225px,.7fr) minmax(0,1.4fr);gap:30px}.root-explanations{grid-template-columns:1fr;gap:12px}.roots-art{height:30svh}.root-nav a{font-size:18px}.root-question{font-size:22px}}
+@media(max-width:768px){.roots-section{padding:35px 6vw}.roots-heading{margin-bottom:24px}.roots-heading h2{font-size:32px}.roots-layout{grid-template-columns:1fr;gap:24px}.roots-sticky{position:static}.roots-art{height:160px;max-width:none;border-radius:14px;margin-bottom:15px}.roots-art img{height:320%;object-position:center bottom;transform:none}.root-nav{grid-template-columns:1fr 1fr;gap:8px}.root-nav:before{display:none}.root-nav a{font-size:18px;gap:9px;padding:11px}.root-nav-heading{margin-bottom:9px}.roots-guidance{margin-top:10px}.root-explanations{grid-template-columns:1fr 1fr;gap:15px}.root-node{padding:23px 0}.root-node h3{font-size:25px}}
+@media(max-width:480px){.roots-section{padding:30px 5vw}.roots-heading h2{font-size:30px}.root-nav a{font-size:17px;gap:7px;padding:10px}.root-nav-icon{width:18px;height:18px}.root-nav-arrow{display:none}.root-explanations{grid-template-columns:1fr;gap:13px}.root-tool{padding:14px}.root-node h3{font-size:24px}.root-question{font-size:22px}.root-discovery,.root-trap p,.root-tool p,.roots-summary p{font-size:14px;line-height:1.65}.root-anchor p{font-size:16px}.roots-summary{padding:17px;gap:12px}.roots-summary h3{font-size:23px}}
+@media(prefers-reduced-motion:reduce){.roots-art img{transform:none;will-change:auto}.root-nav a{transition:none}}
+/* J-155: compact root map; full AI Studio descriptions in one native dialog. */
+.roots-map-section{overflow:hidden;padding:38px 7vw 30px;background:#10271c}
+.root-map-background{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#10271cf5 0%,#10271ca0 25%,#10271c10 50%,#10271c99 90%,#10271ce0),url('/media/site/threshold/tree-roots.jpg') center 82%/cover no-repeat}
+.roots-map-section .roots-heading{max-width:850px;margin:0 0 10px}
+.roots-map-section .roots-heading h2{max-width:800px;font-size:clamp(29px,2.5vw,34px);margin:9px 0 12px}
+.roots-map-section .roots-heading p{font-size:14px;line-height:1.6}
+.root-map{position:relative;height:390px;max-width:1120px;margin:0 auto}
+.root-map-thread{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.root-map-thread path{fill:none;stroke:#e2c78d;stroke-width:1.5;stroke-opacity:.65;stroke-dasharray:3 7}
+.root-point{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;width:285px;padding:13px 15px;background:#163728f5;border:1px solid #e2c78d90;border-radius:14px;box-shadow:0 8px 25px #0005;color:var(--cream);text-align:left;cursor:pointer;transition:background .2s,box-shadow .2s}
+.root-point-0{left:28%;top:18%}.root-point-1{left:67%;top:39%}.root-point-2{left:32%;top:64%}.root-point-3{left:60%;top:88%}
+.root-point-number{display:flex;align-items:center;gap:5px;flex:none;color:#e2c78d;font:400 10px/1 var(--body)}
+.root-point-number svg{width:20px;height:20px}
+.root-point small{display:block;font:400 11px/1.5 var(--body);color:#e2c78d;margin-bottom:4px}
+.root-point strong{font:400 21px/1.1 var(--display);display:block}
+.root-point-plus{display:grid;place-items:center;margin-left:auto;width:28px;height:28px;border-radius:50%;background:var(--cream);color:var(--green);font:400 21px/1 var(--body);flex:none}
+.root-point:hover,.root-point.is-selected{background:var(--green);box-shadow:0 0 0 2px #e2c78d60,0 8px 25px #0005}
+.root-point:focus-visible{outline:3px solid #e2c78d;outline-offset:5px}
+.root-map-summary{position:relative;max-width:850px;margin:22px 0 0;border:1px solid #e2c78d60;border-radius:12px;background:#173629f5;overflow:hidden}
+.root-map-summary summary{display:flex;align-items:center;gap:15px;list-style:none;padding:13px 16px;cursor:pointer;font:400 21px/1.2 var(--display)}
+.root-map-summary summary::-webkit-details-marker{display:none}
+.root-map-summary .root-gentle{margin:0 0 0 auto;white-space:nowrap}
+.root-summary-plus{font:400 22px/1 var(--body);color:#e2c78d}
+.root-map-summary[open] .root-summary-plus{transform:rotate(45deg)}
+.root-map-summary p{font:400 14px/1.65 var(--body);color:#e0dfd3;margin:0;padding:0 16px 16px}
+.root-dialog{position:fixed;inset:0;width:min(820px,calc(100vw - 40px));max-width:none;max-height:calc(100dvh - 48px);padding:0;margin:auto;border:1px solid #e2c78d70;border-radius:18px;background:#183528;color:var(--cream);box-shadow:0 25px 100px #0008;overflow:hidden}
+.root-dialog[open]{display:flex;flex-direction:column}
+.root-dialog::backdrop{background:#07150fbc;backdrop-filter:blur(5px)}
+.root-dialog-top{display:flex;align-items:center;gap:14px;padding:13px 20px;border-bottom:1px solid #e2c78d40;flex:none}
+.root-dialog-count{margin-left:auto;font:400 11px/1.5 var(--body);color:#e2c78d}
+.root-dialog-close{display:grid;place-items:center;width:38px;height:38px;flex:none;border:1px solid #e2c78d70;border-radius:50%;background:var(--green);color:var(--cream);font:400 25px/1 var(--body);cursor:pointer}
+.root-dialog-scroll{overflow:auto;overscroll-behavior:contain;padding:22px;min-height:0}
+.root-dialog .root-node{margin:0;padding:0;border:0}
+.root-dialog .root-node[hidden]{display:none}
+.root-dialog .root-explanations{grid-template-columns:1fr 1.15fr}
+.root-dialog .root-question{font-size:23px}
+.root-dialog-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-top:1px solid #e2c78d40;flex:none;background:#132e21}
+.root-dialog-footer>span{font:400 11px/1.5 var(--body);color:#d2cfbd}
+.root-dialog-footer>div{display:flex;gap:10px}
+.root-dialog-footer button{font:500 12px/1.4 var(--body);border:1px solid #e2c78d70;border-radius:999px;background:var(--green);color:var(--cream);padding:11px 15px;cursor:pointer;min-height:40px}
+.root-dialog-footer button:disabled{opacity:.4;cursor:default}
+.root-dialog button:focus-visible,.root-map-summary summary:focus-visible{outline:2px solid #e2c78d;outline-offset:3px}
+@media(max-width:768px){.roots-map-section{padding:30px 6vw}.root-map{height:410px}.root-point{width:255px;gap:10px;padding:12px}.root-point-0{left:30%;top:16%}.root-point-1{left:66%;top:39%}.root-point-2{left:32%;top:63%}.root-point-3{left:65%;top:87%}.root-dialog{width:calc(100vw - 28px);max-height:calc(100dvh - 28px)}.root-dialog .root-explanations{grid-template-columns:1fr}.root-dialog-footer>span{display:none}.root-dialog-footer>div{width:100%;justify-content:space-between}}
+@media(max-width:480px){.roots-map-section{padding:26px 5vw}.roots-map-section .roots-heading h2{font-size:29px}.root-map{height:375px}.root-point{width:275px;max-width:calc(100% - 12px);gap:9px;padding:11px 12px}.root-point strong{font-size:20px}.root-point-0{left:46%;top:14%}.root-point-1{left:54%;top:38%}.root-point-2{left:46%;top:62%}.root-point-3{left:54%;top:86%}.root-map-thread{opacity:.4}.root-map-summary{margin-top:15px}.root-map-summary summary{font-size:20px;gap:10px}.root-map-summary .root-gentle{display:none}.root-summary-plus{margin-left:auto}.root-dialog{width:calc(100vw - 16px);max-height:calc(100dvh - 16px);border-radius:14px}.root-dialog-top{padding:10px 13px;gap:10px}.root-dialog-top .roots-kicker{font-size:9px}.root-dialog-count{font-size:10px}.root-dialog-scroll{padding:18px}.root-dialog .root-question{font-size:22px}.root-dialog-footer{padding:11px}.root-dialog-footer button{padding:10px 12px;font-size:11px;min-height:42px}.root-point-number{gap:4px}.root-point-number svg{width:18px;height:18px}}
+@media(prefers-reduced-motion:reduce){.root-point{transition:none}.root-dialog::backdrop{backdrop-filter:none}}
 </style>
 </head>
 <body>
 <a class="skip-main" href="#presence">Перейти к описанию программы</a>
-<noscript><style>.no-js,.menu-toggle,.entry-actions button,.scroll-cue,.chapter-nav,.transport,.progress-track{display:none!important}.topbar{position:relative;background:#17251b;display:block;padding:20px 7vw}.topbar .wordmark{display:inline-block}.topbar-right{display:block;margin-top:14px}.site-menu{display:flex!important;position:static;flex-direction:row;flex-wrap:wrap;box-shadow:none;background:none;color:inherit;padding:0;gap:8px 18px}.site-menu a{font-size:14px;padding:5px 0}.topbar .skip{display:none}.hero-copy{top:15%!important;opacity:1!important}.stage{min-height:650px}.journey{display:none!important}.approach-tabs{display:none!important}.entry-screen{height:100svh!important;min-height:650px}.entry-stage{position:relative!important;min-height:650px}.entry-tree,.canopy-bridge{display:none!important}.tree-image,.scene-copy{display:none!important}#practice{--practice-image:url("/media/site/threshold/practice-space.jpg")}</style></noscript>
+<noscript><style>.entry-screen{height:auto!important}.entry-stage{height:auto!important;overflow:visible!important}.entry-explanation{position:relative!important;inset:auto!important;margin-top:650px!important;opacity:1!important;visibility:visible!important;min-height:650px;background:linear-gradient(90deg,#f7f4eff0,#f7f4efb0),url("/media/site/threshold/tree-roots.jpg") 70% 0%/cover!important}.no-js,.menu-toggle,.entry-actions button,.scroll-cue,.chapter-nav,.transport,.progress-track{display:none!important}.topbar{position:relative;background:#17251b;display:block;padding:20px 7vw}.topbar .wordmark{display:inline-block}.topbar-right{display:block;margin-top:14px}.site-menu{display:flex!important;position:static;flex-direction:row;flex-wrap:wrap;box-shadow:none;background:none;color:inherit;padding:0;gap:8px 18px}.site-menu a{font-size:14px;padding:5px 0}.topbar .skip{display:none}.hero-copy{top:15%!important;opacity:1!important}.stage{min-height:650px}.journey{display:none!important}.approach-tabs{display:none!important}.entry-screen{height:100svh!important;min-height:650px}.entry-stage{position:relative!important;min-height:650px}.entry-tree,.canopy-bridge{display:none!important}.tree-image,.scene-copy{display:none!important}#practice{--practice-image:url("/media/site/threshold/practice-space.jpg")}.entry-screen{height:auto!important}.entry-stage{height:auto!important;overflow:visible!important}</style></noscript>
 <header class="topbar" id="topbar">
  <a class="wordmark" href="#start" aria-label="Тело помнит — к началу">тело<span>помнит</span></a>
  <div class="topbar-right"><button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="siteMenu">☰</button><nav class="site-menu" id="siteMenu" aria-label="Разделы страницы"><a href="#life">Ведущие</a><a href="#rhythm">Пять недель</a><a href="#voices">Опыт</a><a href="#conditions">Участие</a></nav><a class="skip" href="#presence">О программе <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a></div>
@@ -485,30 +798,47 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
    <p class="entry-facts"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="m15 10 6-3v10l-6-3"/></svg>5 недель · 9 встреч в Zoom</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18"/></svg>15 октября — 12 ноября 2026</span></p>
    <div class="entry-actions"><button type="button" class="entry-link" id="enter" aria-label="Продолжить к дереву">Войти в историю <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></button></div>
   </div>
+ <div class="approach-intro approach-landscape entry-explanation" id="approachScene" tabindex="-1" aria-hidden="true">
+  <div class="approach-intro-copy"><p class="approach-eyebrow">Суть подхода</p><h2 id="approachTitle">Почему бесполезно красить пожелтевшие листья</h2><p>Представьте дерево, у которого сохнет крона. Ни один садовник не станет красить ветви зеленой краской или привязывать искусственные листья. Все понимают: если сохнет верхушка — причина в корнях и почве. В жизни то же самое: мы годами пытаемся контролировать мысли силой воли, но наше тело продолжает сжиматься.</p></div>
+  <figure class="approach-tree-caption"><figcaption><span>Крона и почва</span><p>«Ветви могут свободно расти и цвести только тогда, когда корни получают питание и устойчивы в земле».</p></figcaption></figure>
+ </div>
   <div class="scroll-cue" id="scrollCue"><i aria-hidden="true"></i><span>Листайте</span></div>
  </div>
 </section>
 <div class="canopy-bridge" hidden id="canopyBridge" aria-hidden="true"><img src="/media/site/threshold/tree-roots.jpg" alt="" width="1086" height="1448" decoding="async"></div>
 <section class="approach-section" id="canopy" tabindex="-1" data-tone="light" aria-labelledby="approachTitle">
- <div class="approach-intro">
-  <div class="approach-intro-copy"><p class="approach-eyebrow">СУТЬ ПОДХОДА</p><h2 id="approachTitle">Почему бесполезно красить пожелтевшие листья</h2><p>Если у дерева сохнут листья, можно заниматься только тем, что видно снаружи. А можно посмотреть шире — что происходит со всей системой.</p><p>С человеком бывает похоже. Иногда мы пытаемся изменить поступок или реакцию, хотя в происходящем участвуют и мысли, чувства, телесные ощущения и сама ситуация.</p></div>
-  <figure class="approach-art"><img src="/media/site/threshold/tree-roots-wide.png" alt="Дерево целиком: крона над линией поверхности и разветвлённые корни под ней" width="1774" height="887" decoding="async" loading="lazy"><figcaption><span class="approach-visible">ТО, ЧТО ВИДНО</span><span class="approach-unseen">ТО, ЧТО НЕ ВСЕГДА ЗАМЕЧАЕМ СРАЗУ</span></figcaption></figure>
+
+ <div class="approach-comparison approach-editorial">
+  <figure class="approach-system-image"><picture><source media="(max-width:768px)" srcset="/media/site/threshold/tree-roots-wide.png"><img src="/media/site/threshold/tree-roots.jpg" alt="Дерево и его корни под поверхностью земли — метафора целостного исследования опыта" width="1086" height="1448" loading="lazy" decoding="async"></picture></figure>
+  <div class="approach-reading"><article class="approach-step"><p class="approach-eyebrow">Ловушка контроля головой</p><h3>Сила воли работает только до первого стресса</h3><p class="approach-source-text">Мы читаем книги о границах, заучиваем скрипты отказов и обещаем себе «больше не нервничать». Но в момент напряжения диафрагма перехватывает дыхание за секунду до того, как включится логика. Ум не властен над рефлексами нервной системы.</p></article><article class="approach-step"><p class="approach-eyebrow">Мудрость тела</p><h3>Спазм — это не поломка, а закрепившаяся защита</h3><p class="approach-source-text">Сжатая челюсть, ком в горле, онемение или привычка угождать всем вокруг — это не «слабый характер». Когда-то этот телесный рефлекс спас вас в сложные моменты жизни. Ругать себя за него — всё равно что ругать зрачок за то, что он расширяется в темноте.</p></article><article class="approach-step"><p class="approach-eyebrow">Принцип нашей группы</p><h3>От ветвей — в глубину корней</h3><p class="approach-source-text">Мы не заставляем вас «держать лицо» и не учим дышать по секундомеру. Мы исследуем то, что заставляет тело рефлекторно сжиматься, и возвращаем ему физический опыт безопасности.</p></article></div>
  </div>
- <div class="approach-comparison">
-  <div class="approach-usual"><p class="approach-eyebrow">КАК МЫ ОБЫЧНО ПЫТАЕМСЯ РЕШИТЬ ТРУДНОСТИ:</p><h3>Попытки починить верхушку (Крону)</h3><ul><li style="--row:0"><strong>Читаем книги и инструкции:</strong> <span>«10 способов говорить нет», «как быть уверенной».</span></li><li style="--row:1"><strong>Давим силой воли:</strong> <span>«с понедельника перестану нервничать и возьму себя в руки».</span></li><li style="--row:2"><strong>Ругаем себя задним числом:</strong> <span>«опять я смалодушничала, почему я такая слабая».</span></li></ul><p class="approach-note">Итог: на пару дней хватает, но при первом стрессе тело срывается в привычный спазм.</p><picture class="comparison-visual comparison-leaf" aria-hidden="true"><img src="/media/site/threshold/comparison-leaf.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></picture></div>
-  <div class="approach-wider"><p class="approach-eyebrow">КАК РАБОТАЕТ НАША ГРУППА:</p><h3>Внимание к основанию и питанию (Корни)</h3><ul><li style="--row:0"><strong>Замечаем телесный сигнал раньше ума:</strong> <span>перехваченное дыхание, сжатие в животе, замирание.</span></li><li style="--row:1"><strong>Снимаем вину:</strong> <span>реакция тела — не слабость, а закрепившийся биологический способ защиты.</span></li><li style="--row:2"><strong>Даём физическую опору:</strong> <span>когда нервная система чувствует безопасность, поведение меняется естественно.</span></li></ul><p class="approach-key">Итог: устойчивые изменения без насилия над собой, которые остаются в реальной жизни.</p><picture class="comparison-visual comparison-roots" aria-hidden="true"><img src="/media/site/threshold/comparison-roots.webp" alt="" width="1024" height="1536" loading="lazy" decoding="async"></picture></div>
- </div>
- <details class="approach-examples"><summary><span class="examples-summary-copy"><span class="examples-kicker">Наглядный переводчик в примерах</span><span class="examples-title">Посмотрите, как это работает в вашей жизни:</span><span class="examples-description">Нажмите на знакомую ситуацию, чтобы увидеть, что происходит на поверхности и что скрыто в корнях:</span></span><span class="examples-toggle"><span class="examples-expand">Развернуть</span><span class="examples-collapse">Свернуть</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg></span></summary><div class="approach-translator">
-  <div class="approach-tabs" role="tablist" aria-label="Жизненные ситуации"><button type="button" id="approachTab0" role="tab" aria-selected="true" aria-controls="approachCase0" tabindex="0">Не могу отказать</button><button type="button" id="approachTab1" role="tab" aria-selected="false" aria-controls="approachCase1" tabindex="-1">Замираю в конфликте</button><button type="button" id="approachTab2" role="tab" aria-selected="false" aria-controls="approachCase2" tabindex="-1">Не могу расслабиться</button><button type="button" id="approachTab3" role="tab" aria-selected="false" aria-controls="approachCase3" tabindex="-1">Тело остаётся напряжённым</button></div>
-  <div class="approach-panels"><div class="approach-case" id="approachCase0" role="tabpanel" aria-labelledby="approachTab0"><div class="approach-case-grid"><article><span class="approach-no">01</span><h4>Что происходит</h4><p>Снова согласилась, хотя хотела отказаться. Потом злюсь на себя.</p></article><article><span class="approach-no">02</span><h4>Как я пытаюсь это решить</h4><p>Надо стать жёстче. В следующий раз просто скажу нет.</p></article><article><span class="approach-no">03</span><h4>На что ещё можно обратить внимание</h4><p>Что произошло в момент просьбы?<br>Что я почувствовала?<br>Что заметила в теле?<br>Чего мне хотелось?</p></article><article><span class="approach-no">04</span><h4>Что можно исследовать в группе</h4><p>Сам момент реакции — и какой другой ответ хочется попробовать в реальной ситуации.</p></article></div></div><div class="approach-case" id="approachCase1" role="tabpanel" aria-labelledby="approachTab1" hidden><div class="approach-case-grid"><article><span class="approach-no">01</span><h4>Что происходит</h4><p>Когда на меня повышают голос или критикуют, я словно теряюсь и не нахожу слов.</p></article><article><span class="approach-no">02</span><h4>Как я пытаюсь это решить</h4><p>Почему я опять ничего не сказала? Надо было ответить вот так…</p></article><article><span class="approach-no">03</span><h4>На что ещё можно обратить внимание</h4><p>Что происходит со мной в момент напряжения?<br>Как меняются дыхание, голос, ощущения в теле?<br>Что я чувствую?<br>Что хочется сделать — уйти, замолчать, защищаться?</p></article><article><span class="approach-no">04</span><h4>Что можно исследовать в группе</h4><p>Учимся замечать реакцию не только после разговора, но и внутри собственного опыта — и смотреть, что помогает вернуть возможность выбирать ответ.</p></article></div></div><div class="approach-case" id="approachCase2" role="tabpanel" aria-labelledby="approachTab2" hidden><div class="approach-case-grid"><article><span class="approach-no">01</span><h4>Что происходит</h4><p>Дела закончились, но я всё равно продолжаю что-то делать. Когда останавливаюсь — становится не по себе.</p></article><article><span class="approach-no">02</span><h4>Как я пытаюсь это решить</h4><p>Надо научиться отдыхать. Убрать телефон. Запланировать выходной.</p></article><article><span class="approach-no">03</span><h4>На что ещё можно обратить внимание</h4><p>Что я замечаю, когда действительно останавливаюсь?<br>Какие чувства появляются?<br>Что происходит в теле?<br>Какие мысли заставляют снова чем-то заняться?</p></article><article><span class="approach-no">04</span><h4>Что можно исследовать в группе</h4><p>Можно не заставлять себя расслабляться, а сначала познакомиться с тем, что происходит именно в момент остановки.</p></article></div></div><div class="approach-case" id="approachCase3" role="tabpanel" aria-labelledby="approachTab3" hidden><div class="approach-case-grid"><article><span class="approach-no">01</span><h4>Что происходит</h4><p>К вечеру я замечаю, что всё тело напряжено: сжаты челюсти, подняты плечи, трудно отпустить день.</p></article><article><span class="approach-no">02</span><h4>Как я пытаюсь это решить</h4><p>Надо расслабиться. Сходить на массаж. Потерпеть до выходных.</p></article><article><span class="approach-no">03</span><h4>На что ещё можно обратить внимание</h4><p>В какие моменты напряжение усиливается?<br>Что происходило перед этим?<br>Какие чувства я замечаю?<br>Когда напряжение становится меньше?<br>Что помогает телу чувствовать больше опоры?</p></article><article><span class="approach-no">04</span><h4>Что можно исследовать в группе</h4><p>Мы не назначаем напряжению одну психологическую причину. Оно становится одним из сигналов, на который можно обратить внимание вместе с ситуацией, чувствами и вашим опытом.</p></article></div></div></div><noscript><div class="approach-fallback"><details><summary>Замираю в конфликте</summary><h4>Что происходит</h4><p>Когда на меня повышают голос или критикуют, я словно теряюсь и не нахожу слов.</p><h4>Как я пытаюсь это решить</h4><p>Почему я опять ничего не сказала? Надо было ответить вот так…</p><h4>На что ещё можно обратить внимание</h4><p>Что происходит со мной в момент напряжения?<br>Как меняются дыхание, голос, ощущения в теле?<br>Что я чувствую?<br>Что хочется сделать — уйти, замолчать, защищаться?</p><h4>Что можно исследовать в группе</h4><p>Учимся замечать реакцию не только после разговора, но и внутри собственного опыта — и смотреть, что помогает вернуть возможность выбирать ответ.</p></details><details><summary>Не могу расслабиться</summary><h4>Что происходит</h4><p>Дела закончились, но я всё равно продолжаю что-то делать. Когда останавливаюсь — становится не по себе.</p><h4>Как я пытаюсь это решить</h4><p>Надо научиться отдыхать. Убрать телефон. Запланировать выходной.</p><h4>На что ещё можно обратить внимание</h4><p>Что я замечаю, когда действительно останавливаюсь?<br>Какие чувства появляются?<br>Что происходит в теле?<br>Какие мысли заставляют снова чем-то заняться?</p><h4>Что можно исследовать в группе</h4><p>Можно не заставлять себя расслабляться, а сначала познакомиться с тем, что происходит именно в момент остановки.</p></details><details><summary>Тело остаётся напряжённым</summary><h4>Что происходит</h4><p>К вечеру я замечаю, что всё тело напряжено: сжаты челюсти, подняты плечи, трудно отпустить день.</p><h4>Как я пытаюсь это решить</h4><p>Надо расслабиться. Сходить на массаж. Потерпеть до выходных.</p><h4>На что ещё можно обратить внимание</h4><p>В какие моменты напряжение усиливается?<br>Что происходило перед этим?<br>Какие чувства я замечаю?<br>Когда напряжение становится меньше?<br>Что помогает телу чувствовать больше опоры?</p><h4>Что можно исследовать в группе</h4><p>Мы не назначаем напряжению одну психологическую причину. Оно становится одним из сигналов, на который можно обратить внимание вместе с ситуацией, чувствами и вашим опытом.</p></details></div></noscript>
- </div></details>
- <details class="approach-science"><summary>Почему мы обращаем внимание на тело?</summary><div><p class="approach-eyebrow approach-science-eyebrow">ИНТЕРОЦЕПЦИЯ</p><p>Когда мы сталкиваемся со значимой или стрессовой ситуацией, реакция может проявляться не только в мыслях и эмоциях, но и физиологически — например в дыхании, сердцебиении или мышечном напряжении.</p><p>Способность замечать внутренние сигналы организма называют интероцепцией.</p><p>Но ощущение само по себе не является диагнозом или готовой расшифровкой причины. Поэтому в программе мы рассматриваем телесные сигналы вместе с контекстом, чувствами и опытом женщины.</p><p class="approach-key">Тело даёт информацию.<br>Мы не назначаем её смысл за вас.</p></div></details>
 </section>
 <section class="arrival-section" id="arrival" tabindex="-1" data-tone="light" aria-labelledby="arrivalTitle">
- <div class="arrival-heading"><h2 id="arrivalTitle">С чем можно прийти</h2><p>Можно говорить о том, что пока трудно объяснить.</p></div>
- <div class="arrival-tabs" role="tablist" aria-label="С чем можно прийти"><button type="button" role="tab" id="arrivalTab0" aria-controls="arrivalPanel0" aria-selected="true" tabindex="0"><span class="arrival-number">01</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17 V11 C4 3 17 2 19 9 L21 13 H18 V20 H10 V16"/></svg><span>Трудно сказать о своём.</span></button><button type="button" role="tab" id="arrivalTab1" aria-controls="arrivalPanel1" aria-selected="false" tabindex="-1"><span class="arrival-number">02</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8 C5 3 19 3 19 10 C19 15 14 16 9 14 L4 18 L6 12"/></svg><span>Не получается расслабиться.</span></button><button type="button" role="tab" id="arrivalTab2" aria-controls="arrivalPanel2" aria-selected="false" tabindex="-1"><span class="arrival-number">03</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12 C7 12 6 5 10 5 C14 5 10 19 15 19 C18 19 17 12 21 12"/></svg><span>Беспокоят боль или самочувствие.</span></button><button type="button" role="tab" id="arrivalTab3" aria-controls="arrivalPanel3" aria-selected="false" tabindex="-1"><span class="arrival-number">04</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20 V5 M5 10 C11 10 12 4 19 4 M5 12 C12 12 13 19 20 19"/></svg><span>Трудно понять, чего вы хотите.</span></button><button type="button" role="tab" id="arrivalTab4" aria-controls="arrivalPanel4" aria-selected="false" tabindex="-1"><span class="arrival-number">05</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21 V11 M12 13 C4 14 3 7 4 4 C11 4 13 8 12 13 M12 10 C12 4 17 2 21 3 C21 9 17 12 12 10"/></svg><span>Хочется лучше узнать себя.</span></button></div>
- <div class="arrival-content"><div class="arrival-situations"><article class="arrival-panel" role="tabpanel" id="arrivalPanel0" aria-labelledby="arrivalTab0" ><span class="arrival-number">01</span><h3>Трудно сказать о своём.</h3><p>Соглашаетесь, хотя хотели отказать.<br>Или молчите о том, что вас задевает.</p></article><article class="arrival-panel" role="tabpanel" id="arrivalPanel1" aria-labelledby="arrivalTab1" hidden><span class="arrival-number">02</span><h3>Не получается расслабиться.</h3><p>Дел уже нет,<br>а напряжение остаётся.</p></article><article class="arrival-panel" role="tabpanel" id="arrivalPanel2" aria-labelledby="arrivalTab2" hidden><span class="arrival-number">03</span><h3>Беспокоят боль или самочувствие.</h3><p>Хочется уделить внимание себе<br>и тому, что вы переживаете.</p></article><article class="arrival-panel" role="tabpanel" id="arrivalPanel3" aria-labelledby="arrivalTab3" hidden><span class="arrival-number">04</span><h3>Трудно понять, чего вы хотите.</h3><p>Есть важное решение,<br>но выбрать пока не получается.</p></article><article class="arrival-panel" role="tabpanel" id="arrivalPanel4" aria-labelledby="arrivalTab4" hidden><span class="arrival-number">05</span><h3>Хочется лучше узнать себя.</h3><p>Различать свои чувства, понимать желания,<br>иначе общаться с собой и близкими.</p></article></div><div class="arrival-group"><h3>Группа. И место для каждой.</h3><p>Вы рассказываете о том, что волнует. Вместе с ведущей обращаетесь к чувствам, образам и ощущениям в теле — и исследуете, как переживаете свою ситуацию.</p><p>Замечаете, что чувствуете и чего хотите. Ищете слова для того, что было трудно объяснить, и пробуете по-другому отнестись к себе и своей ситуации.</p></div></div>
- <div class="arrival-navigation"><button type="button" class="arrival-previous" aria-label="Предыдущая ситуация">←</button><button type="button" class="arrival-next" aria-label="Следующая ситуация">→</button></div>
+ <div class="arrival-root-scene" aria-hidden="true"><div class="arrival-root-frame"><img src="/media/site/threshold/tree-roots.jpg" alt="" width="1086" height="1448" loading="lazy" decoding="async"><div class="arrival-root-light"></div></div></div>
+ <div class="arrival-reading">
+  <div class="arrival-heading"><span class="inquiry-kicker">Наглядный переводчик на житейских примерах</span><h2 id="arrivalTitle">С чем можно прийти в группу</h2><p>Вам не нужно готовить красивую формулировку или заранее знать корень своего вопроса. Группа начинается с того, с чем вы просыпаетесь утром — с физического зажима, недавнего разговора или фонового напряжения.</p><p class="arrival-reassurance">Вам не обязательно находить у себя все четыре состояния. Достаточно узнать себя хотя бы в одном пункте — это уже полноценная точка входа в работу.</p><p class="arrival-note">Маленький сигнал тела — тоже повод быть здесь. Его можно услышать.</p></div>
+  <div class="arrival-tabs" role="tablist" aria-label="С чем можно прийти"><button type="button" role="tab" id="arrivalTab0" aria-controls="arrivalPanel0" aria-selected="true" tabindex="0"><span class="arrival-number">01</span><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 20v-5H5V9a7 7 0 0 1 14 0l2 4h-3v7"/><path d="M9 8c1-2 4-2 5 0"/></svg></span><span>Голова и перегруз</span></button><button type="button" role="tab" id="arrivalTab1" aria-controls="arrivalPanel1" aria-selected="false" tabindex="-1"><span class="arrival-number">02</span><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 8a8 8 0 1 0 1 7M19 3v5h-5"/></svg></span><span>Автопилот и сценарии</span></button><button type="button" role="tab" id="arrivalTab2" aria-controls="arrivalPanel2" aria-selected="false" tabindex="-1"><span class="arrival-number">03</span><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 5c-3-3-6-1-8 1-2-2-5-4-8-1-5 5 8 15 8 15S25 10 20 5Z"/></svg></span><span>«Неудобная» и вина</span></button><button type="button" role="tab" id="arrivalTab3" aria-controls="arrivalPanel3" aria-selected="false" tabindex="-1"><span class="arrival-number">04</span><span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11M12 14C5 14 4 9 5 5c5 0 8 4 7 9ZM12 11c0-6 4-8 8-7 0 5-3 8-8 7Z"/></svg></span><span>Развилка и сомнения</span></button></div>
+  <div class="arrival-content"><article class="arrival-panel" role="tabpanel" id="arrivalPanel0" aria-labelledby="arrivalTab0" tabindex="0" >
+      <div class="inquiry-story"><span class="inquiry-badge"><span>01</span>Голова и перегруз</span><h3>Голова и перегруз</h3><blockquote>«Я постоянно всё держу под контролем в голове, а тело словно отдельный инструмент, который просто терпит...»</blockquote><p class="inquiry-description">Вам не нужно ставить себе диагнозы. Достаточно заметить, как тело проводит обычный рабочий вторник.</p>
+      <div class="inquiry-work"><span class="work-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11M12 14C5 14 4 9 5 5c5 0 8 4 7 9ZM12 11c0-6 4-8 8-7 0 5-3 8-8 7Z"/></svg></span><div class="work-copy"><span>Как мы с этим работаем в группе:</span><p>Учимся ловить сигнал за секунду до спазма. Вы перестаете терпеть до мигрени и возвращаете себе ресурс прямо посреди рабочего дня.</p></div></div></div>
+      <div class="inquiry-signals"><span class="inquiry-kicker">Как это ощущается в теле и поведении:</span><ul><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 20v-5H5V9a7 7 0 0 1 14 0l2 4h-3v7"/><path d="M9 8c1-2 4-2 5 0"/></svg></span><div><strong>Постоянно сжатая челюсть, плечи</strong> рефлекторно подняты к ушам</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M5 17h5a2 2 0 1 1-2 2"/></svg></span><div><strong>Дыхание замирает</strong> при входящих сообщениях и звонках</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z"/></svg></span><div><strong>Ощущение жизни «от шеи и выше»</strong> — голова гудит, тело в онемении</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4M6 10v4"/></svg></span><div><strong>Фоновая усталость,</strong> которая не снимается даже после сна и отпуска</div></li></ul><div class="inquiry-foot"><span>Без оценок и диагнозов</span><span>Встречи 1–9</span></div></div>
+    </article><article class="arrival-panel" role="tabpanel" id="arrivalPanel1" aria-labelledby="arrivalTab1" tabindex="0" hidden>
+      <div class="inquiry-story"><span class="inquiry-badge"><span>02</span>Автопилот и сценарии</span><h3>Автопилот и сценарии</h3><blockquote>«Умом зарекаюсь не соглашаться, но рот уже говорит “да, конечно”, а потом накатывает злость и истощение».</blockquote><p class="inquiry-description">Сначала жертвенный героизм и спасение всех вокруг, затем глухая апатия, бессилие и злость на себя. Момент, когда логика говорит «я больше так не поступлю», но тело срабатывает на секунду раньше ума.</p>
+      <div class="inquiry-work"><span class="work-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11M12 14C5 14 4 9 5 5c5 0 8 4 7 9ZM12 11c0-6 4-8 8-7 0 5-3 8-8 7Z"/></svg></span><div class="work-copy"><span>Как мы с этим работаем в группе:</span><p>Исследуем секундную паузу между внешним стимулом и привычным согласием. Тело учится не предавать себя на автомате.</p></div></div></div>
+      <div class="inquiry-signals"><span class="inquiry-kicker">Как это ощущается в теле и поведении:</span><ul><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 20v-5H5V9a7 7 0 0 1 14 0l2 4h-3v7"/><path d="M9 8c1-2 4-2 5 0"/></svg></span><div><strong>Привычка мгновенно соглашаться,</strong> чтобы не показаться грубой, резкой или плохой</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M5 17h5a2 2 0 1 1-2 2"/></svg></span><div><strong>Взваливание чужой ответственности</strong> за коллег, партнеров или родственников</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z"/></svg></span><div><strong>Замирание в моменты,</strong> когда нужно спокойно обозначить свои интересы</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4M6 10v4"/></svg></span><div><strong>Качели истощения:</strong> сначала жертвенный героизм, затем глухая апатия и бессилие</div></li></ul><div class="inquiry-foot"><span>Без оценок и диагнозов</span><span>Встречи 1–9</span></div></div>
+    </article><article class="arrival-panel" role="tabpanel" id="arrivalPanel2" aria-labelledby="arrivalTab2" tabindex="0" hidden>
+      <div class="inquiry-story"><span class="inquiry-badge"><span>03</span>«Неудобная» и вина</span><h3>«Неудобная» и вина</h3><blockquote>«Мне кажется, что если я скажу о том, что мне не нравится, меня посчитают эгоисткой или просто отвергнут».</blockquote><p class="inquiry-description">Как мы строим контакт, где теряем свои опоры и почему так тревожно оставаться собой рядом с другими людьми.</p>
+      <div class="inquiry-work"><span class="work-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11M12 14C5 14 4 9 5 5c5 0 8 4 7 9ZM12 11c0-6 4-8 8-7 0 5-3 8-8 7Z"/></svg></span><div class="work-copy"><span>Как мы с этим работаем в группе:</span><p>Практикуем телесное ощущение границ — как оставаться в добром контакте с другим, сохраняя твердую почву под собственными ногами.</p></div></div></div>
+      <div class="inquiry-signals"><span class="inquiry-kicker">Как это ощущается в теле и поведении:</span><ul><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 20v-5H5V9a7 7 0 0 1 14 0l2 4h-3v7"/><path d="M9 8c1-2 4-2 5 0"/></svg></span><div><strong>Страх показаться требовательной,</strong> резкой, конфликтной или неблагодарной</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M5 17h5a2 2 0 1 1-2 2"/></svg></span><div><strong>Чувство вины за отдых</strong> и отдельность от домашних дел и семьи</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z"/></svg></span><div><strong>Зависимость настроения</strong> от чужого выражения лица или тона переписки</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4M6 10v4"/></svg></span><div><strong>Желание близости,</strong> которое одновременно вызывает страх растворения</div></li></ul><div class="inquiry-foot"><span>Без оценок и диагнозов</span><span>Встречи 1–9</span></div></div>
+    </article><article class="arrival-panel" role="tabpanel" id="arrivalPanel3" aria-labelledby="arrivalTab3" tabindex="0" hidden>
+      <div class="inquiry-story"><span class="inquiry-badge"><span>04</span>Развилка и сомнения</span><h3>Развилка и сомнения</h3><blockquote>«Таблицы плюсов и минусов исписаны до дыр, но ни одно решение не дает ощущения покоя внутри».</blockquote><p class="inquiry-description">Когда ум перегружен логическими аргументами, но тело противится или находится в полном ступоре.</p>
+      <div class="inquiry-work"><span class="work-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11M12 14C5 14 4 9 5 5c5 0 8 4 7 9ZM12 11c0-6 4-8 8-7 0 5-3 8-8 7Z"/></svg></span><div class="work-copy"><span>Как мы с этим работаем в группе:</span><p>Сверяем выбор с телесным откликом: где ощущается глухой камень, а где — живое тепло и дыхание. Решение принимается из покоя.</p></div></div></div>
+      <div class="inquiry-signals"><span class="inquiry-kicker">Как это ощущается в теле и поведении:</span><ul><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 20v-5H5V9a7 7 0 0 1 14 0l2 4h-3v7"/><path d="M9 8c1-2 4-2 5 0"/></svg></span><div><strong>Разрыв между «надо»</strong> (долг перед другими) и тихим живым «хочу»</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M5 17h5a2 2 0 1 1-2 2"/></svg></span><div><strong>Страх фатальной ошибки</strong> и мучительное откладывание важного решения</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z"/></svg></span><div><strong>Внутренний самосуд</strong> и усталость от постоянных дебатов с критиком</div></li><li><span class="signal-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4M6 10v4"/></svg></span><div><strong>Ощущение застрявшего поезда,</strong> когда время уходит, а вы стоите на перроне</div></li></ul><div class="inquiry-foot"><span>Без оценок и диагнозов</span><span>Встречи 1–9</span></div></div>
+    </article></div>
+  <div class="inquiry-bottom"><p>Больше понимания — больше опоры в реальной жизни.</p><div class="arrival-navigation"><button type="button" class="arrival-previous" aria-label="Предыдущий запрос">←</button><button type="button" class="arrival-next" aria-label="Следующий запрос">→</button></div></div>
+  <div class="inquiry-questions"><span class="inquiry-kicker">Вопросы о запросах и входе в группу</span><h3>«С чем точно можно, а с чем лучше не приходить»</h3><p class="inquiry-question-hint">Нажмите на вопрос, чтобы раскрыть ответ</p><details class="inquiry-faq"><summary><span>Могу ли я прийти вообще без конкретного запроса?<small>Да, более 50% участниц приходят именно так.</small></span><span class="faq-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary><p>Вам не нужно готовить красивую формулировку или заранее знать корень своего вопроса. Часто женщины приходят с простым ощущением: «всё накопилось, голова гудит, а сил больше нет». Мы начинаем с физического состояния: как вы дышите, где сжато тело прямо сейчас. В процессе первых встреч истинный запрос кристаллизуется сам.</p></details><details class="inquiry-faq" ><summary><span>Подходит ли группа для острых состояний и кризисов?<small>Честный ответ: в острой фазе лучше начать с личной терапии.</small></span><span class="faq-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary><p>Если вы переживаете свежую тяжелую утрату, развод прямо в эти дни, клиническую депрессию или ПТСР, требующие медикаментозного ведения — групповой резонанс может перегрузить нервную систему. Наш круг создан для хронической усталости, проблем с границами, потери контакта с телом и привычки угождать. При острых состояниях мы честно подскажем проверенных индивидуальных специалистов.</p></details><details class="inquiry-faq" ><summary><span>Что если у меня откликаются сразу все 4 темы или, наоборот, только одна?<small>Любой вариант абсолютно естественен.</small></span><span class="faq-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary><p>В теле всё взаимосвязано: за сжатой челюстью (тема 01) часто стоит привычка терпеть и соглашаться (тема 02), а за безотказностью — вина за отдых (тема 03). Вы можете прийти, узнав себя всего в одном пункте (например, только фоновая усталость) — и через него мягко распутать весь узел.</p></details><details class="inquiry-faq" ><summary><span>А если я плохо чувствую свое тело и привыкла «жить только в голове»?<small>Это самый частый случай — мы начинаем с простых шагов.</small></span><span class="faq-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary><p>Привычка «жить в голове» — это не дефект, а здоровая защитная реакция ума на перегрузки. Мы не требуем от вас сложных трансовых практик или многочасовых медитаций. Мы начинаем с элементарных вещей: почувствовать вес пяток на полу, сделать длинный выдох и заметить разницу. Тело откликается очень быстро, если на него не давить.</p></details></div>
+ <p class="arrival-botanical-note"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11M12 14C5 14 4 9 5 5c5 0 8 4 7 9ZM12 11c0-6 4-8 8-7 0 5-3 8-8 7Z"/></svg></span><span>Иногда то, что кажется привычкой, на самом деле — сигнал.</span></p>
+ </div>
 </section>
 <section class="journey" hidden id="rootJourney" data-tone="dark" aria-label="Путешествие к дереву и его корням">
  <div class="stage" id="stage">
@@ -526,6 +856,42 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   <div class="recognition-controls" id="recognitionControls" hidden><button id="previousSituation" type="button" aria-label="Предыдущая ситуация">←</button><span id="situationCount" aria-live="polite"></span><button id="nextSituation" type="button" aria-label="Следующая ситуация">→</button></div>
   <div class="endwash" id="endwash"></div>
  </div>
+</section>
+<section class="roots-section roots-map-section" id="roots" data-tone="dark" tabindex="-1" aria-labelledby="rootsTitle">
+ <span id="method" class="root-legacy-anchor" aria-hidden="true"></span>
+ <div class="root-map-background" aria-hidden="true"></div>
+ <header class="roots-heading"><span class="roots-kicker">Архитектура метода</span><h2 id="rootsTitle">Четыре глубины: от телесного зажима к устойчивой опоре</h2><p>Вместо того чтобы спорить с умом или давить силой воли, мы последовательно исследуем четыре слоя, где нервная система хранит напряжение. Каждый шаг соединяет телесную соматику, честный диалог и перенос в реальную жизнь:</p></header>
+ <div class="root-map" aria-label="Четыре глубины метода"><svg class="root-map-thread" viewBox="0 0 1000 420" preserveAspectRatio="none" aria-hidden="true"><path d="M440 0 C440 55 250 40 280 75 S720 95 670 165 S200 210 320 270 S730 300 600 370 L600 420"/></svg><button type="button" class="root-point root-point-0" data-root-open="0" aria-haspopup="dialog" aria-controls="rootDialog"><span class="root-point-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>01</span><span><small>Глубина 0.5 м</small><strong>Ощущения и диафрагма</strong></span><span class="root-point-plus" aria-hidden="true">+</span></button><button type="button" class="root-point root-point-1" data-root-open="1" aria-haspopup="dialog" aria-controls="rootDialog"><span class="root-point-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v12H9l-5 4V4Z"/><path d="M8 8h8M8 12h5"/></svg>02</span><span><small>Глубина 1.5 м</small><strong>Запертые чувства и диалог</strong></span><span class="root-point-plus" aria-hidden="true">+</span></button><button type="button" class="root-point root-point-2" data-root-open="2" aria-haspopup="dialog" aria-controls="rootDialog"><span class="root-point-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>03</span><span><small>Глубина 3.0 м</small><strong>Выученные автопилоты</strong></span><span class="root-point-plus" aria-hidden="true">+</span></button><button type="button" class="root-point root-point-3" data-root-open="3" aria-haspopup="dialog" aria-controls="rootDialog"><span class="root-point-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M12 7v14M4 13c0 10 16 10 16 0M2 15l2-2 2 2M18 15l2-2 2 2M8 10h8"/></svg>04</span><span><small>Глубина 5.0 м</small><strong>Коренная опора в жизни</strong></span><span class="root-point-plus" aria-hidden="true">+</span></button></div>
+ <details class="root-map-summary"><summary><span>Корни защищают, а не наказывают</span><span class="root-gentle">Бережный вход</span><span class="root-summary-plus" aria-hidden="true">+</span></summary><p>Телесный спазм — это не болезнь, а закрепившийся способ выжить. В круге мы не ломаем эти защиты через насилие, а возвращаем нервной системе физическую безопасность, чтобы они отпустили сами.</p></details>
+ <dialog id="rootDialog" class="root-dialog" aria-labelledby="root-title-0"><div class="root-dialog-top"><span class="roots-kicker">Архитектура метода</span><span class="root-dialog-count" aria-live="polite">Слой 01 / 04</span><button type="button" class="root-dialog-close" aria-label="Закрыть описание глубины">×</button></div><div class="root-dialog-scroll"><article class="root-node" id="layer-sensations" tabindex="-1" aria-labelledby="root-title-0">
+      <header class="root-node-header"><span class="root-node-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>01</span><div><span class="root-meter">Глубина 0.5 м</span><h3 id="root-title-0">Ощущения и диафрагма</h3></div></header>
+      <p class="root-focus">Анастасия · Соматическая феноменология</p>
+      <h4 class="root-question">«Что тело сообщает за 2 секунды до того, как включится голова?»</h4><p class="root-discovery">Любая мысль о контроле, тревоге или вине сначала рождается как телесный спазм: сжимается диафрагма, замирает вдох, холодеют ладони или поднимаются плечи. Тело всегда сигнализирует раньше слов.</p>
+      <div class="root-explanations"><div class="root-trap"><span>Ловушка ума (почему сила воли не работает):</span><p>Давить силой воли: «соберись, не нервничай, держи лицо». Игнорировать дискомфорт, пока организм не свалится с мигренью или выгоранием.</p></div><div class="root-tool"><span class="root-tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11M12 14C5 14 4 9 5 5c5 0 8 4 7 9ZM12 11c0-6 4-8 8-7 0 5-3 8-8 7Z"/></svg></span><div><span>Инструмент группы (как мы это освобождаем):</span><p>Учимся ловить первичный телесный сигнал на стадии тихого шепота. Возвращаем контакт со стопами и свободный выдох, пока импульс не превратился в спазм.</p></div></div></div>
+      <div class="root-anchor"><span class="root-anchor-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></span><div><span>Телесный якорь этого слоя:</span><p>Опора на стопы и длинный расслабленный выдох — мгновенное снижение уровня кортизола без самопринуждения.</p></div></div>
+
+    </article><article class="root-node" id="layer-feelings" tabindex="-1" hidden aria-labelledby="root-title-1">
+      <header class="root-node-header"><span class="root-node-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v12H9l-5 4V4Z"/><path d="M8 8h8M8 12h5"/></svg>02</span><div><span class="root-meter">Глубина 1.5 м</span><h3 id="root-title-1">Запертые чувства и диалог</h3></div></header>
+      <p class="root-focus">Альмира · Психолог, нарративный диалог</p>
+      <h4 class="root-question">«Куда девается злость, вина и бессилие, когда мы привычно улыбаемся?»</h4><p class="root-discovery">Чувства живут волнами в крови. Если злости, обиде или усталости запрещено звучать, мышечный панцирь сковывает горло и грудную клетку, удерживая эту плотину изо дня в день.</p>
+      <div class="root-explanations"><div class="root-trap"><span>Ловушка ума (почему сила воли не работает):</span><p>Пытаться «мыслить позитивно» и стыдить себя за «неправильные» эмоции. Улыбаться сквозь слезы и копить глухое раздражение.</p></div><div class="root-tool"><span class="root-tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11M12 14C5 14 4 9 5 5c5 0 8 4 7 9ZM12 11c0-6 4-8 8-7 0 5-3 8-8 7Z"/></svg></span><div><span>Инструмент группы (как мы это освобождаем):</span><p>Честный человеческий разговор в безопасном кругу: называем вещи своими именами без диагнозов и критики. Чувства получают право быть замеченными и естественно отпускают.</p></div></div></div>
+      <div class="root-anchor"><span class="root-anchor-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v12H9l-5 4V4Z"/><path d="M8 8h8M8 12h5"/></svg></span><div><span>Телесный якорь этого слоя:</span><p>Расслабление связок горла и свободное звучание голоса возвращают грудной клетке объем и легкость.</p></div></div>
+
+    </article><article class="root-node" id="layer-patterns" tabindex="-1" hidden aria-labelledby="root-title-2">
+      <header class="root-node-header"><span class="root-node-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>03</span><div><span class="root-meter">Глубина 3.0 м</span><h3 id="root-title-2">Выученные автопилоты</h3></div></header>
+      <p class="root-focus">Анастасия &amp; Альмира · Парная работа</p>
+      <h4 class="root-question">«От чего на самом деле пытается защитить вас этот спазм?»</h4><p class="root-discovery">Привычка угождать, замирать при резком тоне или контролировать всё вокруг — это не дефект характера. Когда-то этот рефлекс спас вас в семье или школе. Нервная система запомнила его как формулу безопасности.</p>
+      <div class="root-explanations"><div class="root-trap"><span>Ловушка ума (почему сила воли не работает):</span><p>Бороться с собой, корить за «слабоволие» и пытаться сломать себя через силу: «с понедельника перестану соглашаться на всё».</p></div><div class="root-tool"><span class="root-tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11M12 14C5 14 4 9 5 5c5 0 8 4 7 9ZM12 11c0-6 4-8 8-7 0 5-3 8-8 7Z"/></svg></span><div><span>Инструмент группы (как мы это освобождаем):</span><p>Безоценочное наблюдение (феноменология): встречаем эту защиту с уважением и сочувствием. Когда тело чувствует реальную безопасность круга, спазм отпускает сам — без борьбы.</p></div></div></div>
+      <div class="root-anchor"><span class="root-anchor-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></span><div><span>Телесный якорь этого слоя:</span><p>Снятие вины: «со мной всё в порядке, мое тело просто защищает меня старым выученным способом».</p></div></div>
+
+    </article><article class="root-node" id="layer-grounding" tabindex="-1" hidden aria-labelledby="root-title-3">
+      <header class="root-node-header"><span class="root-node-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M12 7v14M4 13c0 10 16 10 16 0M2 15l2-2 2 2M18 15l2-2 2 2M8 10h8"/></svg>04</span><div><span class="root-meter">Глубина 5.0 м</span><h3 id="root-title-3">Коренная опора в жизни</h3></div></header>
+      <p class="root-focus">Интеграция в реальный быт и отношения</p>
+      <h4 class="root-question">«Как действует женщина, которая физически ощущает твердую почву под ногами?»</h4><p class="root-discovery">Между внешним требованием мира и вашей реакцией возникает спасительный зазор. Вы больше не вылетаете в рефлекторное согласие или панику. Вы чувствуете вес своего тела и делаете выбор из внутренней тишины.</p>
+      <div class="root-explanations"><div class="root-trap"><span>Ловушка ума (почему сила воли не работает):</span><p>Искать опору во внешнем одобрении, похвалах начальства или идеальности. Ждать, когда окружающие сами догадаются о ваших границах.</p></div><div class="root-tool"><span class="root-tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11M12 14C5 14 4 9 5 5c5 0 8 4 7 9ZM12 11c0-6 4-8 8-7 0 5-3 8-8 7Z"/></svg></span><div><span>Инструмент группы (как мы это освобождаем):</span><p>Перенос в реальную жизнь: короткие соматические микро-якоря на рабочий вторник. Учимся спокойно говорить «нет» коллегам и близким — без агрессии, вины и страха отвержения.</p></div></div></div>
+      <div class="root-anchor"><span class="root-anchor-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M12 7v14M4 13c0 10 16 10 16 0M2 15l2-2 2 2M18 15l2-2 2 2M8 10h8"/></svg></span><div><span>Телесный якорь этого слоя:</span><p>Спокойное, устойчивое «нет» из опоры на стопы и теплое согласие только на то, что действительно наполняет силами.</p></div></div>
+
+    </article></div><div class="root-dialog-footer"><span>Без давления и спешки</span><div><button type="button" class="root-dialog-previous">← Предыдущая глубина</button><button type="button" class="root-dialog-next">Следующая глубина →</button></div></div></dialog>
 </section>
 <section class="presence editorial" id="presence" tabindex="-1" data-tone="light">
  <div class="section-label">01 / Внимание к вашему опыту</div>
@@ -576,6 +942,8 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
 <script>
 (() => {
  'use strict';
+ const startAtTree=location.hash==='#canopy';
+ if(startAtTree)history.replaceState(null,'',location.pathname+location.search);
  const assetPath=window.teloAssetPath;
  if(location.protocol==='file:'){
   document.querySelectorAll('img[src^="/media/"]').forEach(img=>img.src=assetPath(img.getAttribute('src')));
@@ -697,6 +1065,9 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   el.treeImage.style.transform=`translate3d(${-approach*d.w*.025*(1-descent)}px,${camY}px,0) scale(${treeScale})`;
   opacity(el.veil,reduce.matches?1:1-smooth(range(doorway,.35,.65)));
   opacity(el.treeShade,smooth(range(p,.205,.235)));
+  const explanation=$('approachScene');
+  const explanationAlpha=reduce.matches?1:smooth(range(doorway,.66,.90));
+  opacity(explanation,explanationAlpha);explanation.classList.toggle('is-readable',explanationAlpha>.01);explanation.inert=explanationAlpha<.1;explanation.setAttribute('aria-hidden',String(explanationAlpha<.1));
   const hero=reduce.matches?1:1-smooth(range(doorway,.35,.60));
   opacity(el.heroCopy,hero);el.heroCopy.style.transform=reduce.matches?'none':`translate3d(${-doorwayZoom*60}px,${-doorwayZoom*45}px,0)`;
   el.heroCopy.inert=hero<.1;el.heroCopy.setAttribute('aria-hidden',hero<.1?'true':'false');el.heroCopy.style.pointerEvents=hero<.1?'none':'auto';
@@ -718,7 +1089,7 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   // Keep roots visible until the following section scrolls over the scene.
   opacity(el.endwash,0);
   const sections=[...document.querySelectorAll('[data-tone]')];
-  const current=sections.filter(n=>n.getBoundingClientRect().top<=80).at(-1);
+  const current=sections.filter(n=>{const rect=n.getBoundingClientRect();return rect.height>0&&rect.top<=80;}).at(-1);
   const past=scrollY>=el.presence.offsetTop;
   const light=Boolean((current&&current.dataset.tone==='light')||(beforeJourney&&doorway>.74));
   el.topbar.classList.toggle('dark',past&&current?.dataset.tone==='dark');
@@ -730,9 +1101,9 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
   const hideTransport=(!heroDebug&&inHero)||p>=.99||((inCanopy||morphing)&&!playing);
   document.querySelector('.transport').classList.toggle('hidden',hideTransport);document.querySelector('.transport').inert=hideTransport;
   document.querySelector('.progress-track').style.opacity=p>=.99?'0':'1';
-  el.chapterNav.classList.toggle('hidden',p>=.99||inCanopy||morphing);el.chapterNav.inert=p>=.99||inCanopy||morphing;
+  el.chapterNav.classList.toggle('hidden',p>=.99||inCanopy||morphing||explanationAlpha>.1);el.chapterNav.inert=p>=.99||inCanopy||morphing||explanationAlpha>.1;
   el.topbar.classList.toggle("tree-light",p>.22&&p<.73);
-  el.topbar.classList.toggle('light',light);el.chapterNav.classList.toggle('light',light);
+  el.topbar.classList.toggle('light',light||explanationAlpha>.5);el.chapterNav.classList.toggle('light',light);
   el.progress.style.transform=`scaleX(${clamp(scrollY/(document.documentElement.scrollHeight-innerHeight))})`;
   const chapter=beforeJourney?0:scrollY<el.presence.offsetTop?1:4;
   if(chapter!==lastChapter){chapterButtons.forEach((b,i)=>{if(i===chapter)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});lastChapter=chapter;}
@@ -768,7 +1139,7 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
  });
  $('replay').addEventListener('click',()=>{stop();scrollTo(0,0);render();});
  $('restartBottom').addEventListener('click',()=>{stop();scrollTo(0,0);render();el.enter.focus({preventScroll:true});});
- document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',event=>{const id=a.getAttribute('href').slice(1),target=$(id);if(!target)return;event.preventDefault();stop();if(id==='start'){scrollTo(0,0);render();}else{scrollTo(0,target.getBoundingClientRect().top+scrollY-96);target.focus({preventScroll:true});render();}history.replaceState(null,'','#'+id);}));
+ document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',event=>{const id=a.getAttribute('href').slice(1),target=$(id);if(!target)return;event.preventDefault();stop();if(id==='start'){scrollTo(0,0);render();}else if(id==='canopy'&&!reduce.matches){scrollTo(0,(entry.offsetHeight-document.querySelector(".entry-stage").clientHeight)*.94);$('approachScene').focus({preventScroll:true});render();}else{scrollTo(0,target.getBoundingClientRect().top+scrollY-96);target.focus({preventScroll:true});render();}history.replaceState(null,'','#'+id);}));
  ['wheel','touchstart','pointerdown'].forEach(name=>addEventListener(name,event=>{if(name==='pointerdown'&&event.target.closest('button,a'))return;if(playing||tweening)stop();},{passive:true}));
  addEventListener('keydown',event=>{if(['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' ','Escape'].includes(event.key)&&(playing||tweening))stop();});
  addEventListener('scroll',requestRender,{passive:true});addEventListener('resize',()=>{if(innerWidth>768)closeMenu();measure();},{passive:true});
@@ -777,44 +1148,7 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
  reduce.addEventListener('change',()=>{stop();measure();});
  for(let i=0;i<14;i++){const mote=document.createElement('i');mote.style.cssText=`--x:${16+(i*37)%80}%;--y:${14+(i*23)%70}%;--duration:${5+i%6}s;--delay:-${i*.73}s`;el.motes.append(mote);}
  el.enter.disabled=true;el.autoplay.disabled=true;
- Promise.all([el.portalImage,el.treeImage].map(img=>img.decode())).then(()=>{ready=true;el.enter.disabled=false;el.autoplay.disabled=false;measure();}).catch(()=>{el.assetWarning.hidden=false;el.enter.disabled=false;measure();});
- // One selected case; reserve the tallest case to avoid page jumps on switch.
- const tabs=[...document.querySelectorAll('.approach-tabs [role=tab]')];
- const panels=[...document.querySelectorAll('.approach-case')];
- const panelBox=document.querySelector('.approach-panels');
- function sizeCases(){
-  if(!panelBox.clientWidth)return;
-  const selected=panels.findIndex(n=>!n.hidden);
-  panelBox.style.minHeight='';
-  const sizes=panels.map(n=>{
-   n.hidden=false;n.style.position='absolute';n.style.visibility='hidden';
-   n.style.width=panelBox.clientWidth+'px';
-   const h=n.offsetHeight;
-   n.style.position='';n.style.visibility='';n.style.width='';n.hidden=true;
-   return h;
-  });
-  panels[Math.max(0,selected)].hidden=false;
-  panelBox.style.minHeight=Math.max(...sizes)+24+'px';
- }
- function selectCase(index,focus=false){
-  tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;panels[i].hidden=i!==index;});
-  if(focus){tabs[index].focus({preventScroll:true});tabs[index].scrollIntoView({block:'nearest',inline:'nearest'});}
- }
- tabs.forEach((tab,i)=>{
-  tab.addEventListener('click',()=>selectCase(i));
-  tab.addEventListener('keydown',event=>{
-   let next;
-   if(event.key==='ArrowRight')next=(i+1)%tabs.length;
-   if(event.key==='ArrowLeft')next=(i+tabs.length-1)%tabs.length;
-   if(event.key==='Home')next=0;if(event.key==='End')next=tabs.length-1;
-   if(next!==undefined){event.preventDefault();selectCase(next,true);}
-  });
- });
- let caseWidth=0;
- new ResizeObserver(entries=>{const w=entries[0].contentRect.width;if(Math.abs(w-caseWidth)>.5){caseWidth=w;sizeCases();}}).observe(panelBox);
- document.querySelector('.approach-examples').addEventListener('toggle',event=>{if(event.currentTarget.open)requestAnimationFrame(sizeCases);});
- document.fonts.ready.then(sizeCases);
- sizeCases();
+ Promise.all([el.portalImage,el.treeImage].map(img=>img.decode())).then(()=>{ready=true;el.enter.disabled=false;el.autoplay.disabled=false;measure();if(startAtTree){if(!reduce.matches){scrollTo(0,(entry.offsetHeight-document.querySelector(".entry-stage").clientHeight)*.94);render();}else{$('approachScene').scrollIntoView();}history.replaceState(null,'','#canopy');}}).catch(()=>{el.assetWarning.hidden=false;el.enter.disabled=false;measure();});
  measure();
 })();
 </script>
@@ -834,11 +1168,29 @@ const scenePreload=document.createElement('link');scenePreload.rel='preload';sce
 (()=>{
  const block=document.querySelector('#arrival'),tabs=[...block.querySelectorAll('[role=tab]')],panels=[...block.querySelectorAll('[role=tabpanel]')];
  let index=0;
- function select(next,focus=false){index=(next+tabs.length)%tabs.length;tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;panels[i].hidden=i!==index});if(focus)tabs[index].focus({preventScroll:true});}
+ function select(next,focus=false){index=(next+tabs.length)%tabs.length;tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;panels[i].hidden=i!==index});block.dataset.inquiry=String(index);if(focus)tabs[index].focus({preventScroll:true});}
  tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>select(i));tab.addEventListener('keydown',event=>{let next;if(event.key==='ArrowRight')next=index+1;if(event.key==='ArrowLeft')next=index-1;if(event.key==='Home')next=0;if(event.key==='End')next=tabs.length-1;if(next!==undefined){event.preventDefault();select(next,true)}})});
+ const reduce=matchMedia('(prefers-reduced-motion: reduce)');let pending=false;
+ function depth(){pending=false;const r=block.getBoundingClientRect();const progress=Math.max(0,Math.min(1,(innerHeight*.35-r.top)/Math.max(1,r.height-innerHeight*.3)));block.style.setProperty('--root-depth',reduce.matches?0:progress.toFixed(4));}
+ function schedule(){if(!pending){pending=true;requestAnimationFrame(depth)}}
+ addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule,{passive:true});reduce.addEventListener('change',schedule);depth();
  block.querySelector('.arrival-previous').addEventListener('click',()=>select(index-1));block.querySelector('.arrival-next').addEventListener('click',()=>select(index+1));
 })();
 </script>
 <noscript><style>.arrival-tabs,.arrival-navigation{display:none}.arrival-panel[hidden]{display:block!important}.arrival-panel+.arrival-panel{margin-top:26px}</style></noscript>
-</body>
+<script>
+(()=>{
+ const section=document.querySelector('#roots'),dialog=document.querySelector('#rootDialog'),nodes=[...dialog.querySelectorAll('.root-node')],points=[...section.querySelectorAll('[data-root-open]')],previous=dialog.querySelector('.root-dialog-previous'),next=dialog.querySelector('.root-dialog-next'),count=dialog.querySelector('.root-dialog-count'),scroll=dialog.querySelector('.root-dialog-scroll');let index=0,opener=null,priorOverflow='';
+ function select(i){index=Math.max(0,Math.min(nodes.length-1,i));nodes.forEach((node,j)=>node.hidden=j!==index);dialog.setAttribute('aria-labelledby',`root-title-${index}`);count.textContent=`Слой 0${index+1} / 04`;previous.disabled=index===0;next.disabled=index===nodes.length-1;scroll.scrollTop=0;points.forEach((point,j)=>point.classList.toggle('is-selected',j===index));}
+ function open(i,button){opener=button;select(i);priorOverflow=document.body.style.overflow;dialog.showModal();document.body.style.overflow='hidden';dialog.querySelector('.root-dialog-close').focus();}
+ points.forEach((point,i)=>point.addEventListener('click',()=>open(i,point)));
+ dialog.querySelector('.root-dialog-close').addEventListener('click',()=>dialog.close());
+ previous.addEventListener('click',()=>{select(index-1);if(previous.disabled)next.focus();});next.addEventListener('click',()=>{select(index+1);if(next.disabled)previous.focus();});
+ dialog.addEventListener('close',()=>{document.body.style.overflow=priorOverflow;if(opener)opener.focus({preventScroll:true});});
+ let downOutside=false;dialog.addEventListener('pointerdown',e=>{downOutside=e.target===dialog;});dialog.addEventListener('click',e=>{if(downOutside&&e.target===dialog)dialog.close();downOutside=false;});
+ /* A saved layer hash locates the map, never opens a dialog on page load. */
+ if(nodes.some(node=>location.hash===`#${node.id}`))history.replaceState(null,'',location.pathname+location.search+'#roots');
+})();
+</script>
+<noscript><style>.root-map{display:none}.root-dialog{display:block;position:static;width:100%;max-height:none;margin-top:20px}.root-dialog-top,.root-dialog-footer{display:none}.root-dialog-scroll{overflow:visible}.root-dialog .root-node[hidden]{display:block!important}.root-dialog .root-node{padding:20px 0;border-top:1px solid #e2c78d50}</style></noscript></body>
 </html>
