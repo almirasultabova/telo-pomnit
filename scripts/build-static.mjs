@@ -70,6 +70,20 @@ function prepare(name, manifest) {
   return { name, directory, expected };
 }
 
+function bundleAppPage(directory) {
+  const target = path.join(directory, 'index.html');
+  let html = fs.readFileSync(target, 'utf8');
+  html = html.replace(/<script src="(js\/[^"?]+)(?:\?[^" ]*)?"><\/script>/g, (_, relative) => {
+    const code = fs.readFileSync(path.join(directory, relative), 'utf8').replace(/<\/script/gi, '<\\/script');
+    return `<script>\n${code}\n</script>`;
+  });
+  html = html.replace(/<link rel="stylesheet" href="(css\/[^"?]+)(?:\?[^" ]*)?">/g, (_, relative) => {
+    const css = fs.readFileSync(path.join(directory, relative), 'utf8');
+    return `<style>\n${css}\n</style>`;
+  });
+  fs.writeFileSync(target, html);
+}
+
 try {
   const site = pages.map(name => ({ source: path.join(repository, 'site', name), relative: name }));
   addTree(site, 'media/site', 'media/site', mediaExtensions);
@@ -81,6 +95,10 @@ try {
   addTree(app, 'app/css', 'css', new Set(['.css']));
   addTree(app, 'app/js', 'js', new Set(['.js']));
   addTree(app, 'media/app', 'media/app', mediaExtensions);
+  // Only these two public font licenses; other text metadata stays private.
+  for (const name of ['cormorant-garamond-OFL.txt', 'manrope-OFL.txt']) {
+    app.push({ source: path.join(repository, 'media/app/fonts', name), relative: path.join('media/app/fonts', name) });
+  }
   addTree(app, 'media/shared', 'media/shared', mediaExtensions);
 
   // Validate both manifests before copying any file.
@@ -90,6 +108,7 @@ try {
       fs.mkdirSync(path.dirname(target), { recursive: true });
       fs.copyFileSync(source, target);
     }
+    if (build.name === 'app') bundleAppPage(build.directory);
     console.log(`${build.name}: ${build.expected.size} public files -> ${build.directory}`);
   }
   if (!fs.existsSync(path.join(repository, 'app/js/telegram-web-app.js'))) {

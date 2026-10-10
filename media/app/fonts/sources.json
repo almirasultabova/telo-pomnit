@@ -1,0 +1,32 @@
+[
+  {
+    "file": "cormorant-garamond-italic-500-cyrillic.woff2",
+    "source": "https://fonts.gstatic.com/s/cormorantgaramond/v21/co3smX5slCNuHLi8bLeY9MK7whWMhyjYrGFEsdtdc62E6zd5wDD-jNM8Efs.woff2",
+    "bytes": 12704
+  },
+  {
+    "file": "cormorant-garamond-italic-500-latin.woff2",
+    "source": "https://fonts.gstatic.com/s/cormorantgaramond/v21/co3smX5slCNuHLi8bLeY9MK7whWMhyjYrGFEsdtdc62E6zd5wDD-iNM8.woff2",
+    "bytes": 23924
+  },
+  {
+    "file": "cormorant-garamond-normal-500-cyrillic.woff2",
+    "source": "https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYrXtKgS4.woff2",
+    "bytes": 21168
+  },
+  {
+    "file": "cormorant-garamond-normal-500-latin.woff2",
+    "source": "https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2",
+    "bytes": 37640
+  },
+  {
+    "file": "manrope-normal-400-cyrillic.woff2",
+    "source": "https://fonts.gstatic.com/s/manrope/v20/xn7gYHE41ni1AdIRggOxSuXd.woff2",
+    "bytes": 14500
+  },
+  {
+    "file": "manrope-normal-400-latin.woff2",
+    "source": "https://fonts.gstatic.com/s/manrope/v20/xn7gYHE41ni1AdIRggexSg.woff2",
+    "bytes": 24836
+  }
+]
