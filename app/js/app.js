@@ -1828,7 +1828,8 @@ function renderPrivacyEntry() {
   if (!container || document.getElementById('data-rights-btn')) return;
   const button = document.createElement('button'); button.id = 'data-rights-btn'; button.className = 'profile-link-btn'; button.innerHTML = '<svg aria-hidden="true" class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="7" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></svg><span>Мои данные и приватность</span><svg aria-hidden="true" class="profile-link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>'; button.onclick = openDataRights;
   const stats = document.getElementById('profile-stats');
-  if (stats) stats.after(button); else container.append(button);
+  const actions = document.getElementById('profile-account-actions');
+  if (actions) actions.append(button); else if (stats) stats.after(button); else container.append(button);
 }
 function ensureDataRightsScreen() {
   if (document.getElementById('screen-data-rights')) return;
