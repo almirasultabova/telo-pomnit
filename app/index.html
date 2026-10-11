@@ -207,6 +207,12 @@
         <!-- Карточка пользователя (динамическая) -->
         <div class="profile-user" id="profile-user-card"></div>
         <div id="admission-admin-panel" hidden></div>
+        <button type="button" id="access-management-btn" class="profile-link-btn" hidden>
+          <svg aria-hidden="true" class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg>
+          <span>Управление</span>
+          <svg aria-hidden="true" class="profile-link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <p id="access-management-status" class="access-notice" role="status" hidden></p>
 
         <!-- Статистика (динамическая) -->
         <p class="profile-quote">«Тело помнит то, о чём иногда забывает разум»</p>
@@ -713,6 +719,7 @@
 <script src="js/habitual.js?v=habitual-20261009"></script>
 <script src="js/api.js?v=access-20260922"></script>
 <script src="js/storage.js?v=access-20260922"></script>
+<script src="js/access-management.js?v=access-20261011"></script>
 <script src="js/app.js?v=access-20260922"></script>
 </body>
 </html>

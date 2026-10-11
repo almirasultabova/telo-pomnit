@@ -68,6 +68,7 @@ function goTo(screenId, back = false) {
 }
 
 function goBack() {
+  if (currentScreen === 'access-admin') { closeAccessManagement(); return; }
   if (currentScreen === 'data-export-preview') { closePrivatePreview(); return; }
   if (currentScreen === 'data-rights') { closeDataRights(); return; }
   if (Api.clubBlocked) { screenStack.length = 0; updateBackBtn(); return; }
@@ -1450,7 +1451,7 @@ function renderProfileTab() {
   renderZoomBtn();
   renderSchedule();
   renderHosts();
-  if (Api.isClubAdmin) renderAdmissions();
+  renderAccessManagementEntry();
 }
 
 let admissionRefreshTimer = null;
@@ -2039,6 +2040,7 @@ function renderAiDraftStatus() {
   status.textContent = aiDraftDurable ? 'Черновик сохранён на этом устройстве. Он не отправляется сам.' : 'Черновик не сохранён на устройстве. Не закрывайте приложение: текст пока только в этом окне.';
 }
 function clearPrivateConversationState() {
+  clearAccessManagementState();
   document.getElementById('screen-data-export-preview')?.remove();
   homeUser = null;
   renderMainTab();

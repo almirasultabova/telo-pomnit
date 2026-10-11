@@ -360,6 +360,11 @@ input, textarea { font-family: inherit; }
   to   { width: 100%; }
 }
 
+.access-management-screen iframe { flex: 1; min-height: 0; width: 100%; border: 0; background: var(--bg, #f7f4ef); }
+.access-management-screen .management-loading { padding: 0 20px; }
+.access-management-screen .management-loading:has(#management-frame-status[hidden]) { display: none; }
+.access-management-screen .screen-header { flex-shrink: 0; }
+
 /* ─── Главный экран: нижняя навигация ───────────────────────────────────── */
 .bottom-nav {
   flex-shrink: 0;

@@ -11,6 +11,7 @@ const Api = {
   userId: null,
   _authGeneration: 0,
   isClubAdmin: false,
+  userRole: null,
   clubBlocked: false,
 
   _setToken(token) {
@@ -88,6 +89,7 @@ const Api = {
     this._setToken(data.token);
     this.clubBlocked = false;
     this.isClubAdmin = data.user?.isClubAdmin === true;
+    this.userRole = data.user?.role || null;
     // Синхронизируем согласие и онбординг: если на сервере уже зафиксировано — ставим флаги локально
     Storage.setConsentFromServer(Boolean(data.user.consentGivenAt));
     return data.user;
@@ -98,10 +100,12 @@ const Api = {
   },
 
   logout() {
+    if (typeof clearAccessManagementState === 'function') clearAccessManagementState();
     this._authGeneration++;
     this._token = null;
     this.userId = null;
     this.isClubAdmin = false;
+    this.userRole = null;
     AppLocalStorage.removeItem('tp_jwt');
     if (typeof Storage !== 'undefined') Storage.clearUser();
   },
@@ -123,6 +127,7 @@ const Api = {
   async getAccess() {
     return this._request('GET', '/me/enrollment/access');
   },
+  async getManagementSession() { return this._request('GET', '/access-admin/session'); },
   async getAdmissions() { return this._request('GET', '/admin/admissions'); },
   async decideAdmission(id, status) { return this._request('PATCH', '/admin/admissions/' + encodeURIComponent(id), { status }); },
 
