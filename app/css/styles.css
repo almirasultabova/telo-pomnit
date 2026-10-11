@@ -3278,3 +3278,9 @@ textarea:focus,input:focus,select:focus {outline:2px solid var(--color-action);o
 #tab-profile .q-banner-sub {font:400 12px/1.5 var(--font-body);color:var(--color-action);margin-top:6px;}
 #tab-profile .questionnaire-status {padding:12px 0;font:400 13px/1.55 var(--font-body);color:var(--color-muted);}
 @media(max-width:350px){#tab-profile .access-meeting summary{padding:16px;}#tab-profile .meeting-summary-topic{font-size:21px;}}
+
+
+/* J-291: preserve long personal text and keep the AI composer inside a short viewport. */
+.entry-note {overflow-wrap:anywhere;white-space:pre-wrap;}
+#screen-ai-chat .screen-header {max-height:min(40%,max(96px,calc(var(--ai-viewport-height,100dvh) - 240px)));}
+#ai-input {max-height:min(100px,max(48px,calc(var(--ai-viewport-height,100dvh) * .2)));overflow-y:auto;}
