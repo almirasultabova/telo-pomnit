@@ -187,7 +187,9 @@ function programPickerHTML() {
 }
 function selectProgram(id) {
   if (!programAccess?.streams?.some(stream => stream.id === id)) return;
+  if (id === selectedProgramId) return;
   selectedProgramId = id; heatmapWeek = 0;
+  checkAndShowQuestionnaire(id);
   renderMyPathTab(); renderNextMeeting(); renderZoomBtn(); renderSchedule(); renderMainTab();
 }
 function streamStatusHTML() {
@@ -301,9 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
           applyProgramAccess(access.value);
         }
         if (me.status === 'fulfilled' && String(me.value?.id) === String(Api.userId)) homeUser = { id: String(Api.userId), name: me.value.name || user.name || '' };
-        if (!Api.isClubAdmin && me.status === 'fulfilled' && me.value?.enrollment?.stream?.id) {
-          checkAndShowQuestionnaire(me.value.enrollment.stream.id);
-        }
+
       } catch (err) {
         if (err?.code?.startsWith('CLUB_ACCESS_')) throw err;
         /* нет связи — работаем локально */
@@ -1520,6 +1520,7 @@ function applyProgramAccess(access) {
   renderAccessNotice();
   renderMainTab();
   if (activeTab === 'diag') renderMyPathTab();
+  checkAndShowQuestionnaire(selectedProgramId);
 }
 function renderAccessNotice() {
   const text=programAccess?.ai?.message || 'Не удалось проверить доступ к AI. Дневник и реакции остаются доступны.';
@@ -1535,7 +1536,7 @@ function renderAccessNotice() {
 function currentProgram(){return programAccess?.streams?.find(s=>s.id===selectedProgramId);}
 async function refreshProgramAccess(){
   try {applyProgramAccess(await Api.getAccess());}
-  catch {programAccess=null;aiAccessGranted=null;renderAccessNotice();renderMainTab();}
+  catch {programAccess=null;aiAccessGranted=null;checkAndShowQuestionnaire(null);renderAccessNotice();renderMainTab();}
 }
 function renderNextMeeting(){
   const el=document.getElementById('next-meeting-card');
@@ -2678,6 +2679,12 @@ let qStep = 0;
 let qStreamId = null;
 let qInviteTimer = null;
 let qStatusVerified = false;
+let qStatusDone = false;
+let qStatusState = 'idle';
+let qStatusRequest = 0;
+let qStatusIdentity = null;
+let qFormIdentity = null;
+let qSubmitting = false;
 
 const Q_BLOCKS = [
   {
@@ -2737,31 +2744,44 @@ const Q_BLOCKS = [
 // ─── Инициализация и проверка статуса ────────────────────────────────────
 
 async function checkAndShowQuestionnaire(streamId) {
-  if (Api.isClubAdmin || Api.clubBlocked || !streamId) return;
+  const request = ++qStatusRequest;
   const owner = Api.userId;
   const generation = Api._authGeneration;
+  closeQInvite();
   qStreamId = streamId;
-  if (Storage.isQuestionnaireDone()) return;
-
-  // Проверяем на сервере — вдруг уже заполнена с другого устройства
+  qStatusIdentity = { owner, generation };
+  qStatusVerified = false;
+  qStatusDone = false;
+  qStatusState = 'idle';
+  if (Api.isClubAdmin || Api.clubBlocked || !streamId || !currentProgram()) {
+    renderQuestionnaireBanner();
+    return;
+  }
+  qStatusState = 'loading';
+  renderQuestionnaireBanner();
+  const current = () => request === qStatusRequest && !Api.clubBlocked && !Api.isClubAdmin &&
+    Api.userId === owner && Api._authGeneration === generation && selectedProgramId === streamId;
   try {
     const status = await Api.getQuestionnaireStatus(streamId);
-    if (Api.clubBlocked || Api.userId !== owner || Api._authGeneration !== generation) return;
+    if (!current()) return;
+    if (!status || !Object.prototype.hasOwnProperty.call(status, 'pre')) throw new Error('Unknown questionnaire status');
+    qStatusDone = !!status.pre;
     qStatusVerified = true;
-    if (status?.pre) {
-      Storage.setQuestionnaireDone();
-      renderQuestionnaireBanner();
-      return;
-    }
-  } catch { return; /* Unknown server status must not become "not filled in". */ }
+    qStatusState = 'loaded';
+  } catch {
+    if (!current()) return;
+    qStatusState = 'error';
+    renderQuestionnaireBanner();
+    return;
+  }
   renderQuestionnaireBanner();
+  if (qStatusDone) return;
 
-  // Показываем bottom sheet через 10 сек (только 1 раз)
+  // Keep the existing one-time invitation; bind its delayed display to this selection.
   if (!Storage.isQSheetShown()) {
-    clearTimeout(qInviteTimer);
     qInviteTimer = setTimeout(() => {
       qInviteTimer = null;
-      if (Api.isClubAdmin || Api.clubBlocked || Api.userId !== owner || Api._authGeneration !== generation || currentScreen !== 'home') return;
+      if (!current() || qStatusDone || currentScreen !== 'home') return;
       Storage.setQSheetShown();
       showQInvite();
     }, 10000);
@@ -2771,7 +2791,7 @@ async function checkAndShowQuestionnaire(streamId) {
 // ─── Bottom sheet — приглашение ───────────────────────────────────────────
 
 function showQInvite() {
-  if (Api.isClubAdmin || Api.clubBlocked || !qStreamId || !qStatusVerified) return;
+  if (Api.isClubAdmin || Api.clubBlocked || !qStreamId || !qStatusVerified || qStatusDone || qStreamId !== selectedProgramId || Api.userId !== qStatusIdentity?.owner || Api._authGeneration !== qStatusIdentity?.generation) return;
   const overlay = document.getElementById('q-invite-overlay');
   const sheet   = document.getElementById('q-invite-sheet');
   if (!overlay || !sheet) return;
@@ -2793,8 +2813,11 @@ function closeQInvite() {
 // ─── Открыть / закрыть экран анкеты ──────────────────────────────────────
 
 function openQuestionnaire() {
-  if (Api.isClubAdmin || Api.clubBlocked || !qStreamId) return;
+  if (Api.isClubAdmin || Api.clubBlocked || !qStreamId || !qStatusVerified || qStatusDone || qStreamId !== selectedProgramId || qSubmitting || Api.userId !== qStatusIdentity?.owner || Api._authGeneration !== qStatusIdentity?.generation) return;
   closeQInvite();
+  qFormIdentity = { streamId: qStreamId, owner: Api.userId, generation: Api._authGeneration };
+  const footer = document.querySelector('.questionnaire-footer');
+  if (footer) footer.innerHTML = `<button class="btn btn--outline q-back-btn" id="q-back-btn" onclick="qPrev()">Назад</button><button class="btn btn--accent q-next-btn" id="q-next-btn" onclick="qNext()">Далее</button>`;
   qStep = 0;
   qAnswers = {};
   renderQBlock();
@@ -2983,14 +3006,19 @@ function qPrev() {
 // ─── Отправка на сервер ───────────────────────────────────────────────────
 
 async function submitQuestionnaire() {
+  const identity = qFormIdentity;
+  const current = () => identity && !Api.clubBlocked && !Api.isClubAdmin && Api.userId === identity.owner &&
+    Api._authGeneration === identity.generation && selectedProgramId === identity.streamId && qStreamId === identity.streamId && qStatusVerified && !qStatusDone;
+  if (qSubmitting || !current()) return;
+  qSubmitting = true;
   const nextBtn = document.getElementById('q-next-btn');
   if (nextBtn) { nextBtn.disabled = true; nextBtn.textContent = 'Отправляем…'; }
 
   try {
-    if (qStreamId) {
-      await Api.saveQuestionnairePre(qStreamId, qAnswers);
-    }
-    Storage.setQuestionnaireDone();
+    await Api.saveQuestionnairePre(identity.streamId, { ...qAnswers });
+    if (!current()) return;
+    qStatusDone = true;
+    closeQInvite();
     hapticNotify('success');
 
     // Показываем благодарность
@@ -3009,9 +3037,10 @@ async function submitQuestionnaire() {
     // Обновляем профиль — убираем баннер
     renderProfileTab();
   } catch {
+    if (!current()) return;
     if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = 'Отправить'; }
     alert('Не удалось отправить анкету. Проверьте соединение и попробуйте ещё раз.');
-  }
+  } finally { qSubmitting = false; }
 }
 
 // ─── Баннер согласия на обработку данных ─────────────────────────────────
@@ -3067,8 +3096,15 @@ function renderQuestionnaireBanner() {
   if (!container) return;
 
   if (Api.isClubAdmin) {container.innerHTML='<p class="questionnaire-status">Служебный аккаунт · анкета предназначена для участниц потока.</p>';return;}
-  if (Storage.isQuestionnaireDone()) {container.innerHTML='<p class="questionnaire-status">Анкета участницы заполнена.</p>';return;}
-  if (!qStreamId || !qStatusVerified) {container.innerHTML='';return;}
+  if (Api.clubBlocked || !currentProgram() || !qStreamId || qStreamId !== selectedProgramId || Api.userId !== qStatusIdentity?.owner || Api._authGeneration !== qStatusIdentity?.generation) {container.innerHTML='';return;}
+  if (qStatusState === 'loading') {container.innerHTML='<p class="questionnaire-status" role="status">Проверяем анкету выбранного потока…</p>';return;}
+  if (qStatusState === 'error') {
+    container.innerHTML='<p class="questionnaire-status" role="status">Не удалось проверить анкету этого потока.</p><button type="button" class="btn btn--outline btn--full btn--sm" id="q-status-retry">Повторить проверку</button>';
+    container.querySelector('#q-status-retry').addEventListener('click', () => checkAndShowQuestionnaire(selectedProgramId));
+    return;
+  }
+  if (!qStatusVerified) {container.innerHTML='';return;}
+  if (qStatusDone) {container.innerHTML='<p class="questionnaire-status">Анкета этого потока заполнена.</p>';return;}
 
   container.innerHTML = `
     <button class="q-banner" type="button" onclick="openQuestionnaire()">
