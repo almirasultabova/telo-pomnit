@@ -12,7 +12,7 @@ function load(file,proxy,env,deps={}){const module={exports:{}};vm.runInNewConte
   const host=await tx.user.create({data:{telegramId:1900000000000103n,accessStatus:'approved',role:'HOST'}});
   const target=await tx.user.create({data:{telegramId:1900000000000104n,accessRequestedAt:new Date(),consentGivenAt:new Date()}});
   const stream=await tx.stream.create({data:{name:'SYNTHETIC rollback only',startDate:new Date('2026-10-01'),endDate:new Date('2026-10-20')}});
-  const m=load('src/services/access-management.js',proxy,env);const me=load('src/routes/me.js',proxy,env);
+  const m=load('src/services/access-management.js',proxy,env,{'./access-notices':{drainAccessNotices:async()=>{}}});const me=load('src/routes/me.js',proxy,env);
   const Fastify=require(path.join(backend,'node_modules/fastify'));let apiActor=owner;
   const routes=load('src/routes/access-admin.js',proxy,env,{'../services/access-management':m,'../services/auth':{requireAuth:async(req,reply)=>{if(apiActor)req.user=apiActor;else reply.code(401).send({error:'unauthorized'});}}});
   const app=Fastify();await app.register(routes);
@@ -40,6 +40,7 @@ function load(file,proxy,env,deps={}){const module={exports:{}};vm.runInNewConte
   await tx.$executeRawUnsafe('RELEASE SAVEPOINT verified_payment_case');
   a=await m.openAction(owner.id,target.id);await m.changeAction(owner.id,a.id,{streamId:stream.id,basis:'free'});
   const result=await m.confirmAction(owner.id,a.id);
+  assert.equal(await tx.accessNotice.count({where:{targetId:target.id}}),1);passed++;
   const u=await tx.user.findUnique({where:{id:target.id}});assert.equal(u.accessStatus,'approved');assert.equal(u.tokenVersion,1);assert.ok(u.consentGivenAt);passed++;
   const e=await tx.enrollment.findFirst({where:{userId:target.id}});assert.equal(e.accessBasis,'free');assert.equal(e.paidAt,null);assert.equal(e.paymentId,null);passed++;
   await assert.rejects(()=>m.confirmAction(owner.id,a.id),e=>e.statusCode===409);passed++;

@@ -9,6 +9,7 @@ const { admissionError, requestAdmission, drainAdmissionNotifications } = requir
 
 const bot = new Bot(process.env.BOT_TOKEN)
 require('./services/access-bot').registerAccessBot(bot)
+require('./services/access-demo').registerAccessDemo(bot)
 
 // ─── Константы ────────────────────────────────────────────────────────────
 
@@ -538,6 +539,7 @@ async function retryWaitlistNotifications() {
 }
 cron.schedule('* * * * *', retryWaitlistNotifications, { timezone: 'UTC' })
 cron.schedule('* * * * *', drainAdmissionNotifications, { timezone: 'UTC' })
+cron.schedule('* * * * *', require('./services/access-notices').drainAccessNotices, { timezone: 'UTC' })
 
 // ─── Запуск ───────────────────────────────────────────────────────────────
 

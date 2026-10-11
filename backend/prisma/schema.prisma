@@ -300,6 +300,21 @@ model OperationalMetric {
   @@map("operational_metrics")
 }
 
+model AccessNotice {
+  id            String    @id @default(uuid())
+  actionId      String    @unique @map("action_id")
+  targetId      String    @map("target_id")
+  status        String
+  delivery      String    @default("pending")
+  attempts      Int       @default(0)
+  nextAttemptAt DateTime  @default(now()) @map("next_attempt_at")
+  leaseUntil    DateTime? @map("lease_until")
+  sentAt        DateTime? @map("sent_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  @@index([delivery, nextAttemptAt])
+  @@map("access_notices")
+}
+
 enum ReactionType {
   freeze
   fight

@@ -67,6 +67,7 @@ async function gdprRoutes(app) {
       // A fresh deleted-account token may repeat this request safely after a lost response.
       if (user.deletedAt) return
       await tx.accessAction.deleteMany({where:{OR:[{actorId:userId},{targetId:userId}]}})
+      await tx.accessNotice.deleteMany({where:{targetId:userId}})
       const enrollments = await tx.enrollment.findMany({ where: { userId }, select: { paymentId: true } })
       const paymentIds = enrollments.map(row => row.paymentId).filter(Boolean)
       for (const model of personalModels) await tx[model].deleteMany({ where: { userId } })

@@ -44,7 +44,7 @@ async function changeAction(actorId,id,changes) {
   return db.accessAction.findUnique({where:{id}})
 }
 async function confirmAction(actorId,id) {
-  return db.$transaction(async tx => {
+  const result = await db.$transaction(async tx => {
     const action = await tx.accessAction.findUnique({where:{id}})
     if (!action || action.actorId !== actorId) throw error('Решение не найдено',404)
     // Shared row locks serialize decisions, deletion and permission revocation.
@@ -80,7 +80,10 @@ async function confirmAction(actorId,id) {
     const updated = await tx.user.update({where:{id:target.id},data:{role:action.status==='approved'?action.role:target.role,accessStatus:action.status,accessDecidedAt:new Date(),accessDecidedBy:actorId,accessRevision:{increment:1},tokenVersion:{increment:1}}})
     const after = {role:updated.role,status:updated.accessStatus,revision:updated.accessRevision,enrollment}
     await tx.accessAudit.create({data:{actorId,targetId:target.id,actionId:id,before,after}})
+    if(target.accessStatus!==updated.accessStatus) await tx.accessNotice.create({data:{actionId:id,targetId:target.id,status:updated.accessStatus}})
     return {user:publicUser({...updated,telegramId:updated.telegramId}),after}
   })
+  void require('./access-notices').drainAccessNotices()
+  return result
 }
 module.exports = {isOwner,canManage,actorByTelegram,openAction,readAction,changeAction,confirmAction,publicSelect,publicUser}
