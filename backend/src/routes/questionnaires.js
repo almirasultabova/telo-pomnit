@@ -1,5 +1,5 @@
 const db = require('../db')
-const { requireAuth } = require('../services/auth')
+const { requireAuth, withActiveUser } = require('../services/auth')
 
 async function questionnaireRoutes(app) {
   // POST /questionnaires/pre — анкета до потока
@@ -15,7 +15,7 @@ async function questionnaireRoutes(app) {
         }
       }
     }
-  }, async (request, reply) => {
+  }, async (request, reply) => withActiveUser(request, async db => {
     const { streamId, answers } = request.body
 
     const existing = await db.questionnaire.findFirst({
@@ -28,7 +28,7 @@ async function questionnaireRoutes(app) {
     return db.questionnaire.create({
       data: { userId: request.user.id, streamId, type: 'pre', answers }
     })
-  })
+  }))
 
   // POST /questionnaires/post — анкета после потока
   app.post('/questionnaires/post', {
@@ -43,7 +43,7 @@ async function questionnaireRoutes(app) {
         }
       }
     }
-  }, async (request, reply) => {
+  }, async (request, reply) => withActiveUser(request, async db => {
     const { streamId, answers } = request.body
 
     const existing = await db.questionnaire.findFirst({
@@ -56,7 +56,7 @@ async function questionnaireRoutes(app) {
     return db.questionnaire.create({
       data: { userId: request.user.id, streamId, type: 'post', answers }
     })
-  })
+  }))
 
   // GET /questionnaires/:streamId — мои анкеты для потока
   app.get('/questionnaires/:streamId', { preHandler: requireAuth }, async (request) => {

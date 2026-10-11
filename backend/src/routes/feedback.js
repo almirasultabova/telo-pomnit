@@ -1,5 +1,6 @@
 const db = require('../db')
-const { requireAuth } = require('../services/auth')
+const { requireAuth, withActiveUser } = require('../services/auth')
+const { admissionError } = require('../services/admission')
 const { notifyAdminsAboutFeedback } = require('../bot')
 
 async function feedbackRoutes(app) {
@@ -20,17 +21,18 @@ async function feedbackRoutes(app) {
     }
   }, async (request) => {
     const { text, rating } = request.body
-    const feedback = await db.feedback.create({
+    const feedback = await withActiveUser(request, tx => tx.feedback.create({
       data: {
         userId: request.user.id,
         text: text.trim(),
         rating: rating ?? null
       }
-    })
+    }))
 
-    notifyAdminsAboutFeedback(feedback, request.user).catch(err => {
-      app.log.error({ err }, 'failed to notify admins about feedback')
-    })
+    const current = await db.user.findUnique({ where: { id: request.user.id } })
+    if (current && !current.deletedAt && current.tokenVersion === request.user.tokenVersion && !admissionError(current)) {
+      notifyAdminsAboutFeedback(feedback, current).catch(() => app.log.error('failed to notify admins about feedback'))
+    }
 
     return { ok: true, id: feedback.id }
   })

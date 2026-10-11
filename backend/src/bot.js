@@ -5,24 +5,42 @@ require('dotenv').config()
 const { Bot, InlineKeyboard } = require('grammy')
 const cron = require('node-cron')
 const db = require('./db')
+const { admissionError, requestAdmission, drainAdmissionNotifications } = require('./services/admission')
 
 const bot = new Bot(process.env.BOT_TOKEN)
 
 // ─── Константы ────────────────────────────────────────────────────────────
 
-const MINI_APP_URL = process.env.MINI_APP_URL || 'https://app.telo-pomnit.ru'
+const MINI_APP_URL = process.env.MINI_APP_URL || 'https://tg-app-telo-pomnit.vercel.app/?v=startup-20261005'
 const ADMIN_IDS = (process.env.ADMIN_TELEGRAM_IDS || '')
   .split(',').map(id => parseInt(id.trim())).filter(Boolean)
+
+async function updateAppMenu(ctx) {
+  if (ctx.chat?.type !== 'private') return
+  try {
+    await ctx.api.setChatMenuButton({
+      chat_id: ctx.chat.id,
+      menu_button: { type: 'web_app', text: 'Открыть приложение', web_app: { url: MINI_APP_URL } }
+    })
+  } catch (err) {
+    console.error('[menu] Update failed:', err.description || err.message)
+  }
+}
 
 // ─── /start ───────────────────────────────────────────────────────────────
 
 bot.command('start', async (ctx) => {
+  if (ctx.chat?.type !== 'private') return;
   const tgUser = ctx.from
   if (!tgUser) return
+  await updateAppMenu(ctx)
 
   try {
+    // Deleted tombstones must not be repopulated from a new /start event.
+    const existingUser = await db.user.findUnique({ where: { telegramId: BigInt(tgUser.id) } })
+    if (existingUser?.deletedAt) return ctx.reply('Этот аккаунт удалён.')
     // Создаём или находим пользователя
-    const user = await db.user.upsert({
+    let user = await db.user.upsert({
       where: { telegramId: BigInt(tgUser.id) },
       create: {
         telegramId: BigInt(tgUser.id),
@@ -31,20 +49,32 @@ bot.command('start', async (ctx) => {
         username:   tgUser.username || null,
         role: ADMIN_IDS.includes(tgUser.id) ? 'HOST' : 'PARTICIPANT',
       },
-      update: {
-        firstName: tgUser.first_name,
-        username:  tgUser.username || null,
-      },
+      update: {},
     })
+    if (existingUser) {
+      user = await db.$transaction(async tx => {
+        await tx.$queryRawUnsafe('SELECT id FROM users WHERE id = $1 FOR UPDATE', existingUser.id)
+        const active = await tx.user.findUnique({ where: { id: existingUser.id } })
+        if (!active || active.deletedAt) return active
+        return tx.user.update({ where: { id: active.id }, data: { firstName: tgUser.first_name, username: tgUser.username || null } })
+      })
+    }
 
+    if (!user || user.deletedAt) return ctx.reply('Этот аккаунт удалён.')
+    await requestAdmission(user)
+    const denied = admissionError(user)
+    if (denied) {
+      const keyboard = new InlineKeyboard().webApp('Проверить доступ', MINI_APP_URL)
+      return ctx.reply(denied.error + '\n\n«Тело помнит» — закрытое приложение для одобренного круга участниц.', { reply_markup: keyboard })
+    }
     // Проверяем ожидающую запись об оплате
     if (tgUser.username) {
       const pending = await db.pendingEnrollment.findFirst({
-        where: { telegramUsername: tgUser.username }
+        where: { telegramUsername: { equals: tgUser.username, mode: 'insensitive' } }
       })
 
       if (pending) {
-        const stream = await db.stream.findFirst({
+        const stream = pending.streamId ? await db.stream.findUnique({ where: { id: pending.streamId } }) : await db.stream.findFirst({
           where: { isActive: true },
           orderBy: { startDate: 'desc' }
         })
@@ -79,7 +109,7 @@ bot.command('start', async (ctx) => {
           const keyboard = new InlineKeyboard().webApp('Открыть приложение', MINI_APP_URL)
           return ctx.reply(
             `Добро пожаловать в поток «${stream.name}» 🌿\n\n` +
-            `Ваша оплата подтверждена. Доступ к приложению открыт — нажмите кнопку ниже:`,
+            `Ваша оплата подтверждена. Для входа в приложение нужен отдельный допуск Альмиры. Нажмите кнопку ниже, чтобы войти или отправить заявку:`,
             { reply_markup: keyboard }
           )
         }
@@ -92,8 +122,8 @@ bot.command('start', async (ctx) => {
     await ctx.reply(
       `Привет, ${name}.\n\n` +
       `Это бот программы «Тело помнит» — интегративной группы для работы с телесными реакциями.\n\n` +
-      `Здесь вы будете получать напоминания о ежедневных практиках и новостях программы.\n\n` +
-      `Нажмите кнопку ниже, чтобы открыть дневник наблюдений:`,
+      `Приложение открыто для участниц, которым Альмира разрешила вход. Если допуска ещё нет, через кнопку ниже можно отправить заявку. Покупка программы оформляется отдельно.\n\n` +
+      `Нажмите «Открыть приложение», чтобы войти или отправить заявку:`,
       { reply_markup: keyboard }
     )
   } catch (err) {
@@ -109,10 +139,10 @@ bot.command('help', async (ctx) => {
 
   await ctx.reply(
     `Что умеет этот бот:\n\n` +
-    `• Присылает ежедневное напоминание о практике\n` +
-    `• Даёт доступ к дневнику наблюдений\n` +
+    `• Присылает напоминание о записи в дневнике\n` +
+    `• Открывает приложение или заявку на допуск\n` +
     `• Сообщает о датах встреч\n\n` +
-    `По всем вопросам — @almirasultabova`,
+    `По всем вопросам — @almira_sultanova`,
     { reply_markup: keyboard }
   )
 })
@@ -120,6 +150,7 @@ bot.command('help', async (ctx) => {
 // ─── /app — открыть мини-апп ──────────────────────────────────────────────
 
 bot.command('app', async (ctx) => {
+  await updateAppMenu(ctx)
   const keyboard = new InlineKeyboard().webApp('Открыть дневник', MINI_APP_URL)
   await ctx.reply('Ваш дневник наблюдений:', { reply_markup: keyboard })
 })
@@ -207,7 +238,7 @@ bot.command('activate', async (ctx) => {
     await bot.api.sendMessage(
       Number(user.telegramId),
       `Добро пожаловать в поток «${stream.name}» 🌿\n\n` +
-      `Ваш доступ открыт. Здесь — ваш личный дневник тела, трекер состояния и AI-ассистент.\n\n` +
+      `Вы зачислены в этот поток. Для входа в приложение нужен отдельный допуск Альмиры; доступ к AI зависит от периода вашей программы.\n\n` +
       `Приложение работает прямо в Telegram — нажмите кнопку ниже:`,
       { reply_markup: keyboard }
     )
@@ -308,7 +339,7 @@ async function sendDailyReminder() {
   const enrollments = await db.enrollment.findMany({
     where: {
       status: 'active',
-      user: { notificationsEnabled: true },
+      user: { notificationsEnabled: true, accessStatus: 'approved', deletedAt: null },
     },
     include: { user: true },
     take: 500,
@@ -355,7 +386,7 @@ async function sendMeetingReminder() {
 
   for (const meeting of meetings) {
     const enrollments = await db.enrollment.findMany({
-      where: { streamId: meeting.streamId, status: 'active' },
+      where: { streamId: meeting.streamId, status: 'active', user: { accessStatus: 'approved', deletedAt: null } },
       include: { user: true }
     })
 
@@ -409,7 +440,7 @@ async function sendQuestionnairReminder(dayNumber) {
 
   // Находим всех активных участниц, у кого нет заполненной анкеты
   const enrollments = await db.enrollment.findMany({
-    where: { status: 'active' },
+    where: { status: 'active', user: { accessStatus: 'approved', deletedAt: null } },
     include: {
       user: true,
       stream: true
@@ -464,10 +495,9 @@ cron.schedule('0 0 * * *', async () => {
   }
 }, { timezone: 'UTC' })
 
-// Cron: каждую ночь в 03:15 МСК (00:15 UTC) — физически удаляем данные пользователей,
-// запросивших удаление аккаунта (GDPR/ФЗ-152, DELETE /gdpr/delete-me) 30+ дней назад.
-// Профиль уже обезличен в момент запроса (routes/gdpr.js); здесь стираются записи с
-// личным содержимым. Сам User и Enrollment (платёж) не удаляются — нужны для бухгалтерии.
+// Legacy deletion requests: cleanup remains as a fallback for requests predating
+// immediate transactional purge. No backup/provider deletion promise; User and
+// financial Enrollment/PaymentOrder are not deleted by this job.
 cron.schedule('15 0 * * *', async () => {
   try {
     const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
@@ -596,6 +626,7 @@ async function retryWaitlistNotifications() {
   }
 }
 cron.schedule('* * * * *', retryWaitlistNotifications, { timezone: 'UTC' })
+cron.schedule('* * * * *', drainAdmissionNotifications, { timezone: 'UTC' })
 
 // ─── Запуск ───────────────────────────────────────────────────────────────
 

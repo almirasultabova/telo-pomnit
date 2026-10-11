@@ -24,8 +24,15 @@ model User {
   tokenVersion         Int       @default(0) @map("token_version")
   consentGivenAt       DateTime? @map("consent_given_at")
   consentText          String?   @map("consent_text")
+  consentVersion       String?   @map("consent_version")
+  consentSource        String?   @map("consent_source")
   deletedAt            DateTime? @map("deleted_at")
   createdAt            DateTime  @default(now()) @map("created_at")
+  accessStatus         String    @default("pending") @map("access_status")
+  accessRequestedAt    DateTime? @map("access_requested_at")
+  accessDecidedAt      DateTime? @map("access_decided_at")
+  accessDecidedBy      String?   @map("access_decided_by")
+  accessNotifiedAt     DateTime? @map("access_notified_at")
 
   enrollments        Enrollment[]
   diaryEntries       DiaryEntry[]
@@ -95,11 +102,13 @@ model DiaryEntry {
   zone       String
   sensations String[]
   note       String?
+  clientId   String?  @map("client_id")
   createdAt  DateTime @default(now()) @map("created_at")
 
   user   User    @relation(fields: [userId], references: [id])
   stream Stream? @relation(fields: [streamId], references: [id])
 
+  @@unique([userId, clientId])
   @@map("diary_entries")
 }
 
@@ -126,10 +135,18 @@ model Checkin {
   tensionZone String?  @map("tension_zone")
   mood        String?
   note        String?
+  tension     Int?
+  anxiety     Int?
+  energy      Int?
+  safety      Int?
+  bodyContact Int?     @map("body_contact")
+  dayKey      String?  @map("day_key")
+  clientUpdatedAt DateTime? @map("client_updated_at")
   createdAt   DateTime @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id])
 
+  @@unique([userId, dayKey])
   @@map("checkins")
 }
 
@@ -164,6 +181,11 @@ model AiChatSession {
   sessionId String   @unique @map("session_id")
   userId    String?  @map("user_id")
   messages  Json
+  contextMode String?  @map("context_mode")
+  contextSnapshot Json? @map("context_snapshot")
+  contextVersion String? @map("context_version")
+  contextPreviewHash String? @map("context_preview_hash")
+  contextSelectedAt DateTime? @map("context_selected_at")
   createdAt DateTime @default(now()) @map("created_at")
 
   user      User?    @relation(fields: [userId], references: [id])
@@ -205,9 +227,27 @@ model PendingEnrollment {
   email            String
   name             String?
   paymentId        String   @unique @map("payment_id")
+  streamId         String?  @map("stream_id")
   createdAt        DateTime @default(now()) @map("created_at")
 
   @@map("pending_enrollments")
+}
+
+// Ожидаемые условия сохраняются до выдачи платёжной ссылки.
+model PaymentOrder {
+  id               String    @id @default(uuid())
+  paymentId        String?   @unique @map("payment_id")
+  amount           String
+  currency         String    @default("RUB")
+  shopId           String    @map("shop_id")
+  streamId         String    @map("stream_id")
+  email            String
+  name             String?
+  telegramUsername String    @map("telegram_username")
+  processedAt      DateTime? @map("processed_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  @@map("payment_orders")
 }
 
 enum EnrollmentStatus {

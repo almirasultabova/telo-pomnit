@@ -1,5 +1,6 @@
 const db = require('../db')
-const { requireAuth } = require('../services/auth')
+const { requireAuth, withActiveUser } = require('../services/auth')
+const { CONSENT_VERSION, CONSENT_SOURCE, CONSENT_TEXT } = require('../services/consent')
 
 async function meRoutes(app) {
   // GET /me — профиль + текущий поток + стрик
@@ -39,7 +40,9 @@ async function meRoutes(app) {
         photoUrl: user.photoUrl,
         telegramUsername: user.telegramUsername,
         notificationsTime: user.notificationsTime,
-        consentGivenAt: user.consentGivenAt
+        consentGivenAt: user.consentGivenAt,
+        consentVersion: user.consentVersion,
+        consentSource: user.consentSource
       },
       enrollment: stream ? { status: stream.status, stream, canWrite: stream.canUseAi } : null,
       streams: access.streams,
@@ -61,18 +64,18 @@ async function meRoutes(app) {
     }
   }, async (request) => {
     const { name, notificationsTime } = request.body
-    const updated = await db.user.update({
+    const updated = await withActiveUser(request, tx => tx.user.update({
       where: { id: request.user.id },
       data: {
         ...(name !== undefined && { name }),
         ...(notificationsTime !== undefined && { notificationsTime })
       }
-    })
+    }))
     return { name: updated.name, notificationsTime: updated.notificationsTime }
   })
 
   // PATCH /me/consent — зафиксировать согласие на обработку данных (ФЗ-152)
-  app.patch('/me/consent', { preHandler: requireAuth }, async (request) => {
+  app.patch('/me/consent', { preHandler: requireAuth }, async request => withActiveUser(request, async db => {
     const already = await db.user.findUnique({
       where: { id: request.user.id },
       select: { consentGivenAt: true }
@@ -83,11 +86,13 @@ async function meRoutes(app) {
       where: { id: request.user.id },
       data: {
         consentGivenAt: new Date(),
-        consentText: 'Согласие на обработку персональных данных в соответствии с ФЗ-152 «О персональных данных»'
+        consentText: CONSENT_TEXT,
+        consentVersion: CONSENT_VERSION,
+        consentSource: CONSENT_SOURCE
       }
     })
     return { ok: true }
-  })
+  }))
 
   // Free personal tools and paid AI/program rights are independent.
   app.get('/me/enrollment/access', { preHandler: requireAuth }, async (request) => {
@@ -125,6 +130,20 @@ async function getProgramAccess(user, now = Date.now()) {
   // Historical manual enrollments may have no paidAt. Preserve their existing
   // program archive; never extend this compatibility rule to new enrollments.
   const owned = all.filter(e => (e.paidAt || new Date(e.createdAt).getTime() < AI_ACCESS_ROLLOUT_AT) && ['active', 'completed'].includes(e.status))
+  // Leading a stream does not require a payment or a participant enrollment.
+  // HOST has service access, while administration still uses the Telegram allowlist.
+  const host = user.role === 'HOST'
+  const serviceAccess = admin || host
+  if (serviceAccess) {
+    const managed = await db.stream.findMany({
+      where: { isActive: true }, orderBy: { startDate: 'desc' },
+      include: { meetings: { orderBy: { number: 'asc' } } }
+    })
+    for (const stream of managed) {
+      if (!owned.some(e => e.stream.id === stream.id)) owned.push({ stream, status: 'active', accessExpires: null })
+    }
+    owned.sort((a, b) => new Date(b.stream.startDate) - new Date(a.stream.startDate))
+  }
   const streams = owned.map(e => {
     const bounds = streamBounds(e.stream)
     const revokedByExpiry = e.accessExpires && now >= new Date(e.accessExpires).getTime()
@@ -142,16 +161,16 @@ async function getProgramAccess(user, now = Date.now()) {
   })
   const active = streams.filter(s => s.canUseAi)
   const transition = now < AI_TRANSITION_END && new Date(user.createdAt).getTime() < AI_ACCESS_ROLLOUT_AT && !all.some(e => e.status === 'cancelled')
-  const reason = admin ? 'admin' : active.length ? 'program' : transition ? 'transition' : streams.some(s => s.phase === 'upcoming') ? 'not_started' : streams.length ? 'ended' : 'purchase_required'
-  const canUseAi = admin || active.length > 0 || transition
+  const reason = admin ? 'admin' : host ? 'host' : active.length ? 'program' : transition ? 'transition' : streams.some(s => s.phase === 'upcoming') ? 'not_started' : streams.length ? 'ended' : 'purchase_required'
+  const canUseAi = serviceAccess || active.length > 0 || transition
   const message = reason === 'transition'
     ? 'AI доступен в переходный период до 29 сентября, 16:00 МСК. Затем — во время оплаченной программы. Дневник и реакции останутся бесплатными.'
     : reason === 'ended' ? 'Программа завершилась. Дневник, реакции и история диалогов остаются доступны; новые сообщения AI — во время следующей оплаченной программы.'
     : reason === 'not_started' ? 'AI откроется в день начала вашей оплаченной программы. Дневник и реакции уже доступны.'
     : reason === 'purchase_required' ? 'Новые сообщения AI доступны во время оплаченной программы. Дневник, реакции и история остаются бесплатными.'
-    : reason === 'admin' ? 'Режим ведущей: служебный доступ к AI.' : 'AI доступен во время вашей программы. Дневник и реакции останутся с вами после её завершения.'
+    : ['admin', 'host'].includes(reason) ? 'Режим ведущей: служебный доступ к AI.' : 'AI доступен во время вашей программы. Дневник и реакции останутся с вами после её завершения.'
   return { hasAccess: true, canWrite: canUseAi, diary: true, reactions: true, checkins: true, aiHistory: true,
-    ai: { canWrite: canUseAi, reason, message, expiresAt: reason === 'transition' ? new Date(AI_TRANSITION_END).toISOString() : active.length ? active.map(s => s.aiExpiresAt).sort().pop() : null },
+    ai: { canWrite: canUseAi, reason, message, expiresAt: serviceAccess ? null : reason === 'transition' ? new Date(AI_TRANSITION_END).toISOString() : active.length ? active.map(s => s.aiExpiresAt).sort().pop() : null },
     streams, serverTime: new Date(now).toISOString() }
 }
 

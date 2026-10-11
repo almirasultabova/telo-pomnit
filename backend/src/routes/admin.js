@@ -1,7 +1,27 @@
 const db = require('../db')
 const { requireAdmin } = require('../services/auth')
+const { isClubAdmin } = require('../services/admission')
 
 async function adminRoutes(app) {
+  app.get('/admin/admissions', { preHandler: requireAdmin }, async () => {
+    const users = await db.user.findMany({
+      where: { deletedAt: null, accessRequestedAt: { not: null } },
+      orderBy: { accessRequestedAt: 'desc' }, take: 200,
+      select: { id:true,telegramId:true,telegramUsername:true,username:true,firstName:true,lastName:true,name:true,accessStatus:true,accessRequestedAt:true,accessDecidedAt:true }
+    })
+    return users.filter(u=>!isClubAdmin(u)).map(u=>({...u,telegramId:String(u.telegramId)}))
+  })
+  app.patch('/admin/admissions/:id', {
+    preHandler: requireAdmin,
+    schema: { body: { type:'object',required:['status'],additionalProperties:false,properties:{status:{type:'string',enum:['approved','rejected']}} } }
+  }, async (request, reply) => {
+    const user = await db.user.findUnique({where:{id:request.params.id}})
+    if (!user || user.deletedAt) return reply.code(404).send({error:'Заявка не найдена'})
+    if (isClubAdmin(user)) return reply.code(403).send({error:'Служебный аккаунт нельзя изменить через заявку'})
+    if (!user.accessRequestedAt) return reply.code(409).send({error:'Пользователь ещё не отправлял заявку'})
+    await db.user.update({where:{id:user.id},data:{accessStatus:request.body.status,accessDecidedAt:new Date(),accessDecidedBy:request.user.id}})
+    return {success:true,status:request.body.status}
+  })
   // Saved applications remain visible even when a Telegram notification fails.
   app.get('/admin/waitlist', {
     preHandler: requireAdmin,

@@ -1,5 +1,5 @@
 const db = require('../db')
-const { requireAuth } = require('../services/auth')
+const { requireAuth, withActiveUser } = require('../services/auth')
 
 async function diaryRoutes(app) {
   // GET /diary — список записей
@@ -15,7 +15,7 @@ async function diaryRoutes(app) {
           }
         } : {})
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       take: Number(limit),
       skip: Number(offset)
     })
@@ -30,15 +30,33 @@ async function diaryRoutes(app) {
         type: 'object',
         required: ['zone'],
         properties: {
-          zone: { type: 'string' },
-          sensations: { type: 'array', items: { type: 'string' } },
-          note: { type: 'string' },
-          streamId: { type: 'string' }
+          zone: { type: 'string', minLength: 1, maxLength: 80 },
+          sensations: { type: 'array', maxItems: 40, items: { type: 'string', maxLength: 100 } },
+          note: { type: 'string', maxLength: 20000 },
+          streamId: { type: 'string' },
+          clientId: { type: 'string', format: 'uuid' },
+          createdAt: { type: 'string', format: 'date-time' }
         }
       }
     }
   }, async (request, reply) => {
-    const { zone, sensations = [], note, streamId } = request.body
+    const { zone, sensations = [], note, streamId, clientId, createdAt } = request.body
+    const key = { userId: request.user.id, clientId }
+    const replay = entry => {
+      if (entry.zone !== zone || JSON.stringify(entry.sensations) !== JSON.stringify(sensations) ||
+          (entry.note || '') !== (note || '') || (streamId && entry.streamId !== streamId) ||
+          (createdAt && new Date(entry.createdAt).getTime() !== new Date(createdAt).getTime())) {
+        return reply.code(409).send({ code: 'CLIENT_ID_CONFLICT', error: 'Идентификатор уже связан с другой записью' })
+      }
+      return entry
+    }
+    if (clientId) {
+      const existing = await db.diaryEntry.findUnique({ where: { userId_clientId: key } })
+      if (existing) return replay(existing)
+    }
+    if (createdAt && new Date(createdAt).getTime() > Date.now() + 300000) {
+      return reply.code(400).send({ error: 'Дата записи находится в будущем' })
+    }
 
     // Определяем streamId: из запроса, или из активного зачисления, или из активного потока
     let resolvedStreamId = streamId
@@ -54,15 +72,25 @@ async function diaryRoutes(app) {
       }
     }
 
-    const entry = await db.diaryEntry.create({
+    let entry
+    try { entry = await withActiveUser(request, tx => tx.diaryEntry.create({
       data: {
         userId: request.user.id,
         zone,
         sensations,
         note,
+        ...(clientId ? { clientId } : {}),
+        ...(createdAt ? { createdAt: new Date(createdAt) } : {}),
         streamId: resolvedStreamId
       }
-    })
+    })) } catch (err) {
+      // Параллельные повторы ограничивает UNIQUE в БД, а не проверка выше.
+      if (clientId && err.code === 'P2002') {
+        const existing = await db.diaryEntry.findUnique({ where: { userId_clientId: key } })
+        if (existing) return replay(existing)
+      }
+      throw err
+    }
     return entry
   })
 

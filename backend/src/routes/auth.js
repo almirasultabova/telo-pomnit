@@ -1,7 +1,15 @@
 const db = require('../db')
-const { verifyTelegramInitData, createToken } = require('../services/auth')
+const { verifyTelegramInitData, createToken, createDataRightsToken } = require('../services/auth')
+const { admissionError, requestAdmission, isClubAdmin } = require('../services/admission')
 
 async function authRoutes(app) {
+  app.post('/data-rights', { schema: { body: { type: 'object', required: ['initData'], properties: { initData: { type: 'string', maxLength: 16384 } } } } }, async (request, reply) => {
+    const tgUser = verifyTelegramInitData(request.body.initData)
+    if (!tgUser) return reply.code(401).send({ error: 'Невалидные данные Telegram' })
+    const user = await db.user.findUnique({ where: { telegramId: BigInt(tgUser.id) } })
+    if (!user) return reply.code(404).send({ error: 'Сохранённого аккаунта нет' })
+    return { token: createDataRightsToken(user.id, user.tokenVersion), purpose: 'data-rights', expiresIn: 600, user: { id: user.id }, accountDeleted: Boolean(user.deletedAt) }
+  })
   // POST /auth/telegram — вход через Telegram Mini App
   app.post('/telegram', {
     schema: {
@@ -40,16 +48,22 @@ async function authRoutes(app) {
       return reply.code(403).send({ error: 'Аккаунт удалён' })
     }
 
+    await requestAdmission(user)
+    const denied = admissionError(user)
+    if (denied) return reply.code(403).send(denied)
     const token = createToken(user.id, user.tokenVersion)
 
     return {
       token,
       user: {
         id: user.id,
+        isClubAdmin: isClubAdmin(user),
         name: user.name,
         photoUrl: user.photoUrl,
         telegramUsername: user.telegramUsername,
-        consentGivenAt: user.consentGivenAt
+        consentGivenAt: user.consentGivenAt,
+        consentVersion: user.consentVersion,
+        consentSource: user.consentSource
       }
     }
   })

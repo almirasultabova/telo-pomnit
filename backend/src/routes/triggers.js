@@ -1,5 +1,5 @@
 const db = require('../db')
-const { requireAuth } = require('../services/auth')
+const { requireAuth, withActiveUser } = require('../services/auth')
 
 async function triggerRoutes(app) {
   // GET /triggers — список
@@ -32,7 +32,7 @@ async function triggerRoutes(app) {
     }
   }, async (request) => {
     const { situation, reactionType, zone, sensations = [], intensity, note } = request.body
-    return db.triggerEntry.create({
+    return withActiveUser(request, tx => tx.triggerEntry.create({
       data: {
         userId: request.user.id,
         situation,
@@ -42,7 +42,7 @@ async function triggerRoutes(app) {
         intensity,
         note
       }
-    })
+    }))
   })
 
   // GET /triggers/stats — статистика по типам реакций и зонам
