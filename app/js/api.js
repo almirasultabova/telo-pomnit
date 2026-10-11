@@ -117,7 +117,7 @@ const Api = {
   },
 
   async giveConsent() {
-    return this._request('PATCH', '/me/consent');
+    return this._request('PATCH', '/me/consent', {});
   },
 
   async getAccess() {
