@@ -52,8 +52,8 @@ async function confirmAction(actorId,id) {
     const [actor,target] = await Promise.all([tx.user.findUnique({where:{id:actorId}}),tx.user.findUnique({where:{id:action.targetId}})])
     authorize(actor,target,action.role)
     if (target.accessRevision !== action.expectedRevision || action.usedAt || action.expiresAt <= new Date()) throw error('Решение устарело или уже принято. Обновите список.')
-    const claimed = await tx.accessAction.updateMany({where:{id,usedAt:null,expiresAt:{gt:new Date()}},data:{usedAt:new Date()}})
-    if (!claimed.count) throw error('Решение уже принято')
+    const claimed = await tx.accessAction.updateMany({where:{id,usedAt:null,expiresAt:{gt:new Date()},status:action.status,role:action.role,streamId:action.streamId,basis:action.basis,expectedRevision:action.expectedRevision},data:{usedAt:new Date()}})
+    if (!claimed.count) throw error('Решение уже принято или выбор изменился. Откройте карточку заново.')
     let enrollment = null
     if (action.status === 'approved' && action.streamId && action.basis !== 'none') {
       const stream = await tx.stream.findUnique({where:{id:action.streamId}})
