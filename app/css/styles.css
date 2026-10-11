@@ -3284,3 +3284,7 @@ textarea:focus,input:focus,select:focus {outline:2px solid var(--color-action);o
 .entry-note {overflow-wrap:anywhere;white-space:pre-wrap;}
 #screen-ai-chat .screen-header {max-height:min(40%,max(96px,calc(var(--ai-viewport-height,100dvh) - 240px)));}
 #ai-input {max-height:min(100px,max(48px,calc(var(--ai-viewport-height,100dvh) * .2)));overflow-y:auto;}
+
+
+/* J-292: owner asks for an open body composition, without beige backing panels. */
+#screen-body-map .body-figure-wrap,#screen-body-map .view-toggle {background:transparent;}
