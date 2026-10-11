@@ -48,7 +48,7 @@ class Handler(BaseHTTPRequestHandler):
   if urlsplit(self.path).path.startswith('/review/'):
    # Only synthetic screenshots and their gallery; never expose baseline ZIPs.
    review_path=unquote(urlsplit(self.path).path)
-   prefix,folder=next(((prefix,folder) for prefix,folder in [('/review/nav-cloud/','app-2-nav-cloud'),('/review/nav/','app-2-nav'),('/review/pair-v2/','app-2-pair-v2'),('/review/stream/','app-2-stream'),('/review/pair/','app-2-pair'),('/review/action/','app-2-action'),('/review/top/','app-2-top')] if review_path.startswith(prefix)),('/review/','app-2-home'))
+   prefix,folder=next(((prefix,folder) for prefix,folder in [('/review/refinement/','app-2-refinement'),('/review/nav-cloud/','app-2-nav-cloud'),('/review/nav/','app-2-nav'),('/review/pair-v2/','app-2-pair-v2'),('/review/stream/','app-2-stream'),('/review/pair/','app-2-pair'),('/review/action/','app-2-action'),('/review/top/','app-2-top')] if review_path.startswith(prefix)),('/review/','app-2-home'))
    review_root=ROOT.parent/folder
    rel=review_path.removeprefix(prefix) or 'index.html'
    target=(review_root/rel).resolve()

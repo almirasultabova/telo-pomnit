@@ -1,5 +1,5 @@
 """Private-data acceptance: actual local UI, synthetic API/Telegram, no real writes."""
-import hashlib, json, os, threading
+import hashlib, json, os, threading,re
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -104,12 +104,14 @@ def home(page):
     page.locator('.nav-btn[data-tab="diary"]').click()
 def open_ai(page):
     page.locator('#ai-chat-btn').click()
+    page.locator('.ai-history-disclosure').evaluate('e=>e.open=true')
     expect(page.locator('#ai-context-mode')).to_have_value('none')
     expect(page.locator('#ai-send-btn')).to_be_enabled()
 def rights(page, blocked=False):
     if not blocked: page.locator('.nav-btn[data-tab="profile"]').click()
     page.locator('#blocked-data-rights-btn' if blocked else '#data-rights-btn').click()
     expect(page.locator('#screen-data-rights')).to_have_class('screen screen--active')
+    page.locator('.data-additional').evaluate('e=>e.open=true')
 def send(page, text='SYNTHETIC_MESSAGE'):
     page.locator('#ai-input').fill(text); page.locator('#ai-send-btn').click()
 def selected(page):
@@ -126,7 +128,13 @@ def selected(page):
     expect(page.locator('#ai-send-btn')).to_be_disabled()
     page.locator('#ai-context-review').check()
 def download(page, selector):
-    with page.expect_download() as info: page.locator(selector).click()
+    page.locator(selector).evaluate('e=>{for(let p=e.parentElement;p;p=p.parentElement)if(p.tagName==="DETAILS")p.open=true}')
+    page.locator(selector).click()
+    expect(page.locator('#screen-data-export-preview')).to_have_class('screen screen--active')
+    with page.expect_download() as info: page.locator('#private-preview-save').click()
+    assert page.evaluate('Telegram.WebApp.BackButton.isVisible')
+    page.evaluate("Telegram.WebView.receiveEvent('back_button_pressed')")
+    expect(page.locator('#screen-data-rights')).to_have_class(re.compile(r'\bscreen--active\b'))
     result = info.value
     return result.suggested_filename, Path(result.path()).read_text(encoding='utf-8')
 def confirm_delete(page):
@@ -222,7 +230,7 @@ try:
                 else:
                     if not fixture.blocked: rights(page)
                     if scenario == 'rights-identity-retry':
-                        expect(page.locator('#data-rights-status')).to_contain_text('Не удалось подтвердить')
+                        expect(page.locator('#data-rights-status')).to_contain_text('Не удалось загрузить данные')
                         expect(page.locator('#data-rights-actions')).to_be_hidden()
                         fixture.rights_fail=False;page.locator('#data-rights-retry').click()
                     expect(page.locator('#data-rights-actions')).to_be_visible()
@@ -255,7 +263,7 @@ try:
                         assert page.evaluate('Storage.getDiaryEntries().length') > 0
                         fixture.export_revoked = False
                         page.locator('#data-rights-retry').click()
-                        expect(page.locator('#data-rights-status')).to_contain_text('Личность подтверждена')
+                        expect(page.locator('#data-rights-status')).to_contain_text('Ваши данные доступны только вам')
                         name,text=download(page,'#data-export-json')
                         assert 'EXPORT_LAST' in text and fixture.rights_auths == 2
                     elif scenario == 'export-categories-pending':

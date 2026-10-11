@@ -68,6 +68,7 @@ function goTo(screenId, back = false) {
 }
 
 function goBack() {
+  if (currentScreen === 'data-export-preview') { closePrivatePreview(); return; }
   if (currentScreen === 'data-rights') { closeDataRights(); return; }
   if (Api.clubBlocked) { screenStack.length = 0; updateBackBtn(); return; }
   if (currentScreen === 'home' && activeTab === 'diag' && habitualView !== 'summary') {
@@ -82,7 +83,7 @@ function goBack() {
 
 function updateBackBtn() {
   if (!tg?.BackButton) return;
-  if (currentScreen === 'data-rights' || !Api.clubBlocked && (screenStack.length > 0 || habitualView !== 'summary' && currentScreen === 'home' && activeTab === 'diag')) {
+  if (['data-rights','data-export-preview'].includes(currentScreen) || !Api.clubBlocked && (screenStack.length > 0 || habitualView !== 'summary' && currentScreen === 'home' && activeTab === 'diag')) {
     tg.BackButton.show();
   } else {
     tg.BackButton.hide();
@@ -582,7 +583,7 @@ function renderTodayCard() {
 function renderRecentEntries() {
   const container = document.getElementById('recent-entries');
   if (!container) return;
-  const entries = Storage.getRecentEntries(10);
+  const entries = Storage.getRecentEntries(3);
   if (!entries.length) {
     const loaded = Storage.getHistoryLoadStatus().diary === 'loaded';
     container.innerHTML = loaded
@@ -1526,7 +1527,7 @@ function renderAccessNotice() {
   if(button) {
     let note=document.getElementById('diary-access-notice');
     if(!note){note=document.createElement('p');note.id='diary-access-notice';note.className='access-notice';button.after(note);}
-    note.textContent=text;
+    note.textContent=text; note.hidden=programAccess?.ai?.canWrite === true;
   }
 }
 function currentProgram(){return programAccess?.streams?.find(s=>s.id===selectedProgramId);}
@@ -1582,15 +1583,17 @@ function renderZoomBtn(){
 }
 function renderSchedule(){
   const container=document.getElementById('schedule-section');if(!container)return;
+  const expanded=new Set([...container.querySelectorAll('details[open]')].map(row=>row.dataset.meeting));
   const stream=currentProgram();container.replaceChildren();
   if(stream){
     const intro=document.createElement('p');intro.className='access-notice';
     intro.textContent=stream.canReadRecordings?'Записи встреч доступны до '+accessDate(new Date(new Date(stream.recordingsExpiresAt).getTime()-1))+'. После завершения программы поддержка ведущих не продолжается.':'Доступ к записям встреч ещё не начался или уже завершился. Личный дневник остаётся доступным.';
     container.append(intro);
     (stream.meetings||[]).forEach(meeting=>{
-      const details=document.createElement('details');details.className='access-meeting';
+      const details=document.createElement('details');details.className='access-meeting';details.dataset.meeting=String(meeting.id);details.open=expanded.has(String(meeting.id));
       const summary=document.createElement('summary');summary.textContent=accessDate(meeting.date)+' · '+(meeting.topic||'Встреча '+meeting.number);details.append(summary);
-      for(const text of [meeting.description,meeting.prepare]){if(text){const p=document.createElement('p');p.textContent=text;details.append(p);}}
+      const attendance=document.createElement('button');attendance.type='button';attendance.className='meeting-attendance btn btn--outline btn--full';attendance.setAttribute('aria-pressed',String(Storage.isAttended(meeting.id)));attendance.textContent=Storage.isAttended(meeting.id)?'Участие отмечено':'Отметить участие';attendance.onclick=event=>toggleAttend(event,meeting.id);details.append(attendance);
+      for(const [label,text] of [['Что будет на встрече',meeting.description],['Как подготовиться',meeting.prepare]]){if(text){const heading=document.createElement('h3');heading.textContent=label;const p=document.createElement('p');p.textContent=text;details.append(heading,p);}}
       if(stream.canAttend)appendAccessLink(details,meeting.zoomLink,'Zoom этой встречи');
       container.append(details);
     });
@@ -1642,7 +1645,7 @@ function renderHosts() {
   const container = document.getElementById('hosts-list');
   if (!container) return;
 
-  container.innerHTML = DATA.program.hosts.map(h => `
+  container.innerHTML = DATA.program.hosts.map(original => { const h={...original,tg:original.tg || (original.name==='Альмира Султанова'?'https://t.me/almira_sultanova':original.name==='Анастасия Костылева'?'https://t.me/akhoroshavtseva':null)}; return `
     <div class="host-card-mini">
       <div class="host-avatar-mini">
         ${h.photo
@@ -1653,10 +1656,10 @@ function renderHosts() {
         <div class="host-name-mini">${h.name}</div>
         <div class="host-role-mini">${h.role}</div>
       </div>
-      ${h.tg ? `<a class="host-tg-link" data-tg-link="${h.tg}">
+      ${h.tg ? `<a class="host-tg-link" href="${h.tg}" data-tg-link="${h.tg}" aria-label="Написать ${h.name}"><span>Написать</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </a>` : ''}
-    </div>`).join('');
+    </div>`;}).join('');
 }
 
 function renderUserCard() {
@@ -1823,7 +1826,7 @@ function renderPrivacyEntry() {
 function ensureDataRightsScreen() {
   if (document.getElementById('screen-data-rights')) return;
   const screen = document.createElement('div'); screen.id = 'screen-data-rights'; screen.className = 'screen';
-  screen.innerHTML = `<div class="screen-header"><div class="screen-title">Мои данные и приватность</div><button class="screen-header-btn" id="data-rights-close">Назад</button></div><div class="screen-scroll" style="padding:16px;padding-bottom:32px"><p class="access-notice">Этот раздел позволяет получить и удалить свои данные независимо от клубного допуска. Он не открывает дневник или программу.</p><p>Интерфейс и передача запросов к серверу: Vercel. Сервер и база приложения: Beget. Сообщения AI обрабатывает OpenAI; дневниковый контекст нового диалога выбираете вы.</p><p><a href="https://www.telo-pomnit.ru/privacy.html" target="_blank" rel="noopener">Политика обработки данных</a> · <a href="https://www.telo-pomnit.ru/offer.html" target="_blank" rel="noopener">Условия программы</a></p><p id="data-rights-status" role="status">Проверяем владельца данных…</p><button id="data-rights-retry" class="btn btn--outline btn--full mb-8">Повторить проверку личности</button><div id="data-rights-actions" hidden><button id="data-export-json" class="btn btn--outline btn--full mb-8">Скачать все данные приложения · JSON</button><button id="data-export-pdf" class="btn btn--outline btn--full mb-8">Скачать дневник в PDF</button><button id="data-export-local" class="btn btn--outline btn--full mb-8">Скачать ещё не отправленные записи и черновики · JSON</button><p class="access-notice">В PDF и общей выгрузке — данные, сохранённые на сервере. Ещё не отправленные записи и черновики можно скачать отдельно с этого устройства. В них нет старых данных без подтверждённого владельца.</p><button id="data-delete-start" class="btn btn--outline btn--full">Удалить аккаунт и личные записи</button><div id="data-delete-confirm" hidden><p>Вы удалите аккаунт приложения и его личные записи: дневник, оценки состояния, реакции, анкеты, ответы и разговоры с AI. Ещё не отправленные записи и черновики этого аккаунта на устройстве тоже удалятся. Отменить действие нельзя. При необходимости сначала скачайте свои данные. Просто закрыть приложение можно без удаления — все сохранённые записи останутся.</p><p>Необходимые сведения об оплатах и отметка о закрытом аккаунте останутся. Данные в резервных копиях не исчезают сразу; сроки их очистки уточняются.</p><label for="data-delete-phrase">Введите УДАЛИТЬ МОИ ДАННЫЕ</label><input id="data-delete-phrase" class="ai-input" autocomplete="off"><button id="data-delete-submit" class="btn btn--outline btn--full" disabled>Удалить аккаунт и записи навсегда</button><button id="data-delete-cancel" class="btn btn--ghost btn--full">Отмена</button></div></div></div>`;
+  screen.innerHTML = `<div class="screen-header"><div class="screen-title">Мои данные и приватность</div><button class="screen-header-btn" id="data-rights-close">Назад</button></div><div class="screen-scroll" style="padding:16px;padding-bottom:32px"><p class="access-notice">Здесь можно сохранить дневник или управлять личными данными.</p><p><a href="https://www.telo-pomnit.ru/privacy.html" target="_blank" rel="noopener">Политика обработки данных</a> · <a href="https://www.telo-pomnit.ru/offer.html" target="_blank" rel="noopener">Условия программы</a></p><p id="data-rights-status" role="status">Проверяем владельца данных…</p><button id="data-rights-retry" class="btn btn--outline btn--full mb-8" hidden>Повторить загрузку</button><div id="data-rights-actions" hidden><button id="data-export-pdf" class="btn btn--primary btn--full mb-8">Скачать дневник</button><p class="data-export-caption">PDF с сохранённой историей наблюдений.</p><details class="data-additional"><summary>Дополнительные действия с данными</summary><p>Полная копия включает записи, анкеты и диалоги. Она сохраняется в формате JSON для переноса и резервного хранения.</p><button id="data-export-json" class="btn btn--outline btn--full mb-8">Получить полную копию данных</button><button id="data-export-local" class="btn btn--outline btn--full mb-8">Сохранить записи, ожидающие отправки</button><p class="access-notice">Неотправленные записи и черновики хранятся на этом устройстве и не входят в скачанный дневник.</p></details><button id="data-delete-start" class="btn btn--outline btn--full">Удалить аккаунт и личные записи</button><div id="data-delete-confirm" hidden><p>Вы удалите аккаунт приложения и его личные записи: дневник, оценки состояния, реакции, анкеты, ответы и разговоры с AI. Ещё не отправленные записи и черновики этого аккаунта на устройстве тоже удалятся. Отменить действие нельзя. При необходимости сначала скачайте свои данные. Просто закрыть приложение можно без удаления — все сохранённые записи останутся.</p><p>Необходимые сведения об оплатах и отметка о закрытом аккаунте останутся. Данные в резервных копиях не исчезают сразу; сроки их очистки уточняются.</p><label for="data-delete-phrase">Введите УДАЛИТЬ МОИ ДАННЫЕ</label><input id="data-delete-phrase" class="ai-input" autocomplete="off"><button id="data-delete-submit" class="btn btn--outline btn--full" disabled>Удалить аккаунт и записи навсегда</button><button id="data-delete-cancel" class="btn btn--ghost btn--full">Отмена</button></div></div></div>`;
   document.body.append(screen);
   document.getElementById('data-rights-close').onclick = closeDataRights;
   document.getElementById('data-rights-retry').onclick = openDataRights;
@@ -1866,12 +1869,12 @@ async function openDataRights() {
   try {
     await DataRightsApi.auth();
     if (request !== rightsRequest) return;
-    status.textContent = DataRightsApi.accountDeleted ? 'Аккаунт приложения и личные записи удалены. Сведения об оплатах и отметка о закрытом аккаунте остаются. Данные в резервных копиях не исчезают сразу.' : 'Личность подтверждена. Можно получить свои данные или запросить удаление.';
+    retry.hidden=true; status.textContent = DataRightsApi.accountDeleted ? 'Аккаунт приложения и личные записи удалены. Сведения об оплатах и отметка о закрытом аккаунте остаются. Данные в резервных копиях не исчезают сразу.' : 'Ваши данные доступны только вам.';
     document.getElementById('data-rights-actions').hidden = false;
     document.getElementById('data-export-local').hidden = DataRightsApi.accountDeleted;
     document.getElementById('data-export-pdf').hidden = DataRightsApi.accountDeleted;
     document.getElementById('data-delete-start').hidden = DataRightsApi.accountDeleted;
-  } catch { if (request === rightsRequest) status.textContent = 'Не удалось подтвердить личность. Откройте приложение через Telegram-бота и повторите.'; }
+  } catch { if (request === rightsRequest) {retry.hidden=false;status.textContent = 'Не удалось загрузить данные. Откройте приложение через Telegram-бота и повторите.';} }
   finally { if (request === rightsRequest) retry.disabled = false; }
 }
 async function performRightsAction(action, successText) {
@@ -1888,6 +1891,7 @@ async function performRightsAction(action, successText) {
   } catch (error) {
     if (request === rightsRequest) {
       document.getElementById('data-rights-status').textContent = error.message || 'Действие не выполнено. Можно повторить.';
+      document.getElementById('data-rights-retry').hidden=false;
       if (owner !== DataRightsApi.userId) { resetDeleteConfirmation(); document.getElementById('data-rights-actions').hidden = true; DataRightsApi.clear(); }
     }
   }
@@ -1918,9 +1922,27 @@ async function deletePersonalData() {
     resetDeleteConfirmation(); rightsReturnBlocked = true; lastDeniedCode = 'ACCOUNT_DELETED';
   }, 'Аккаунт приложения и личные записи удалены. Сведения об оплатах и отметка о закрытом аккаунте остаются; резервные копии очищаются отдельно.');
 }
-function downloadPrivateFile(contents, type, filename) {
-  const url = URL.createObjectURL(new Blob([contents], { type }));
-  const link = document.createElement('a'); link.href = url; link.download = filename; link.target = '_blank'; link.rel = 'noopener noreferrer'; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 30000);
+function closePrivatePreview() {
+  const preview=document.getElementById('screen-data-export-preview');
+  if(screenStack[screenStack.length-1]==='data-rights') screenStack.pop();
+  if(Api.clubBlocked) {document.querySelectorAll('.screen').forEach(el=>el.classList.remove('screen--active','screen--enter','screen--exit'));document.getElementById('screen-data-rights').classList.add('screen--active');currentScreen='data-rights';syncTelegramBackNavigation();}
+  else goTo('data-rights',true); preview?.remove();
+}
+function savePrivateFile(contents,type,filename) {
+  const url=URL.createObjectURL(new Blob([contents],{type}));
+  const link=document.createElement('a');link.href=url;link.download=filename;link.rel='noopener noreferrer';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+}
+function downloadPrivateFile(contents,type,filename) {
+  if(type!=='application/json') {savePrivateFile(contents,type,filename);return;}
+  document.getElementById('screen-data-export-preview')?.remove();
+  const screen=document.createElement('div');screen.id='screen-data-export-preview';screen.className='screen';
+  screen.innerHTML='<div class="screen-header"><div class="screen-title">Копия данных</div><button class="screen-header-btn" id="private-preview-close">Назад</button></div><div class="screen-scroll"><p>Это ваша личная копия. Сохраните файл, если он вам нужен.</p><button id="private-preview-save" class="btn btn--primary btn--full">Сохранить файл</button><details class="data-additional"><summary>Посмотреть содержимое</summary><pre class="private-preview-content"></pre></details></div>';
+  screen.querySelector('pre').textContent=contents; document.body.append(screen);
+  const owner=DataRightsApi.userId,generation=Storage._generation;
+  screen.querySelector('#private-preview-close').onclick=closePrivatePreview;
+  screen.querySelector('#private-preview-save').onclick=()=>{if(owner===DataRightsApi.userId&&generation===Storage._generation)savePrivateFile(contents,type,filename);};
+  if(Api.clubBlocked) {document.getElementById('screen-data-rights').classList.remove('screen--active');screen.classList.add('screen--active');screenStack.push('data-rights');currentScreen='data-export-preview';syncTelegramBackNavigation();}
+  else goTo('data-export-preview');
 }
 
 let preparedDiaryPdf = null;
@@ -2011,6 +2033,7 @@ function renderAiDraftStatus() {
   status.textContent = aiDraftDurable ? 'Черновик сохранён на этом устройстве. Он не отправляется сам.' : 'Черновик не сохранён на устройстве. Не закрывайте приложение: текст пока только в этом окне.';
 }
 function clearPrivateConversationState() {
+  document.getElementById('screen-data-export-preview')?.remove();
   homeUser = null;
   renderMainTab();
   aiScreenRequest++; aiSessionId = null; aiMessages = []; aiPending = false;
@@ -2021,7 +2044,15 @@ function clearPrivateConversationState() {
   const input = document.getElementById('ai-input'); if (input) input.value = '';
   document.getElementById('ai-messages')?.replaceChildren();
 }
+function syncAiViewport() {
+  const viewport=window.visualViewport;
+  document.documentElement.style.setProperty('--ai-viewport-height',(viewport?.height || window.innerHeight)+'px');
+  document.documentElement.style.setProperty('--ai-viewport-top',(viewport?.offsetTop || 0)+'px');
+}
 function initAiChat() {
+  window.visualViewport?.addEventListener('resize',syncAiViewport);
+  window.visualViewport?.addEventListener('scroll',syncAiViewport);
+  window.addEventListener('resize',syncAiViewport); syncAiViewport();
   document.getElementById('ai-send-btn')?.addEventListener('click', sendAiMessage);
   const input = document.getElementById('ai-input');
   input?.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendAiMessage(); } });
@@ -2097,9 +2128,10 @@ async function loadAiContextCandidates() {
 }
 function renderAiContext(container) {
   const panel = document.createElement('section'); panel.id = 'ai-context-panel'; panel.className = 'access-program';
-  const disclosure = document.createElement('p'); disclosure.textContent = 'Ответы создаёт AI с помощью OpenAI. В этот сервис передаётся текст разговора. Выбранные записи дневника используются и для следующих ответов в этом разговоре.'; panel.append(disclosure);
-  const limits = document.createElement('p'); limits.textContent = 'AI может ошибаться и не заменяет врача или ведущую. Этот чат не предназначен для срочной помощи. Сообщения здесь не отправляются ведущим.'; panel.append(limits);
-  const contact = document.createElement('a'); contact.href = 'https://t.me/almira_sultanova'; contact.target = '_blank'; contact.rel = 'noopener noreferrer'; contact.dataset.tgLink = contact.href; contact.className = 'consent-link'; contact.style.display = 'block'; contact.style.marginBottom = '12px'; contact.textContent = 'Написать Альмире'; contact.id = 'ai-contact-host'; panel.append(contact);
+  const disclosure = document.createElement('p'); disclosure.className='ai-disclosure'; disclosure.textContent = 'Сообщения обрабатывает OpenAI. Дневник добавляется только с вашего разрешения.'; panel.append(disclosure);
+  const information=document.createElement('details');information.className='ai-information';const summary=document.createElement('summary');summary.textContent='О чате и ваших данных';information.append(summary);panel.append(information);
+  const limits = document.createElement('p'); limits.textContent = 'AI может ошибаться и не заменяет врача или ведущую. Этот чат не предназначен для срочной помощи. Сообщения здесь не отправляются ведущим.'; information.append(limits);
+  const contact = document.createElement('a'); contact.href = 'https://t.me/almira_sultanova'; contact.target = '_blank'; contact.rel = 'noopener noreferrer'; contact.dataset.tgLink = contact.href; contact.className = 'consent-link'; contact.style.display = 'block'; contact.style.marginBottom = '12px'; contact.textContent = 'Написать Альмире'; contact.id = 'ai-contact-host'; information.append(contact);
   if (aiSessionId) {
     const mode = aiSessionContext?.mode || 'legacy_unknown';
     const status = document.createElement('p'); status.id = 'ai-context-status';
@@ -2155,7 +2187,7 @@ function renderAiContext(container) {
   container.append(panel);
 }
 function renderAiMessages() {
-  const container = document.getElementById('ai-messages'); if (!container) return;
+  const container = document.getElementById('ai-messages'); if (!container) return; syncAiViewport();
   const previousScroll = container.scrollTop; container.replaceChildren(); renderAiContext(container);
   if (!aiMessages.length) { const welcome = document.createElement('p'); welcome.className = 'ai-welcome-text'; welcome.textContent = aiAccessGranted === true ? 'Можно начать с того, что вы сейчас замечаете в теле, чувствах или мыслях. Что хочется обсудить?' : 'Здесь можно читать сохранённые диалоги. Для нового сообщения нужен действующий доступ к AI.'; container.append(welcome); }
   aiMessages.forEach(message => { const row = document.createElement('div'); row.className = 'ai-msg ai-msg--' + (message.role === 'user' ? 'user' : 'assistant'); const text = document.createElement('div'); text.className = 'ai-msg-text'; text.textContent = String(message.content || ''); row.append(text); container.append(row); });
@@ -3026,10 +3058,9 @@ function renderQuestionnaireBanner() {
   const container = document.getElementById('q-banner-wrap');
   if (!container) return;
 
-  if (Api.isClubAdmin || !qStreamId || !qStatusVerified || Storage.isQuestionnaireDone()) {
-    container.innerHTML = '';
-    return;
-  }
+  if (Api.isClubAdmin) {container.innerHTML='<p class="questionnaire-status">Служебный аккаунт · анкета предназначена для участниц потока.</p>';return;}
+  if (Storage.isQuestionnaireDone()) {container.innerHTML='<p class="questionnaire-status">Анкета участницы заполнена.</p>';return;}
+  if (!qStreamId || !qStatusVerified) {container.innerHTML='';return;}
 
   container.innerHTML = `
     <div class="q-banner" onclick="openQuestionnaire()">

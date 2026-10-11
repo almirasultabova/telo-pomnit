@@ -161,7 +161,7 @@
         </div>
 
         <!-- Кнопки -->
-        <div class="diary-tools" aria-label="Наблюдения и история">
+        <h2 class="diary-group-title">Продолжить наблюдения</h2><div class="diary-tools" aria-label="Наблюдения и история">
         <button class="btn btn--ghost btn--full btn--sm mb-8" id="diary-history-btn">
           История записей
         </button>
@@ -177,8 +177,7 @@
         </div>
 
         <!-- Последние записи -->
-        <div class="section-label">Последние записи</div>
-        <div id="recent-entries"></div>
+        <details class="recent-disclosure"><summary>Последние записи <span>Три последних наблюдения</span></summary><div id="recent-entries"></div></details>
         <div class="editorial-note"><p>Забота о себе —<br>это уже процесс.</p></div>
 
       </div>
@@ -465,9 +464,11 @@
       <div class="screen-title">AI-ассистент</div>
       <div class="screen-sub">Разговор о ваших наблюдениях</div>
       <p id="ai-access-notice" class="access-notice" role="status"></p>
+      <details class="ai-history-disclosure"><summary>Сохранённые диалоги</summary>
       <label class="ai-history-label" for="ai-history-select">Ваши диалоги</label>
       <select id="ai-history-select" aria-label="Ваши сохранённые диалоги"><option value="">Новый диалог</option></select>
       <button id="ai-access-refresh" type="button" class="btn btn--ghost btn--sm">Обновить доступ и историю</button>
+      </details>
     </div>
     <div class="screen-scroll screen-scroll--no-bottom" id="ai-messages" style="padding-bottom: 72px">
       <!-- Рендерится в app.js -->
