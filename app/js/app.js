@@ -192,7 +192,7 @@ function selectProgram(id) {
 }
 function streamStatusHTML() {
   const stream = currentProgram(), period = streamPeriod(stream);
-  if (!programAccess) return '<p class="access-notice">Не удалось загрузить период потока. Обновите доступ и расписание во вкладке «Мой поток».</p>';
+  if (!programAccess) return '<p class="access-notice">Не удалось загрузить период потока. Обновите доступ и расписание в Профиле.</p>';
   if (!period) return '<p class="access-notice">Поток для наблюдений пока не выбран. Личный дневник и история доступны во вкладке «Дневник».</p>';
   const fmt = value => new Date(value + 'T12:00:00+03:00').toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow', day: 'numeric', month: 'long', year: 'numeric' });
   const state = streamState(stream);
@@ -1008,10 +1008,12 @@ function renderMyPathTab() {
       </div>`);
 
   container.innerHTML = programPickerHTML() + streamStatusHTML() +
+    '<button type="button" class="path-program-link" id="path-program-btn"><span>Встречи и анкета</span><small>Открыть в Профиле</small></button>' +
     '<section class="path-analysis" aria-label="Личные наблюдения">' + analyticsHtml + '</section>' +
     '<section class="path-questionnaire" aria-label="Опрос привычных реакций">' + renderDiagBlock(diagResult) + '</section>';
   renderHistoryLoadWarning(container, ['diary', 'checkins'], 'path');
   container.querySelector('#path-stream-select')?.addEventListener('change', event => selectProgram(event.target.value));
+  container.querySelector('#path-program-btn')?.addEventListener('click', () => switchTab('profile'));
 
   container.querySelectorAll('.hmap-week-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1586,16 +1588,19 @@ function renderSchedule(){
   const expanded=new Set([...container.querySelectorAll('details[open]')].map(row=>row.dataset.meeting));
   const stream=currentProgram();container.replaceChildren();
   if(stream){
+    const heading=document.createElement('h2');heading.className='schedule-title';heading.textContent='Встречи потока';container.append(heading);
     const intro=document.createElement('p');intro.className='access-notice';
     intro.textContent=stream.canReadRecordings?'Записи встреч доступны до '+accessDate(new Date(new Date(stream.recordingsExpiresAt).getTime()-1))+'. После завершения программы поддержка ведущих не продолжается.':'Доступ к записям встреч ещё не начался или уже завершился. Личный дневник остаётся доступным.';
     container.append(intro);
     (stream.meetings||[]).forEach(meeting=>{
       const details=document.createElement('details');details.className='access-meeting';details.dataset.meeting=String(meeting.id);details.open=expanded.has(String(meeting.id));
-      const summary=document.createElement('summary');summary.textContent=accessDate(meeting.date)+' · '+(meeting.topic||'Встреча '+meeting.number);details.append(summary);
-      const attendance=document.createElement('button');attendance.type='button';attendance.className='meeting-attendance btn btn--outline btn--full';attendance.setAttribute('aria-pressed',String(Storage.isAttended(meeting.id)));attendance.textContent=Storage.isAttended(meeting.id)?'Участие отмечено':'Отметить участие';attendance.onclick=event=>toggleAttend(event,meeting.id);details.append(attendance);
+      const summary=document.createElement('summary');
+      const date=document.createElement('time');date.className='meeting-summary-date';date.dateTime=meeting.date;date.textContent=accessDate(meeting.date);
+      const topic=document.createElement('span');topic.className='meeting-summary-topic';topic.textContent=meeting.topic||'Встреча '+meeting.number;summary.append(date,topic);details.append(summary);
+      const attendance=document.createElement('button');attendance.type='button';attendance.className='meeting-attendance btn btn--outline btn--full';attendance.setAttribute('aria-pressed',String(Storage.isAttended(meeting.id)));attendance.textContent=Storage.isAttended(meeting.id)?'Участие отмечено':'Отметить участие';attendance.onclick=event=>toggleAttend(event,meeting.id);
       for(const [label,text] of [['Что будет на встрече',meeting.description],['Как подготовиться',meeting.prepare]]){if(text){const heading=document.createElement('h3');heading.textContent=label;const p=document.createElement('p');p.textContent=text;details.append(heading,p);}}
       if(stream.canAttend)appendAccessLink(details,meeting.zoomLink,'Zoom этой встречи');
-      container.append(details);
+      details.append(attendance);container.append(details);
     });
     if(!stream.meetings?.length){const p=document.createElement('p');p.textContent='Расписание этого потока уточняется. Старое расписание сюда не переносится.';container.append(p);}
   }
@@ -2301,9 +2306,9 @@ function resetTriggerForm() {
   if (val) val.textContent = '5';
 
   // Снять выделение с реакций, зон, ощущений
-  document.querySelectorAll('.reaction-card--selected').forEach(el => el.classList.remove('reaction-card--selected'));
+  document.querySelectorAll('.reaction-card--selected').forEach(el => { el.classList.remove('reaction-card--selected'); el.setAttribute('aria-pressed', 'false'); });
   document.querySelectorAll('.zone-chip--selected').forEach(el => el.classList.remove('zone-chip--selected'));
-  document.querySelectorAll('#trigger-sensations-grid .sensation-chip--selected').forEach(el => el.classList.remove('sensation-chip--selected'));
+  document.querySelectorAll('#trigger-sensations-grid .checklist-item--selected').forEach(el => { el.classList.remove('checklist-item--selected'); el.setAttribute('aria-checked', 'false'); });
 
   updateTriggerSaveBtn();
 }
@@ -2320,7 +2325,7 @@ function renderReactionGrid() {
   const reactions = ['freeze', 'fight', 'flight', 'fawn'];
   grid.innerHTML = reactions.map(id => {
     const p = DATA.patterns[id];
-    return `<button class="reaction-card" data-reaction="${id}" style="--reaction-color:${p.color}; --reaction-bg:${p.colorLight}">
+    return `<button class="reaction-card" data-reaction="${id}" aria-pressed="false" style="--reaction-color:${p.color}; --reaction-bg:${p.colorLight}">
       <span class="reaction-card-emoji">${p.emoji}</span>
       <span class="reaction-card-name">${p.name}</span>
       <span class="reaction-card-sub">${p.subtitle}</span>
@@ -2330,8 +2335,9 @@ function renderReactionGrid() {
   grid.querySelectorAll('.reaction-card').forEach(btn => {
     btn.addEventListener('click', () => {
       triggerDraft.reactionType = btn.dataset.reaction;
-      grid.querySelectorAll('.reaction-card').forEach(b => b.classList.remove('reaction-card--selected'));
+      grid.querySelectorAll('.reaction-card').forEach(b => { b.classList.remove('reaction-card--selected'); b.setAttribute('aria-pressed', 'false'); });
       btn.classList.add('reaction-card--selected');
+      btn.setAttribute('aria-pressed', 'true');
       haptic('light');
       updateTriggerSaveBtn();
     });
@@ -2365,7 +2371,7 @@ function renderTriggerSensationChips() {
   const grid = document.getElementById('trigger-sensations-grid');
   if (!grid) return;
   grid.innerHTML = DATA.sensations.map(s =>
-    `<div class="checklist-item" data-id="${escapeAccessText(s.id)}">
+    `<div class="checklist-item" role="checkbox" tabindex="0" aria-checked="false" data-id="${escapeAccessText(s.id)}">
       <span class="checklist-check"></span>
       <span class="checklist-emoji">${s.emoji}</span>
       <span class="checklist-label">${escapeAccessText(s.label)}</span>
@@ -2373,8 +2379,10 @@ function renderTriggerSensationChips() {
   ).join('');
 
   grid.querySelectorAll('.checklist-item').forEach(item => {
+    item.addEventListener('keydown', event => { if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); item.click(); } });
     item.addEventListener('click', () => {
       item.classList.toggle('checklist-item--selected');
+      item.setAttribute('aria-checked', String(item.classList.contains('checklist-item--selected')));
       const id = item.dataset.id;
       if (item.classList.contains('checklist-item--selected')) {
         if (!triggerDraft.sensations.includes(id)) triggerDraft.sensations.push(id);
@@ -2530,10 +2538,10 @@ function renderCheckinScales() {
         <span class="checkin-scale-val" id="val-${s.key}">${checkinDraft[s.key]}</span>
       </div>
       <div class="checkin-slider-row">
-        <button class="checkin-step-btn" onclick="stepSlider('${s.key}',-1)">−</button>
+        <button class="checkin-step-btn" aria-label="Уменьшить: ${escapeAccessText(s.label)}" onclick="stepSlider('${s.key}',-1)">−</button>
         <input type="range" class="intensity-slider" min="1" max="10" value="${checkinDraft[s.key]}" aria-label="${escapeAccessText(s.label)}"
           id="slider-${s.key}" data-key="${s.key}">
-        <button class="checkin-step-btn" onclick="stepSlider('${s.key}',1)">+</button>
+        <button class="checkin-step-btn" aria-label="Увеличить: ${escapeAccessText(s.label)}" onclick="stepSlider('${s.key}',1)">+</button>
       </div>
       <div class="intensity-labels">
         <span class="intensity-hint">${s.low}</span>
@@ -3063,14 +3071,14 @@ function renderQuestionnaireBanner() {
   if (!qStreamId || !qStatusVerified) {container.innerHTML='';return;}
 
   container.innerHTML = `
-    <div class="q-banner" onclick="openQuestionnaire()">
-      <div class="q-banner-icon">📋</div>
-      <div class="q-banner-body">
-        <div class="q-banner-title">Анкета участницы не заполнена</div>
-        <div class="q-banner-sub">Займёт 5 минут — помогает сделать программу точнее</div>
-      </div>
+    <button class="q-banner" type="button" onclick="openQuestionnaire()">
+      <span class="q-banner-icon">📋</span>
+      <span class="q-banner-body">
+        <span class="q-banner-title">Анкета участницы не заполнена</span>
+        <span class="q-banner-sub">Займёт 5 минут — помогает сделать программу точнее</span>
+      </span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-    </div>`;
+    </button>`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────

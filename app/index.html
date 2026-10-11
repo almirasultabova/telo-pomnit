@@ -160,24 +160,21 @@
           <div class="streak-info"><div class="streak-num" id="streak-num">0</div><div class="streak-days" id="streak-days-sub">дней подряд</div></div>
         </div>
 
-        <!-- Кнопки -->
-        <h2 class="diary-group-title">Продолжить наблюдения</h2><div class="diary-tools" aria-label="Наблюдения и история">
-        <button class="btn btn--ghost btn--full btn--sm mb-8" id="diary-history-btn">
-          История записей
-        </button>
-        <button class="btn btn--ghost btn--full btn--sm mb-8" id="ai-chat-btn">
-          AI-ассистент
-        </button>
-        <button class="btn btn--ghost btn--full btn--sm mb-8" id="stop-reaction-btn">
-          Зафиксировать реакцию
-        </button>
-        <button class="btn btn--ghost btn--full btn--sm mb-16" id="checkin-btn">
-          Трекер изменений
-        </button>
+        <!-- Separate observation actions, archive and assistant. Existing handlers stay attached to their IDs. -->
+        <h2 class="diary-group-title">Продолжить наблюдения</h2>
+        <div class="diary-tools diary-observation-tools" aria-label="Наблюдения">
+          <button class="btn btn--ghost btn--full btn--sm" id="stop-reaction-btn">Зафиксировать реакцию</button>
+          <button class="btn btn--ghost btn--full btn--sm" id="checkin-btn">Трекер изменений</button>
         </div>
 
-        <!-- Последние записи -->
-        <details class="recent-disclosure"><summary>Последние записи <span>Три последних наблюдения</span></summary><div id="recent-entries"></div></details>
+        <section class="diary-archive" aria-label="История наблюдений">
+          <button class="btn btn--ghost btn--full btn--sm" id="diary-history-btn">История записей</button>
+          <details class="recent-disclosure"><summary>Последние записи <span>Три последних наблюдения</span></summary><div id="recent-entries"></div></details>
+        </section>
+
+        <section class="diary-assistant" aria-label="AI-ассистент">
+          <button class="btn btn--ghost btn--full btn--sm" id="ai-chat-btn">AI-ассистент</button>
+        </section>
         <div class="editorial-note"><p>Забота о себе —<br>это уже процесс.</p></div>
 
       </div>
@@ -494,7 +491,7 @@
     </div>
     <div class="screen-scroll" style="padding-bottom: calc(var(--bottom-h) + 16px)">
 
-      <div class="section-label">Что случилось</div>
+      <label class="section-label" for="trigger-situation">Что случилось</label>
       <textarea class="note-textarea" id="trigger-situation"
         placeholder="Опиши ситуацию или момент, который тебя зацепил..." rows="3"></textarea>
 
@@ -503,9 +500,9 @@
         <!-- Рендерится в app.js -->
       </div>
 
-      <div class="section-label mt-16">Интенсивность реакции</div>
+      <label class="section-label mt-16" for="trigger-intensity">Интенсивность реакции</label>
       <div class="intensity-wrap">
-        <input type="range" class="intensity-slider" id="trigger-intensity" min="1" max="10" value="5">
+        <input type="range" class="intensity-slider" id="trigger-intensity" aria-describedby="intensity-value" min="1" max="10" value="5">
         <div class="intensity-labels">
           <span class="intensity-hint">слабая</span>
           <span class="intensity-value" id="intensity-value">5</span>
@@ -523,7 +520,7 @@
         <!-- Рендерится в app.js -->
       </div>
 
-      <div class="section-label mt-16">Заметка <span class="optional-hint">необязательно</span></div>
+      <label class="section-label mt-16" for="trigger-note">Заметка <span class="optional-hint">необязательно</span></label>
       <textarea class="note-textarea" id="trigger-note"
         placeholder="Что заметила, что сделала, что помогло..." rows="3"></textarea>
 
@@ -563,7 +560,7 @@
         <!-- 5 шкал рендерятся в app.js -->
       </div>
 
-      <div class="section-label mt-16">Заметка <span class="optional-hint">необязательно</span></div>
+      <label class="section-label mt-16" for="checkin-note">Заметка <span class="optional-hint">необязательно</span></label>
       <textarea class="note-textarea" id="checkin-note"
         placeholder="Что вы замечаете? Что изменилось на этой неделе?" rows="3"></textarea>
 
