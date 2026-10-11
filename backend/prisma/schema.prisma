@@ -33,6 +33,11 @@ model User {
   accessDecidedAt      DateTime? @map("access_decided_at")
   accessDecidedBy      String?   @map("access_decided_by")
   accessNotifiedAt     DateTime? @map("access_notified_at")
+  accessRevision       Int       @default(0) @map("access_revision")
+  lastSeenAt           DateTime? @map("last_seen_at")
+  preferredAppUrl      String?   @map("preferred_app_url")
+  admissionLeaseUntil DateTime? @map("admission_lease_until")
+  admissionDeliveredIds String[] @default([]) @map("admission_delivered_ids")
 
   enrollments        Enrollment[]
   diaryEntries       DiaryEntry[]
@@ -87,6 +92,7 @@ model Enrollment {
   paymentId     String?          @map("payment_id")
   paidAt        DateTime?        @map("paid_at")
   accessExpires DateTime?        @map("access_expires")
+  accessBasis   String?          @map("access_basis")
   createdAt     DateTime         @default(now()) @map("created_at")
 
   user   User   @relation(fields: [userId], references: [id])
@@ -255,6 +261,43 @@ enum EnrollmentStatus {
   active
   completed
   cancelled
+}
+
+model AccessAction {
+  id               String    @id @default(uuid())
+  actorId          String    @map("actor_id")
+  targetId         String    @map("target_id")
+  expectedRevision Int       @map("expected_revision")
+  status           String    @default("approved")
+  role             String    @default("PARTICIPANT")
+  streamId         String?   @map("stream_id")
+  basis            String    @default("none")
+  streamChoices    Json      @default("[]") @map("stream_choices")
+  expiresAt        DateTime  @map("expires_at")
+  usedAt           DateTime? @map("used_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  @@index([expiresAt])
+  @@map("access_actions")
+}
+
+model AccessAudit {
+  id        String   @id @default(uuid())
+  actorId   String   @map("actor_id")
+  targetId  String   @map("target_id")
+  actionId  String   @unique @map("action_id")
+  before    Json
+  after     Json
+  createdAt DateTime @default(now()) @map("created_at")
+  @@index([targetId, createdAt])
+  @@map("access_audit")
+}
+
+model OperationalMetric {
+  day   String
+  kind  String
+  count Int @default(0)
+  @@id([day, kind])
+  @@map("operational_metrics")
 }
 
 enum ReactionType {

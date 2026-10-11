@@ -129,7 +129,7 @@ async function getProgramAccess(user, now = Date.now()) {
   const admin = (process.env.ADMIN_TELEGRAM_IDS || '').split(',').map(s => s.trim()).filter(Boolean).includes(String(user.telegramId))
   // Historical manual enrollments may have no paidAt. Preserve their existing
   // program archive; never extend this compatibility rule to new enrollments.
-  const owned = all.filter(e => (e.paidAt || new Date(e.createdAt).getTime() < AI_ACCESS_ROLLOUT_AT) && ['active', 'completed'].includes(e.status))
+  const owned = all.filter(e => (e.paidAt || e.accessBasis === 'free' || new Date(e.createdAt).getTime() < AI_ACCESS_ROLLOUT_AT) && ['active', 'completed'].includes(e.status))
   // Leading a stream does not require a payment or a participant enrollment.
   // HOST has service access, while administration still uses the Telegram allowlist.
   const host = user.role === 'HOST'
@@ -148,12 +148,12 @@ async function getProgramAccess(user, now = Date.now()) {
     const bounds = streamBounds(e.stream)
     const revokedByExpiry = e.accessExpires && now >= new Date(e.accessExpires).getTime()
     const live = e.status === 'active' && now >= bounds.start && now < bounds.end && !revokedByExpiry
-    const recordings = now >= bounds.start && now < bounds.recordingsEnd && !revokedByExpiry
+    const recordings = now >= bounds.start && now < bounds.end && !revokedByExpiry
     return {
       id: e.stream.id, name: e.stream.name, startDate: e.stream.startDate, endDate: e.stream.endDate,
       status: e.status, phase: now < bounds.start ? 'upcoming' : now >= bounds.end ? 'completed' : 'current',
       canUseAi: live, canAttend: live, canReadRecordings: recordings,
-      aiExpiresAt: new Date(bounds.end).toISOString(), recordingsExpiresAt: new Date(bounds.recordingsEnd).toISOString(),
+      aiExpiresAt: new Date(bounds.end).toISOString(), recordingsExpiresAt: new Date(bounds.end).toISOString(),
       zoomLink: live ? e.stream.zoomLink : null,
       chatLink: recordings ? e.stream.chatLink : null,
       meetings: e.stream.meetings.map(m => ({ id: m.id, number: m.number, date: m.date, topic: m.topic, description: m.description, prepare: m.prepare, zoomLink: live ? m.zoomLink : null }))
@@ -165,9 +165,9 @@ async function getProgramAccess(user, now = Date.now()) {
   const canUseAi = serviceAccess || active.length > 0 || transition
   const message = reason === 'transition'
     ? 'AI доступен в переходный период до 29 сентября, 16:00 МСК. Затем — во время оплаченной программы. Дневник и реакции останутся бесплатными.'
-    : reason === 'ended' ? 'Программа завершилась. Дневник, реакции и история диалогов остаются доступны; новые сообщения AI — во время следующей оплаченной программы.'
-    : reason === 'not_started' ? 'AI откроется в день начала вашей оплаченной программы. Дневник и реакции уже доступны.'
-    : reason === 'purchase_required' ? 'Новые сообщения AI доступны во время оплаченной программы. Дневник, реакции и история остаются бесплатными.'
+    : reason === 'ended' ? 'Программа завершилась. Дневник, реакции и история диалогов остаются доступны; новые сообщения AI — во время следующего потока, к которому вам открыт доступ.'
+    : reason === 'not_started' ? 'AI откроется в день начала вашего потока. Дневник и реакции уже доступны.'
+    : reason === 'purchase_required' ? 'Новые сообщения AI доступны во время потока, к которому вам открыт доступ. Дневник, реакции и история остаются бесплатными.'
     : ['admin', 'host'].includes(reason) ? 'Режим ведущей: служебный доступ к AI.' : 'AI доступен во время вашей программы. Дневник и реакции останутся с вами после её завершения.'
   return { hasAccess: true, canWrite: canUseAi, diary: true, reactions: true, checkins: true, aiHistory: true,
     ai: { canWrite: canUseAi, reason, message, expiresAt: serviceAccess ? null : reason === 'transition' ? new Date(AI_TRANSITION_END).toISOString() : active.length ? active.map(s => s.aiExpiresAt).sort().pop() : null },

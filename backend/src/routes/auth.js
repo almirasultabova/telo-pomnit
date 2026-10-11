@@ -51,6 +51,7 @@ async function authRoutes(app) {
     await requestAdmission(user)
     const denied = admissionError(user)
     if (denied) return reply.code(403).send(denied)
+    await db.user.updateMany({ where: { id: user.id, deletedAt: null }, data: { lastSeenAt: new Date() } })
     const token = createToken(user.id, user.tokenVersion)
 
     return {

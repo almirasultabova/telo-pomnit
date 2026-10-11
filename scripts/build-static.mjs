@@ -90,6 +90,7 @@ try {
   addTree(site, 'media/shared', 'media/shared', mediaExtensions);
   const app = [
     { source: path.join(repository, 'app/index.html'), relative: 'index.html' },
+    { source: path.join(repository, 'app/access-admin.html'), relative: 'access-admin.html' },
     { source: path.join(repository, 'site/admin.html'), relative: 'admin.html' },
   ];
   addTree(app, 'app/css', 'css', new Set(['.css']));

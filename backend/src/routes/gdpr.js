@@ -37,7 +37,7 @@ async function gdprRoutes(app) {
       db.user.findUnique({ where: { id: userId } }),
       ...personalModels.slice(0,5).map(model => db[model].findMany({ where: { userId } })),
       db.aiChatSession.findMany({ where: { userId } }), db.feedback.findMany({ where: { userId } }),
-      db.enrollment.findMany({ where: { userId }, select: { id: true, streamId: true, status: true, paymentId: true, paidAt: true, accessExpires: true, createdAt: true } })
+      db.enrollment.findMany({ where: { userId }, select: { id: true, streamId: true, status: true, paymentId: true, paidAt: true, accessExpires: true, accessBasis: true, createdAt: true } })
     ])
     const paymentIds = [...new Set(enrollments.map(row => row.paymentId).filter(Boolean))]
     const paymentOrders = paymentIds.length ? await db.paymentOrder.findMany({ where: { paymentId: { in: paymentIds } },
@@ -48,7 +48,7 @@ async function gdprRoutes(app) {
         lastName: user.lastName, username: user.username, telegramUsername: user.telegramUsername, phone: user.phone,
         photoUrl: user.photoUrl, notificationsEnabled: user.notificationsEnabled, notificationsTime: user.notificationsTime,
         createdAt: user.createdAt, deletedAt: user.deletedAt, accessStatus: user.accessStatus,
-        role: user.role, accessRequestedAt: user.accessRequestedAt, accessDecidedAt: user.accessDecidedAt, accessNotifiedAt: user.accessNotifiedAt,
+        role: user.role, lastSeenAt: user.lastSeenAt, accessRequestedAt: user.accessRequestedAt, accessDecidedAt: user.accessDecidedAt, accessNotifiedAt: user.accessNotifiedAt,
         consentGivenAt: user.consentGivenAt, consentText: user.consentText, consentVersion: user.consentVersion, consentSource: user.consentSource },
       diary: ownRows(diary), triggers: ownRows(triggers), checkins: ownRows(checkins), diagnostic: ownRows(diagnostic),
       questionnaires: ownRows(questionnaires), aiSessions: ownRows(aiSessions), feedback: ownRows(feedback), enrollments, paymentOrders,
@@ -66,6 +66,7 @@ async function gdprRoutes(app) {
       if (!user || user.tokenVersion !== request.user.tokenVersion) throw Object.assign(new Error('Проверка личности изменилась'), { statusCode: 401 })
       // A fresh deleted-account token may repeat this request safely after a lost response.
       if (user.deletedAt) return
+      await tx.accessAction.deleteMany({where:{OR:[{actorId:userId},{targetId:userId}]}})
       const enrollments = await tx.enrollment.findMany({ where: { userId }, select: { paymentId: true } })
       const paymentIds = enrollments.map(row => row.paymentId).filter(Boolean)
       for (const model of personalModels) await tx[model].deleteMany({ where: { userId } })
@@ -75,7 +76,7 @@ async function gdprRoutes(app) {
       }
       await tx.user.update({ where: { id: userId }, data: {
         name: null, firstName: null, lastName: null, username: null, telegramUsername: null,
-        phone: null, photoUrl: null, notificationsEnabled: false, notificationsTime: '20:00',
+        phone: null, photoUrl: null, lastSeenAt: null, preferredAppUrl: null, admissionDeliveredIds: [], admissionLeaseUntil: null, notificationsEnabled: false, notificationsTime: '20:00',
         consentText: null, accessStatus: 'rejected', accessRequestedAt: null, accessNotifiedAt: null,
         accessDecidedAt: null, accessDecidedBy: null, deletedAt: new Date(), tokenVersion: { increment: 1 }
       } })

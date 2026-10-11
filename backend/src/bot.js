@@ -8,6 +8,7 @@ const db = require('./db')
 const { admissionError, requestAdmission, drainAdmissionNotifications } = require('./services/admission')
 
 const bot = new Bot(process.env.BOT_TOKEN)
+require('./services/access-bot').registerAccessBot(bot)
 
 // ─── Константы ────────────────────────────────────────────────────────────
 
@@ -15,12 +16,16 @@ const MINI_APP_URL = process.env.MINI_APP_URL || 'https://tg-app-telo-pomnit.ver
 const ADMIN_IDS = (process.env.ADMIN_TELEGRAM_IDS || '')
   .split(',').map(id => parseInt(id.trim())).filter(Boolean)
 
+async function appUrlFor(id) {
+  const user = await db.user.findUnique({where:{telegramId:BigInt(id)}})
+  return user?.preferredAppUrl || MINI_APP_URL
+}
 async function updateAppMenu(ctx) {
   if (ctx.chat?.type !== 'private') return
   try {
     await ctx.api.setChatMenuButton({
       chat_id: ctx.chat.id,
-      menu_button: { type: 'web_app', text: 'Открыть приложение', web_app: { url: MINI_APP_URL } }
+      menu_button: { type: 'web_app', text: 'Открыть приложение', web_app: { url: await appUrlFor(ctx.from.id) } }
     })
   } catch (err) {
     console.error('[menu] Update failed:', err.description || err.message)
@@ -64,7 +69,7 @@ bot.command('start', async (ctx) => {
     await requestAdmission(user)
     const denied = admissionError(user)
     if (denied) {
-      const keyboard = new InlineKeyboard().webApp('Проверить доступ', MINI_APP_URL)
+      const keyboard = new InlineKeyboard().webApp('Проверить доступ', await appUrlFor(ctx.from.id))
       return ctx.reply(denied.error + '\n\n«Тело помнит» — закрытое приложение для одобренного круга участниц.', { reply_markup: keyboard })
     }
     // Проверяем ожидающую запись об оплате
@@ -106,7 +111,7 @@ bot.command('start', async (ctx) => {
           // Удаляем ожидающую запись
           await db.pendingEnrollment.delete({ where: { id: pending.id } })
 
-          const keyboard = new InlineKeyboard().webApp('Открыть приложение', MINI_APP_URL)
+          const keyboard = new InlineKeyboard().webApp('Открыть приложение', await appUrlFor(ctx.from.id))
           return ctx.reply(
             `Добро пожаловать в поток «${stream.name}» 🌿\n\n` +
             `Ваша оплата подтверждена. Для входа в приложение нужен отдельный допуск Альмиры. Нажмите кнопку ниже, чтобы войти или отправить заявку:`,
@@ -117,7 +122,7 @@ bot.command('start', async (ctx) => {
     }
 
     const name = tgUser.first_name
-    const keyboard = new InlineKeyboard().webApp('Открыть приложение', MINI_APP_URL)
+    const keyboard = new InlineKeyboard().webApp('Открыть приложение', await appUrlFor(ctx.from.id))
 
     await ctx.reply(
       `Привет, ${name}.\n\n` +
@@ -135,7 +140,7 @@ bot.command('start', async (ctx) => {
 // ─── /help ────────────────────────────────────────────────────────────────
 
 bot.command('help', async (ctx) => {
-  const keyboard = new InlineKeyboard().webApp('Открыть приложение', MINI_APP_URL)
+  const keyboard = new InlineKeyboard().webApp('Открыть приложение', await appUrlFor(ctx.from.id))
 
   await ctx.reply(
     `Что умеет этот бот:\n\n` +
@@ -151,7 +156,7 @@ bot.command('help', async (ctx) => {
 
 bot.command('app', async (ctx) => {
   await updateAppMenu(ctx)
-  const keyboard = new InlineKeyboard().webApp('Открыть дневник', MINI_APP_URL)
+  const keyboard = new InlineKeyboard().webApp('Открыть дневник', await appUrlFor(ctx.from.id))
   await ctx.reply('Ваш дневник наблюдений:', { reply_markup: keyboard })
 })
 
@@ -169,126 +174,32 @@ bot.command('reserve', async (ctx) => {
 
 // ─── /admin — открыть админ-панель (только ведущие) ─────────────────────
 
-const ADMIN_PANEL_URL = process.env.ADMIN_PANEL_URL || 'https://app.telo-pomnit.ru/admin.html'
+const ADMIN_PANEL_URL = 'https://app.telo-pomnit.ru/access-admin.html'
 
 bot.command('admin', async (ctx) => {
-  if (!ADMIN_IDS.includes(ctx.from?.id)) {
-    return ctx.reply('Эта команда доступна только ведущим.')
-  }
-  const keyboard = new InlineKeyboard().webApp('Открыть админ-панель', ADMIN_PANEL_URL)
+  try { await require('./services/access-management').actorByTelegram(ctx.from.id) }
+  catch { return ctx.reply('Эта команда доступна только администраторам.') }
+  const keyboard = new InlineKeyboard().webApp('Открыть панель управления', ADMIN_PANEL_URL)
   await ctx.reply(
-    'Админ-панель «Тело помнит»\n\nСводка, отзывы, пользователи. Авторизация — автоматически по вашему Telegram-аккаунту.',
+    'Админ-панель «Тело помнит»\n\nЗаявки, люди, потоки, история решений и показатели. Авторизация — автоматически по вашему Telegram-аккаунту.',
     { reply_markup: keyboard }
   )
 })
 
 // ─── /activate — зачислить участницу (только ведущие) ───────────────────
 
-bot.command('activate', async (ctx) => {
-  if (!ADMIN_IDS.includes(ctx.from?.id)) {
-    return ctx.reply('Эта команда доступна только ведущим.')
-  }
-
-  const usernameRaw = ctx.message?.text?.split(' ')[1]?.replace('@', '')
-  if (!usernameRaw) {
-    return ctx.reply('Использование: /activate @username\n\nНапример: /activate @ivanova_anna')
-  }
-
-  try {
-    const user = await db.user.findFirst({
-      where: {
-        OR: [{ username: usernameRaw }, { telegramUsername: usernameRaw }],
-        deletedAt: null,
-      },
-    })
-    if (!user) {
-      return ctx.reply(
-        `Пользователь @${usernameRaw} не найден.\n\n` +
-        `Убедитесь, что она открыла бот и нажала /start.`
-      )
-    }
-
-    const stream = await db.stream.findFirst({
-      where: { isActive: true },
-      orderBy: { startDate: 'desc' },
-    })
-    if (!stream) {
-      return ctx.reply('Нет активного потока. Создайте поток через API.')
-    }
-
-    const existing = await db.enrollment.findFirst({
-      where: { userId: user.id, streamId: stream.id },
-    })
-    if (existing?.status === 'active') {
-      return ctx.reply(`@${usernameRaw} уже зачислена в поток «${stream.name}».`)
-    }
-
-    if (existing) {
-      await db.enrollment.update({
-        where: { id: existing.id },
-        data: { status: 'active', paidAt: new Date() },
-      })
-    } else {
-      await db.enrollment.create({
-        data: { userId: user.id, streamId: stream.id, status: 'active', paidAt: new Date() },
-      })
-    }
-
-    const keyboard = new InlineKeyboard().webApp('Открыть приложение', MINI_APP_URL)
-    await bot.api.sendMessage(
-      Number(user.telegramId),
-      `Добро пожаловать в поток «${stream.name}» 🌿\n\n` +
-      `Вы зачислены в этот поток. Для входа в приложение нужен отдельный допуск Альмиры; доступ к AI зависит от периода вашей программы.\n\n` +
-      `Приложение работает прямо в Telegram — нажмите кнопку ниже:`,
-      { reply_markup: keyboard }
-    )
-
-    await ctx.reply(`✅ @${usernameRaw} зачислена в поток «${stream.name}». Уведомление отправлено.`)
-  } catch (err) {
-    console.error('[/activate] Ошибка:', err)
-    await ctx.reply('Не удалось выполнить команду. Попробуйте ещё раз.')
-  }
+bot.command('activate', async ctx => {
+  try { await require('./services/access-management').actorByTelegram(ctx.from.id) }
+  catch { return ctx.reply('Эта команда доступна только администраторам.') }
+  await ctx.reply('Управление доступом теперь выполняется с выбором потока и подтверждением: /access @username или /access Telegram_ID. Бесплатный допуск и оплата учитываются отдельно.')
 })
 
 // ─── /deactivate — отозвать доступ (только ведущие) ──────────────────────
 
-bot.command('deactivate', async (ctx) => {
-  if (!ADMIN_IDS.includes(ctx.from?.id)) {
-    return ctx.reply('Эта команда доступна только ведущим.')
-  }
-
-  const usernameRaw = ctx.message?.text?.split(' ')[1]?.replace('@', '')
-  if (!usernameRaw) {
-    return ctx.reply('Использование: /deactivate @username')
-  }
-
-  try {
-    const user = await db.user.findFirst({
-      where: {
-        OR: [{ username: usernameRaw }, { telegramUsername: usernameRaw }],
-        deletedAt: null,
-      },
-    })
-    if (!user) return ctx.reply(`Пользователь @${usernameRaw} не найден.`)
-
-    const enrollment = await db.enrollment.findFirst({
-      where: { userId: user.id, status: 'active' },
-      orderBy: { createdAt: 'desc' },
-    })
-    if (!enrollment) {
-      return ctx.reply(`@${usernameRaw} не имеет активного доступа.`)
-    }
-
-    await db.enrollment.update({
-      where: { id: enrollment.id },
-      data: { status: 'cancelled' },
-    })
-
-    await ctx.reply(`❌ Доступ @${usernameRaw} отозван.`)
-  } catch (err) {
-    console.error('[/deactivate] Ошибка:', err)
-    await ctx.reply('Не удалось выполнить команду. Попробуйте ещё раз.')
-  }
+bot.command('deactivate', async ctx => {
+  try { await require('./services/access-management').actorByTelegram(ctx.from.id) }
+  catch { return ctx.reply('Эта команда доступна только администраторам.') }
+  await ctx.reply('Управление доступом теперь выполняется с выбором потока и подтверждением: /access @username или /access Telegram_ID. Бесплатный допуск и оплата учитываются отдельно.')
 })
 
 // ─── /participants — список участниц потока (только ведущие) ─────────────

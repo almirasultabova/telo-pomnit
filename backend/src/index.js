@@ -25,6 +25,16 @@ app.register(require('@fastify/rate-limit'), {
   timeWindow: '1 minute'
 })
 
+// Anonymous daily API failure totals; no account, payload, IP or diary content.
+app.addHook('onResponse', async (request,reply) => {
+  if (reply.statusCode < 500) return
+  const path = request.routeOptions?.url || ''
+  const kind = path.startsWith('/auth/') ? 'auth' : path.startsWith('/me/consent') ? 'consent' : /^\/(diary|checkins|triggers)/.test(path) ? 'save' : null
+  if (!kind) return
+  const day = new Date().toISOString().slice(0,10)
+  try { await db.operationalMetric.upsert({where:{day_kind:{day,kind}},create:{day,kind,count:1},update:{count:{increment:1}}}) } catch {}
+})
+
 // Маршруты
 app.register(require('./routes/auth'), { prefix: '/auth' })
 app.register(require('./routes/me'), { prefix: '/' })
@@ -35,6 +45,7 @@ app.register(require('./routes/diagnostic'), { prefix: '/' })
 app.register(require('./routes/questionnaires'), { prefix: '/' })
 app.register(require('./routes/gdpr'), { prefix: '/gdpr' })
 app.register(require('./routes/admin'), { prefix: '/' })
+app.register(require('./routes/access-admin'), { prefix: '/' })
 app.register(require('./routes/ai'), { prefix: '/' })
 app.register(require('./routes/email'), { prefix: '/' })
 app.register(require('./routes/payment'), { prefix: '/' })

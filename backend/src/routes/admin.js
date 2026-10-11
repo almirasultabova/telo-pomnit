@@ -19,7 +19,10 @@ async function adminRoutes(app) {
     if (!user || user.deletedAt) return reply.code(404).send({error:'Заявка не найдена'})
     if (isClubAdmin(user)) return reply.code(403).send({error:'Служебный аккаунт нельзя изменить через заявку'})
     if (!user.accessRequestedAt) return reply.code(409).send({error:'Пользователь ещё не отправлял заявку'})
-    await db.user.update({where:{id:user.id},data:{accessStatus:request.body.status,accessDecidedAt:new Date(),accessDecidedBy:request.user.id}})
+    const management = require('../services/access-management')
+    const action = await management.openAction(request.user.id,user.id)
+    await management.changeAction(request.user.id,action.id,{status:request.body.status})
+    await management.confirmAction(request.user.id,action.id)
     return {success:true,status:request.body.status}
   })
   // Saved applications remain visible even when a Telegram notification fails.
@@ -190,16 +193,7 @@ async function adminRoutes(app) {
     }
   }, async (request) => {
     const { userId, streamId } = request.body
-    const existing = await db.enrollment.findFirst({ where: { userId, streamId } })
-    if (existing) {
-      return db.enrollment.update({
-        where: { id: existing.id },
-        data: { status: 'active', paidAt: new Date() }
-      })
-    }
-    return db.enrollment.create({
-      data: { userId, streamId, status: 'active', paidAt: new Date() }
-    })
+    throw Object.assign(new Error('Используйте новую панель управления: выбор потока, основание доступа и подтверждение.'),{statusCode:409})
   })
 
   // PATCH /admin/enrollments/:id — изменить статус (active / completed / cancelled)
@@ -217,10 +211,7 @@ async function adminRoutes(app) {
   }, async (request, reply) => {
     const enrollment = await db.enrollment.findUnique({ where: { id: request.params.id } })
     if (!enrollment) return reply.code(404).send({ error: 'Запись не найдена' })
-    return db.enrollment.update({
-      where: { id: request.params.id },
-      data: { status: request.body.status }
-    })
+    return reply.code(409).send({error:'Измените доступ через новую панель с подтверждением и историей решения.'})
   })
 
   // ─── Обратная связь ──────────────────────────────────────────────────────
