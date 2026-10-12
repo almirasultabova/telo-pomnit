@@ -3295,53 +3295,59 @@ textarea:focus,input:focus,select:focus {outline:2px solid var(--color-action);o
 #screen-body-map .body-figure-wrap,#screen-body-map .view-toggle {background:transparent;}
 
 
-/* J-298: personal identity, own programme and contacts have separate reading rhythms. */
-#tab-profile > .screen-header {padding-bottom:12px;}
-#tab-profile .profile-identity {padding:8px 0 24px;}
-#tab-profile .profile-user {padding:0;gap:16px;margin:0 0 20px;}
-#tab-profile .profile-avatar {width:68px;height:68px;flex-basis:68px;font-size:38px;}
-#tab-profile .profile-name {font-size:34px;line-height:1.08;}
-#tab-profile .profile-meta {font-size:12px;margin-top:8px;}
-#tab-profile .profile-quote {font-size:23px;line-height:1.3;margin:0;max-width:290px;}
-#tab-profile #profile-account-actions .profile-link-btn {margin:0 0 28px;}
-#tab-profile .profile-link-btn {min-height:64px;padding:18px;background:var(--color-paper);border-radius:16px;gap:12px;}
-#tab-profile .profile-link-btn > span {font:500 23px/1.2 var(--font-serif);}
-#tab-profile .profile-link-btn .icon-svg {width:24px;height:24px;}
-#tab-profile .profile-link-arrow {color:var(--color-action);}
-#tab-profile .profile-metrics {margin-bottom:34px;}
-#tab-profile .profile-metrics-title {font-size:26px;margin:0 0 18px;}
-#tab-profile .profile-stats {border-radius:0;background:transparent;border-block:1px solid var(--color-line);padding:20px 0;margin:0;gap:0;}
-#tab-profile .profile-stats .stat-box {padding:0 10px;}
-#tab-profile .profile-stats .stat-box-num {font-size:38px;}
-#tab-profile .profile-stats .stat-box-label {font-size:12px;line-height:1.4;margin-top:8px;color:var(--color-caption-gold,#765D32);}
-#tab-profile .profile-program {margin-bottom:34px;}
-#tab-profile #next-meeting-card > .access-program {border:0;background:none;padding:0;margin:0 0 20px;}
-#tab-profile #next-meeting-card > .access-program .section-label {font:500 28px/1.15 var(--font-serif);color:var(--color-text);margin:0 0 10px;}
-#tab-profile #next-meeting-card > .access-program p {font:400 13px/1.55 var(--font-body);color:var(--color-muted-on-surface);margin:0;}
-#tab-profile .profile-stream-feature {border-radius:20px;padding:24px;margin:16px 0 20px;}
-#tab-profile .profile-stream-feature h3 {font-size:32px;line-height:1.1;margin:14px 0 18px;}
-#tab-profile #q-banner-wrap:not(:empty) {margin:0 0 20px;}
-#tab-profile .q-banner {border-radius:16px;padding:18px;}
-#tab-profile .profile-program-access {padding:20px 0;border-block:1px solid var(--color-line);margin:20px 0 28px;}
-#tab-profile .profile-program-access > .section-label {font:500 13px/1.4 var(--font-body);color:var(--color-caption-gold,#765D32);}
-#tab-profile #zoom-btn-wrap .access-notice {font-size:13px;margin:8px 0 0;}
-#tab-profile .profile-section-title {font:500 28px/1.2 var(--font-serif);color:var(--color-text);margin:0 0 18px;}
-#tab-profile .profile-people {margin-bottom:28px;}
-#tab-profile .host-card-mini {display:grid;grid-template-columns:48px minmax(0,1fr);gap:8px 14px;align-items:center;padding:18px 0;border:0;border-bottom:1px solid var(--color-line);border-radius:0;background:none;margin:0;}
-#tab-profile .host-avatar-mini {width:48px;height:48px;grid-column:1;grid-row:1;}
-#tab-profile .host-card-mini > div:nth-child(2) {min-width:0;grid-column:2;}
-#tab-profile .host-name-mini {font:500 24px/1.15 var(--font-serif);overflow-wrap:anywhere;}
-#tab-profile .host-role-mini {font:400 12px/1.5 var(--font-body);color:var(--color-muted-on-surface);margin-top:5px;}
-#tab-profile .host-tg-link {grid-column:2;justify-self:start;margin:0;font-size:13px;padding:6px 0;min-height:44px;}
-#tab-profile .profile-contact .profile-link-btn {margin:0;}
-#tab-profile .profile-closing {position:relative;overflow:hidden;min-height:168px;padding:28px 24px;margin:28px 0 0;border:0;border-radius:22px;background:var(--color-bg) url('/media/app/redesign/fabric-sage-owner.webp') center/cover no-repeat;}
-#tab-profile .profile-closing::before {content:'';display:block;position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(247,244,239,.36),transparent 70%);}
-#tab-profile .profile-closing p {position:relative;max-width:78%;margin:0;font:italic 500 30px/1.15 var(--font-serif);color:var(--color-action);}
-#tab-profile .profile-closing p::after {content:'';display:block;width:32px;height:1px;background:var(--color-caption-gold,#765D32);margin-top:20px;}
-#tab-profile .app-footer {padding-top:24px;}
-@media(max-width:350px){#tab-profile .profile-name{font-size:30px;}#tab-profile .profile-avatar{width:60px;height:60px;flex-basis:60px;}#tab-profile .profile-link-btn>span{font-size:21px;}#tab-profile .profile-closing{padding:24px 20px;min-height:156px;}#tab-profile .profile-closing p{font-size:28px;max-width:86%;}}
-
 #tab-profile .profile-program-access:has(#zoom-btn-wrap:empty):has(#chat-btn[hidden]) {display:none;}
 #tab-profile #next-meeting-card > .btn {background:transparent;border:1px solid var(--color-line);border-radius:12px;min-height:44px;padding:12px 16px;font:500 13px/1.4 var(--font-body);margin-top:12px;}
 #tab-profile .q-banner-icon {font-size:0;background:none;}
 #tab-profile .q-banner-icon::before {content:'';display:block;width:24px;height:24px;background:var(--color-action);mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h5'/%3E%3C/svg%3E") center/contain no-repeat;}
+
+/* J-300 — personal profile: portrait rhythm, nature-backed metrics, compact actions. */
+#tab-profile {background:var(--color-bg);}
+#tab-profile > .screen-header {padding-top:24px;padding-bottom:14px;background:transparent;}
+#tab-profile > .screen-header .screen-title {font:500 52px/1 var(--font-serif);color:var(--color-action);letter-spacing:-.02em;}
+#tab-profile .profile-identity {position:relative;padding:12px 0 26px;}
+#tab-profile .profile-user {gap:20px;padding:0;margin:0 0 22px;}
+#tab-profile .profile-avatar {width:86px;height:86px;flex-basis:86px;font-size:48px;background:var(--color-sage) url('/media/app/redesign/leaf-shadow-owner.webp') center/cover;color:var(--color-action);}
+#tab-profile .profile-name {font:500 36px/1.03 var(--font-serif);text-wrap:balance;}
+#tab-profile .profile-meta {font:500 11px/1.4 var(--font-body);letter-spacing:.09em;text-transform:uppercase;margin-top:10px;color:var(--color-caption-gold,#765D32);}
+#tab-profile .profile-quote {font:italic 500 24px/1.22 var(--font-serif);margin:0;color:var(--color-action);max-width:330px;}
+#tab-profile .profile-identity::after {content:'';display:block;width:32px;height:1px;background:var(--color-caption-gold,#765D32);margin-top:22px;}
+#tab-profile .profile-metrics {position:relative;isolation:isolate;overflow:hidden;padding:22px 18px 24px;margin:0 0 16px;border-radius:20px;background:#E6EADD;min-height:232px;}
+#tab-profile .profile-metrics-nature {position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,#E6EADD 15%,rgba(230,234,221,.94) 46%,rgba(230,234,221,.14)),url('/media/app/redesign/leaf-gold-owner.webp') right center/cover;opacity:.75;}
+#tab-profile .profile-metrics-title {font:500 29px/1.1 var(--font-serif);margin:0 0 26px;color:var(--color-action);}
+#tab-profile .profile-metrics-title::after {display:none;}
+#tab-profile .profile-stats {position:relative;background:rgba(247,244,239,.86);border:0;border-radius:14px;margin:0;padding:16px 0 14px;gap:0;}
+#tab-profile .profile-stats .stat-box {padding:0 8px;}
+#tab-profile .profile-stats .stat-box + .stat-box {border-left:1px solid rgba(42,74,56,.18);}
+#tab-profile .profile-stat-icon {display:grid;place-items:center;width:34px;height:34px;margin:0 auto 10px;border-radius:50%;background:#DDE4D8;color:var(--color-action);}
+#tab-profile .stat-box:nth-child(2) .profile-stat-icon {background:#E9E1D6;}
+#tab-profile .profile-stat-icon svg {width:22px;height:22px;}
+#tab-profile .profile-stats .stat-box-num {font:500 38px/1 var(--font-serif);color:var(--color-action);}
+#tab-profile .profile-stats .stat-box-label {font:500 11px/1.45 var(--font-body);color:var(--color-action);margin-top:8px;}
+#tab-profile .profile-personal-actions {margin:0 0 32px;}
+#tab-profile .profile-link-btn,#tab-profile #data-rights-btn {min-height:66px;padding:13px 16px;gap:12px;margin:0 0 8px;background:var(--color-paper);border:0;border-radius:16px;text-align:left;}
+#tab-profile .profile-link-btn > span {font:500 23px/1.15 var(--font-serif);}
+#tab-profile .profile-link-btn .icon-svg {width:42px;height:42px;padding:9px;border-radius:50%;background:var(--color-sage);color:var(--color-action);flex-shrink:0;}
+#tab-profile .profile-link-arrow {width:18px;height:18px;color:var(--color-action);}
+#tab-profile .profile-contact {margin:0;}
+#tab-profile .profile-program {margin:0 0 32px;padding-top:24px;border-top:1px solid var(--color-line);}
+#tab-profile #next-meeting-card > .access-program {background:none;padding:0;margin:0 0 18px;}
+#tab-profile #next-meeting-card > .access-program .section-label {font:500 32px/1.1 var(--font-serif);margin:0 0 8px;color:var(--color-action);}
+#tab-profile #next-meeting-card > .access-program p {font:400 13px/1.5 var(--font-body);color:var(--color-muted-on-surface);margin:0;}
+#tab-profile .profile-stream-feature {padding:24px;border-radius:20px;margin:18px 0;background:linear-gradient(90deg,rgba(26,55,40,.97),rgba(26,55,40,.82) 55%,rgba(26,55,40,.36)),url('/media/app/redesign/leaf-gold-owner.webp') right center/cover;}
+#tab-profile .profile-stream-feature h3 {font:500 34px/1.05 var(--font-serif);margin:12px 0 20px;max-width:95%;}
+#tab-profile .profile-stream-feature .profile-stream-state {color:#D9C8A7;}
+#tab-profile #q-banner-wrap:not(:empty) {margin:18px 0;}
+#tab-profile .q-banner {padding:18px;border-radius:16px;}
+#tab-profile .profile-program-access {margin:20px 0;padding:18px 0;border-block:1px solid var(--color-line);}
+#tab-profile .profile-program-access > .section-label {font:500 13px/1.4 var(--font-body);color:var(--color-caption-gold,#765D32);}
+#tab-profile .profile-section-title {font:500 30px/1.1 var(--font-serif);margin:0 0 16px;color:var(--color-action);}
+#tab-profile .host-card-mini {padding:16px;background:var(--color-paper);border-radius:16px;gap:14px;margin-bottom:10px;}
+#tab-profile .host-name-mini {font:500 23px/1.1 var(--font-serif);overflow-wrap:anywhere;}
+#tab-profile .host-role-mini {font:400 12px/1.5 var(--font-body);}
+#tab-profile .host-tg-link {min-height:44px;min-width:44px;}
+#tab-profile .profile-closing {position:relative;overflow:hidden;margin:28px 0 0;padding:26px 24px;min-height:190px;border:0;border-radius:20px;background:var(--color-bg) url('/media/app/redesign/fabric-sage-owner.webp') right center/cover;}
+#tab-profile .profile-closing::before {content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(247,244,239,.92),rgba(247,244,239,.45) 52%,transparent);}
+#tab-profile .profile-closing p {position:relative;max-width:78%;font:500 34px/1.06 var(--font-serif);color:var(--color-action);margin:0;}
+#tab-profile .profile-closing p::after {content:'';display:block;width:32px;height:1px;background:var(--color-caption-gold,#765D32);margin-top:24px;}
+#tab-profile .app-footer {padding-top:22px;}
+@media(max-width:350px){#tab-profile > .screen-header .screen-title{font-size:46px;}#tab-profile .profile-avatar{width:72px;height:72px;flex-basis:72px;}#tab-profile .profile-name{font-size:30px;}#tab-profile .profile-user{gap:16px;}#tab-profile .profile-quote{font-size:22px;}#tab-profile .profile-metrics-title{font-size:26px;}#tab-profile .profile-link-btn>span{font-size:21px;}#tab-profile .profile-closing p{font-size:30px;}}

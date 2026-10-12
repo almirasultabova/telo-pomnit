@@ -1695,14 +1695,17 @@ function renderStats() {
 
   container.innerHTML = `
     <div class="stat-box">
+      <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17V10M12 17V5M18 17V8M3 20h18"/></svg></span>
       <div class="stat-box-num">${streak}</div>
       <div class="stat-box-label">дней подряд</div>
     </div>
     <div class="stat-box">
+      <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a2 2 0 0 1 2 2v16H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8 3v18M12 8h4M12 12h4"/></svg></span>
       <div class="stat-box-num">${total}</div>
       <div class="stat-box-label">записей</div>
     </div>
     <div class="stat-box">
+      <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C9 3 3 8 5 15s12 6 15-11zM4 21l11-11"/></svg></span>
       <div class="stat-box-num">${hasDiag ? '✓' : '—'}</div>
       <div class="stat-box-label">паттерн</div>
     </div>`;
