@@ -533,10 +533,10 @@ function renderStreak() {
   const el = document.getElementById('streak-num');
   if (el) el.textContent = n;
   const sub = document.getElementById('streak-days-sub');
-  if (sub) sub.textContent = pluralDays(n);
+  if (sub) sub.textContent = pluralStreakDays(n);
 }
 
-function pluralDays(n) {
+function pluralStreakDays(n) {
   if (n % 10 === 1 && n % 100 !== 11) return 'день подряд';
   if ([2,3,4].includes(n%10) && ![12,13,14].includes(n%100)) return 'дня подряд';
   return 'дней подряд';
@@ -1172,7 +1172,7 @@ function renderHeatmapSection(entries) {
   const weekBtns = Array.from({ length: (streamPeriod()?.weeks || 0) + 1 }, (_, w) => w).map(w => {
     const active = heatmapWeek === w ? ' hmap-week-btn--active' : '';
     const label  = w === 0 ? 'Все' : `Н${w}`;
-    return `<button class="hmap-week-btn${active}" data-week="${w}">${label}</button>`;
+    return `<button class="hmap-week-btn${active}" data-week="${w}" aria-pressed="${heatmapWeek === w}">${label}</button>`;
   }).join('');
 
   return `<div class="section-label mt-16 mb-4">Карта напряжений</div>
@@ -1315,11 +1315,12 @@ function renderCheckinChart() {
   const xp = week => left + ((week - 1) / Math.max(1, period.weeks - 1)) * (W - left - right);
   const yp = value => top + (10 - value) / 9 * (H - top - bottom);
   const weeks = Array.from({ length: period.weeks }, (_, i) => i + 1);
+  const scalePoints = CHECKIN_SCALES.map(scale => weeks.map(week => {
+    const values = checkins.filter(row => getStreamWeek(row.date) === week).map(row => scaleValue(row, scale.key)).filter(value => value !== null);
+    return values.length ? { week, value: avgOf(values) } : null;
+  }));
   const series = CHECKIN_SCALES.map((scale, index) => {
-    const points = weeks.map(week => {
-      const values = checkins.filter(row => getStreamWeek(row.date) === week).map(row => scaleValue(row, scale.key)).filter(value => value !== null);
-      return values.length ? { week, value: avgOf(values) } : null;
-    });
+    const points = scalePoints[index];
     const available = points.filter(Boolean);
     if (!available.length) return '';
     // Missing weeks break a line; missing observations never become a value 5.
@@ -1328,14 +1329,15 @@ function renderCheckinChart() {
       if (!point) { previous = null; return ''; }
       const segment = previous ? `<line x1="${xp(previous.week)}" y1="${yp(previous.value)}" x2="${xp(point.week)}" y2="${yp(point.value)}" stroke="${colors[index]}" stroke-width="2"/>` : '';
       previous = point;
-      return segment + `<circle cx="${xp(point.week)}" cy="${yp(point.value)}" r="3" fill="${colors[index]}"/>`;
+      return segment + `<circle cx="${xp(point.week)}" cy="${yp(point.value)}" r="3" fill="${colors[index]}"><title>${escapeAccessText(scale.label)} · неделя ${point.week}: ${point.value}</title></circle>`;
     }).join('');
     return `<g data-scale="${scale.key}">${segments}</g>`;
   }).join('');
   if (!series) return '<p class="access-notice">В этом периоде сохранены только прежние средние оценки. Отдельные шкалы по ним восстановить нельзя.</p>';
   const grid = [1, 5, 10].map(value => `<line x1="${left}" y1="${yp(value)}" x2="${W - right}" y2="${yp(value)}" stroke="rgba(0,0,0,.06)"/><text x="${left - 4}" y="${yp(value) + 3}" text-anchor="end" font-size="9">${value}</text>`).join('');
   const labels = weeks.map(week => `<text x="${xp(week)}" y="${H - 5}" text-anchor="middle" font-size="9">Н${week}</text>`).join('');
-  return `<div class="section-label mt-16 mb-8">Пять шкал по неделям потока</div><div class="checkin-chart-wrap"><svg viewBox="0 0 ${W} ${H}" class="checkin-chart-svg" role="img" aria-label="Недельные средние по каждой из пяти шкал">${grid}${labels}${series}</svg><div class="checkin-chart-legend">${CHECKIN_SCALES.map((scale, i) => `<span class="cchart-leg"><span class="cchart-dot" style="background:${colors[i]}"></span>${scale.label}</span>`).join('')}</div><p class="access-notice">Каждая линия — отдельная шкала. Пропуски не заполняются оценками.</p></div>`;
+  const valuesTable = `<details class="checkin-values"><summary>Значения по неделям</summary><p class="checkin-values-note">Средние оценки от 1 до 10. «Нет данных» означает отсутствие оценки. Таблицу можно листать в сторону.</p><div class="checkin-values-scroll" tabindex="0" role="region" aria-label="Средние значения пяти шкал"><table><caption>Средние оценки пяти шкал по неделям</caption><thead><tr><th scope="col">Шкала</th>${weeks.map(week => `<th scope="col">Неделя ${week}</th>`).join('')}</tr></thead><tbody>${CHECKIN_SCALES.map((scale,index) => `<tr><th scope="row">${escapeAccessText(scale.label)}</th>${scalePoints[index].map(point => `<td>${point ? point.value.toLocaleString('ru-RU') : 'Нет данных'}</td>`).join('')}</tr>`).join('')}</tbody></table></div></details>`;
+  return `<div class="section-label mt-16 mb-8">Пять шкал по неделям потока</div><div class="checkin-chart-wrap"><svg viewBox="0 0 ${W} ${H}" class="checkin-chart-svg" role="img" aria-label="Недельные средние по каждой из пяти шкал. Точные значения доступны ниже в раскрытии «Значения по неделям»">${grid}${labels}${series}</svg><div class="checkin-chart-legend">${CHECKIN_SCALES.map((scale, i) => `<span class="cchart-leg"><span class="cchart-dot" style="background:${colors[i]}"></span>${scale.label}</span>`).join('')}</div><p class="access-notice">Точка — средняя оценка за неделю. Линия соединяет соседние недели с оценками одной шкалы. Пропуски не заполняются.</p>${valuesTable}</div>`;
 }
 
 // ─── 3. Итоговое резюме выбранного завершённого потока ─────────────────────────────
@@ -1634,7 +1636,9 @@ function renderSchedule(){
       const attended=Storage.isAttended(meeting.id);
       const attendance=document.createElement('button');attendance.type='button';attendance.className='meeting-attendance';attendance.setAttribute('aria-pressed',String(attended));attendance.setAttribute('aria-label',(attended?'Снять отметку участия: ':'Отметить участие: ')+(meeting.topic||'Встреча '+meeting.number));attendance.title=attended?'Вы отметили участие':'Отметить участие';
       attendance.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 12 4 4 8-8"/></svg>';
-      attendance.onclick=event=>toggleAttend(event,meeting.id);row.append(attendance);container.append(row);
+      const attendanceWrap=document.createElement('div');attendanceWrap.className='meeting-attendance-control';
+      const attendanceLabel=document.createElement('span');attendanceLabel.className='meeting-attendance-label';attendanceLabel.textContent=attended?'Участвовала':'Отметить участие';
+      attendance.onclick=event=>toggleAttend(event,meeting.id);attendanceWrap.append(attendance,attendanceLabel);row.append(attendanceWrap);container.append(row);
     });
     if(!stream.meetings?.length){const p=document.createElement('p');p.className='program-status';p.textContent='Расписание вашего потока уточняется.';container.append(p);}
   }
@@ -2350,7 +2354,7 @@ function resetTriggerForm() {
 
   // Снять выделение с реакций, зон, ощущений
   document.querySelectorAll('.reaction-card--selected').forEach(el => { el.classList.remove('reaction-card--selected'); el.setAttribute('aria-pressed', 'false'); });
-  document.querySelectorAll('.zone-chip--selected').forEach(el => el.classList.remove('zone-chip--selected'));
+  document.querySelectorAll('.zone-chip--selected').forEach(el => { el.classList.remove('zone-chip--selected'); el.setAttribute('aria-pressed', 'false'); });
   document.querySelectorAll('#trigger-sensations-grid .checklist-item--selected').forEach(el => { el.classList.remove('checklist-item--selected'); el.setAttribute('aria-checked', 'false'); });
 
   updateTriggerSaveBtn();
@@ -2392,15 +2396,16 @@ function renderTriggerZoneChips() {
   if (!wrap) return;
   const zones = DATA.zones.filter(z => z.label && z.selectable !== false);
   wrap.innerHTML = zones.map(z =>
-    `<button class="zone-chip" data-zone="${z.id}">${z.label}</button>`
+    `<button class="zone-chip" data-zone="${z.id}" aria-pressed="false">${z.label}</button>`
   ).join('');
 
   wrap.querySelectorAll('.zone-chip').forEach(btn => {
     btn.addEventListener('click', () => {
       const isSelected = btn.classList.contains('zone-chip--selected');
-      wrap.querySelectorAll('.zone-chip').forEach(b => b.classList.remove('zone-chip--selected'));
+      wrap.querySelectorAll('.zone-chip').forEach(b => { b.classList.remove('zone-chip--selected'); b.setAttribute('aria-pressed', 'false'); });
       if (!isSelected) {
         btn.classList.add('zone-chip--selected');
+        btn.setAttribute('aria-pressed', 'true');
         triggerDraft.zone = btn.dataset.zone;
       } else {
         triggerDraft.zone = null;

@@ -7,7 +7,7 @@ program=s[s.index('function renderNextMeeting(){'):s.index('function showMeeting
 with sync_playwright() as pw:
  for engine in [pw.chromium,pw.webkit]:
   browser=engine.launch();page=browser.new_page(viewport={'width':390,'height':844})
-  page.set_content('<div id="next-meeting-card"></div><div id="zoom-btn-wrap"></div><button id="chat-btn"></button><div id="schedule-section"></div>')
+  page.set_content('<div id="tab-profile"><div id="next-meeting-card"></div><div id="zoom-btn-wrap"></div><button id="chat-btn"></button><div id="schedule-section"></div></div>')
   page.add_style_tag(content=(ROOT/'app/css/styles.css').read_text(encoding='utf-8')+(ROOT/'app/css/ux-program.css').read_text(encoding='utf-8'))
   page.evaluate("""window.Api={};window.programAccess={streams:[]};window.selectedProgramId='one';window.streamState=s=>s.phase;window.currentProgram=()=>programAccess.streams.find(s=>s.id===selectedProgramId);window.programNow=()=>Date.parse('2026-10-12');window.accessDate=d=>d;window.haptic=()=>{};window.hapticNotify=()=>{};window.activeTab='profile';window.Storage={isAttended:()=>false,toggleAttended:()=>true};window.refreshProgramAccess=async()=>{};window.renderProfileTab=()=>{};window.selectProgram=()=>{}""")
   page.add_script_tag(content=program)
@@ -16,7 +16,7 @@ with sync_playwright() as pw:
   assert page.locator('#owned-stream-select').count()==0
   assert 'Записи встреч' not in page.locator('#schedule-section').inner_text()
   assert page.locator('summary button').count()==0
-  assert page.locator('.program-meeting-row > button.meeting-attendance').count()==1
+  assert page.locator('.program-meeting-row > .meeting-attendance-control > button.meeting-attendance').count()==1
   assert page.locator('.meeting-attendance').bounding_box()['width']==44
   page.locator('summary').click()
   assert 'Подробная подготовка' in page.locator('.program-meeting-body').inner_text()
