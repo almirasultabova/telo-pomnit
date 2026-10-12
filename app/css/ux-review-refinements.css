@@ -1,0 +1,52 @@
+/* J302: retain the approved world; restore visible actions and fabric imagery. */
+#tab-main .home-primary-action {margin-top:-120px;}
+#tab-diary .diary-observation-tools {gap:12px;}
+#tab-diary .diary-observation-tools #stop-reaction-btn,
+#tab-diary .diary-observation-tools #checkin-btn {
+  position:relative;isolation:isolate;overflow:hidden;min-height:112px;
+  padding:22px 20px;gap:16px;border:0;border-radius:18px;
+  background:#DDE4D8;color:#1A211A;text-align:left;
+  font:600 16px/1.4 var(--font-body);
+}
+#tab-diary .diary-observation-tools #stop-reaction-btn {background:#E9E1D6;}
+#tab-diary .diary-observation-tools #checkin-btn::before,
+#tab-diary .diary-observation-tools #stop-reaction-btn::before {
+  content:'';display:block;position:absolute;z-index:-1;inset:0;pointer-events:none;
+  width:auto;height:auto;mask:none;-webkit-mask:none;transform:none;
+  background:linear-gradient(90deg,rgba(221,228,216,.98),rgba(221,228,216,.88) 58%,rgba(221,228,216,.32)),url('/media/app/redesign/leaf-shadow-owner.webp') right center/cover;
+}
+#tab-diary .diary-observation-tools #stop-reaction-btn::before {
+  background:linear-gradient(90deg,rgba(233,225,214,.98),rgba(233,225,214,.88) 58%,rgba(233,225,214,.28)),url('/media/app/redesign/fabric-sage-owner.webp') right center/cover;
+}
+#tab-diary .diary-observation-tools .btn>svg {
+  width:44px;height:44px;flex-basis:44px;padding:10px;
+  background:rgba(252,250,246,.75);border-radius:50%;color:#2A4A38;
+}
+#tab-diary .diary-observation-tools small {font-size:13px;color:#435042;margin-top:5px;}
+#tab-diary .diary-observation-tools .diary-chevron {display:none;}
+#tab-diary .diary-observation-tools .btn:active {filter:brightness(.96);}
+#tab-diary .diary-assistant {margin:24px 0;padding:0;background:none;}
+#tab-diary #ai-chat-btn {
+  min-height:58px;padding:16px 20px;background:#2A4A38;color:#FCFAF6;
+  border:0;border-radius:16px;font:600 16px/1.4 var(--font-body);
+}
+#tab-diary #ai-chat-btn>svg {color:inherit;}
+#tab-diary #ai-chat-btn .diary-chevron {display:none;}
+#tab-diary #ai-chat-btn:active {background:#203C2C;}
+#tab-diary .editorial-note {margin:0 0 20px;}
+#tab-diary .editorial-note p {font-size:25px;}
+/* Native details still work with keyboard, without a triangle pointing at copy. */
+#app details>summary {position:relative;list-style:none;padding-right:30px;}
+#app details>summary::marker {content:'';}
+#app details>summary::-webkit-details-marker {display:none;}
+#app details>summary::after {
+  content:'';position:absolute;right:5px;top:50%;width:8px;height:8px;
+  border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+  transform:translateY(-65%) rotate(45deg);pointer-events:none;
+}
+#app details[open]>summary::after {transform:translateY(-25%) rotate(225deg);}
+#tab-diary .btn:focus-visible {outline:2px solid #2A4A38;outline-offset:4px;}
+@media(max-width:350px){
+  #tab-diary .diary-observation-tools #stop-reaction-btn,
+  #tab-diary .diary-observation-tools #checkin-btn {padding:18px 16px;gap:12px;font-size:15px;}
+}

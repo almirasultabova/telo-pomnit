@@ -1,0 +1,36 @@
+/* J-301: own-stream program access and readable meeting disclosures. */
+#tab-profile .profile-program {margin-top:24px;}
+#tab-profile .profile-stream-feature {padding:22px;border-radius:22px;}
+#tab-profile .profile-stream-feature h3 {font-size:32px;line-height:1.08;}
+#tab-profile .profile-stream-feature time {font-size:13px;}
+#tab-profile .profile-stream-feature .profile-stream-topic {font-size:21px;line-height:1.2;}
+#tab-profile .program-refresh {min-height:44px;padding:10px 0;font:500 12px/1.3 var(--font-body);text-decoration:underline;text-underline-offset:4px;}
+#tab-profile .profile-program-access {padding:0;border:0;}
+#zoom-btn-wrap {display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+#zoom-btn-wrap .btn {font-size:13px;min-height:48px;margin:0;padding:12px;}
+.program-link-status {padding:12px;border:1px solid #D8D9CD;border-radius:14px;background:#F2F2EA;}
+.program-link-status span {display:block;color:#2A4A38;font:600 13px/1.3 var(--font-body);}
+.program-link-status small {display:block;margin-top:5px;color:#726A60;font:400 11px/1.5 var(--font-body);}
+#tab-profile .schedule-title {font-size:27px;margin:24px 0 12px;}
+.program-meeting-row {position:relative;display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:6px;align-items:start;padding:8px 0;border-bottom:1px solid #D9D8CB;}
+#tab-profile .program-meeting-row .access-meeting {margin:0;padding:0;border:0;border-radius:0;background:transparent;}
+#tab-profile .program-meeting-row summary {position:relative;padding:8px 22px 9px 0;min-height:64px;}
+#tab-profile .meeting-summary-date {font:500 11px/1.4 var(--font-body);color:#857346;}
+#tab-profile .meeting-summary-topic {font:500 18px/1.2 var(--font-serif);margin-top:4px;}
+#tab-profile .program-meeting-row .meeting-attendance {display:grid;place-items:center;width:44px;height:44px;min-height:44px;margin:8px 0 0;padding:10px;border:1px solid #B9C4B5;border-radius:50%;background:transparent;color:#67806C;}
+#tab-profile .meeting-attendance[aria-pressed="true"] {background:#2A4A38;border-color:#2A4A38;color:#F7F4EF;}
+.meeting-attendance svg {width:22px;height:22px;}
+#tab-profile .program-meeting-body {padding:8px 0 16px;}
+#tab-profile .program-meeting-body h3 {margin:12px 0 5px;font:600 12px/1.3 var(--font-body);color:#857346;}
+#tab-profile .program-meeting-body p {margin:0;font:400 13px/1.6 var(--font-body);color:#424A40;overflow-wrap:anywhere;}
+#tab-profile .program-meeting-body .btn {font-size:13px;min-height:44px;margin-top:14px;}
+#tab-profile .questionnaire-status {font:400 12px/1.5 var(--font-body);color:#726A60;margin:12px 0;}
+#tab-profile .q-banner {padding:14px;border:1px solid #C8D1C1;background:#EDF0E6;border-radius:16px;}
+#tab-profile .q-banner-title {font:600 14px/1.35 var(--font-body);}
+#tab-profile .q-banner-sub {font:400 12px/1.4 var(--font-body);}
+#tab-profile .q-banner-icon {width:32px;height:32px;display:grid;place-items:center;background:transparent;}
+#tab-profile .q-banner-icon svg {width:24px;height:24px;}
+.program-status {font:400 13px/1.6 var(--font-body);color:#726A60;}
+@media(max-width:350px){#tab-profile .profile-stream-feature h3 {font-size:28px;}#tab-profile .meeting-summary-topic {font-size:17px;}}
+
+#tab-profile .q-banner-icon::before {display:none;}

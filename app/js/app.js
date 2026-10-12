@@ -288,9 +288,19 @@ document.addEventListener('DOMContentLoaded', () => {
   let accessDeniedCode = null;
   let startupFailed = false;
 
+  const authenticatedInitData = window.Telegram?.WebApp?.initData || '';
   const authFlow = Api.auth()
     .then(async user => {
-      homeUser = { id: String(user.id), name: user.name || '' };
+      homeUser = { id: String(user.id), name: user.name || '', photoUrl: user.photoUrl || null };
+      // Api.auth synchronously captures this same signed payload before its request.
+      // Use the photo only after server authentication; never initDataUnsafe identity.
+      if (authenticatedInitData && authenticatedInitData === window.Telegram?.WebApp?.initData) {
+        try {
+          const telegramUser = JSON.parse(new URLSearchParams(authenticatedInitData).get('user') || '{}');
+          if (typeof telegramUser.photo_url === 'string') homeUser.photoUrl = telegramUser.photo_url;
+        } catch {}
+      }
+      const authenticatedPhoto = homeUser.photoUrl;
       try {
         const [access, me] = await Promise.allSettled([
           Api.getAccess(),
@@ -303,7 +313,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (access.status === 'fulfilled') {
           applyProgramAccess(access.value);
         }
-        if (me.status === 'fulfilled' && String(me.value?.id) === String(Api.userId)) homeUser = { id: String(Api.userId), name: me.value.name || user.name || '' };
+        const profile = me.status === 'fulfilled' ? (me.value?.user || me.value) : null;
+        if (String(profile?.id) === String(Api.userId)) homeUser = { id: String(Api.userId), name: profile.name || user.name || '', photoUrl: authenticatedPhoto || profile.photoUrl || null };
 
       } catch (err) {
         if (err?.code?.startsWith('CLUB_ACCESS_')) throw err;
@@ -385,12 +396,12 @@ function renderMainTab() {
   if (!greeting || !flow || !observations) return;
   const verified = !Api.clubBlocked && Api.isAuthed() && homeUser?.id === String(Api.userId);
   const personalName = verified ? homeUser.name.trim() : '';
-  greeting.textContent = personalName || 'Здравствуйте';
+  greeting.textContent = personalName.split(/\s+/)[0] || 'Здравствуйте';
   const welcome = document.getElementById('home-welcome');
   const avatar = document.getElementById('home-avatar');
   welcome.hidden = !personalName;
   avatar.hidden = !personalName;
-  avatar.textContent = personalName ? Array.from(personalName)[0].toLocaleUpperCase('ru-RU') : '';
+  renderVerifiedAvatar(avatar);
   flow.replaceChildren(); flow.removeAttribute('data-state'); observations.replaceChildren();
   if (!verified) return;
   const link = (label, action) => {
@@ -543,10 +554,10 @@ function renderTodayCard() {
     container.className = 'today-card';
     container.innerHTML = `
       <div class="today-empty">
-        <div class="today-empty-title">Что говорит твоё тело сегодня?</div>
-        <div class="today-empty-sub">Отметьте зону напряжения и ощущение</div>
-        <button class="btn btn--primary mt-8" id="start-entry-btn" style="width:100%">
-          Сделать запись
+        <div class="today-empty-title">Почувствовать тело</div>
+        <div class="today-empty-sub">Выберите область тела и ощущение</div>
+        <button class="btn btn--primary mt-8" id="start-entry-btn" >
+          Начать наблюдение
         </button>
       </div>`;
     document.getElementById('start-entry-btn')?.addEventListener('click', startDiaryEntry);
@@ -573,8 +584,8 @@ function renderTodayCard() {
     container.innerHTML = `
       <div class="today-multi">
         ${chips}
-        <button class="btn btn--ghost mt-12" id="add-entry-btn" style="width:100%">
-          + Добавить ещё запись
+        <button class="btn btn--primary mt-12" id="add-entry-btn" >
+          Добавить наблюдение
         </button>
       </div>`;
     document.getElementById('add-entry-btn')?.addEventListener('click', startDiaryEntry);
@@ -639,7 +650,7 @@ document.addEventListener('click', e => {
     exportDiaryPdf();
     return;
   }
-  if (e.target.id === 'diary-history-btn') {
+  if (e.target.closest('#diary-history-btn')) {
     renderHistory();
     goTo('history');
     haptic();
@@ -996,22 +1007,21 @@ function renderMyPathTab() {
   const entries = Storage.getDiaryEntries().filter(row => inStreamPeriod(row));
   const diagResult = Storage.getDiagResult();
 
-  const analyticsHtml = !streamPeriod() ? '' : renderStreamSummary(entries) + renderCheckinChart() + (entries.length
+  const analyticsHtml = !streamPeriod() ? '' : renderStreamSummary(entries) + (renderCheckinChart() || renderPathChartEmpty()) + (entries.length
     ? renderMirrorCard(entries) +
       renderHeatmapSection(entries) +
       renderTopSensations(entries) +
       renderRecentNotes(entries) +
       renderPathStats(entries)
     : `<div class="mypath-empty">
-        <div class="mypath-empty-icon">🌱</div>
-        <div class="mypath-empty-title">Записей за выбранный поток пока нет</div>
-        <div class="mypath-empty-sub">Полная личная история остаётся во вкладке «Дневник».</div>
+        <div class="mypath-empty-title">Наблюдения этого потока</div>
+        <div class="mypath-empty-sub">Здесь появятся области тела и ощущения из записей в даты потока. Более ранние записи доступны в Дневнике.</div>
       </div>`);
 
   container.innerHTML = programPickerHTML() + streamStatusHTML() +
-    '<button type="button" class="path-program-link" id="path-program-btn"><span>Встречи и анкета</span><small>Открыть в Профиле</small></button>' +
-    '<section class="path-analysis" aria-label="Личные наблюдения">' + analyticsHtml + '</section>' +
-    '<section class="path-questionnaire" aria-label="Опрос привычных реакций">' + renderDiagBlock(diagResult) + '</section>';
+    '<button type="button" class="path-program-link" id="path-program-btn"><span>Анкеты и встречи потока</span><small>В Профиле →</small></button>' +
+    '<section class="path-questionnaire" aria-label="Опрос привычных реакций">' + renderDiagBlock(diagResult) + '</section>' +
+    '<section class="path-analysis" aria-label="Личные наблюдения">' + analyticsHtml + '</section>';
   renderHistoryLoadWarning(container, ['diary', 'checkins'], 'path');
   container.querySelector('#path-stream-select')?.addEventListener('change', event => selectProgram(event.target.value));
   container.querySelector('#path-program-btn')?.addEventListener('click', () => switchTab('profile'));
@@ -1022,6 +1032,11 @@ function renderMyPathTab() {
       renderMyPathTab();
     });
   });
+}
+
+function renderPathChartEmpty() {
+  const failed = Storage.getHistoryLoadStatus?.().checkins === 'failed';
+  return `<section class="path-chart-empty" aria-label="Динамика состояния"><h2>Динамика состояния</h2><div class="path-chart-placeholder" aria-hidden="true"><span>10</span><span>5</span><span>1</span></div><p>${failed ? 'Не удалось загрузить отметки состояния. Повторите загрузку истории выше.' : 'После отметки состояния здесь появится график пяти шкал. Пока точек для выбранного потока нет.'}</p></section>`;
 }
 
 // ─── Блок диагностики паттерна ────────────────────────────────────────────
@@ -1041,13 +1056,14 @@ function habitualDurable() {
 function renderDiagBlock() {
   habitualView = 'summary'; updateBackBtn();
   const result = Storage.getHabitualResult(), draft = Storage.getHabitualDraft();
-  if (!result) return `<div class="diag-invite"><div class="diag-invite-title">Ведущая привычная реакция</div>
+  if (!result) return `<div class="diag-invite"><div class="diag-invite-title">Привычная реакция</div>
     <p>Иногда ответ или действие появляются раньше, чем мы успеваем выбрать их. Опрос поможет заметить, какие реакции вы чаще отмечаете у себя, и найти слова для описания своего опыта.</p>
     <p>16 коротких утверждений. Отвечайте о том, как бывает у вас обычно в разных жизненных обстоятельствах. Если оценить трудно, можно так и ответить. Здесь нет правильных ответов.</p>
     <button class="btn btn--primary btn--full" onclick="startDiag()">${draft ? 'Продолжить опрос' : 'Начать опрос'}</button></div>${habitualLegacyHTML()}`;
   const m = Habitual.message(result);
   const examples = Habitual.items.filter((q, i) => q.group === result.leadingGroup && result.answers[i] >= 3 && result.answers[i] <= 4).slice(0, 2);
-  return `<div class="diag-result-card"><div class="diag-result-name">${escapeAccessText(m.title)}</div><p>${escapeAccessText(m.text)}</p>
+  const summaryName = result.leadingGroup ? Habitual.descriptions[result.leadingGroup].name : m.title;
+  return `<div class="diag-result-card"><h2 class="habitual-summary-label">Привычная реакция</h2><div class="diag-result-name">${escapeAccessText(summaryName)}</div><details class="habitual-result-disclosure" ${result.syncStatus !== 'synced' ? 'open' : ''}><summary>Подробнее о результате</summary><p>${escapeAccessText(m.text)}</p>
     ${result.tiedGroups.length ? `<p>${result.tiedGroups.map(g => escapeAccessText(Habitual.descriptions[g].name)).join(' · ')}</p>` : ''}
     ${examples.length ? `<div class="diag-result-section-title">Вы отмечали</div><ul>${examples.map(q => `<li>${escapeAccessText(q.text)}</li>`).join('')}</ul>` : result.leadingGroup ? '<p>Среди предложенных реакций эту вы отмечали чаще других, хотя не обязательно часто.</p>' : ''}
     ${m.observe ? `<p>${escapeAccessText(m.observe)}</p>` : ''}
@@ -1057,7 +1073,7 @@ function renderDiagBlock() {
     <button class="diag-result-retry" onclick="showHabitualAnswers()">Посмотреть свои ответы</button>
     ${result.state === 'incomplete' ? '<button class="diag-result-retry" onclick="startDiag(true)">Вернуться к вопросам</button>' : ''}
     ${draft ? '<button class="diag-result-retry" onclick="startDiag()">Продолжить начатый опрос</button>' : ''}
-    <button class="diag-result-retry" onclick="startDiag(false, true)">Пройти заново</button></div>${habitualLegacyHTML()}`;
+    <button class="diag-result-retry" onclick="startDiag(false, true)">Пройти заново</button></details></div>${habitualLegacyHTML()}`;
 }
 function startDiag(fromResult = false, fresh = false) {
   const draft = fresh ? null : Storage.getHabitualDraft();
@@ -1543,34 +1559,36 @@ function renderNextMeeting(){
   const el=document.getElementById('next-meeting-card');
   if(!el)return;
   const streams=programAccess?.streams||[];
-  el.innerHTML='<div class="access-program"><div class="section-label">Мой поток</div><p>Дневник, реакции и ваша история остаются бесплатными после завершения.</p></div>';
+  el.replaceChildren();
   if(!programAccess){
-    const p=document.createElement('p');p.textContent='Расписание не загружено. Проверьте соединение и обновите доступ.';el.append(p);
+    const p=document.createElement('p');p.className='program-status';p.textContent='Не удалось загрузить поток и расписание.';el.append(p);
   }else if(!streams.length){
-    const p=document.createElement('p');p.textContent='У вас пока нет оплаченной программы. Бесплатными инструментами уже можно пользоваться.';el.append(p);
+    const p=document.createElement('p');p.className='program-status';p.textContent='Сейчас вам не открыт поток. Личные наблюдения доступны в Дневнике.';el.append(p);
   }else{
     const stream=currentProgram();
     if(stream){
       const phase=stream.phase||streamState(stream);
-      const feature=document.createElement('section');feature.className='profile-stream-feature';feature.setAttribute('aria-label','Выбранный поток');
+      const feature=document.createElement('section');feature.className='profile-stream-feature';feature.setAttribute('aria-label','Ваш поток');
       const state=document.createElement('p');state.className='profile-stream-state';
-      state.textContent=phase==='upcoming'?'Предстоящий поток':phase==='current'?'Идёт поток':stream.canReadRecordings?'Поток завершён':'Между потоками';feature.append(state);
+      state.textContent=phase==='upcoming'?'Начнётся скоро':phase==='current'?'Вы участвуете':'Поток завершён';feature.append(state);
       const name=document.createElement('h3');name.textContent=stream.name;feature.append(name);
       const next=(stream.meetings||[]).filter(m=>Number.isFinite(Date.parse(m.date))&&Date.parse(m.date)>=programNow()).sort((a,b)=>Date.parse(a.date)-Date.parse(b.date))[0];
       if(next&&['upcoming','current'].includes(phase)){
         const date=document.createElement('time');date.dateTime=next.date;date.textContent=accessDate(next.date)+' · МСК';feature.append(date);
         const topic=document.createElement('p');topic.className='profile-stream-topic';topic.textContent=next.topic||'Ближайшая встреча';feature.append(topic);
       }else{
-        const note=document.createElement('p');note.textContent=phase==='completed'?'Сроки доступа и материалы — ниже.':'Предстоящих встреч в расписании сейчас нет.';feature.append(note);
+        const note=document.createElement('p');note.textContent=phase==='completed'?'Ваши личные наблюдения сохранены в Дневнике.':'Расписание встреч появится здесь.';feature.append(note);
       }
       el.append(feature);
     }
-    const label=document.createElement('label');label.textContent='Выберите свой поток';label.htmlFor='owned-stream-select';el.append(label);
-    const select=document.createElement('select');select.id='owned-stream-select';select.className='access-select';
-    streams.forEach(stream=>{const option=document.createElement('option');option.value=stream.id;option.textContent=stream.name+(streamState(stream)==='completed'?' · архив':'');select.append(option);});
-    select.value=selectedProgramId;select.addEventListener('change',()=>selectProgram(select.value));el.append(select);
+    if(streams.length>1){
+      const label=document.createElement('label');label.textContent='Ваши потоки';label.htmlFor='owned-stream-select';el.append(label);
+      const select=document.createElement('select');select.id='owned-stream-select';select.className='access-select';
+      streams.forEach(stream=>{const option=document.createElement('option');option.value=stream.id;option.textContent=stream.name+(streamState(stream)==='completed'?' · завершён':'');select.append(option);});
+      select.value=selectedProgramId;select.addEventListener('change',()=>selectProgram(select.value));el.append(select);
+    }
   }
-  const refresh=document.createElement('button');refresh.className='btn btn--ghost btn--sm';refresh.textContent='Обновить доступ и расписание';
+  const refresh=document.createElement('button');refresh.className='btn btn--ghost btn--sm program-refresh';refresh.textContent='Обновить расписание';
   refresh.addEventListener('click',async()=>{refresh.disabled=true;await refreshProgramAccess();renderProfileTab();});el.append(refresh);
 }
 function appendAccessLink(container,url,label){
@@ -1582,33 +1600,44 @@ function renderZoomBtn(){
   const container=document.getElementById('zoom-btn-wrap');if(!container)return;container.replaceChildren();
   const chat=document.getElementById('chat-btn');if(chat){chat.hidden=true;chat.removeAttribute('data-tg-link');}
   const stream=currentProgram();if(!stream)return;
-  if(stream.canAttend)appendAccessLink(container,stream.zoomLink,'Войти в Zoom');
-  if(stream.canReadRecordings)appendAccessLink(container,stream.chatLink,stream.phase==='completed'?'Чат и материалы своего потока':'Чат своего потока');
+  const item=(label,url,available,explanation)=>{
+    if(available&&url){appendAccessLink(container,url,label);return;}
+    const status=document.createElement('div');status.className='program-link-status';
+    const title=document.createElement('span');title.textContent=label;
+    const text=document.createElement('small');text.textContent=explanation;status.append(title,text);container.append(status);
+  };
+  const phase=stream.phase||streamState(stream);
+  item('Чат группы',stream.chatLink,stream.canReadRecordings,stream.canReadRecordings&&!stream.chatLink?'Ссылка на чат ещё не добавлена':phase==='upcoming'?'Откроется с началом потока':phase==='completed'?'Доступ к чату этого потока закрыт':'Доступ к чату сейчас закрыт');
+  item('Присоединиться в Zoom',stream.zoomLink,stream.canAttend,stream.canAttend&&!stream.zoomLink?'Ссылка на встречу ещё не добавлена':phase==='upcoming'?'Вход откроется с началом потока':phase==='completed'?'Встречи этого потока завершены':'Вход на встречу сейчас закрыт');
 }
 function renderSchedule(){
   const container=document.getElementById('schedule-section');if(!container)return;
   const expanded=new Set([...container.querySelectorAll('details[open]')].map(row=>row.dataset.meeting));
   const stream=currentProgram();container.replaceChildren();
   if(stream){
-    const heading=document.createElement('h2');heading.className='schedule-title';heading.textContent='Встречи потока';container.append(heading);
-    const intro=document.createElement('p');intro.className='access-notice';
-    intro.textContent=stream.canReadRecordings?'Записи встреч доступны до '+accessDate(new Date(new Date(stream.recordingsExpiresAt).getTime()-1))+'. После завершения программы поддержка ведущих не продолжается.':'Доступ к записям встреч ещё не начался или уже завершился. Личный дневник остаётся доступным.';
-    container.append(intro);
+    const heading=document.createElement('h2');heading.className='schedule-title';heading.textContent='Встречи и подготовка';container.append(heading);
     (stream.meetings||[]).forEach(meeting=>{
+      const row=document.createElement('div');row.className='program-meeting-row';
       const details=document.createElement('details');details.className='access-meeting';details.dataset.meeting=String(meeting.id);details.open=expanded.has(String(meeting.id));
       const summary=document.createElement('summary');
-      const date=document.createElement('time');date.className='meeting-summary-date';date.dateTime=meeting.date;date.textContent=accessDate(meeting.date);
+      const date=document.createElement('time');date.className='meeting-summary-date';date.dateTime=meeting.date;date.textContent=accessDate(meeting.date)+' · МСК';
       const topic=document.createElement('span');topic.className='meeting-summary-topic';topic.textContent=meeting.topic||'Встреча '+meeting.number;summary.append(date,topic);details.append(summary);
-      const attendance=document.createElement('button');attendance.type='button';attendance.className='meeting-attendance btn btn--outline btn--full';attendance.setAttribute('aria-pressed',String(Storage.isAttended(meeting.id)));attendance.textContent=Storage.isAttended(meeting.id)?'Участие отмечено':'Отметить участие';attendance.onclick=event=>toggleAttend(event,meeting.id);
-      for(const [label,text] of [['Что будет на встрече',meeting.description],['Как подготовиться',meeting.prepare]]){if(text){const heading=document.createElement('h3');heading.textContent=label;const p=document.createElement('p');p.textContent=text;details.append(heading,p);}}
-      if(stream.canAttend)appendAccessLink(details,meeting.zoomLink,'Zoom этой встречи');
-      details.append(attendance);container.append(details);
+      const body=document.createElement('div');body.className='program-meeting-body';
+      const timeOnly=/^\d{1,2}:\d{2}[–—-]\d{1,2}:\d{2} МСК$/.test(meeting.description||'');
+      const description=meeting.description&&!timeOnly?meeting.description:meeting.topic==='Психосоматические разборы'?'Анастасия ведёт психосоматические разборы. Разбор каждой участницы проходит в группе по очереди.':meeting.topic==='Телесная практика'?'Практика проходит в прямом эфире. Анастасия объясняет последовательность и сопровождает процесс.':null;
+      if(timeOnly){const duration=document.createElement('p');duration.className='program-meeting-duration';duration.textContent=meeting.description;body.append(duration);}
+      for(const [label,text] of [['О встрече',description||'Описание этой встречи ещё не добавлено.'],['Подготовка',meeting.prepare||'Подробная подготовка к этой встрече ещё не добавлена. Уточнить её можно у ведущей.']]){
+        const heading=document.createElement('h3');heading.textContent=label;const p=document.createElement('p');p.textContent=text;body.append(heading,p);
+      }
+      if(stream.canAttend)appendAccessLink(body,meeting.zoomLink||stream.zoomLink,'Присоединиться в Zoom');
+      details.append(body);row.append(details);
+      const attended=Storage.isAttended(meeting.id);
+      const attendance=document.createElement('button');attendance.type='button';attendance.className='meeting-attendance';attendance.setAttribute('aria-pressed',String(attended));attendance.setAttribute('aria-label',(attended?'Снять отметку участия: ':'Отметить участие: ')+(meeting.topic||'Встреча '+meeting.number));attendance.title=attended?'Вы отметили участие':'Отметить участие';
+      attendance.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 12 4 4 8-8"/></svg>';
+      attendance.onclick=event=>toggleAttend(event,meeting.id);row.append(attendance);container.append(row);
     });
-    if(!stream.meetings?.length){const p=document.createElement('p');p.textContent='Расписание этого потока уточняется. Старое расписание сюда не переносится.';container.append(p);}
+    if(!stream.meetings?.length){const p=document.createElement('p');p.className='program-status';p.textContent='Расписание вашего потока уточняется.';container.append(p);}
   }
-  const next=document.createElement('div');next.className='access-program';
-  next.innerHTML='<div class="section-label">Следующая группа</div><p>Даты и условия нового набора — на сайте. Покупка нового потока не обнуляет ваш дневник.</p>';
-  appendAccessLink(next,'https://telo-pomnit.ru/landing_concept.html','Посмотреть следующий набор');container.append(next);
 }
 function toggleAttend(event, meetingId) {
   event.stopPropagation();
@@ -1660,13 +1689,28 @@ function renderHosts() {
           : h.initial}
       </div>
       <div>
-        <div class="host-name-mini">${h.name}</div>
-        <div class="host-role-mini">${h.role}</div>
+        <div class="host-name-mini">${h.tg ? `<a href="${h.tg}" data-tg-link="${h.tg}">${h.name}</a>` : h.name}</div>
+        <div class="host-role-mini">${h.name === 'Анастасия Костылева' ? 'Ведёт разборы и телесные практики' : h.name === 'Альмира Султанова' ? 'Организатор · задания и обратная связь' : h.role}</div>
       </div>
-      ${h.tg ? `<a class="host-tg-link" href="${h.tg}" data-tg-link="${h.tg}" aria-label="Написать ${h.name}"><span>Написать</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      ${h.tg ? `<a class="host-tg-link" href="${h.tg}" data-tg-link="${h.tg}" aria-label="Написать ${h.name}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="/media/app/icons/lucide.svg#send"/></svg>
       </a>` : ''}
     </div>`;}).join('');
+}
+
+function renderVerifiedAvatar(container) {
+  if (!container) return;
+  container.replaceChildren();
+  const fallback = () => { container.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>'; };
+  fallback();
+  const verified = !Api.clubBlocked && Api.isAuthed() && homeUser?.id === String(Api.userId);
+  if (!verified || typeof homeUser.photoUrl !== 'string') return;
+  let url;
+  try { url = new URL(homeUser.photoUrl); } catch { return; }
+  if (url.protocol !== 'https:' || url.username || url.password) return;
+  const image = document.createElement('img'); image.alt = ''; image.referrerPolicy = 'no-referrer'; image.src = url.href;
+  image.onerror = () => { if (container.contains(image)) fallback(); };
+  container.replaceChildren(image);
 }
 
 function renderUserCard() {
@@ -1675,14 +1719,12 @@ function renderUserCard() {
 
   const verified = !Api.clubBlocked && Api.isAuthed() && homeUser?.id === String(Api.userId);
   const name = verified && homeUser.name.trim() ? homeUser.name.trim() : 'Участница';
-  const initial = name.charAt(0).toUpperCase();
-
   container.innerHTML = `
-    <div class="profile-avatar">${escapeAccessText(initial)}</div>
+    <div class="profile-avatar" aria-hidden="true"></div>
     <div>
       <div class="profile-name">${escapeAccessText(name)}</div>
-      <div class="profile-meta">Тело помнит</div>
     </div>`;
+  renderVerifiedAvatar(container.querySelector('.profile-avatar'));
 }
 
 function renderStats() {
@@ -1691,23 +1733,17 @@ function renderStats() {
 
   const streak  = Storage.getStreak();
   const total   = Storage.getDiaryEntries().length;
-  const hasDiag = !!Storage.getDiagResult();
 
   container.innerHTML = `
     <div class="stat-box">
-      <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17V10M12 17V5M18 17V8M3 20h18"/></svg></span>
+      <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="/media/app/icons/lucide.svg#chart-no-axes-column-increasing"/></svg></span>
       <div class="stat-box-num">${streak}</div>
       <div class="stat-box-label">дней подряд</div>
     </div>
     <div class="stat-box">
-      <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a2 2 0 0 1 2 2v16H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8 3v18M12 8h4M12 12h4"/></svg></span>
+      <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="/media/app/icons/lucide.svg#notebook-pen"/></svg></span>
       <div class="stat-box-num">${total}</div>
       <div class="stat-box-label">записей</div>
-    </div>
-    <div class="stat-box">
-      <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C9 3 3 8 5 15s12 6 15-11zM4 21l11-11"/></svg></span>
-      <div class="stat-box-num">${hasDiag ? '✓' : '—'}</div>
-      <div class="stat-box-label">паттерн</div>
     </div>`;
 }
 
@@ -2142,7 +2178,7 @@ function renderAiContext(container) {
   const panel = document.createElement('section'); panel.id = 'ai-context-panel'; panel.className = 'access-program';
   const disclosure = document.createElement('p'); disclosure.className='ai-disclosure'; disclosure.textContent = 'Сообщения обрабатывает OpenAI. Дневник добавляется только с вашего разрешения.'; panel.append(disclosure);
   const information=document.createElement('details');information.className='ai-information';const summary=document.createElement('summary');summary.textContent='О чате и ваших данных';information.append(summary);panel.append(information);
-  const limits = document.createElement('p'); limits.textContent = 'AI может ошибаться и не заменяет врача или ведущую. Этот чат не предназначен для срочной помощи. Сообщения здесь не отправляются ведущим.'; information.append(limits);
+  const limits = document.createElement('p'); limits.textContent = 'Здесь можно обсудить наблюдение или разобрать ситуацию. Отвечает AI: он может ошибаться, не ставит диагнозы и не заменяет помощь специалиста. Если помощь нужна сейчас, обратитесь к человеку — AI не вызывает помощь. Ведущие этот разговор не получают.'; information.append(limits);
   const contact = document.createElement('a'); contact.href = 'https://t.me/almira_sultanova'; contact.target = '_blank'; contact.rel = 'noopener noreferrer'; contact.dataset.tgLink = contact.href; contact.className = 'consent-link'; contact.style.display = 'block'; contact.style.marginBottom = '12px'; contact.textContent = 'Написать Альмире'; contact.id = 'ai-contact-host'; information.append(contact);
   if (aiSessionId) {
     const mode = aiSessionContext?.mode || 'legacy_unknown';
@@ -2159,7 +2195,7 @@ function renderAiContext(container) {
       if (aiContext.mode === 'selected') await loadAiContextCandidates();
     };
     panel.append(mode);
-    if (aiContext.mode === 'none') { const status = document.createElement('p'); status.id = 'ai-context-status'; status.textContent = 'Записи дневника не добавляются. Отправится только текст вашего сообщения и история этого диалога.'; panel.append(status); }
+    if (aiContext.mode === 'none') { const status = document.createElement('p'); status.id = 'ai-context-status'; status.textContent = 'Дневник не добавлен. AI увидит сообщения этого разговора.'; panel.append(status); }
     else {
       const choices = document.createElement('div'); choices.id = 'ai-context-choices';
       if (aiContextLoading) choices.textContent = 'Загружаем записи, сохранённые в аккаунте…';
@@ -3101,7 +3137,7 @@ function renderQuestionnaireBanner() {
   const container = document.getElementById('q-banner-wrap');
   if (!container) return;
 
-  if (Api.isClubAdmin) {container.innerHTML='<p class="questionnaire-status">Служебный аккаунт · анкета предназначена для участниц потока.</p>';return;}
+  if (Api.isClubAdmin) {container.innerHTML='<p class="questionnaire-status">Анкета до потока доступна участницам. Вы вошли как ведущая.</p>';return;}
   if (Api.clubBlocked || !currentProgram() || !qStreamId || qStreamId !== selectedProgramId || Api.userId !== qStatusIdentity?.owner || Api._authGeneration !== qStatusIdentity?.generation) {container.innerHTML='';return;}
   if (qStatusState === 'loading') {container.innerHTML='<p class="questionnaire-status" role="status">Проверяем анкету выбранного потока…</p>';return;}
   if (qStatusState === 'error') {
@@ -3110,14 +3146,14 @@ function renderQuestionnaireBanner() {
     return;
   }
   if (!qStatusVerified) {container.innerHTML='';return;}
-  if (qStatusDone) {container.innerHTML='<p class="questionnaire-status">Анкета этого потока заполнена.</p>';return;}
+  if (qStatusDone) {container.innerHTML='<p class="questionnaire-status">Анкета до потока заполнена.</p>';return;}
 
   container.innerHTML = `
     <button class="q-banner" type="button" onclick="openQuestionnaire()">
-      <span class="q-banner-icon">📋</span>
+      <span class="q-banner-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4H5v17h14V4h-3M8 3h8v4H8zM8 12h8M8 16h5"/></svg></span>
       <span class="q-banner-body">
-        <span class="q-banner-title">Анкета участницы не заполнена</span>
-        <span class="q-banner-sub">Займёт 5 минут — помогает сделать программу точнее</span>
+        <span class="q-banner-title">Анкета до начала потока</span>
+        <span class="q-banner-sub">О вашем запросе и ожиданиях от программы</span>
       </span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
     </button>`;
