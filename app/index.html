@@ -23,12 +23,20 @@
   <link rel="stylesheet" href="css/ux-program.css?v=j301">
   <link rel="stylesheet" href="css/ux-personal.css?v=j301">
   <link rel="stylesheet" href="css/ux-review-refinements.css?v=j302">
+  <link rel="stylesheet" href="css/launch.css?v=silk-20261014">
 </head>
 <body>
 <div id="startup-error" role="alert" hidden>
   <strong>Не удалось загрузить приложение</strong>
   <p id="startup-error-message"></p>
   <button type="button" onclick="location.reload()">Повторить загрузку</button>
+</div>
+<p id="launch-status" role="status" hidden>Открываем приложение…</p>
+<div id="launch-overlay" aria-hidden="true" hidden>
+  <img id="launch-poster" src="/media/app/launch/bud.webp?v=silk-centre-20261014" alt="">
+  <canvas id="launch-canvas" hidden></canvas>
+  <video id="launch-video" muted playsinline webkit-playsinline preload="none" disablepictureinpicture tabindex="-1"></video>
+  <div id="launch-title"><span>Тело</span><span>помнит</span></div>
 </div>
 <div id="app">
 
@@ -694,6 +702,7 @@
 <script src="js/api.js?v=access-20260922"></script>
 <script src="js/storage.js?v=access-20260922"></script>
 <script src="js/access-management.js?v=access-20261011"></script>
+<script src="js/launch.js?v=silk-20261014"></script>
 <script src="js/app.js?v=access-20260922"></script>
 </body>
 </html>

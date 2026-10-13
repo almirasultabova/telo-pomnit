@@ -61,6 +61,7 @@ function goTo(screenId, back = false) {
   const prev = document.getElementById('screen-' + currentScreen);
   const next = document.getElementById('screen-' + screenId);
   if (!next || screenId === currentScreen) return;
+  if (currentScreen !== 'splash') window.LaunchSplash?.cancel();
   if (currentScreen === 'questionnaire' && !qStatusDone) collectQBlock();
   if (prev?.contains(document.activeElement)) screenFocus.set(currentScreen, document.activeElement);
 
@@ -301,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       goTo('home');
       if (!Storage.isOfferSeen()) {
-        setTimeout(showOfferModal, 400);
+        (window.LaunchSplash?.whenVisible() || Promise.resolve()).then(() => setTimeout(showOfferModal, 400));
       }
     }
   }
@@ -374,6 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentScreen !== 'data-rights') showAccessDenied(accessDeniedCode);
     } else {
       startApp();
+      window.LaunchSplash?.ready();
     }
   }).catch(() => AppBoot.fail('Не удалось открыть главный экран. Повторите загрузку.'));
 });
@@ -1805,6 +1807,7 @@ document.addEventListener('click', e => {
 // ─────────────────────────────────────────────────────────────────────────
 let lastDeniedCode = null;
 function showAccessDenied(code) {
+  window.LaunchSplash?.cancel();
   lastDeniedCode = code;
   closeQInvite();
   Api.clubBlocked = true;

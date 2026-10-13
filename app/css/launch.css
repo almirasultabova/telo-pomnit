@@ -1,0 +1,13 @@
+/* The live authorised screen is the underlay; the video contains no menu. */
+#launch-overlay{position:fixed;inset:0;z-index:9000;overflow:hidden;background:#3b4735;opacity:1;transition:opacity .75s cubic-bezier(.33,0,.25,1);contain:paint}
+#launch-overlay[hidden]{display:none}
+#launch-status{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#launch-overlay.launch-overlay--leaving{opacity:0;will-change:opacity}
+#launch-canvas,#launch-poster{position:absolute;inset:0;width:100%;height:100%;display:block}
+#launch-canvas[hidden]{display:none}
+#launch-poster{object-fit:contain}
+#launch-video{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+#launch-title{position:absolute;left:8.33%;right:8.33%;bottom:max(11.6%,calc(env(safe-area-inset-bottom,0px) + 28px),calc(var(--tg-content-safe-area-inset-bottom,0px) + 28px));font:500 clamp(36px,12.6vw,72px)/.86 'Cormorant Garamond',Georgia,serif;letter-spacing:-.015em;text-align:center;color:#fff8e8;text-shadow:0 2px 12px rgba(18,31,20,.28);opacity:0;pointer-events:none}
+#launch-title span{display:block}
+.launch-underlay .screen--enter,.launch-underlay .screen--exit{animation:none}
+@media(prefers-reduced-motion:reduce){#launch-overlay{transition:none}}
