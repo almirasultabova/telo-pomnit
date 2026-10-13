@@ -26,13 +26,29 @@ async function triggerRoutes(app) {
           zone: { type: 'string' },
           sensations: { type: 'array', items: { type: 'string' } },
           intensity: { type: 'integer', minimum: 1, maximum: 10 },
-          note: { type: 'string' }
+          note: { type: 'string' },
+          clientId: { type: 'string', format: 'uuid' },
+          createdAt: { type: 'string', format: 'date-time' }
         }
       }
     }
-  }, async (request) => {
-    const { situation, reactionType, zone, sensations = [], intensity, note } = request.body
-    return withActiveUser(request, tx => tx.triggerEntry.create({
+  }, async (request, reply) => {
+    const { situation, reactionType, zone, sensations = [], intensity, note, clientId, createdAt } = request.body
+    if (createdAt && Date.parse(createdAt) > Date.now() + 300000) return reply.code(400).send({ error: 'Дата записи находится в будущем' })
+    return withActiveUser(request, async tx => {
+      if (clientId) {
+        const existing = await tx.triggerEntry.findUnique({ where: { userId_clientId: { userId: request.user.id, clientId } } })
+        if (existing) {
+          if (existing.situation !== situation || existing.reactionType !== reactionType || existing.intensity !== intensity ||
+              (existing.zone || '') !== (zone || '') || (existing.note || '') !== (note || '') ||
+              JSON.stringify(existing.sensations) !== JSON.stringify(sensations) ||
+              (createdAt && new Date(existing.createdAt).getTime() !== Date.parse(createdAt))) {
+            return reply.code(409).send({ code: 'CLIENT_ID_CONFLICT', error: 'Идентификатор уже связан с другой записью' })
+          }
+          return existing
+        }
+      }
+      return tx.triggerEntry.create({
       data: {
         userId: request.user.id,
         situation,
@@ -40,9 +56,12 @@ async function triggerRoutes(app) {
         zone,
         sensations,
         intensity,
-        note
+        note,
+        ...(clientId ? { clientId } : {}),
+        ...(createdAt ? { createdAt: new Date(createdAt) } : {})
       }
-    }))
+      })
+    })
   })
 
   // GET /triggers/stats — статистика по типам реакций и зонам

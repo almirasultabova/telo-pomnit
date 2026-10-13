@@ -30,6 +30,8 @@ const Storage = {
   _historyLoads: new Map(),
   _deletedUsers: new Set(),
   _aiDrafts: new Map(),
+  _triggerFlushing: new Map(),
+  _triggerRetryTimer: null,
 
   // Only a server-confirmed identity may select a cache. Unowned legacy keys
   // stay untouched for explicit export; they are never attributed to this user.
@@ -40,12 +42,14 @@ const Storage = {
     this._generation++;
     clearTimeout(this._retryTimer);
     clearTimeout(this._checkinRetryTimer);
+    clearTimeout(this._triggerRetryTimer);
   },
   clearUser() {
     this._userId = null;
     this._generation++;
     clearTimeout(this._retryTimer);
     clearTimeout(this._checkinRetryTimer);
+    clearTimeout(this._triggerRetryTimer);
   },
   key(name, userId = this._userId) {
     if (!userId) return 'tp_unbound:' + name;
@@ -57,6 +61,15 @@ const Storage = {
     AppLocalStorage.setItem(this.key(name), value);
   },
   _remove(name) { if (this._userId) AppLocalStorage.removeItem(this.key(name)); },
+  getFormDraft(scope) {
+    if (!this._userId || this._deletedUsers.has(this._userId)) return null;
+    try { return JSON.parse(this._get('form_draft_v1:' + scope) || 'null'); } catch { return null; }
+  },
+  saveFormDraft(scope, value) {
+    if (!this._userId || this._deletedUsers.has(this._userId)) return false;
+    return AppLocalStorage.setItem(this.key('form_draft_v1:' + scope), JSON.stringify(value));
+  },
+  clearFormDraft(scope) { this._remove('form_draft_v1:' + scope); },
   subscribe(listener) { this._listeners.add(listener); return () => this._listeners.delete(listener); },
   _emit(row) {
     for (const listener of this._listeners) { try { listener(row); } catch {} }
@@ -75,7 +88,18 @@ const Storage = {
   },
   exportPendingForUser(verifiedUserId) {
     const userId = String(verifiedUserId);
+    const formDrafts = {}, prefix = this.key('form_draft_v1:', userId);
+    if (!this._deletedUsers.has(userId)) {
+      for (const name of AppLocalStorage.keys?.(prefix) || []) {
+        try { formDrafts[name.slice(prefix.length)] = JSON.parse(AppLocalStorage.getItem(name)); } catch {}
+      }
+    }
+    let triggers = [];
+    if (!this._deletedUsers.has(userId)) {
+      try { triggers = JSON.parse(AppLocalStorage.getItem(this.key(KEYS.TRIGGERS, userId)) || '[]').filter(row => row.clientId && row.syncStatus !== 'synced'); } catch {}
+    }
     return { format: 'telo-local-pending-v1', userId, exportedAt: new Date().toISOString(),
+      triggers, formDrafts,
       diary: this._state(userId).filter(row => row.syncStatus !== 'synced'),
       checkins: this._checkinState(userId).filter(row => row.syncStatus !== 'synced' && !row.legacyScale),
       aiDrafts: { ...this._aiDraftState(userId) },
@@ -144,6 +168,7 @@ const Storage = {
     const userId = String(verifiedUserId), prefix = this.key('', userId);
     this._deletedUsers.add(userId);
     const names = new Set([...Object.values(KEYS), 'diary_v2', 'checkins_v2', 'ai_drafts_v1', 'tp_custom_sensations'].map(name => this.key(name, userId)));
+    for (const name of AppLocalStorage.keys?.(prefix) || []) names.add(name);
     try {
       for (let i = 0; i < window.localStorage.length; i++) {
         const name = window.localStorage.key(i);
@@ -370,7 +395,8 @@ const Storage = {
 
   getTriggerEntries() {
     try {
-      return JSON.parse(this._get(KEYS.TRIGGERS)) || [];
+      const rows = JSON.parse(this._get(KEYS.TRIGGERS));
+      return Array.isArray(rows) ? rows : [];
     } catch {
       return [];
     }
@@ -378,13 +404,47 @@ const Storage = {
 
   /** Формат: { id, date, situation, reactionType, intensity, zone, sensations, note } */
   saveTriggerEntry(entry) {
-    const entries = this.getTriggerEntries();
-    entries.unshift({ ...entry, id: Date.now(), date: new Date().toISOString() });
-    if (entries.length > 90) entries.splice(90);
-    this._set(KEYS.TRIGGERS, JSON.stringify(entries));
-    if (typeof Api !== 'undefined' && Api.isAuthed()) {
-      Api.saveTrigger(entry).catch(() => {});
+    if (!this._userId) throw new Error('USER_REQUIRED');
+    const clientId = crypto.randomUUID();
+    const row = { ...entry, clientId, id: clientId, date: new Date().toISOString(), syncStatus: 'pending' };
+    const entries = [row, ...this.getTriggerEntries()];
+    if (!AppLocalStorage.setItem(this.key(KEYS.TRIGGERS), JSON.stringify(entries))) {
+      row.syncStatus = 'memory-only';
+      AppLocalStorage.setItem(this.key(KEYS.TRIGGERS), JSON.stringify(entries));
     }
+    this._emit(row);
+    Promise.resolve().then(() => this.flushTriggersPending());
+    return row;
+  },
+  async flushTriggersPending() {
+    const owner = this._userId, generation = this._generation;
+    if (!owner || typeof Api === 'undefined' || !Api.isAuthed()) return;
+    const key = owner + ':' + generation;
+    if (this._triggerFlushing.has(key)) return this._triggerFlushing.get(key);
+    const run = async () => {
+      for (const row of this.getTriggerEntries().filter(row => row.clientId && row.syncStatus !== 'synced')) {
+        if (owner !== this._userId || generation !== this._generation || !Api.isAuthed()) break;
+        try {
+          const saved = await Api.saveTrigger({ clientId: row.clientId, createdAt: row.date,
+            situation: row.situation, reactionType: row.reactionType, intensity: row.intensity,
+            ...(row.zone ? { zone: row.zone } : {}), sensations: row.sensations || [], ...(row.note ? { note: row.note } : {}) });
+          if (!saved?.id || saved.clientId !== row.clientId) throw new Error('INVALID_SAVE_ACK');
+          if (owner !== this._userId || generation !== this._generation || this._deletedUsers.has(owner)) break;
+          const updated = { ...row, id: saved.id, syncStatus: 'synced' };
+          this._set(KEYS.TRIGGERS, JSON.stringify(this.getTriggerEntries().map(item => item.clientId === row.clientId ? updated : item)));
+          this._emit(updated);
+        } catch (error) {
+          if (owner === this._userId && generation === this._generation && ![400,401,403,409,422].includes(error.status)) {
+            clearTimeout(this._triggerRetryTimer);
+            this._triggerRetryTimer = setTimeout(() => this.flushTriggersPending(), 15000);
+          }
+          break;
+        }
+      }
+    };
+    const promise = run();
+    this._triggerFlushing.set(key, promise);
+    try { await promise; } finally { this._triggerFlushing.delete(key); }
   },
 
   // ─── Посещаемость встреч ──────────────────────────────────────────────────
@@ -597,7 +657,7 @@ const Storage = {
       if (localHabitual?.syncStatus === 'pending') this.flushHabitualResult();
       if (triggers.status === 'fulfilled' && triggers.value?.length) {
         const entries = triggers.value.map(t => ({
-          id: new Date(t.createdAt).getTime(),
+          id: t.id, clientId: t.clientId, syncStatus: 'synced',
           date: t.createdAt,
           situation: t.situation,
           reactionType: t.reactionType,
@@ -606,7 +666,13 @@ const Storage = {
           intensity: t.intensity,
           note: t.note || ''
         }));
-        this._set(KEYS.TRIGGERS, JSON.stringify(entries));
+        const merged = new Map(entries.map(row => [row.clientId || String(row.id), row]));
+        for (const row of this.getTriggerEntries()) {
+          if (!row.clientId && entries.some(remote => remote.date === row.date && remote.situation === row.situation && remote.reactionType === row.reactionType && remote.intensity === row.intensity && (remote.note || '') === (row.note || ''))) continue;
+          const identity = row.clientId || String(row.id);
+          if (!merged.has(identity)) merged.set(identity, row);
+        }
+        this._set(KEYS.TRIGGERS, JSON.stringify([...merged.values()]));
       }
       if (checkins.status === 'fulfilled' && Array.isArray(checkins.value)) {
         const identity = row => row.dayKey || String(row.id);
@@ -631,8 +697,9 @@ const Storage = {
     if (this._userId === userId && this._generation === generation) {
       void this.flushPending().catch(() => this._scheduleRetry(userId));
       void this.flushCheckinsPending().catch(() => this._scheduleCheckinRetry(userId));
+      void this.flushTriggersPending();
     }
   }
 };
 
-window.addEventListener?.('online', () => { Storage.flushPending(); Storage.flushCheckinsPending(); });
+window.addEventListener?.('online', () => { Storage.flushPending(); Storage.flushCheckinsPending(); Storage.flushTriggersPending(); });

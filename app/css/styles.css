@@ -2320,7 +2320,9 @@ input, textarea { font-family: inherit; }
   transition: border-color 0.15s, background 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
-.q-option input { display: none; }
+.q-option { position: relative; }
+.q-option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.q-option:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
 .q-option:has(input:checked) {
   border-color: var(--accent);
   background: var(--accent-light);
@@ -2580,16 +2582,16 @@ input, textarea { font-family: inherit; }
   padding: 14px 0;
   font-size: 28px;
   line-height: 1;
-  color: rgba(0,0,0,0.18);
+  color: #726a60;
   cursor: pointer;
   transition: color .15s, background .15s, transform .12s;
 }
 .fb-star:active { transform: scale(0.94); }
-.fb-star--active { color: #c49a3c; background: rgba(196,154,60,0.08); }
+.fb-star--active { color: var(--accent); background: var(--accent-light); border-color: var(--accent); }
 .fb-textarea {
   width: 100%;
   background: var(--tg-secondary-bg);
-  border: 1px solid transparent;
+  border: 1px solid #82796c;
   border-radius: var(--radius-md);
   padding: 14px;
   font-family: inherit;

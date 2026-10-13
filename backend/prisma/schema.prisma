@@ -127,10 +127,12 @@ model TriggerEntry {
   sensations   String[]
   intensity    Int
   note         String?
+  clientId     String?      @map("client_id")
   createdAt    DateTime     @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id])
 
+  @@unique([userId, clientId])
   @@map("trigger_entries")
 }
 
@@ -174,6 +176,7 @@ model Questionnaire {
   streamId    String            @map("stream_id")
   type        QuestionnaireType
   answers     Json
+  formVersion Int @default(1) @map("form_version")
   submittedAt DateTime          @default(now()) @map("submitted_at")
 
   user   User   @relation(fields: [userId], references: [id])
@@ -204,11 +207,13 @@ model Feedback {
   userId    String   @map("user_id")
   rating    Int?
   text      String
+  operationId String? @map("operation_id")
   createdAt DateTime @default(now()) @map("created_at")
 
   user      User     @relation(fields: [userId], references: [id])
 
   @@index([createdAt])
+  @@unique([userId, operationId])
   @@map("feedback")
 }
 

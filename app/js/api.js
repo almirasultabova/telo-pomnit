@@ -227,14 +227,15 @@ const Api = {
   },
 
   async saveQuestionnairePre(streamId, answers) {
-    return this._request('POST', '/questionnaires/pre', { streamId, answers });
+    return this._request('POST', '/questionnaires/pre', { streamId, answers, formVersion: 1 });
   },
 
   // ─── Обратная связь ──────────────────────────────────────────────────────
 
-  async sendFeedback({ rating, text }) {
+  async sendFeedback({ rating, text, operationId }) {
     const body = { text };
     if (rating) body.rating = rating;
+    if (operationId) body.operationId = operationId;
     return this._request('POST', '/feedback', body);
   },
 };

@@ -1,5 +1,7 @@
 const db = require('../db')
 const { requireAuth, withActiveUser } = require('../services/auth')
+const preAnswersSchema = require('../questionnaire-pre-schema.json')
+const { isDeepStrictEqual } = require('node:util')
 
 async function questionnaireRoutes(app) {
   // POST /questionnaires/pre — анкета до потока
@@ -11,22 +13,26 @@ async function questionnaireRoutes(app) {
         required: ['streamId', 'answers'],
         properties: {
           streamId: { type: 'string' },
-          answers: { type: 'object' }
+          answers: preAnswersSchema,
+          formVersion: { type: 'integer', enum: [1] }
         }
       }
     }
   }, async (request, reply) => withActiveUser(request, async db => {
     const { streamId, answers } = request.body
+    const enrollment = await db.enrollment.findFirst({ where: { userId: request.user.id, streamId, status: 'active' } })
+    if (!enrollment) return reply.code(403).send({ error: 'Анкета доступна участницам своего потока' })
 
     const existing = await db.questionnaire.findFirst({
       where: { userId: request.user.id, streamId, type: 'pre' }
     })
     if (existing) {
-      return reply.code(400).send({ error: 'Анкета уже заполнена' })
+      if (isDeepStrictEqual(existing.answers, answers)) return existing
+      return reply.code(409).send({ error: 'Анкета уже заполнена' })
     }
 
     return db.questionnaire.create({
-      data: { userId: request.user.id, streamId, type: 'pre', answers }
+      data: { userId: request.user.id, streamId, type: 'pre', answers, formVersion: 1 }
     })
   }))
 

@@ -41,11 +41,28 @@ let currentScreen = 'splash';
  * back=true — анимация «назад» (возврат).
  */
 let habitualView = 'summary';
+const screenFocus = new Map();
+let accessibleScreen = null;
+function syncScreenAccessibility() {
+  const activeScreen = document.querySelector('.screen--active');
+  document.querySelectorAll('.screen').forEach(screen => {
+    const active = screen.classList.contains('screen--active');
+    screen.inert = !active;
+    if (active) screen.removeAttribute('aria-hidden'); else screen.setAttribute('aria-hidden', 'true');
+  });
+  if (accessibleScreen && activeScreen && accessibleScreen !== activeScreen && !activeScreen.contains(document.activeElement)) {
+    activeScreen.tabIndex = -1;
+    activeScreen.focus({ preventScroll: true });
+  }
+  accessibleScreen = activeScreen;
+}
 function goTo(screenId, back = false) {
   if (Api.clubBlocked) return;
   const prev = document.getElementById('screen-' + currentScreen);
   const next = document.getElementById('screen-' + screenId);
   if (!next || screenId === currentScreen) return;
+  if (currentScreen === 'questionnaire' && !qStatusDone) collectQBlock();
+  if (prev?.contains(document.activeElement)) screenFocus.set(currentScreen, document.activeElement);
 
   // Убираем предыдущий
   if (prev) {
@@ -62,6 +79,10 @@ function goTo(screenId, back = false) {
   if (screenId === 'home') screenStack.length = 0;
   else if (!back && !['splash', 'onboarding'].includes(currentScreen)) screenStack.push(currentScreen);
   currentScreen = screenId;
+  syncScreenAccessibility();
+  const restore = back && screenFocus.get(screenId);
+  next.tabIndex = -1;
+  (restore?.isConnected && next.contains(restore) ? restore : next).focus({ preventScroll: true });
   if (screenId === 'home' && activeTab === 'main') renderMainTab();
   updateBackBtn();
   AppBoot.done();
@@ -249,6 +270,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initTrigger();
   initCheckin();
   initFeedback();
+  syncScreenAccessibility();
+  const screenObserver = new MutationObserver(() => syncScreenAccessibility());
+  document.querySelectorAll('.screen').forEach(screen => screenObserver.observe(screen, { attributes: true, attributeFilter: ['class'] }));
   Storage.subscribe(() => {
     if (Api.clubBlocked || !Api.isAuthed()) return;
     renderDiarySyncStatus();
@@ -257,11 +281,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentScreen === 'home') { renderDiaryTab(); renderMainTab(); }
     if (currentScreen === 'checkin') renderCheckinSyncStatus();
     if (currentScreen === 'checkin-history') renderCheckinHistory();
+    if (currentScreen === 'trigger-history') renderTriggerHistory();
     if (activeTab === 'diag') renderMyPathTab();
   });
-  window.addEventListener('online', () => { Storage.flushPending(); Storage.flushCheckinsPending(); });
+  window.addEventListener('online', () => { Storage.flushPending(); Storage.flushCheckinsPending(); Storage.flushTriggersPending(); });
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) { Storage.flushPending(); Storage.flushCheckinsPending(); }
+    if (!document.hidden) { Storage.flushPending(); Storage.flushCheckinsPending(); Storage.flushTriggersPending(); }
   });
 
   function startApp() {
@@ -301,20 +326,26 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {}
       }
       const authenticatedPhoto = homeUser.photoUrl;
+      const owner = Api.userId, generation = Api._authGeneration;
+      void Api.getMe().then(me => {
+        if (Api.userId !== owner || Api._authGeneration !== generation || Api.clubBlocked) return;
+        const profile = me?.user || me;
+        if (String(profile?.id) === String(owner)) homeUser = { id: String(owner), name: profile.name || user.name || '', photoUrl: authenticatedPhoto || profile.photoUrl || null };
+        renderMainTab();
+      }).catch(() => {});
+      void Storage.initFromApi().then(() => {
+        if (Api.userId !== owner || Api._authGeneration !== generation || Api.clubBlocked) return;
+        renderMainTab(); renderDiaryTab();
+        if (activeTab === 'diag') renderMyPathTab();
+      }).catch(() => {});
       try {
-        const [access, me] = await Promise.allSettled([
-          Api.getAccess(),
-          Api.getMe(),
-          Storage.initFromApi() // данные, профиль и права загружаются одновременно
-        ]);
-        for (const result of [access, me]) {
+        const [access] = await Promise.allSettled([Api.getAccess()]);
+        for (const result of [access]) {
           if (result.status === 'rejected' && result.reason?.code?.startsWith('CLUB_ACCESS_')) throw result.reason;
         }
         if (access.status === 'fulfilled') {
           applyProgramAccess(access.value);
         }
-        const profile = me.status === 'fulfilled' ? (me.value?.user || me.value) : null;
-        if (String(profile?.id) === String(Api.userId)) homeUser = { id: String(Api.userId), name: profile.name || user.name || '', photoUrl: authenticatedPhoto || profile.photoUrl || null };
 
       } catch (err) {
         if (err?.code?.startsWith('CLUB_ACCESS_')) throw err;
@@ -2456,9 +2487,11 @@ function saveTriggerEntry() {
     note:         note || null
   };
 
-  Storage.saveTriggerEntry(entry);
-  hapticNotify('success');
+  const saved = Storage.saveTriggerEntry(entry);
   goBack();
+  showToast(saved.syncStatus === 'memory-only'
+    ? 'Запись пока только в этом окне. Не закрывайте его до отправки.'
+    : 'Запись сохранена на устройстве. Отправим при соединении.');
 }
 
 function renderTriggerHistory() {
@@ -2507,6 +2540,7 @@ function renderTriggerHistory() {
         <span class="trigger-card-date">${date}</span>
       </div>
       <div class="trigger-card-situation">${escapeAccessText(e.situation)}</div>
+      ${e.clientId ? `<div class="trigger-card-meta">${e.syncStatus === 'synced' ? 'Сохранено' : e.syncStatus === 'memory-only' ? 'Пока только в этом окне — не закрывайте до отправки' : 'На устройстве — ожидает отправки'}</div>` : ''}
       ${zoneName ? `<div class="trigger-card-meta">📍 ${zoneName} · интенсивность ${e.intensity}/10</div>` : `<div class="trigger-card-meta">интенсивность ${e.intensity}/10</div>`}
       ${e.note ? `<div class="trigger-card-note">${escapeAccessText(e.note)}</div>` : ''}
     </div>`;
@@ -2517,6 +2551,7 @@ function renderTriggerHistory() {
       <div class="section-label" style="padding-top:16px">Паттерны реакций</div>
       ${statsHtml}
       <div class="section-label mt-16">Все записи</div>
+      ${entries.some(e => e.clientId && e.syncStatus !== 'synced') ? '<button class="btn btn--outline" onclick="Storage.flushTriggersPending()">Повторить отправку</button>' : ''}
       ${listHtml}
     </div>`;
 }
@@ -2678,6 +2713,7 @@ function showToast(msg, ok = true) {
   if (!t) {
     t = document.createElement('div');
     t.id = 'app-toast';
+    t.setAttribute('role', 'status');
     t.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:9999;padding:10px 20px;border-radius:24px;font-size:14px;font-weight:500;pointer-events:none;transition:opacity 0.3s;max-width:280px;text-align:center;';
     document.body.appendChild(t);
   }
@@ -2865,8 +2901,9 @@ function openQuestionnaire() {
   qFormIdentity = { streamId: qStreamId, owner: Api.userId, generation: Api._authGeneration };
   const footer = document.querySelector('.questionnaire-footer');
   if (footer) footer.innerHTML = `<button class="btn btn--outline q-back-btn" id="q-back-btn" onclick="qPrev()">Назад</button><button class="btn btn--accent q-next-btn" id="q-next-btn" onclick="qNext()">Далее</button>`;
-  qStep = 0;
-  qAnswers = {};
+  const draft = Storage.getFormDraft('questionnaire:pre:' + qStreamId);
+  qStep = draft?.version === 1 && Number.isInteger(draft.step) ? Math.max(0, Math.min(Q_BLOCKS.length - 1, draft.step)) : 0;
+  qAnswers = draft?.version === 1 && draft.answers && typeof draft.answers === 'object' && !Array.isArray(draft.answers) ? draft.answers : {};
   renderQBlock();
   goTo('questionnaire');
 }
@@ -2910,6 +2947,9 @@ function renderQBlock() {
 
   // Вешаем обработчики
   block.fields.forEach(f => bindQField(f));
+  body.oninput = body.onchange = () => collectQBlock();
+  body.onclick = () => saveQuestionnaireDraft();
+  saveQuestionnaireDraft();
 }
 
 function renderQField(f) {
@@ -2918,15 +2958,15 @@ function renderQField(f) {
 
   if (f.type === 'text') {
     return `<div class="q-field">
-      <label class="q-label">${f.label}${req}</label>${hint}
-      <input class="q-input" id="qf-${f.id}" type="text" placeholder="">
+      <label class="q-label" for="qf-${f.id}">${f.label}${req}</label>${hint}
+      <input class="q-input" id="qf-${f.id}" type="text" maxlength="4000" aria-required="${!!f.required}" placeholder="">
     </div>`;
   }
 
   if (f.type === 'textarea') {
     return `<div class="q-field">
-      <label class="q-label">${f.label}${req}</label>${hint}
-      <textarea class="q-textarea" id="qf-${f.id}" rows="4" placeholder=""></textarea>
+      <label class="q-label" for="qf-${f.id}">${f.label}${req}</label>${hint}
+      <textarea class="q-textarea" id="qf-${f.id}" rows="4" maxlength="4000" aria-required="${!!f.required}" placeholder=""></textarea>
     </div>`;
   }
 
@@ -2937,8 +2977,8 @@ function renderQField(f) {
         <span class="q-option-label">${o}</span>
       </label>`).join('');
     return `<div class="q-field">
-      <div class="q-label">${f.label}${req}</div>${hint}
-      <div class="q-options">${opts}</div>
+      <div class="q-label" id="q-label-${f.id}">${f.label}${req}</div>${hint}
+      <div class="q-options" role="radiogroup" aria-labelledby="q-label-${f.id}" aria-required="${!!f.required}">${opts}</div>
     </div>`;
   }
 
@@ -2949,17 +2989,17 @@ function renderQField(f) {
         <span class="q-option-label">${o}</span>
       </label>`).join('');
     return `<div class="q-field">
-      <div class="q-label">${f.label}</div>${hint}
-      <div class="q-options">${opts}</div>
+      <div class="q-label" id="q-label-${f.id}">${f.label}</div>${hint}
+      <div class="q-options" role="group" aria-labelledby="q-label-${f.id}">${opts}</div>
     </div>`;
   }
 
   if (f.type === 'scale') {
     const nums = Array.from({length: f.max - f.min + 1}, (_,i) => i + f.min);
-    const btns = nums.map(n => `<button class="q-scale-btn" data-val="${n}" data-id="${f.id}">${n}</button>`).join('');
+    const btns = nums.map(n => `<button class="q-scale-btn" aria-pressed="${qAnswers[f.id] === n}" data-val="${n}" data-id="${f.id}">${n}</button>`).join('');
     return `<div class="q-field">
-      <div class="q-label">${f.label}</div>${hint}
-      <div class="q-scale" id="qscale-${f.id}">${btns}</div>
+      <div class="q-label" id="q-label-${f.id}">${f.label}</div>${hint}
+      <div class="q-scale" role="group" aria-labelledby="q-label-${f.id}" id="qscale-${f.id}">${btns}</div>
     </div>`;
   }
 
@@ -3015,20 +3055,50 @@ function collectQBlock() {
     }
     if (f.type === 'radio') {
       const checked = document.querySelector(`input[name="qf-${f.id}"]:checked`);
-      if (checked) qAnswers[f.id] = checked.value;
+      qAnswers[f.id] = checked ? checked.value : '';
     }
     if (f.type === 'checkbox') {
       const checked = [...document.querySelectorAll(`input[name="qf-${f.id}"]:checked`)].map(i => i.value);
-      if (checked.length) qAnswers[f.id] = checked;
+      qAnswers[f.id] = checked;
     }
     // scale — уже сохраняется при клике
   });
+  saveQuestionnaireDraft();
+}
+
+function saveQuestionnaireDraft() {
+  const identity = qFormIdentity;
+  if (!identity || identity.owner !== Api.userId || identity.generation !== Api._authGeneration || qStatusDone) return;
+  const durable = Storage.saveFormDraft('questionnaire:pre:' + identity.streamId, { version: 1, step: qStep, answers: qAnswers });
+  let status = document.getElementById('q-draft-status');
+  if (!status) {
+    status = document.createElement('p'); status.id = 'q-draft-status'; status.setAttribute('role', 'status');
+    document.getElementById('questionnaire-body')?.append(status);
+  }
+  status.textContent = durable ? 'Черновик сохранён. Можно вернуться позже.' : 'Черновик пока только в этом окне. После закрытия он может потеряться.';
+  document.querySelectorAll('.q-scale-btn').forEach(button => button.setAttribute('aria-pressed', String(qAnswers[button.dataset.id] === Number(button.dataset.val))));
+}
+
+function validateQBlock(block) {
+  const missing = block.fields.find(field => field.required && !qAnswers[field.id]?.toString().trim());
+  if (!missing) { document.getElementById('q-validation-error')?.remove(); return true; }
+  let error = document.getElementById('q-validation-error');
+  if (!error) {
+    error = document.createElement('p'); error.id = 'q-validation-error'; error.setAttribute('role', 'alert');
+    document.getElementById('questionnaire-body')?.prepend(error);
+  }
+  error.textContent = 'Ответьте на вопрос: ' + missing.label;
+  const target = document.getElementById('qf-' + missing.id) || document.querySelector(`input[name="qf-${missing.id}"]`);
+  target?.setAttribute('aria-describedby', 'q-validation-error');
+  target?.focus();
+  return false;
 }
 
 // ─── Навигация по блокам ─────────────────────────────────────────────────
 
 function qNext() {
   collectQBlock();
+  if (!validateQBlock(Q_BLOCKS[qStep])) return;
   haptic('light');
 
   if (qStep < Q_BLOCKS.length - 1) {
@@ -3057,6 +3127,12 @@ async function submitQuestionnaire() {
   const current = () => identity && !Api.clubBlocked && !Api.isClubAdmin && Api.userId === identity.owner &&
     Api._authGeneration === identity.generation && selectedProgramId === identity.streamId && qStreamId === identity.streamId && qStatusVerified && !qStatusDone;
   if (qSubmitting || !current()) return;
+  collectQBlock();
+  for (let step = 0; step < Q_BLOCKS.length; step++) {
+    if (Q_BLOCKS[step].fields.some(field => field.required && !qAnswers[field.id]?.toString().trim())) {
+      qStep = step; renderQBlock(); validateQBlock(Q_BLOCKS[step]); return;
+    }
+  }
   qSubmitting = true;
   const nextBtn = document.getElementById('q-next-btn');
   if (nextBtn) { nextBtn.disabled = true; nextBtn.textContent = 'Отправляем…'; }
@@ -3065,6 +3141,7 @@ async function submitQuestionnaire() {
     await Api.saveQuestionnairePre(identity.streamId, { ...qAnswers });
     if (!current()) return;
     qStatusDone = true;
+    Storage.clearFormDraft('questionnaire:pre:' + identity.streamId);
     closeQInvite();
     hapticNotify('success');
 
@@ -3168,20 +3245,39 @@ function renderQuestionnaireBanner() {
 // ОБРАТНАЯ СВЯЗЬ
 // ─────────────────────────────────────────────────────────────────────────
 let feedbackRating = 0;
+let feedbackOperation = null;
+let feedbackPending = false;
+let feedbackIdentity = null;
+function persistFeedbackDraft(changed = false) {
+  if (!feedbackIdentity || feedbackIdentity.owner !== Api.userId || feedbackIdentity.generation !== Api._authGeneration) return;
+  if (changed || !feedbackOperation) feedbackOperation = crypto.randomUUID();
+  const durable = Storage.saveFormDraft('feedback', { text: document.getElementById('fb-text')?.value || '', rating: feedbackRating, operationId: feedbackOperation });
+  let status = document.getElementById('fb-draft-status');
+  if (!status) { status = document.createElement('p'); status.id = 'fb-draft-status'; status.setAttribute('role','status'); document.getElementById('feedback-form-wrap')?.append(status); }
+  status.textContent = durable ? 'Черновик сохранён.' : 'Черновик пока только в этом окне. Не закрывайте его до отправки.';
+}
 
 function openFeedback() {
-  feedbackRating = 0;
+  feedbackIdentity = { owner: Api.userId, generation: Api._authGeneration };
+  const draft = Storage.getFormDraft('feedback');
+  feedbackRating = draft?.rating || 0;
+  feedbackOperation = draft?.operationId || crypto.randomUUID();
   const text = document.getElementById('fb-text');
-  if (text) { text.value = ''; }
+  if (text) { text.value = draft?.text || ''; }
   const counter = document.getElementById('fb-counter');
-  if (counter) counter.textContent = '0';
-  document.querySelectorAll('#fb-stars .fb-star').forEach(s => s.classList.remove('fb-star--active'));
+  if (counter) counter.textContent = String(text?.value.length || 0);
+  document.querySelectorAll('#fb-stars .fb-star').forEach(s => {
+    s.classList.toggle('fb-star--active', Number(s.dataset.star) <= feedbackRating);
+    s.setAttribute('aria-pressed', String(Number(s.dataset.star) === feedbackRating));
+    s.setAttribute('aria-label', 'Оценка ' + s.dataset.star + ' из 5');
+  });
   const submit = document.getElementById('fb-submit');
   if (submit) { submit.disabled = true; submit.textContent = 'Отправить'; }
   const formWrap = document.getElementById('feedback-form-wrap');
   const thanks   = document.getElementById('feedback-thanks');
   if (formWrap) formWrap.style.display = '';
   if (thanks)   thanks.style.display = 'none';
+  updateFeedbackSubmitState();
   goTo('feedback');
 }
 
@@ -3192,6 +3288,8 @@ function initFeedback() {
   stars.forEach(star => {
     star.addEventListener('click', () => {
       feedbackRating = Number(star.dataset.star);
+      stars.forEach(s => s.setAttribute('aria-pressed', String(Number(s.dataset.star) === feedbackRating)));
+      persistFeedbackDraft(true);
       stars.forEach(s => {
         s.classList.toggle('fb-star--active', Number(s.dataset.star) <= feedbackRating);
       });
@@ -3204,6 +3302,7 @@ function initFeedback() {
   text?.addEventListener('input', () => {
     const counter = document.getElementById('fb-counter');
     if (counter) counter.textContent = String(text.value.length);
+    persistFeedbackDraft(true);
     updateFeedbackSubmitState();
   });
 
@@ -3215,25 +3314,40 @@ function updateFeedbackSubmitState() {
   const submit = document.getElementById('fb-submit');
   if (!submit) return;
   const hasText = (text?.value || '').trim().length > 0;
-  submit.disabled = !hasText;
+  submit.disabled = feedbackPending || !hasText;
 }
 
 async function submitFeedback() {
   const text = document.getElementById('fb-text');
   const submit = document.getElementById('fb-submit');
   const value = (text?.value || '').trim();
-  if (!value) return;
+  if (!value || feedbackPending || !feedbackIdentity || feedbackIdentity.owner !== Api.userId || feedbackIdentity.generation !== Api._authGeneration) return;
+  persistFeedbackDraft();
+  const identity = { ...feedbackIdentity }, operationId = feedbackOperation, rating = feedbackRating;
+  const current = () => Api.userId === identity.owner && Api._authGeneration === identity.generation && !Api.clubBlocked;
+  feedbackPending = true;
 
   submit.disabled = true;
   submit.textContent = 'Отправляем…';
   try {
-    await Api.sendFeedback({ rating: feedbackRating || null, text: value });
+    await Api.sendFeedback({ rating: rating || null, text: value, operationId });
+    if (!current()) return;
+    if (feedbackOperation !== operationId) {
+      const status = document.getElementById('fb-draft-status');
+      if (status) status.textContent = 'Предыдущее сообщение отправлено. Новый текст остаётся в черновике.';
+      return;
+    }
+    Storage.clearFormDraft('feedback');
     haptic('medium');
     document.getElementById('feedback-form-wrap').style.display = 'none';
     document.getElementById('feedback-thanks').style.display = '';
   } catch (e) {
+    if (!current()) return;
     submit.disabled = false;
     submit.textContent = 'Отправить';
     alert('Не удалось отправить отзыв. Попробуйте ещё раз.');
+  } finally {
+    feedbackPending = false;
+    if (current()) { submit.textContent = 'Отправить'; updateFeedbackSubmitState(); }
   }
 }

@@ -641,10 +641,10 @@
   </div>
   <div class="screen-scroll">
     <div id="feedback-form-wrap">
-      <p class="fb-hint">Поделитесь впечатлением — что работает, что неудобно, чего не хватает. Каждый отзыв помогает приложению становиться лучше.</p>
+      <p class="fb-hint">Поделитесь впечатлением — что работает, что неудобно, чего не хватает. Сообщение прочитает Альмира. Если нужен ответ, она свяжется с вами лично в Telegram.</p>
 
       <div class="fb-section-label">Оценка</div>
-      <div class="fb-stars" id="fb-stars">
+      <div class="fb-stars" id="fb-stars" role="group" aria-label="Оценка приложения от 1 до 5">
         <button type="button" class="fb-star" data-star="1" aria-label="1 звезда">★</button>
         <button type="button" class="fb-star" data-star="2" aria-label="2 звезды">★</button>
         <button type="button" class="fb-star" data-star="3" aria-label="3 звезды">★</button>
@@ -652,7 +652,7 @@
         <button type="button" class="fb-star" data-star="5" aria-label="5 звёзд">★</button>
       </div>
 
-      <div class="fb-section-label">Сообщение</div>
+      <label class="fb-section-label" for="fb-text">Сообщение</label>
       <textarea id="fb-text" class="fb-textarea" placeholder="Напишите, что хотите сказать…" maxlength="2000" rows="6"></textarea>
       <div class="fb-counter"><span id="fb-counter">0</span> / 2000</div>
 
@@ -662,7 +662,7 @@
     <div id="feedback-thanks" class="fb-thanks" style="display:none">
       <div class="fb-thanks-icon">🌿</div>
       <div class="fb-thanks-title">Спасибо</div>
-      <div class="fb-thanks-text">Ваш отзыв получен. Я читаю каждое сообщение лично.</div>
+      <div class="fb-thanks-text">Сообщение сохранено. Альмира прочитает его и при необходимости ответит лично в Telegram.</div>
       <button class="btn btn--outline btn--full mt-16" onclick="goBack()">Вернуться</button>
     </div>
   </div>
