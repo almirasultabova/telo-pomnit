@@ -1,5 +1,5 @@
 """Current local build, synthetic API only; real UI actions and delayed transport."""
-import ast,json,threading
+import ast,json,threading,sys
 from pathlib import Path
 from functools import partial
 from http.server import ThreadingHTTPServer
@@ -11,6 +11,7 @@ for item in tree.body:
  defs.append(item)
 ns={'__file__':str(ROOT/'scripts/test-app-2-stream.py')};exec(compile(ast.Module(body=defs,type_ignores=[]),'fixture','exec'),ns);Fixture,base=ns['Fixture'],ns['base']
 server=ThreadingHTTPServer(('127.0.0.1',0),partial(base.Quiet,directory=str(ROOT/'output/app')));threading.Thread(target=server.serve_forever,daemon=True).start();results=[]
+TARGET='https://tg-app-telo-pomnit.vercel.app' if '--published' in sys.argv else f'http://127.0.0.1:{server.server_port}'
 try:
  with sync_playwright() as pw:
   for engine in [pw.chromium,pw.webkit]:
@@ -25,9 +26,9 @@ try:
       if path.startswith('/questionnaires/') and r.request.method=='GET':r.fulfill(status=200,content_type='application/json',body='{"pre":null,"post":null}')
       elif path=='/questionnaires/pre':submitted.append(r.request.post_data_json);r.fulfill(status=200,content_type='application/json',body='{"id":"synthetic"}')
       else:fixture.route(r)
-     elif r.request.url.startswith(f'http://127.0.0.1:{server.server_port}/'):r.continue_()
+     elif r.request.url.startswith(TARGET+'/'):r.continue_()
      else:r.abort()
-    page.route('**/*',route);url=f'http://127.0.0.1:{server.server_port}/#tgWebAppPlatform=ios&tgWebAppVersion=8.0';page.goto(url);expect(page.locator('#screen-home')).to_have_class('screen screen--active',timeout=15000)
+    page.route('**/*',route);url=TARGET+'/#tgWebAppPlatform=ios&tgWebAppVersion=8.0';page.goto(url);expect(page.locator('#screen-home')).to_have_class('screen screen--active',timeout=15000)
     page.locator('.nav-btn[data-tab="profile"]').click();expect(page.locator('.q-banner')).to_be_visible();page.locator('.q-banner').click();page.locator('#q-next-btn').click();assert page.evaluate('qStep')==0;assert not submitted
     page.screenshot(path=str(OUT/f'{engine.name}-{width}-questionnaire-required.png'))
     page.locator('#qf-name').fill('Синтетическое имя')

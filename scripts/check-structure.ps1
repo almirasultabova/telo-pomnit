@@ -87,6 +87,7 @@ foreach ($area in @('site', 'app')) {
             $mediaPath = '^media/(?:' + $area + '|shared)/'
             $allowed = $relative -in $allowedPages -or ($relative -match $mediaPath -and $file.Extension.ToLowerInvariant() -in @('.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif', '.ico', '.mp3', '.mp4', '.webm', '.woff', '.woff2'))
             if ($area -eq 'app' -and $relative -match '^(?:js/.+\.js|css/.+\.css)$') { $allowed = $true }
+            if ($area -eq 'app' -and $relative -in @('media/app/fonts/cormorant-garamond-OFL.txt', 'media/app/fonts/manrope-OFL.txt')) { $allowed = $true }
             if (-not $allowed) { $issues.Add("Непубличный или неразрешённый файл в сборке: $relative") }
         }
     }

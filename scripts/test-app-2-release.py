@@ -7,7 +7,7 @@ manifest={str(p.relative_to(ROOT/'output/app')).replace('\\','/'):hashlib.sha256
 for name,sha in manifest.items():
  with urllib.request.urlopen(URL+'/'+name+'?release=J276',timeout=20,context=ssl.create_default_context(cafile=certifi.where())) as response:
   content=response.read();actual=hashlib.sha256(content).hexdigest();normalized=False
-  if actual!=sha and Path(name).suffix in ['.html','.css','.js','.txt']:
+  if actual!=sha and Path(name).suffix in ['.html','.css','.js','.txt','.svg']:
    normalized=content.replace(b'\r\n',b'\n')==(ROOT/'output/app'/name).read_bytes().replace(b'\r\n',b'\n')
   assert actual==sha or normalized,name
   http.append({'file':name,'status':response.status,'sha256':actual,'line_endings_only':normalized})
