@@ -6,7 +6,7 @@ const source = fs.readFileSync('app/js/launch.js', 'utf8');
 function fixture({ seen = false, reduced = false, authed = true, unsupported = false, play = 'success', frameCallbacks = false } = {}) {
   let now = 0, id = 0;
   const timers = new Map(), store = new Map(), writes = [], draws = [];
-  const key = 'tp_user:fixture:launch_seen_v1';
+  const key = 'tp_user:fixture:launch_seen_v2';
   if (seen) store.set(key, '1');
   function element() {
     const listeners = {}, classes = new Set();
@@ -73,7 +73,7 @@ function fixture({ seen = false, reduced = false, authed = true, unsupported = f
   for (let i = 1; i <= 17; i++) { first.video.currentTime = i * 0.25; first.advance(250); }
   first.advance(800); await first.api.whenVisible();
   assert.equal(first.layer.hidden, true); assert.equal(first.app.inert, false);
-  assert.deepEqual(first.writes, ['tp_user:fixture:launch_seen_v1']);
+  assert.deepEqual(first.writes, ['tp_user:fixture:launch_seen_v2']);
   assert.equal(first.video.src, undefined); assert.equal(first.timers.size, 0);
   // The full source width and the bottom source row survive viewport adaptation.
   assert(first.draws.some(args => args[1] === 0 && args[3] === 720 && args[2] + args[4] === 1280));

@@ -133,7 +133,7 @@ window.LaunchSplash = (() => {
       // Only a confirmed, bound user selects the cosmetic per-device marker.
       if (!Api.isAuthed() || Api.clubBlocked || !Storage._userId) { release(); return; }
       started = true;
-      seenKey = Storage.key('launch_seen_v1');
+      seenKey = Storage.key('launch_seen_v2');
       if (reduced.matches || navigator.connection?.saveData || layer.clientHeight < layer.clientWidth * 1.35) {
         layer.dataset.mode = 'static'; release(); return;
       }
