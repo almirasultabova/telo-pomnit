@@ -32,12 +32,13 @@
   <button type="button" onclick="location.reload()">Повторить загрузку</button>
 </div>
 <p id="launch-status" role="status" hidden>Открываем приложение…</p>
-<div id="launch-overlay" aria-hidden="true" hidden>
+<div id="launch-overlay" aria-hidden="true">
   <img id="launch-poster" src="/media/app/launch/bud.webp?v=silk-centre-20261014" alt="">
   <canvas id="launch-canvas" hidden></canvas>
-  <video id="launch-video" muted playsinline webkit-playsinline preload="none" disablepictureinpicture tabindex="-1"></video>
+  <video id="launch-video" muted playsinline webkit-playsinline preload="auto" disablepictureinpicture tabindex="-1"></video>
   <div id="launch-title"><span>Тело</span><span>помнит</span></div>
 </div>
+<noscript><style>#launch-overlay{display:none}</style></noscript>
 <div id="app">
 
   <!-- ═══════════════════════════════════════════════════════════════════

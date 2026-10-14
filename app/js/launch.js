@@ -11,11 +11,15 @@ window.LaunchSplash = (() => {
     const title = document.getElementById('launch-title');
     const app = document.getElementById('app');
     const context = canvas?.getContext('2d');
-    if (!layer || !context || !video || !poster || !title || !app || typeof ResizeObserver === 'undefined' || typeof MutationObserver === 'undefined') { resolveVisible(); return; }
+    if (!layer || !context || !video || !poster || !title || !app || typeof ResizeObserver === 'undefined' || typeof MutationObserver === 'undefined') {
+      if (layer) layer.hidden = true;
+      resolveVisible(); return;
+    }
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     const originallyInert = app.inert;
-    let started = false, finished = false, fading = false;
-    let loadTimer, watchTimer, deadlineTimer, fadeTimer, animationFrame, videoFrame;
+    let started = false, finished = false, fading = false, playing = false;
+    let loadTimer, watchTimer, deadlineTimer, fadeTimer, animationFrame;
+    let paintedTime = -1;
     let lastTime = 0, lastProgress = 0, lastSource = poster;
     let sourceWidth = 0, sourceHeight = 0, slices = [];
     let seenKey = null;
@@ -70,7 +74,6 @@ window.LaunchSplash = (() => {
       finished = true;
       clearTimeout(loadTimer); clearTimeout(deadlineTimer); clearTimeout(fadeTimer); clearInterval(watchTimer);
       cancelAnimationFrame(animationFrame);
-      if (videoFrame !== undefined) video.cancelVideoFrameCallback?.(videoFrame);
       video.pause(); video.removeAttribute('src'); video.load();
       layer.hidden = true;
       document.getElementById('launch-status')?.setAttribute('hidden', '');
@@ -92,15 +95,16 @@ window.LaunchSplash = (() => {
     }
     function movieFrame() {
       if (finished || fading) return;
-      paint(video);
       const time = video.currentTime;
+      if (video.readyState >= 2 && time !== paintedTime) { paint(video); paintedTime = time; }
       title.style.opacity = String(Math.max(0, Math.min(1, (time - 2.35) / 0.8)) * Math.max(0, Math.min(1, (4.15 - time) / 0.3)));
-      if (time >= 4.1) {
+      if (playing && time >= 4.1) {
         if (seenKey) AppLocalStorage.setItem(seenKey, '1');
         fade(750); return;
       }
-      if (video.requestVideoFrameCallback) videoFrame = video.requestVideoFrameCallback(movieFrame);
-      else animationFrame = requestAnimationFrame(movieFrame);
+      // A transparent source video may never be submitted to the compositor.
+      // Keep painting with the page clock even when video-frame callbacks exist.
+      animationFrame = requestAnimationFrame(movieFrame);
     }
     const resizeObserver = new ResizeObserver(resize);
     const errorObserver = new MutationObserver(() => {
@@ -114,6 +118,10 @@ window.LaunchSplash = (() => {
     video.addEventListener('playing', () => {
       if (finished || fading) return;
       clearTimeout(loadTimer); lastProgress = performance.now();
+      if (!playing) {
+        playing = true;
+        deadlineTimer = setTimeout(() => fade(180), 5500);
+      }
     });
     video.addEventListener('ended', () => { if (!fading) fade(180); });
     reduced.addEventListener?.('change', () => { if (reduced.matches) release(); });
@@ -137,14 +145,15 @@ window.LaunchSplash = (() => {
       }
       layer.dataset.mode = 'first';
       lastProgress = performance.now();
-      loadTimer = setTimeout(() => fade(180), 900);
-      deadlineTimer = setTimeout(() => fade(180), 5500);
+      loadTimer = setTimeout(() => fade(180), 2500);
       watchTimer = setInterval(() => {
         if (video.currentTime > lastTime + 0.01) { lastTime = video.currentTime; lastProgress = performance.now(); }
-        else if (performance.now() - lastProgress > 900) fade(180);
+        else if (playing && performance.now() - lastProgress > 1500) fade(180);
       }, 250);
       video.src = '/media/app/launch/flower-720.mp4?v=silk-centre-20261014';
-      video.play().then(() => { if (!finished && !fading) movieFrame(); }).catch(() => fade(180));
+      video.muted = true; video.defaultMuted = true; video.playsInline = true;
+      movieFrame();
+      video.play().catch(() => fade(180));
     };
     layer.hidden = false;
     document.getElementById('launch-status')?.removeAttribute('hidden');

@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const source = fs.readFileSync('app/js/launch.js', 'utf8');
 
-function fixture({ seen = false, reduced = false, authed = true, unsupported = false, play = 'success' } = {}) {
+function fixture({ seen = false, reduced = false, authed = true, unsupported = false, play = 'success', frameCallbacks = false } = {}) {
   let now = 0, id = 0;
   const timers = new Map(), store = new Map(), writes = [], draws = [];
   const key = 'tp_user:fixture:launch_seen_v1';
@@ -20,6 +20,8 @@ function fixture({ seen = false, reduced = false, authed = true, unsupported = f
   const app = element(), layer = element(), canvas = element(), poster = element(), video = element(), title = element(), error = element();
   poster.naturalWidth = 720; poster.naturalHeight = 1280;
   video.currentTime = 0; video.videoWidth = 720; video.videoHeight = 1280;
+  video.readyState = 2;
+  if (frameCallbacks) video.requestVideoFrameCallback = () => 999;
   video.pause = () => {}; video.load = () => {};
   video.play = () => play === 'reject' ? Promise.reject(new Error('NotAllowedError')) : play === 'pending' ? new Promise(() => {}) : Promise.resolve();
   canvas.getContext = () => ({ clearRect() {}, drawImage: (...args) => draws.push(args) });
@@ -56,6 +58,17 @@ function fixture({ seen = false, reduced = false, authed = true, unsupported = f
 
 (async () => {
   const results = [];
+  const markup = fs.readFileSync('app/index.html', 'utf8');
+  const openingLayer = markup.match(/<div id="launch-overlay"[^>]*>/)[0];
+  assert(!/\shidden(?:\s|=|>)/.test(openingLayer), 'initial markup exposes the old splash before scripts execute');
+  // iOS-style delayed media must not exit before its first playing event.
+  const delayed = fixture({ play: 'pending', frameCallbacks: true }); delayed.api.ready();
+  delayed.advance(1200); assert.equal(delayed.layer.hidden, false, 'cold video exited before 1.2-second startup');
+  delayed.video.emit('playing');
+  for (let i = 1; i <= 17; i++) { delayed.video.currentTime = i * 0.25; delayed.advance(250); }
+  delayed.advance(800);
+  assert.equal(delayed.layer.hidden, true); assert.equal(delayed.writes.length, 1, 'unreported compositor frames must not freeze canvas at the bud');
+  results.push('delayed startup and non-delivering video-frame callbacks: bloom completes');
   const first = fixture(); first.api.ready(); await Promise.resolve(); first.video.emit('playing');
   for (let i = 1; i <= 17; i++) { first.video.currentTime = i * 0.25; first.advance(250); }
   first.advance(800); await first.api.whenVisible();
@@ -74,12 +87,12 @@ function fixture({ seen = false, reduced = false, authed = true, unsupported = f
   }
   results.push('reduced motion / unverified identity / unsupported canvas setup: immediate release, no video or cosmetic write');
   for (const play of ['reject', 'pending']) {
-    const f = fixture({ play }); f.api.ready(); await Promise.resolve(); await Promise.resolve(); f.advance(1200);
+    const f = fixture({ play }); f.api.ready(); await Promise.resolve(); await Promise.resolve(); f.advance(2800);
     await f.api.whenVisible(); assert.equal(f.layer.hidden, true); assert.equal(f.writes.length, 0);
   }
   results.push('autoplay rejection / unavailable media: bounded fallback without marking a completed intro');
   const stall = fixture(); stall.api.ready(); await Promise.resolve(); stall.video.emit('playing');
-  stall.video.currentTime = 0.5; stall.advance(500); stall.advance(1300);
+  stall.video.currentTime = 0.5; stall.advance(500); stall.advance(1800);
   await stall.api.whenVisible(); assert.equal(stall.layer.hidden, true); assert.equal(stall.timers.size, 0);
   results.push('playback stall: ready application released, no infinite layer');
   const denied = fixture(); denied.error.hidden = false; denied.observers[1].callback(); denied.api.ready();
