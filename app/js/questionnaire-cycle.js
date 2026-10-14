@@ -26,10 +26,10 @@
     const notice=document.getElementById('post-draft-warning');
     if (notice) notice.hidden=durable;
   }
-  function leaving(screen) { if (screen === 'post-questionnaire') {capture();saveDraft();} }
+  function leaving(screen) { if (screen === 'post-questionnaire') {capture();saveDraft();if (sending) {navigation++;sending=false;}} }
   window.QuestionnaireCycle={invalidate,setStatus,setPre,refreshEntries,leaving};
   const initial = () => source().pre?.answers || {};
-  let answers = {}, step = 0, sending = false, navigation = 0;
+  let answers = {}, step = 0, sending = false, navigation = 0, emptyConfirmed = false;
   const formats = [['benefit_group','Психосоматические разборы'],['benefit_body','Телесные практики на встречах'],
     ['benefit_recordings','Записи встреч'],['benefit_practice','Самостоятельная практика между встречами'],['benefit_app','Приложение']];
   const usefulness = ['Много полезного','Что-то полезное','Не заметила пользы','Трудно оценить','Не участвовала / не использовала'];
@@ -63,7 +63,7 @@
   }
   function originalWords(key, missing) {
     const pre = source().pre;
-    return pre?.answers?.[key] ? `<div class="cycle-original"><p>В начале · ${esc(date(pre.createdAt))}</p><blockquote>${esc(pre.answers[key])}</blockquote></div>` : `<p class="cycle-empty">${esc(missing)}</p>`;
+    return pre?.answers?.[key] ? `<div class="cycle-original"><p>В начале · ${esc(date(pre.submittedAt || pre.createdAt))}</p><blockquote>${esc(pre.answers[key])}</blockquote></div>` : `<p class="cycle-empty">${esc(missing)}</p>`;
   }
   function select(id, label, options) {
     return `<div class="q-field"><label class="q-label" for="post-${id}">${esc(label)}</label><select class="q-input cycle-select" id="post-${id}" data-answer="${id}"><option value="">Выберите ответ или пропустите</option>${options.map(value=>`<option ${answers[id] === value ? 'selected' : ''}>${esc(value)}</option>`).join('')}</select></div>`;
@@ -74,6 +74,14 @@
       !(id === 'difficultyComment' && data.difficulties !== 'Да') && !(id === 'appBarrier' && data.benefit_app !== notUsed))
       .map(([id,label]) => `<div class="cycle-review-row"><dt>${esc(label)}</dt><dd>${esc(response(data[id]))}</dd></div>`).join('');
   }
+  function hasResponses(data = answers) {
+    return fields.some(([id]) => data[id] === null ||
+      (typeof data[id] === 'string' && data[id].trim().length > 0) ||
+      (Number.isInteger(data[id]) && data[id] >= 1 && data[id] <= 10));
+  }
+  function emptyWarning() {
+    return hasResponses() ? '' : `<section class="cycle-empty-confirm" aria-labelledby="post-empty-title"><h2 id="post-empty-title">В анкете пока нет ответов</h2><p>Можно вернуться к вопросам или отправить пустую анкету. После отправки добавить ответы будет нельзя.</p><button class="cycle-skip" type="button" id="post-empty-return">Вернуться к вопросам</button><label class="cycle-empty-choice"><input type="checkbox" id="post-empty-confirm"><span>Я хочу отправить анкету без ответов</span></label></section>`;
+  }
   function stageContent(kind) {
     if (kind === 'state') return `<p class="cycle-guidance">Оцените своё состояние сейчас. Можно пропустить любой вопрос.</p>${scale('bodyContactScale',fields[0][1],'1 — совсем не чувствую, 10 — в полном контакте')}${scale('anxietyScale',fields[1][1],'1 — спокойно, 10 — постоянно тревожно')}`;
     if (kind === 'request') return originalWords('currentSituation','В начальной анкете исходный запрос не был записан.') + input('currentSituation',fields[2][1]) + radios('situationChange',fields[3][1],changes);
@@ -82,7 +90,7 @@
     if (kind === 'experience') return `<p class="cycle-guidance">Какую пользу вы получили от этих частей программы?</p>` + formats.map(([id,label])=>select(id,label,usefulness)).join('') + input('formatComment','Что из этого было для вас особенно важным — или, наоборот, не подошло?') + `<div id="post-app-barrier" ${answers.benefit_app === notUsed ? '' : 'hidden'}>${select('appBarrier','Что мешало пользоваться приложением?',['Не было потребности','Было неудобно','Не работало','Не понимала, зачем оно','Другое'])}</div>`;
     if (kind === 'improve') return radios('difficulties','Было ли в программе что-то, что вам не подошло или мешало участвовать?',['Да','Нет','Не уверена']) + `<div id="post-difficulty-detail" ${answers.difficulties === 'Да' ? '' : 'hidden'}>${input('difficultyComment','Что именно?')}</div>` + input('improvements','Что вы предложили бы сохранить или изменить для следующих участниц?');
     if (kind === 'next') return radios('nextStep',fields.at(-1)[1],nextSteps);
-    return `<p class="cycle-guidance">Проверьте ответы перед отправкой. Личный дневник к анкете не добавляется.</p><dl class="cycle-review">${reviewRows(answers)}</dl><p class="cycle-error" id="post-error" role="alert" hidden></p>`;
+    return `<p class="cycle-guidance">Проверьте ответы перед отправкой. Личный дневник к анкете не добавляется.</p>${emptyWarning()}<dl class="cycle-review">${reviewRows(answers)}</dl><p class="cycle-error" id="post-error" role="alert" hidden></p>`;
   }
   function capture() {
     if (!isCurrent(formIdentity)) return;
@@ -105,7 +113,8 @@
     document.getElementById('post-back').hidden = step === 0;
     const button = document.getElementById('post-next');
     button.textContent = kind === 'review' ? 'Отправить анкету' : kind === 'next' ? 'Проверить ответы' : 'Далее';
-    button.disabled = sending;
+    emptyConfirmed = false;
+    button.disabled = sending || (kind === 'review' && !hasResponses());
     document.getElementById('post-body').scrollTop = 0;
     document.getElementById('post-body').insertAdjacentHTML('beforeend','<p class="cycle-guidance" id="post-draft-warning" role="status" hidden>Черновик доступен только в открытом приложении. Память устройства недоступна; сохраните анкету перед закрытием.</p>');
     saveDraft();
@@ -121,7 +130,7 @@
     closeQInvite(); draw(); goTo('post-questionnaire');
   }
   function completionMarkup(post) {
-    return `<div class="q-completion"><img class="completion-photo" src="/media/app/redesign/home-portrait-r01.webp" alt=""><div class="completion-shade"></div><div class="completion-brand" aria-label="Тело помнит">Тело<br>помнит</div><div class="completion-content"><h1 tabindex="-1">Спасибо</h1><p>${post ? 'Вы сохранили свой опыт программы. Можно вернуться к тому, с чем вы пришли, и посмотреть, что происходит сейчас.' : 'Анкета заполнена. Ваш запрос и ожидания сохранены — к ним можно вернуться в конце программы.'}</p></div></div>`;
+    return `<div class="q-completion"><img class="completion-photo" src="/media/app/redesign/home-portrait-r01.webp" alt=""><div class="completion-shade"></div><div class="completion-brand" aria-label="Тело помнит">Тело<br>помнит</div><div class="completion-content"><h1 tabindex="-1">Спасибо</h1><p>${post ? hasResponses(source().post?.answers || {}) ? 'Вы сохранили свой опыт программы. Можно вернуться к тому, с чем вы пришли, и посмотреть, что происходит сейчас.' : 'Анкета отправлена без ответов. Можно вернуться в приложение.' : 'Анкета заполнена. Ваш запрос и ожидания сохранены — к ним можно вернуться в конце программы.'}</p></div></div>`;
   }
   function showThanks() {
     if (!isCurrent(record) || !record.post) return;
@@ -143,22 +152,25 @@
     const post = current.post?.answers || {};
     const pre = current.pre?.answers || {};
     const body = document.getElementById('comparison-body');
-    body.innerHTML = `<div class="cycle-comparison-hero"><h1 tabindex="-1">Мой путь</h1><p>С чем я пришла и что замечаю сейчас</p><small>${current.pre ? esc(date(current.pre.createdAt)) : ''}${current.post ? ' — '+esc(date(current.post.createdAt)) : ''}</small></div>${!current.pre ? '<p class="cycle-empty cycle-empty--prominent">Начальная анкета не была заполнена. Здесь можно прочитать итоговые ответы; исходную точку мы не восстанавливаем по памяти.</p>' : ''}${pair('Ваш запрос',pre.currentSituation,post.currentSituation)}${post.situationChange ? `<p class="cycle-change">Ваша оценка: ${esc(post.situationChange)}</p>` : ''}${rating('bodyContactScale','Контакт с телом','1 — совсем не чувствую, 10 — в полном контакте')}${rating('anxietyScale','Тревога в обычный день','1 — спокойно, 10 — постоянно тревожно')}${pre.successMeans ? pair('Что было для вас важно',pre.successMeans,post.criterionMatch) : ''}${pre.successMeans && post.criterionComment ? `<p class="cycle-personal-note">${esc(post.criterionComment)}</p>` : ''}${post.lifeExample ? `<section class="cycle-pair"><h2>Пример из вашей жизни</h2><p>${esc(post.lifeExample)}</p></section>` : ''}<details class="cycle-all-answers"><summary>Все итоговые ответы</summary><dl class="cycle-review">${reviewRows(post)}</dl></details><p class="cycle-guidance">Это ваши ответы в разные моменты. Они могут показывать разные изменения — общего балла результата здесь нет.</p>`;
+    body.innerHTML = `<div class="cycle-comparison-hero"><h1 tabindex="-1">Мой путь</h1><p>С чем я пришла и что замечаю сейчас</p><small>${current.pre ? esc(date(current.pre.submittedAt || current.pre.createdAt)) : ''}${current.post ? ' — '+esc(date(current.post.submittedAt || current.post.createdAt)) : ''}</small></div>${!current.pre ? '<p class="cycle-empty cycle-empty--prominent">Начальная анкета не была заполнена. Здесь можно прочитать итоговые ответы; исходную точку мы не восстанавливаем по памяти.</p>' : ''}${pair('Ваш запрос',pre.currentSituation,post.currentSituation)}${post.situationChange ? `<p class="cycle-change">Ваша оценка: ${esc(post.situationChange)}</p>` : ''}${rating('bodyContactScale','Контакт с телом','1 — совсем не чувствую, 10 — в полном контакте')}${rating('anxietyScale','Тревога в обычный день','1 — спокойно, 10 — постоянно тревожно')}${pre.successMeans ? pair('Что было для вас важно',pre.successMeans,post.criterionMatch) : ''}${pre.successMeans && post.criterionComment ? `<p class="cycle-personal-note">${esc(post.criterionComment)}</p>` : ''}${post.lifeExample ? `<section class="cycle-pair"><h2>Пример из вашей жизни</h2><p>${esc(post.lifeExample)}</p></section>` : ''}<details class="cycle-all-answers"><summary>Все итоговые ответы</summary><dl class="cycle-review">${reviewRows(post)}</dl></details><p class="cycle-guidance">Это ваши ответы в разные моменты. Они могут показывать разные изменения — общего балла результата здесь нет.</p>`;
     goTo('comparison'); body.scrollTop = 0; body.querySelector('h1')?.focus({preventScroll:true});
   }
   async function submit() {
     if (sending || !isCurrent(formIdentity) || source().stream?.phase !== 'completed') return;
     capture(); saveDraft();
+    if (!hasResponses() && !emptyConfirmed) return;
     const identity={...formIdentity}, version=++navigation;
     const payload=JSON.parse(JSON.stringify(answers));
     sending=true;
     const button=document.getElementById('post-next');
     button.disabled=true; button.textContent='Сохраняем…';
+    for (const id of ['post-empty-confirm','post-empty-return']) {const control=document.getElementById(id);if(control)control.disabled=true;}
     try {
       const result=await Api.saveQuestionnairePost(identity.streamId,payload);
       if (version!==navigation || !isCurrent(identity)) return;
       if (!result?.id || result.type!=='post' || result.streamId!==identity.streamId) throw new Error('Не удалось подтвердить сохранение. Повторите отправку.');
       record.post=result;
+      sending=false;
       Storage.clearFormDraft('questionnaire:post:'+identity.streamId);
       showThanks(); refreshEntries();
     } catch(error) {
@@ -167,7 +179,10 @@
       warning.textContent=error.message || 'Не удалось сохранить анкету. Повторите отправку.';
       warning.hidden=false; warning.scrollIntoView({block:'nearest'});
     } finally {
-      if (version===navigation && isCurrent(identity)) {sending=false; button.disabled=false; button.textContent='Отправить анкету';}
+      if (version===navigation && isCurrent(identity)) {
+        sending=false; button.disabled=false; button.textContent='Отправить анкету';
+        for (const id of ['post-empty-confirm','post-empty-return']) {const control=document.getElementById(id);if(control)control.disabled=false;}
+      }
     }
   }
   function refreshEntries() {
@@ -205,7 +220,12 @@
     document.getElementById('post-back').onclick = () => { if (sending) return; capture(); step = Math.max(0,step-1); draw(); };
     document.getElementById('post-next').onclick = () => { if (sending) return; capture(); if (steps()[step] === 'review') submit(); else { step++; draw(); } };
     document.getElementById('post-body').addEventListener('input',capture);
-    document.getElementById('post-body').addEventListener('change',() => {
+    document.getElementById('post-body').addEventListener('change',event => {
+      if (event.target.id === 'post-empty-confirm') {
+        emptyConfirmed = event.target.checked === true;
+        document.getElementById('post-next').disabled = sending || !emptyConfirmed;
+        return;
+      }
       capture();
       const difficulty = document.getElementById('post-difficulty-detail');
       if (difficulty) difficulty.hidden = answers.difficulties !== 'Да';
@@ -213,6 +233,7 @@
       if (barrier) barrier.hidden = answers.benefit_app !== notUsed;
     });
     document.getElementById('post-body').addEventListener('click', event => {
+      if (event.target.closest('#post-empty-return')) {if(sending)return;step=0;draw();document.querySelector('#post-body h1')?.focus({preventScroll:true});return;}
       const button = event.target.closest('[data-scale]');
       if (!button) return;
       const value = button.dataset.value === 'unknown' ? null : Number(button.dataset.value);

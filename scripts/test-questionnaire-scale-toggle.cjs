@@ -1,0 +1,10 @@
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..'),source=fs.readFileSync(path.join(root,'app/js/app.js'),'utf8');
+const start=source.indexOf('function bindQField(f) {'),end=source.indexOf('// ─── Собрать ответы текущего блока',start);
+const buttons=Array.from({length:10},(_,i)=>({dataset:{val:String(i+1)},attrs:{},classList:{add(){},remove(){}},setAttribute(key,value){this.attrs[key]=value},addEventListener(type,fn){this[type]=fn}}));
+let saves=0;const answers={},ctx={qAnswers:answers,haptic(){},saveQuestionnaireDraft(){saves++},document:{querySelectorAll:()=>buttons}};
+vm.createContext(ctx);vm.runInContext(source.slice(start,end),ctx);ctx.bindQField({type:'scale',id:'bodyContactScale'});
+buttons[5].click();assert.equal(answers.bodyContactScale,6);assert.equal(buttons[5].attrs['aria-pressed'],'true');
+buttons[5].click();assert(!('bodyContactScale' in answers));assert(buttons.every(b=>b.attrs['aria-pressed']==='false'));
+buttons[5].click();buttons[6].click();assert.equal(answers.bodyContactScale,7);assert.equal(buttons[5].attrs['aria-pressed'],'false');assert.equal(buttons[6].attrs['aria-pressed'],'true');assert.equal(saves,4);
+console.log('PASS: initial scale toggle/removal/reselection, immediate aria state and draft save');

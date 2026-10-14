@@ -15,7 +15,10 @@
       goTo('questionnaire');
     } else {
       document.querySelector('#home-q-banner-wrap [data-post-entry]')?.click();
-      if(view==='post-thanks')for(let i=0;i<8;i++)document.getElementById('post-next')?.click();
+      if(view==='post-thanks') {
+        document.querySelector('#post-body [data-scale="bodyContactScale"][data-value="6"]')?.click();
+        for(let i=0;i<8;i++)document.getElementById('post-next')?.click();
+      }
     }
     closeQuestionnaire=exit;
     for(const id of ['post-close','thanks-home','comparison-close','comparison-home']) {

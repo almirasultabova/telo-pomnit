@@ -722,13 +722,68 @@ async function loadFeedback() {
 }
 
 // ── Анкеты ──
+const QUESTIONNAIRE_LABELS = {
+  "pre": {
+    "name": "Как вас зовут?",
+    "age": "Сколько вам лет?",
+    "occupation": "Чем вы занимаетесь?",
+    "familyStatus": "Семейное положение",
+    "hasChildren": "Есть ли у вас дети?",
+    "city": "Из какого вы города / региона?",
+    "source": "Откуда вы узнали о программе?",
+    "referralName": "Если посоветовала подруга — как её зовут?",
+    "whatCaughtAttention": "Что вас зацепило — из-за чего решили прийти?",
+    "priorExperience": "Что пробовали до этого?",
+    "currentSituation": "Что сейчас происходит в вашей жизни, что привело вас сюда?",
+    "bodyTension": "Где в теле чаще всего живёт напряжение?",
+    "bodyStressSensations": "Какие ощущения возникают в теле при стрессе?",
+    "stressReaction": "Как вы обычно реагируете, когда что-то идёт не так?",
+    "bodyContactScale": "Насколько вы чувствуете контакт с телом?",
+    "anxietyScale": "Уровень тревоги в обычный день",
+    "hasTherapist": "Есть ли у вас сейчас психолог или терапевт?",
+    "successMeans": "Что для вас будет означать, что программа сработала?",
+    "importantInWork": "Что для вас важно в работе с собой?",
+    "followedChannels": "На что вы подписаны — что читаете или смотрите про психологию, тело, саморазвитие?",
+    "practiceTime": "Сколько минут в день реально готовы уделять практике?",
+    "futureInterest": "Интересен ли вам формат работы после потока?"
+  },
+  "post": {
+    "bodyContactScale": "Насколько вы чувствуете контакт с телом?",
+    "anxietyScale": "Уровень тревоги в обычный день",
+    "currentSituation": "Что сейчас происходит с тем, с чем вы пришли в программу?",
+    "situationChange": "Если сравнить с началом программы, как изменилась эта ситуация?",
+    "lifeExample": "Вспомните одну ситуацию из последних дней, которая показывает, как у вас сейчас",
+    "criterionMatch": "Насколько то, что вы описали тогда, соответствует вашему опыту сейчас?",
+    "criterionComment": "Что важно добавить к этому ответу?",
+    "benefit_group": "Психосоматические разборы",
+    "benefit_body": "Телесные практики на встречах",
+    "benefit_recordings": "Записи встреч",
+    "benefit_practice": "Самостоятельная практика между встречами",
+    "benefit_app": "Приложение",
+    "formatComment": "Что из этого было особенно важным — или, наоборот, не подошло?",
+    "appBarrier": "Что мешало пользоваться приложением?",
+    "difficulties": "Было ли в программе что-то, что вам не подошло или мешало участвовать?",
+    "difficultyComment": "Что именно?",
+    "improvements": "Что вы предложили бы сохранить или изменить для следующих участниц?",
+    "nextStep": "Какой следующий шаг вам сейчас ближе?"
+  }
+};
+function questionnaireLabel(type, key) {
+  return QUESTIONNAIRE_LABELS[type]?.[key] || QUESTIONNAIRE_LABELS.pre[key] || QUESTIONNAIRE_LABELS.post[key] || 'Дополнительный ответ';
+}
+function questionnaireValue(value) {
+  if (value === null) return 'Не могу оценить';
+  if (Array.isArray(value)) return value.length ? value.join(', ') : 'Ответ пропущен';
+  if (value && typeof value === 'object') return JSON.stringify(value);
+  return String(value ?? '').trim() || 'Ответ пропущен';
+}
 async function loadQuestionnaires() {
   $('q-list').innerHTML = '<div class="loader">Загрузка…</div>';
   try {
     const q = qTypeFilter ? '?type=' + qTypeFilter : '';
     const { items, total } = await api('/admin/questionnaires' + q);
     if (!items.length) {
-      $('q-list').innerHTML = '<div class="empty">Анкет пока нет.<br><br>Анкеты заполняются участницами в Mini App после того, как их зачислили в активный поток. Текущий поток завершён 16 апреля.</div>';
+      $('q-list').innerHTML = '<div class="empty">Анкет пока нет.<br><br>Ответы появятся здесь после заполнения начальной или итоговой анкеты участницами в Mini App.</div>';
       return;
     }
     const blocks = items.map(it => {
@@ -737,8 +792,8 @@ async function loadQuestionnaires() {
       const typeLabel = it.type === 'pre' ? 'Входная' : (it.type === 'post' ? 'Итоговая' : it.type);
       const answers = it.answers && typeof it.answers === 'object' ? it.answers : {};
       const answerRows = Object.entries(answers).map(([k, v]) => {
-        const value = Array.isArray(v) ? v.join(', ') : (typeof v === 'object' ? JSON.stringify(v) : String(v ?? ''));
-        return `<div class="q-answer-row"><div class="q-answer-key">${escapeHtml(k)}</div><div class="q-answer-val">${escapeHtml(value)}</div></div>`;
+        const value = questionnaireValue(v);
+        return `<div class="q-answer-row"><div class="q-answer-key">${escapeHtml(questionnaireLabel(it.type, k))}</div><div class="q-answer-val">${escapeHtml(value)}</div></div>`;
       }).join('');
       return `
         <details class="q-item">
@@ -746,6 +801,7 @@ async function loadQuestionnaires() {
             <div>
               <span class="feedback-user">${escapeHtml(user)}</span>
               <span class="badge badge--${it.type === 'pre' ? 'active' : 'completed'}" style="margin-left:8px">${typeLabel}</span>
+              <div style="font-size:13px;color:var(--hint);margin-top:6px">${escapeHtml(it.stream?.name || 'Поток не указан')}</div>
             </div>
             <span style="font-size:12px;color:var(--hint)">${date}</span>
           </summary>

@@ -3027,6 +3027,7 @@ function renderQField(f) {
     return `<div class="q-field">
       <div class="q-label" id="q-label-${f.id}">${f.label}</div>${hint}
       <div class="q-scale" role="group" aria-labelledby="q-label-${f.id}" id="qscale-${f.id}">${btns}</div>
+      <p class="q-field-hint q-scale-hint">Чтобы снять оценку, нажмите на выбранное число ещё раз.</p>
     </div>`;
   }
 
@@ -3062,9 +3063,15 @@ function bindQField(f) {
   if (f.type === 'scale') {
     document.querySelectorAll(`#qscale-${f.id} .q-scale-btn`).forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll(`#qscale-${f.id} .q-scale-btn`).forEach(b => b.classList.remove('q-scale-btn--active'));
-        btn.classList.add('q-scale-btn--active');
-        qAnswers[f.id] = Number(btn.dataset.val);
+        const value = Number(btn.dataset.val);
+        const selected = qAnswers[f.id] === value;
+        document.querySelectorAll(`#qscale-${f.id} .q-scale-btn`).forEach(b => {
+          b.classList.remove('q-scale-btn--active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        if (selected) delete qAnswers[f.id];
+        else { btn.classList.add('q-scale-btn--active'); qAnswers[f.id] = value; btn.setAttribute('aria-pressed', 'true'); }
+        saveQuestionnaireDraft();
         haptic('light');
       });
     });

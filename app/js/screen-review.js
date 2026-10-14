@@ -17,7 +17,7 @@
     const status=document.getElementById('screen-review-status');status.hidden=false;status.textContent='Открываем экран…';
     frame=document.createElement('iframe');frame.id='screen-review-frame';frame.title=views.find(([id])=>id===view)[1];
     frame.setAttribute('sandbox','allow-scripts');frame.setAttribute('referrerpolicy','no-referrer');
-    frame.src='screen-review.html?v=JAPP017&view='+encodeURIComponent(view);frame.hidden=true;
+    frame.src='screen-review.html?v=JAPP019&view='+encodeURIComponent(view);frame.hidden=true;
     const expected=frame;
     document.getElementById('screen-review-stage').append(frame);
     frame.addEventListener('error',()=>{if(current())status.textContent='Не удалось открыть экран. Выберите его ещё раз.';});
