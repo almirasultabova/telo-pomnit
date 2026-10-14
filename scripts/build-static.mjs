@@ -70,15 +70,27 @@ function prepare(name, manifest) {
   return { name, directory, expected };
 }
 
-function bundleAppPage(directory) {
-  const target = path.join(directory, 'index.html');
+function bundleAppPage(directory, filename = 'index.html') {
+  const target = path.join(directory, filename);
   let html = fs.readFileSync(target, 'utf8');
+  const review = filename === 'screen-review.html';
+  if (review) {
+    const csp = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: https: http://127.0.0.1:*; font-src data:; connect-src 'none'; media-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'";
+    html = html.replace('<meta charset="UTF-8">', `<meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="${csp}"><script src="js/screen-review-fixture.js"></script>`);
+    html = html.replace(/<script src="js\/(?:telegram-web-app|launch|screen-review)\.js(?:\?[^" ]*)?"><\/script>/g, '');
+    html = html.replace('</head>', '<style>#launch-overlay{display:none!important}.screen{animation:none!important;transition:none!important}.screen:not(.screen--active){visibility:hidden!important;pointer-events:none!important}.screen.screen--active{opacity:1!important;transform:none!important}.q-completion{min-height:0}</style></head>');
+    html = html.replace('</body>', '<script src="js/screen-review-frame.js"></script></body>');
+  }
   html = html.replace(/<script src="(js\/[^"?]+)(?:\?[^" ]*)?"><\/script>/g, (_, relative) => {
     const code = fs.readFileSync(path.join(directory, relative), 'utf8').replace(/<\/script/gi, '<\\/script');
     return `<script>\n${code}\n</script>`;
   });
   html = html.replace(/<link rel="stylesheet" href="(css\/[^"?]+)(?:\?[^" ]*)?">/g, (_, relative) => {
-    const css = fs.readFileSync(path.join(directory, relative), 'utf8');
+    let css = fs.readFileSync(path.join(directory, relative), 'utf8');
+    if (review) css = css.replace(/url\((\/media\/app\/fonts\/[^)]+\.woff2)\)/g, (_, font) => {
+      const bytes = fs.readFileSync(path.join(directory, font.slice(1)));
+      return `url(data:font/woff2;base64,${bytes.toString('base64')})`;
+    });
     return `<style>\n${css}\n</style>`;
   });
   fs.writeFileSync(target, html);
@@ -90,6 +102,7 @@ try {
   addTree(site, 'media/shared', 'media/shared', mediaExtensions);
   const app = [
     { source: path.join(repository, 'app/index.html'), relative: 'index.html' },
+    { source: path.join(repository, 'app/index.html'), relative: 'screen-review.html' },
     { source: path.join(repository, 'app/access-admin.html'), relative: 'access-admin.html' },
     { source: path.join(repository, 'site/admin.html'), relative: 'admin.html' },
   ];
@@ -109,7 +122,7 @@ try {
       fs.mkdirSync(path.dirname(target), { recursive: true });
       fs.copyFileSync(source, target);
     }
-    if (build.name === 'app') bundleAppPage(build.directory);
+    if (build.name === 'app') { bundleAppPage(build.directory); bundleAppPage(build.directory, 'screen-review.html'); }
     console.log(`${build.name}: ${build.expected.size} public files -> ${build.directory}`);
   }
   if (!fs.existsSync(path.join(repository, 'app/js/telegram-web-app.js'))) {

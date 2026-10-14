@@ -103,6 +103,7 @@ const Api = {
     if (typeof clearAccessManagementState === 'function') clearAccessManagementState();
     this._authGeneration++;
     window.QuestionnaireCycle?.invalidate();
+    window.ScreenReview?.invalidate();
     this._token = null;
     this.userId = null;
     this.isClubAdmin = false;

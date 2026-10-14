@@ -63,6 +63,7 @@ function goTo(screenId, back = false) {
   if (!next || screenId === currentScreen) return;
   if (currentScreen !== 'splash') window.LaunchSplash?.cancel();
   window.QuestionnaireCycle?.leaving(currentScreen);
+  if (screenId !== currentScreen) window.ScreenReview?.leave(currentScreen);
   if (currentScreen === 'questionnaire' && !qStatusDone) collectQBlock();
   if (prev?.contains(document.activeElement)) screenFocus.set(currentScreen, document.activeElement);
 
@@ -1504,6 +1505,7 @@ function renderProfileTab() {
   renderSchedule();
   renderHosts();
   renderAccessManagementEntry();
+  window.ScreenReview?.renderEntry();
 }
 
 let admissionRefreshTimer = null;
