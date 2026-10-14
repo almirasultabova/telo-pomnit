@@ -62,6 +62,7 @@ function goTo(screenId, back = false) {
   const next = document.getElementById('screen-' + screenId);
   if (!next || screenId === currentScreen) return;
   if (currentScreen !== 'splash') window.LaunchSplash?.cancel();
+  window.QuestionnaireCycle?.leaving(currentScreen);
   if (currentScreen === 'questionnaire' && !qStatusDone) collectQBlock();
   if (prev?.contains(document.activeElement)) screenFocus.set(currentScreen, document.activeElement);
 
@@ -1575,9 +1576,14 @@ function applyProgramAccess(access) {
   checkAndShowQuestionnaire(selectedProgramId);
 }
 function renderAccessNotice() {
-  const text=programAccess?.ai?.message || 'Не удалось проверить доступ к AI. Дневник и реакции остаются доступны.';
+  const text=aiQuestionnaireSaved() ? 'Анкета отправлена. Обновите доступ к AI-ассистенту.' : programAccess?.ai?.message || 'Не удалось проверить доступ к AI. Дневник и реакции остаются доступны.';
   const aiNotice=document.getElementById('ai-access-notice');
   if(aiNotice) aiNotice.textContent=text;
+  const questionnaireButton=document.getElementById('ai-questionnaire-btn');
+  if(questionnaireButton) {
+    questionnaireButton.hidden=programAccess?.ai?.reason !== 'questionnaire_required';
+    questionnaireButton.textContent=aiQuestionnaireSaved() ? 'Обновить доступ к AI' : 'Заполнить анкету';
+  }
   const button=document.getElementById('ai-chat-btn');
   if(button) {
     let note=document.getElementById('diary-access-notice');
@@ -1586,6 +1592,10 @@ function renderAccessNotice() {
   }
 }
 function currentProgram(){return programAccess?.streams?.find(s=>s.id===selectedProgramId);}
+function aiQuestionnaireSaved() {
+  return programAccess?.ai?.reason === 'questionnaire_required' && qStatusVerified && qStatusDone &&
+    qStreamId === programAccess.ai.questionnaireStreamId && Api.userId === qStatusIdentity?.owner && Api._authGeneration === qStatusIdentity?.generation;
+}
 async function refreshProgramAccess(){
   try {applyProgramAccess(await Api.getAccess());}
   catch {programAccess=null;aiAccessGranted=null;checkAndShowQuestionnaire(null);renderAccessNotice();renderMainTab();}
@@ -2159,6 +2169,14 @@ async function refreshAiScreen() {
   } catch { document.getElementById('ai-access-notice').textContent += ' Историю не удалось загрузить — можно повторить.'; }
 }
 document.getElementById('ai-access-refresh')?.addEventListener('click', refreshAiScreen);
+document.getElementById('ai-questionnaire-btn')?.addEventListener('click', async () => {
+  if (aiQuestionnaireSaved()) { await refreshAiScreen(); return; }
+  const streamId = programAccess?.ai?.questionnaireStreamId;
+  if (!streamId || Api.clubBlocked) return;
+  selectProgram(streamId);
+  await checkAndShowQuestionnaire(streamId);
+  openQuestionnaire();
+});
 document.getElementById('ai-history-select')?.addEventListener('change', async event => {
   if (aiPending) return;
   const id = event.target.value, request = ++aiScreenRequest, generation = Storage._generation;
@@ -2180,7 +2198,7 @@ function renderAiChat() {
   renderAiDraftStatus();
   renderAccessNotice();
   const bar = document.getElementById('ai-input-bar');
-  if (bar) bar.style.display = aiAccessGranted === true || document.getElementById('ai-input')?.value ? '' : 'none';
+  if (bar) bar.style.display = programAccess?.ai?.reason === 'questionnaire_required' ? 'none' : aiAccessGranted === true || document.getElementById('ai-input')?.value ? '' : 'none';
   document.getElementById('ai-send-btn').disabled = aiPending || aiAccessGranted !== true || !aiContextReady();
   renderAiMessages();
 }
@@ -2274,8 +2292,9 @@ function renderAiContext(container) {
 }
 function renderAiMessages() {
   const container = document.getElementById('ai-messages'); if (!container) return; syncAiViewport();
-  const previousScroll = container.scrollTop; container.replaceChildren(); renderAiContext(container);
-  if (!aiMessages.length) { const welcome = document.createElement('p'); welcome.className = 'ai-welcome-text'; welcome.textContent = aiAccessGranted === true ? 'Можно начать с того, что вы сейчас замечаете в теле, чувствах или мыслях. Что хочется обсудить?' : 'Здесь можно читать сохранённые диалоги. Для нового сообщения нужен действующий доступ к AI.'; container.append(welcome); }
+  const previousScroll = container.scrollTop; container.replaceChildren();
+  if (programAccess?.ai?.reason !== 'questionnaire_required' || aiSessionId) renderAiContext(container);
+  if (!aiMessages.length && programAccess?.ai?.reason !== 'questionnaire_required') { const welcome = document.createElement('p'); welcome.className = 'ai-welcome-text'; welcome.textContent = aiAccessGranted === true ? 'Можно начать с того, что вы сейчас замечаете в теле, чувствах или мыслях. Что хочется обсудить?' : 'Здесь можно читать сохранённые диалоги. Для нового сообщения нужен действующий доступ к AI.'; container.append(welcome); }
   aiMessages.forEach(message => { const row = document.createElement('div'); row.className = 'ai-msg ai-msg--' + (message.role === 'user' ? 'user' : 'assistant'); const text = document.createElement('div'); text.className = 'ai-msg-text'; text.textContent = String(message.content || ''); row.append(text); container.append(row); });
   container.scrollTop = aiSessionId ? container.scrollHeight : previousScroll;
 }
@@ -2838,8 +2857,9 @@ async function checkAndShowQuestionnaire(streamId) {
   qStatusIdentity = { owner, generation };
   qStatusVerified = false;
   qStatusDone = false;
+  window.QuestionnaireCycle?.invalidate();
   qStatusState = 'idle';
-  if (Api.isClubAdmin || Api.clubBlocked || !streamId || !currentProgram()) {
+  if (Api.isClubAdmin || Api.userRole === 'HOST' || Api.clubBlocked || !streamId || !currentProgram()) {
     renderQuestionnaireBanner();
     return;
   }
@@ -2852,6 +2872,7 @@ async function checkAndShowQuestionnaire(streamId) {
     if (!current()) return;
     if (!status || !Object.prototype.hasOwnProperty.call(status, 'pre')) throw new Error('Unknown questionnaire status');
     qStatusDone = !!status.pre;
+    window.QuestionnaireCycle?.setStatus(streamId, status);
     qStatusVerified = true;
     qStatusState = 'loaded';
   } catch {
@@ -2913,6 +2934,7 @@ function openQuestionnaire() {
 
 function closeQuestionnaire() {
   goBack();
+  if (currentScreen === 'ai-chat') renderAiChat();
 }
 
 // ─── Рендер блока ────────────────────────────────────────────────────────
@@ -3141,9 +3163,10 @@ async function submitQuestionnaire() {
   if (nextBtn) { nextBtn.disabled = true; nextBtn.textContent = 'Отправляем…'; }
 
   try {
-    await Api.saveQuestionnairePre(identity.streamId, { ...qAnswers });
+    const savedPre = await Api.saveQuestionnairePre(identity.streamId, { ...qAnswers });
     if (!current()) return;
     qStatusDone = true;
+    window.QuestionnaireCycle?.setPre(savedPre);
     Storage.clearFormDraft('questionnaire:pre:' + identity.streamId);
     closeQInvite();
     hapticNotify('success');
@@ -3155,12 +3178,19 @@ async function submitQuestionnaire() {
         <div class="q-done">
           <div class="q-done-icon">🌿</div>
           <div class="q-done-title">Спасибо</div>
-          <div class="q-done-text">Мы внимательно прочитаем каждую анкету. Увидимся на первой встрече.</div>
+          <div class="q-done-text">Анкета заполнена.</div>
         </div>`;
     }
     const footer = document.querySelector('.questionnaire-footer');
     if (footer) footer.innerHTML = `<button class="btn btn--accent btn--full" onclick="closeQuestionnaire()">Закрыть</button>`;
 
+    renderQuestionnaireBanner();
+    // Refresh server rights only after the questionnaire has been acknowledged.
+    const access = await Api.getAccess().catch(() => null);
+    if (access && identity.owner === Api.userId && identity.generation === Api._authGeneration && identity.streamId === selectedProgramId && !Api.clubBlocked) {
+      applyProgramAccess(access);
+      renderAiChat();
+    }
     // Обновляем профиль — убираем баннер
     renderProfileTab();
   } catch {
@@ -3219,15 +3249,24 @@ function renderConsentBanner() {
 // ─── Баннер в профиле ────────────────────────────────────────────────────
 
 function renderQuestionnaireBanner() {
-  const container = document.getElementById('q-banner-wrap');
+  renderQuestionnaireBannerAt(document.getElementById('q-banner-wrap'));
+  const home = document.getElementById('home-q-banner-wrap');
+  if (home) {
+    home.hidden = Api.isClubAdmin || ['HOST'].includes(Api.userRole) || qStatusDone || !['upcoming','current'].includes(currentProgram()?.phase);
+    renderQuestionnaireBannerAt(home);
+  }
+  window.QuestionnaireCycle?.refreshEntries();
+}
+function renderQuestionnaireBannerAt(container) {
   if (!container) return;
 
   if (Api.isClubAdmin) {container.innerHTML='<p class="questionnaire-status">Анкета до потока доступна участницам. Вы вошли как ведущая.</p>';return;}
   if (Api.clubBlocked || !currentProgram() || !qStreamId || qStreamId !== selectedProgramId || Api.userId !== qStatusIdentity?.owner || Api._authGeneration !== qStatusIdentity?.generation) {container.innerHTML='';return;}
   if (qStatusState === 'loading') {container.innerHTML='<p class="questionnaire-status" role="status">Проверяем анкету выбранного потока…</p>';return;}
   if (qStatusState === 'error') {
-    container.innerHTML='<p class="questionnaire-status" role="status">Не удалось проверить анкету этого потока.</p><button type="button" class="btn btn--outline btn--full btn--sm" id="q-status-retry">Повторить проверку</button>';
-    container.querySelector('#q-status-retry').addEventListener('click', () => checkAndShowQuestionnaire(selectedProgramId));
+    container.innerHTML='<p class="questionnaire-status" role="status">Не удалось проверить анкету этого потока.</p><button type="button" class="btn btn--outline btn--full btn--sm q-status-retry">Повторить проверку</button>';
+    container.querySelector('.q-status-retry').addEventListener('click', () => checkAndShowQuestionnaire(selectedProgramId));
+    if (container.id === 'q-banner-wrap') container.querySelector('.q-status-retry').id = 'q-status-retry';
     return;
   }
   if (!qStatusVerified) {container.innerHTML='';return;}
@@ -3237,8 +3276,8 @@ function renderQuestionnaireBanner() {
     <button class="q-banner" type="button" onclick="openQuestionnaire()">
       <span class="q-banner-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4H5v17h14V4h-3M8 3h8v4H8zM8 12h8M8 16h5"/></svg></span>
       <span class="q-banner-body">
-        <span class="q-banner-title">Анкета до начала потока</span>
-        <span class="q-banner-sub">О вашем запросе и ожиданиях от программы</span>
+        <span class="q-banner-title">Заполните анкету участницы</span>
+        <span class="q-banner-sub">Ваш запрос и ожидания от программы · первая неделя</span>
       </span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
     </button>`;

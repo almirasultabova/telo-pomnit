@@ -102,6 +102,7 @@ const Api = {
   logout() {
     if (typeof clearAccessManagementState === 'function') clearAccessManagementState();
     this._authGeneration++;
+    window.QuestionnaireCycle?.invalidate();
     this._token = null;
     this.userId = null;
     this.isClubAdmin = false;
@@ -228,6 +229,10 @@ const Api = {
 
   async saveQuestionnairePre(streamId, answers) {
     return this._request('POST', '/questionnaires/pre', { streamId, answers, formVersion: 1 });
+  },
+
+  async saveQuestionnairePost(streamId, answers) {
+    return this._request('POST', '/questionnaires/post', { streamId, answers, formVersion: 2 });
   },
 
   // ─── Обратная связь ──────────────────────────────────────────────────────

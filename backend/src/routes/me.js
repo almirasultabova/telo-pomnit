@@ -159,18 +159,27 @@ async function getProgramAccess(user, now = Date.now()) {
       meetings: e.stream.meetings.map(m => ({ id: m.id, number: m.number, date: m.date, topic: m.topic, description: m.description, prepare: m.prepare, zoomLink: live ? m.zoomLink : null }))
     }
   })
+  const liveStreams = streams.filter(s => s.canUseAi)
+  const completedPre = !serviceAccess && liveStreams.length ? await db.questionnaire.findMany({
+    where: { userId: user.id, type: 'pre', streamId: { in: liveStreams.map(s => s.id) } }, select: { streamId: true }
+  }) : []
+  const filledStreams = new Set(completedPre.map(q => q.streamId))
+  if (!serviceAccess) for (const stream of liveStreams) stream.canUseAi = filledStreams.has(stream.id)
   const active = streams.filter(s => s.canUseAi)
+  const questionnaireRequired = !serviceAccess && liveStreams.length > 0 && active.length === 0
   const transition = now < AI_TRANSITION_END && new Date(user.createdAt).getTime() < AI_ACCESS_ROLLOUT_AT && !all.some(e => e.status === 'cancelled')
-  const reason = admin ? 'admin' : host ? 'host' : active.length ? 'program' : transition ? 'transition' : streams.some(s => s.phase === 'upcoming') ? 'not_started' : streams.length ? 'ended' : 'purchase_required'
-  const canUseAi = serviceAccess || active.length > 0 || transition
-  const message = reason === 'transition'
+  const reason = admin ? 'admin' : host ? 'host' : questionnaireRequired ? 'questionnaire_required' : active.length ? 'program' : transition ? 'transition' : streams.some(s => s.phase === 'upcoming') ? 'not_started' : streams.length ? 'ended' : 'purchase_required'
+  const canUseAi = !questionnaireRequired && (serviceAccess || active.length > 0 || transition)
+  const message = questionnaireRequired ? 'Заполните анкету участницы, чтобы начать разговор с AI-ассистентом.' : reason === 'transition'
     ? 'AI доступен в переходный период до 29 сентября, 16:00 МСК. Затем — во время оплаченной программы. Дневник и реакции останутся бесплатными.'
     : reason === 'ended' ? 'Программа завершилась. Дневник, реакции и история диалогов остаются доступны; новые сообщения AI — во время следующего потока, к которому вам открыт доступ.'
     : reason === 'not_started' ? 'AI откроется в день начала вашего потока. Дневник и реакции уже доступны.'
     : reason === 'purchase_required' ? 'Новые сообщения AI доступны во время потока, к которому вам открыт доступ. Дневник, реакции и история остаются бесплатными.'
     : ['admin', 'host'].includes(reason) ? 'Режим ведущей: служебный доступ к AI.' : 'AI доступен во время вашей программы. Дневник и реакции останутся с вами после её завершения.'
   return { hasAccess: true, canWrite: canUseAi, diary: true, reactions: true, checkins: true, aiHistory: true,
-    ai: { canWrite: canUseAi, reason, message, expiresAt: serviceAccess ? null : reason === 'transition' ? new Date(AI_TRANSITION_END).toISOString() : active.length ? active.map(s => s.aiExpiresAt).sort().pop() : null },
+    ai: { canWrite: canUseAi && !questionnaireRequired, reason, message,
+      questionnaireStreamId: questionnaireRequired ? liveStreams[0].id : null,
+      expiresAt: serviceAccess ? null : reason === 'transition' ? new Date(AI_TRANSITION_END).toISOString() : liveStreams.length ? liveStreams.map(s => s.aiExpiresAt).sort().pop() : null },
     streams, serverTime: new Date(now).toISOString() }
 }
 

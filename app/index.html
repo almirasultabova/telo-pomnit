@@ -24,6 +24,8 @@
   <link rel="stylesheet" href="css/ux-personal.css?v=j301">
   <link rel="stylesheet" href="css/ux-review-refinements.css?v=j302">
   <link rel="stylesheet" href="css/launch.css?v=silk-20261014">
+<link rel="stylesheet" href="css/questionnaire-flow.css?v=JAPP015">
+<link rel="stylesheet" href="css/questionnaire-cycle.css?v=JAPP015">
 </head>
 <body>
 <div id="startup-error" role="alert" hidden>
@@ -147,6 +149,7 @@
         <section class="home-stream-section" aria-labelledby="home-stream-title">
           <h2 class="home-stream-title" id="home-stream-title">Мой поток</h2>
           <div id="home-stream" aria-live="polite"></div>
+          <div id="home-q-banner-wrap"></div>
         </section>
         <section class="home-continuation" aria-labelledby="home-continuation-title">
           <div class="home-section-head"><h2 id="home-continuation-title">Ваши наблюдения</h2></div>
@@ -449,6 +452,7 @@
       <div class="screen-title">AI-ассистент</div>
       <div class="screen-sub">Разговор о ваших наблюдениях</div>
       <p id="ai-access-notice" class="access-notice" role="status"></p>
+      <button id="ai-questionnaire-btn" type="button" class="btn btn--accent btn--full btn--sm" hidden>Заполнить анкету</button>
       <details class="ai-history-disclosure"><summary>История разговоров</summary>
       <p class="ai-history-purpose">Здесь можно вернуться к прежнему разговору.</p>
       <label class="ai-history-label" for="ai-history-select">Ваши диалоги</label>
@@ -634,9 +638,9 @@
   <div class="bottom-sheet-content">
     <div class="q-invite-emoji">📋</div>
     <h3 class="q-invite-title">Расскажите немного о себе</h3>
-    <p class="q-invite-text">Анкета участницы поможет нам лучше вас узнать и сделать программу точнее. Займёт около 5 минут.</p>
+    <p class="q-invite-text">Анкета поможет обозначить ваш запрос и ожидания от программы. Заполните её в первую неделю.</p>
     <button class="btn btn--accent btn--full" id="q-invite-start-btn" onclick="openQuestionnaire()">Заполнить анкету</button>
-    <button class="q-invite-later" onclick="closeQInvite()">Заполню позже</button>
+    <button class="q-invite-later" onclick="closeQInvite()">Вернуться в приложение</button>
   </div>
 </div>
 
@@ -705,5 +709,7 @@
 <script src="js/access-management.js?v=access-20261011"></script>
 <script src="js/launch.js?v=silk-return-25-20261014"></script>
 <script src="js/app.js?v=access-20260922"></script>
+<script src="js/questionnaire-polish.js?v=JAPP015"></script>
+<script src="js/questionnaire-cycle.js?v=JAPP015"></script>
 </body>
 </html>
