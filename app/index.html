@@ -31,11 +31,11 @@
   <p id="startup-error-message"></p>
   <button type="button" onclick="location.reload()">Повторить загрузку</button>
 </div>
-<p id="launch-status" role="status" hidden>Открываем приложение…</p>
+<p id="launch-status" role="status" hidden>Открываем «Тело помнит»…</p>
 <div id="launch-overlay" aria-hidden="true">
-  <img id="launch-poster" src="/media/app/launch/bud.webp?v=silk-centre-20261014" alt="">
-  <canvas id="launch-canvas" hidden></canvas>
-  <video id="launch-video" muted playsinline webkit-playsinline preload="auto" disablepictureinpicture tabindex="-1"></video>
+  <picture id="launch-poster"><source media="(max-aspect-ratio:20/39)" srcset="/media/app/launch/bud-tall.webp?v=silk-native-20261014"><img src="/media/app/launch/bud.webp?v=silk-native-20261014" alt=""></picture>
+  <video id="launch-video" muted playsinline webkit-playsinline preload="auto" disablepictureinpicture tabindex="-1" hidden></video>
+  <img id="launch-motion" alt="" hidden>
   <div id="launch-title"><span>Тело</span><span>помнит</span></div>
 </div>
 <noscript><style>#launch-overlay{display:none}</style></noscript>
