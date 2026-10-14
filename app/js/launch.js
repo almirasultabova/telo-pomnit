@@ -16,7 +16,7 @@ window.LaunchSplash = (() => {
     const originallyInert = app.inert;
     let started = false, finished = false, fading = false, playing = false, usingImage = false;
     let loadTimer, watchTimer, bloomTimer, deadlineTimer, fadeTimer, animationFrame;
-    let lastTime = 0, lastProgress = 0, seenKey, bloomMs = 5250, fadeMs = 750;
+    let lastTime = 0, lastProgress = 0, seenKey, bloomMs = 5250, fadeMs = 750, clipEnd = 4.1;
     const clearWork = () => {
       clearTimeout(loadTimer); clearTimeout(bloomTimer); clearTimeout(deadlineTimer);
       clearInterval(watchTimer); cancelAnimationFrame(animationFrame);
@@ -49,7 +49,7 @@ window.LaunchSplash = (() => {
     }
     function movieFrame() {
       if (finished || fading || usingImage) return;
-      if (playing && video.currentTime >= 4.1) { complete(); return; }
+      if (playing && video.currentTime >= clipEnd) { complete(); return; }
       animationFrame = requestAnimationFrame(movieFrame);
     }
     function imageFallback() {
@@ -62,7 +62,7 @@ window.LaunchSplash = (() => {
       loadTimer = setTimeout(() => fade(180), 4000);
       const tall = layer.dataset.aspect === 'tall';
       motion.src = layer.dataset.mode === 'return'
-        ? (tall ? '/media/app/launch/return-tall.webp?v=silk-native-20261014' : '/media/app/launch/return-standard.webp?v=silk-native-20261014')
+        ? (tall ? '/media/app/launch/return-tall.webp?v=silk-return-25-20261014' : '/media/app/launch/return-standard.webp?v=silk-return-25-20261014')
         : (tall ? '/media/app/launch/first-tall.webp?v=silk-native-20261014' : '/media/app/launch/first-standard.webp?v=silk-native-20261014');
     }
     motion.addEventListener('load', () => {
@@ -75,7 +75,7 @@ window.LaunchSplash = (() => {
     motion.addEventListener('error', () => { if (usingImage) fade(180); });
     video.addEventListener('playing', () => {
       if (finished || fading || usingImage) return;
-      video.playbackRate = 4.1 / (bloomMs / 1000);
+      video.playbackRate = clipEnd / (bloomMs / 1000);
       playing = true; clearTimeout(loadTimer); lastProgress = performance.now();
       poster.hidden = true;
       layer.dataset.media = 'video';
@@ -83,7 +83,7 @@ window.LaunchSplash = (() => {
     video.addEventListener('error', imageFallback);
     video.addEventListener('ended', () => {
       if (!usingImage && !finished && !fading) {
-        if (video.currentTime >= 4.1) complete(); else imageFallback();
+        if (video.currentTime >= clipEnd) complete(); else imageFallback();
       }
     });
     const error = document.getElementById('startup-error');
@@ -103,7 +103,8 @@ window.LaunchSplash = (() => {
       layer.dataset.mode = returning ? 'return' : 'first';
       layer.dataset.aspect = layer.clientHeight / Math.max(1, layer.clientWidth) >= 1.95 ? 'tall' : 'standard';
       layer.dataset.media = 'video-loading';
-      bloomMs = returning ? 2550 : 5250; fadeMs = returning ? 450 : 750;
+      bloomMs = returning ? 2050 : 5250; fadeMs = returning ? 450 : 750;
+      clipEnd = returning ? 3.6 : 4.1;
       deadlineTimer = setTimeout(() => fade(180), returning ? 9000 : 12000);
       loadTimer = setTimeout(imageFallback, 1800);
       lastProgress = performance.now();
@@ -115,7 +116,7 @@ window.LaunchSplash = (() => {
         ? '/media/app/launch/flower-tall.mp4?v=silk-native-20261014'
         : '/media/app/launch/flower-720.mp4?v=silk-native-20261014';
       video.muted = true; video.defaultMuted = true; video.playsInline = true;
-      video.defaultPlaybackRate = 4.1 / (bloomMs / 1000);
+      video.defaultPlaybackRate = clipEnd / (bloomMs / 1000);
       video.playbackRate = video.defaultPlaybackRate;
       video.hidden = false;
       movieFrame();

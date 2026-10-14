@@ -62,32 +62,33 @@ function fixture({ seen = false, authed = true, play = 'success', height = 844 }
   assert(/#launch-title\{[^}]*opacity:1/.test(css), 'brand must be visible before playback');
   results.push('initial paint: brand visible; no old splash, canvas or transparent source');
 
-  for (const [seen, seconds] of [[false,6],[true,3]]) {
+  for (const [seen, seconds] of [[false,6],[true,2.5]]) {
     const f=fixture({seen}); f.api.ready(); await Promise.resolve();
     f.video.playbackRate = 1; // Some clients reset rate while loading metadata.
     f.video.emit('playing');
+    assert.equal(f.video.playbackRate, (seen ? 3.6 : 4.1) / (seen ? 2.05 : 5.25));
     assert(f.video.src?.endsWith('.mp4?v=silk-native-20261014'));
     assert.equal(f.video.hidden,false); assert.equal(f.poster.hidden,true);
     f.advance(seconds*1000-100); assert.equal(f.layer.hidden,false);
     f.advance(200); assert.equal(f.layer.hidden,true); assert.equal(f.app.inert,false);
     assert.equal(f.writes.length,1); assert.equal(f.video.src,undefined); assert.equal(f.timers.size,0);
   }
-  results.push('native animation: first 6 s, returning 3 s; both reveal the flower and clean up');
+  results.push('native animation: first 6 s, returning 2.5 s; shorter tail, both reveal the flower and clean up');
 
   const cold=fixture(); cold.api.ready(); cold.advance(1200);
   assert.equal(cold.layer.hidden,false); cold.video.emit('playing'); cold.advance(6100);
   assert.equal(cold.layer.hidden,true); assert.equal(cold.writes.length,1);
   results.push('cold 1.2-second video start does not skip animation');
 
-  for (const [seen,seconds] of [[false,6],[true,3]]) {
+  for (const [seen,seconds] of [[false,6],[true,2.5]]) {
     const f=fixture({seen,play:'reject'}); f.api.ready(); await Promise.resolve(); await Promise.resolve();
     assert.equal(f.layer.dataset.media,'image-loading'); assert.equal(f.video.hidden,true);
-    assert(f.motion.src.endsWith((seen?'return':'first')+'-tall.webp?v=silk-native-20261014'));
+    assert(f.motion.src.endsWith((seen?'return':'first')+'-tall.webp?v='+(seen?'silk-return-25-20261014':'silk-native-20261014')));
     f.motion.emit('load'); assert.equal(f.motion.hidden,false);
     f.advance(seconds*1000-1); assert.equal(f.layer.hidden,false);
     f.advance(1); assert.equal(f.layer.hidden,true); assert.equal(f.writes.length,1); assert.equal(f.timers.size,0);
   }
-  results.push('autoplay rejection: animated fallback also lasts 6/3 s, never static return');
+  results.push('autoplay rejection: animated fallback also lasts 6/2.5 s, never static return');
 
   const unavailable=fixture({play:'pending'}); unavailable.api.ready(); unavailable.advance(1800);
   assert.equal(unavailable.layer.dataset.media,'image-loading');
