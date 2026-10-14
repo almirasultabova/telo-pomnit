@@ -7,7 +7,11 @@
     if(started || !document.getElementById('screen-home')?.classList.contains('screen--active'))return;
     if(!qStatusVerified)return;
     started=true;
-    if(view==='pre')openQuestionnaire();
+    if(view==='q-invite') {showQInvite();}
+    else if(view==='home-pending') {closeQInvite();}
+    else if(view==='profile-pending') {switchTab('profile');closeQInvite();}
+    else if(view==='path-empty' || view==='path-example') {switchTab('diag');closeQInvite();}
+    else if(view==='pre')openQuestionnaire();
     else if(view==='pre-thanks') {
       document.getElementById('questionnaire-body').innerHTML='<div class="q-done-title">Спасибо</div>';
       const footer=document.querySelector('#screen-questionnaire .questionnaire-footer');

@@ -6,7 +6,7 @@ function context(view) {
  vm.createContext(ctx);vm.runInContext(code,ctx);return ctx;
 }
 (async()=>{
- for(const view of ['pre','pre-thanks','post','post-thanks','compared']){
+ for(const view of ['pre','pre-thanks','post','post-thanks','compared','home-pending','q-invite','profile-pending','path-empty','path-example']){
   const ctx=context(view),request=(url,method='GET',body)=>ctx.window.fetch(url,{method,body:body?JSON.stringify(body):undefined});
   assert.throws(()=>ctx.window.localStorage,error=>error.name==='SecurityError');
   assert.equal((await request('/api/ai/chat','POST',{text:'synthetic'})).status,403);
@@ -15,6 +15,10 @@ function context(view) {
   assert.equal((await request('/api/me','PATCH',{name:'synthetic'})).status,403);
   const access=await (await request('/api/me/enrollment/access')).json();assert.equal(access.ai.canWrite,false);
   const before=await (await request('/api/questionnaires/fictional-stream')).json();
+  if(['home-pending','q-invite','profile-pending'].includes(view))assert.equal(before.pre,null);
+  const checkins=await(await request('/api/checkins')).json();
+  assert.equal(checkins.length,view==='path-example'?4:0);
+  if(view==='path-example')assert(checkins.every(row=>['tension','anxiety','energy','safety','bodyContact'].every(key=>Number.isInteger(row[key]))));
   const answer={bodyContactScale:7,anxietyScale:null,currentSituation:'Synthetic typed answer'};
   const saved=await (await request('/api/questionnaires/post','POST',{answers:answer})).json();assert.deepEqual(saved.answers,answer);
   const after=await (await request('/api/questionnaires/fictional-stream')).json();assert.deepEqual(after.pre,before.pre);
@@ -26,5 +30,5 @@ function context(view) {
  assert(html.indexOf('Object.defineProperty(window')<html.indexOf('const AppLocalStorage'));
  assert(!html.includes('window.LaunchSplash ='));assert(!html.includes('Telegram.WebView ='));
  assert(!main.includes("token:'fictional-review-only'"));assert(!main.includes('Object.defineProperty(window'));
- console.log('PASS: five views, device storage denied, no AI/feedback, memory-only answers/reset, real pre preserved, CSP and fonts, fixture absent from main app');
+ console.log('PASS: ten views, device storage denied, no AI/feedback, memory-only answers/reset, real pre preserved, CSP and fonts, fixture absent from main app');
 })().catch(error=>{console.error(error);process.exitCode=1});

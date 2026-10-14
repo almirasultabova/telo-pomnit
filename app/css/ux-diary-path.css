@@ -63,3 +63,12 @@
 #tab-diary .today-card--done #add-entry-btn{background:#2A4A38;color:#fffdfa;border:0;font:600 14px/1.4 var(--font-body)}
 #tab-diary .today-card::before,#tab-diary .today-card::after{content:none}
 #tab-diary .diary-group-title::after{content:none}
+
+/* J-APP-020: participant empty observations, keeping the established imagery. */
+#tab-diag .mypath-empty{position:relative;isolation:isolate;min-height:250px;padding:30px 24px!important;overflow:hidden;background:var(--color-bg)!important;border-radius:16px}
+#tab-diag .mypath-empty::before{content:'';position:absolute;inset:0;z-index:-2;background:url('/media/app/redesign/home-portrait-r01.webp') right center/cover no-repeat}
+#tab-diag .mypath-empty::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--color-bg) 5%,rgba(247,244,239,.93) 52%,rgba(247,244,239,.32))}
+#tab-diag .mypath-empty-title{max-width:80%;font:500 32px/1.1 var(--font-serif);color:var(--color-action);margin:0 0 16px}
+#tab-diag .mypath-empty-sub{max-width:78%;font:400 15px/1.6 var(--font-body);color:var(--color-action);margin-bottom:24px}
+#tab-diag .mypath-empty .btn,#path-first-checkin{min-height:48px;width:auto;max-width:100%;font:500 15px/1.4 var(--font-body)}
+.profile-streak-note{grid-column:1/-1;margin:12px 0 0;font:400 12px/1.6 var(--font-body);color:var(--color-action)}

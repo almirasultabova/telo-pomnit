@@ -293,28 +293,17 @@ const Storage = {
   // ─── Стрик ────────────────────────────────────────────────────────────────
 
   /** Подсчёт серии дней подряд */
-  getStreak() {
-    const entries = this.getDiaryEntries();
-    if (!entries.length) return 0;
-
-    let streak = 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    for (let i = 0; i < 90; i++) {
-      const day = new Date(today);
-      day.setDate(today.getDate() - i);
-      const dayStr = day.toDateString();
-      const hasEntry = entries.some(e => new Date(e.date).toDateString() === dayStr);
-
-      if (hasEntry) {
-        streak++;
-      } else if (i > 0) {
-        // Разрыв в серии — стоп
-        break;
-      }
-      // i === 0 и нет записи сегодня: продолжаем (учитываем вчера)
-    }
+  getStreak(now = new Date()) {
+    const dayKey = time => new Date(time + 10800000).toISOString().slice(0,10);
+    const time = new Date(now).getTime();
+    if (!Number.isFinite(time)) return 0;
+    const todayKey = dayKey(time);
+    let day = Date.parse(todayKey+'T00:00:00+03:00');
+    const dates = new Set(this.getDiaryEntries().map(e => Date.parse(e.date || e.createdAt))
+      .filter(Number.isFinite).map(dayKey).filter(key => key <= todayKey));
+    if(!dates.has(todayKey))day-=86400000;
+    let streak=0;
+    while(dates.has(dayKey(day))){streak++;day-=86400000;}
     return streak;
   },
 

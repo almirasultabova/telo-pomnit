@@ -1042,7 +1042,7 @@ function renderMyPathTab() {
   const entries = Storage.getDiaryEntries().filter(row => inStreamPeriod(row));
   const diagResult = Storage.getDiagResult();
 
-  const analyticsHtml = !streamPeriod() ? '' : renderStreamSummary(entries) + (renderCheckinChart() || renderPathChartEmpty()) + (entries.length
+  const analyticsHtml = !streamPeriod() ? '<section class="path-no-stream"><h2>Личные наблюдения</h2><p>Чтобы увидеть наблюдения и динамику за поток, выберите доступный поток. Все ваши записи остаются в Дневнике.</p></section>' : renderStreamSummary(entries) + (renderCheckinChart() || renderPathChartEmpty()) + (entries.length
     ? renderMirrorCard(entries) +
       renderHeatmapSection(entries) +
       renderTopSensations(entries) +
@@ -1050,14 +1050,16 @@ function renderMyPathTab() {
       renderPathStats(entries)
     : `<div class="mypath-empty">
         <div class="mypath-empty-title">Наблюдения этого потока</div>
-        <div class="mypath-empty-sub">Здесь появятся области тела и ощущения из записей в даты потока. Более ранние записи доступны в Дневнике.</div>
+        <div class="mypath-empty-sub">Здесь появятся области тела и ощущения из ваших записей. Можно начать с того, что вы чувствуете сейчас.</div><button class="btn btn--accent" id="path-first-observation" type="button">Почувствовать тело</button>
       </div>`);
 
   container.innerHTML = programPickerHTML() + streamStatusHTML() +
-    '<button type="button" class="path-program-link" id="path-program-btn"><span>Анкеты и встречи потока</span><small>В Профиле →</small></button>' +
+    `<button type="button" class="path-program-link" id="path-program-btn"><span>Мой поток</span><small>${Api.userRole === 'HOST' || Api.isClubAdmin ? 'Расписание' : 'Анкета и расписание'} · в Профиле →</small></button>` +
     '<section class="path-questionnaire" aria-label="Опрос привычных реакций">' + renderDiagBlock(diagResult) + '</section>' +
     '<section class="path-analysis" aria-label="Личные наблюдения">' + analyticsHtml + '</section>';
   renderHistoryLoadWarning(container, ['diary', 'checkins'], 'path');
+  container.querySelector('#path-first-observation')?.addEventListener('click',()=>document.getElementById('main-body-btn')?.click());
+  container.querySelector('#path-first-checkin')?.addEventListener('click',()=>document.getElementById('main-state-btn')?.click());
   container.querySelector('#path-stream-select')?.addEventListener('change', event => selectProgram(event.target.value));
   container.querySelector('#path-program-btn')?.addEventListener('click', () => switchTab('profile'));
 
@@ -1071,7 +1073,7 @@ function renderMyPathTab() {
 
 function renderPathChartEmpty() {
   const failed = Storage.getHistoryLoadStatus?.().checkins === 'failed';
-  return `<section class="path-chart-empty" aria-label="Динамика состояния"><h2>Динамика состояния</h2><div class="path-chart-placeholder" aria-hidden="true"><span>10</span><span>5</span><span>1</span></div><p>${failed ? 'Не удалось загрузить отметки состояния. Повторите загрузку истории выше.' : 'После отметки состояния здесь появится график пяти шкал. Пока точек для выбранного потока нет.'}</p></section>`;
+  return `<section class="path-chart-empty" aria-label="Динамика состояния"><h2>Динамика состояния</h2><div class="path-chart-placeholder" aria-hidden="true"><span>10</span><span>5</span><span>1</span></div><p>${failed ? 'Не удалось загрузить отметки состояния. Повторите загрузку истории выше.' : 'После отметки состояния здесь появится график пяти шкал. Пока точек для выбранного потока нет.'}</p>${failed ? '' : '<button class="btn btn--outline" id="path-first-checkin" type="button">Отметить состояние</button>'}</section>`;
 }
 
 // ─── Блок диагностики паттерна ────────────────────────────────────────────
@@ -1508,6 +1510,7 @@ function renderProfileTab() {
   window.ScreenReview?.renderEntry();
 }
 
+let programRefreshError = false;
 let admissionRefreshTimer = null;
 let admissionLoading = false;
 async function renderAdmissions() {
@@ -1566,6 +1569,7 @@ function accessDate(value) {
   return new Date(value).toLocaleString('ru-RU', {timeZone:'Europe/Moscow',day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 function applyProgramAccess(access) {
+  programRefreshError=false;
   programAccess=access;
   const serverTime = Date.parse(access.serverTime);
   programClock = Number.isFinite(serverTime) ? { server: serverTime, received: Date.now() } : null;
@@ -1599,14 +1603,23 @@ function aiQuestionnaireSaved() {
     qStreamId === programAccess.ai.questionnaireStreamId && Api.userId === qStatusIdentity?.owner && Api._authGeneration === qStatusIdentity?.generation;
 }
 async function refreshProgramAccess(){
-  try {applyProgramAccess(await Api.getAccess());}
-  catch {programAccess=null;aiAccessGranted=null;checkAndShowQuestionnaire(null);renderAccessNotice();renderMainTab();}
+  const owner=Api.userId,generation=Api._authGeneration;
+  try {
+    const access=await Api.getAccess();
+    if(owner===Api.userId && generation===Api._authGeneration && !Api.clubBlocked)applyProgramAccess(access);
+  } catch {
+    if(owner!==Api.userId || generation!==Api._authGeneration || Api.clubBlocked)return;
+    programRefreshError=true;
+    if(!programAccess){aiAccessGranted=null;checkAndShowQuestionnaire(null);renderAccessNotice();}
+    renderMainTab();
+  }
 }
 function renderNextMeeting(){
   const el=document.getElementById('next-meeting-card');
   if(!el)return;
   const streams=programAccess?.streams||[];
   el.replaceChildren();
+  if(programRefreshError && programAccess){const notice=document.createElement('p');notice.className='program-status';notice.setAttribute('role','status');notice.textContent='Не удалось обновить расписание. Показаны последние загруженные данные.';el.append(notice);}
   if(!programAccess){
     const p=document.createElement('p');p.className='program-status';p.textContent='Не удалось загрузить поток и расписание.';el.append(p);
   }else if(!streams.length){
@@ -1739,10 +1752,9 @@ function renderHosts() {
       </div>
       <div>
         <div class="host-name-mini">${h.tg ? `<a href="${h.tg}" data-tg-link="${h.tg}">${h.name}</a>` : h.name}</div>
-        <div class="host-role-mini">${h.name === 'Анастасия Костылева' ? 'Ведёт разборы и телесные практики' : h.name === 'Альмира Султанова' ? 'Организатор · задания и обратная связь' : h.role}</div>
       </div>
       ${h.tg ? `<a class="host-tg-link" href="${h.tg}" data-tg-link="${h.tg}" aria-label="Написать ${h.name}">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="/media/app/icons/lucide.svg#send"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg>
       </a>` : ''}
     </div>`;}).join('');
 }
@@ -1787,13 +1799,13 @@ function renderStats() {
     <div class="stat-box">
       <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="/media/app/icons/lucide.svg#chart-no-axes-column-increasing"/></svg></span>
       <div class="stat-box-num">${streak}</div>
-      <div class="stat-box-label">дней подряд</div>
+      <div class="stat-box-label">${pluralDays(streak)}</div>
     </div>
     <div class="stat-box">
       <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="/media/app/icons/lucide.svg#notebook-pen"/></svg></span>
       <div class="stat-box-num">${total}</div>
       <div class="stat-box-label">записей</div>
-    </div>`;
+    </div><p class="profile-streak-note">Серия дней с записями в дневнике · по московскому времени</p>`;
 }
 
 // ─── Ссылки в профиле ─────────────────────────────────────────────────────

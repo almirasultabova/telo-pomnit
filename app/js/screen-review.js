@@ -1,6 +1,6 @@
 // Staff-only visual review. The opaque sandbox receives no token or participant data.
 (() => {
-  const views=[['pre','Начальная анкета'],['pre-thanks','Спасибо · начальная анкета'],['post','Итоговая анкета'],['post-thanks','Спасибо · итоговая анкета'],['compared','Мой путь']];
+  const views=[['pre','Начальная анкета'],['pre-thanks','Спасибо · начальная анкета'],['post','Итоговая анкета'],['post-thanks','Спасибо · итоговая анкета'],['compared','Мой путь · ответы до и после'],['home-pending','Главная · анкета не заполнена'],['q-invite','Приглашение к анкете'],['profile-pending','Профиль · анкета не заполнена'],['path-empty','Мой путь · без записей'],['path-example','Мой путь · пример динамики']];
   let frame=null, identity=null, loadingTimer=null;
   const allowed=()=>Api.isAuthed() && !Api.clubBlocked && (Api.isClubAdmin || ['HOST','ADMIN'].includes(Api.userRole));
   const current=()=>allowed() && identity?.owner===Api.userId && identity?.generation===Api._authGeneration;
@@ -17,7 +17,7 @@
     const status=document.getElementById('screen-review-status');status.hidden=false;status.textContent='Открываем экран…';
     frame=document.createElement('iframe');frame.id='screen-review-frame';frame.title=views.find(([id])=>id===view)[1];
     frame.setAttribute('sandbox','allow-scripts');frame.setAttribute('referrerpolicy','no-referrer');
-    frame.src='screen-review.html?v=JAPP019&view='+encodeURIComponent(view);frame.hidden=true;
+    frame.src='screen-review.html?v=JAPP020&view='+encodeURIComponent(view);frame.hidden=true;
     const expected=frame;
     document.getElementById('screen-review-stage').append(frame);
     frame.addEventListener('error',()=>{if(current())status.textContent='Не удалось открыть экран. Выберите его ещё раз.';});
@@ -42,7 +42,7 @@
   window.ScreenReview={renderEntry,invalidate,leave};
   function install() {
     const screen=document.createElement('div');screen.className='screen';screen.id='screen-screen-review';screen.inert=true;screen.setAttribute('aria-hidden','true');
-    screen.innerHTML=`<div class="screen-review-wrap"><header class="screen-review-header"><button id="screen-review-close" class="q-close-btn" type="button" aria-label="Вернуться в Профиль"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button><h1>Проверить экраны</h1></header><div class="screen-review-controls"><p>Режим просмотра — ответы не сохраняются</p><label for="screen-review-choice">Выберите экран</label><select id="screen-review-choice">${views.map(([id,label])=>`<option value="${id}">${label}</option>`).join('')}</select></div><div class="screen-review-stage" id="screen-review-stage"><p id="screen-review-status" role="status">Открываем экран…</p><button id="screen-review-retry" class="btn btn--outline" type="button" hidden>Повторить загрузку</button></div></div>`;
+    screen.innerHTML=`<div class="screen-review-wrap"><header class="screen-review-header"><button id="screen-review-close" class="q-close-btn" type="button" aria-label="Вернуться в Профиль"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button><h1>Проверить экраны</h1></header><div class="screen-review-controls"><p>Режим просмотра · учебные данные, ответы не сохраняются</p><label for="screen-review-choice">Выберите экран</label><select id="screen-review-choice">${views.map(([id,label])=>`<option value="${id}">${label}</option>`).join('')}</select></div><div class="screen-review-stage" id="screen-review-stage"><p id="screen-review-status" role="status">Открываем экран…</p><button id="screen-review-retry" class="btn btn--outline" type="button" hidden>Повторить загрузку</button></div></div>`;
     document.getElementById('app').append(screen);
     document.getElementById('screen-review-close').onclick=close;
     document.getElementById('screen-review-choice').onchange=event=>load(event.target.value);
