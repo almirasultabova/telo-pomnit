@@ -32,6 +32,9 @@
     queueMicrotask(()=>window.parent.postMessage({type:'telo-screen-review-ready'},'*'));
   }
   function install() {
+    const editing=()=>window.parent.postMessage({type:'telo-screen-review-editing',editing:document.activeElement?.matches('textarea,input:not([type=checkbox]):not([type=radio]):not([type=range])')===true},'*');
+    document.addEventListener('focusin',editing);
+    document.addEventListener('focusout',()=>queueMicrotask(editing));
     new MutationObserver(open).observe(document.getElementById('app'),{attributes:true,attributeFilter:['class'],childList:true,subtree:true});open();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();

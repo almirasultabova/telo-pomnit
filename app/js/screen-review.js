@@ -5,6 +5,7 @@
   const allowed=()=>Api.isAuthed() && !Api.clubBlocked && (Api.isClubAdmin || ['HOST','ADMIN'].includes(Api.userRole));
   const current=()=>allowed() && identity?.owner===Api.userId && identity?.generation===Api._authGeneration;
   function invalidate() {
+    window.FormViewport?.setReviewEditing(false);
     clearTimeout(loadingTimer);
     frame?.remove(); frame=null; identity=null;
     const button=document.getElementById('screen-review-entry'); if(button)button.hidden=!allowed();
@@ -14,10 +15,11 @@
   function load(view) {
     if(!current() || !views.some(([id])=>id===view))return;
     clearTimeout(loadingTimer);frame?.remove();
+    window.FormViewport?.setReviewEditing(false);
     const status=document.getElementById('screen-review-status');status.hidden=false;status.textContent='Открываем экран…';
     frame=document.createElement('iframe');frame.id='screen-review-frame';frame.title=views.find(([id])=>id===view)[1];
     frame.setAttribute('sandbox','allow-scripts');frame.setAttribute('referrerpolicy','no-referrer');
-    frame.src='screen-review.html?v=JAPP020&view='+encodeURIComponent(view);frame.hidden=true;
+    frame.src='screen-review.html?v=JAPP021&view='+encodeURIComponent(view);frame.hidden=true;
     const expected=frame;
     document.getElementById('screen-review-stage').append(frame);
     frame.addEventListener('error',()=>{if(current())status.textContent='Не удалось открыть экран. Выберите его ещё раз.';});
@@ -49,6 +51,7 @@
     document.getElementById('screen-review-retry').onclick=()=>load(document.getElementById('screen-review-choice').value);
     window.addEventListener('message',event=>{
       if(!current() || event.source!==frame?.contentWindow)return;
+      if(event.data?.type==='telo-screen-review-editing' && typeof event.data.editing==='boolean')window.FormViewport?.setReviewEditing(event.data.editing);
       if(event.data?.type==='telo-screen-review-ready') {clearTimeout(loadingTimer);frame.hidden=false;document.getElementById('screen-review-status').hidden=true;document.getElementById('screen-review-retry').hidden=true;}
       if(event.data?.type==='telo-screen-review-exit')close();
     });
