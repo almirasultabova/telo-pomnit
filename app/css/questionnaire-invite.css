@@ -1,0 +1,73 @@
+/* J-APP-045: approved invitation, keeps the existing questionnaire flow. */
+#q-invite-sheet{
+  left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));
+  width:auto;max-width:420px;margin-inline:auto;padding:0;
+  max-height:calc(100dvh - 30px);overflow:auto;overscroll-behavior:contain;
+  border-radius:28px;background:#f7f4ef;
+  border:1px solid rgb(255 255 255 / .65);
+  box-shadow:0 14px 42px rgb(27 39 27 / .20);
+  scrollbar-width:thin;scrollbar-color:#a4ad99 #f7f4ef;
+}
+#q-invite-sheet:focus{outline:none}
+#q-invite-sheet .invite-visual{
+  height:126px;width:100%;position:relative;
+  background:#eae5d8 50% 25% / cover no-repeat;
+}
+#q-invite-sheet .bottom-sheet-handle{
+  position:absolute;z-index:2;top:10px;left:50%;transform:translateX(-50%);
+  width:34px;height:3px;margin:0;border-radius:4px;background:#8c927d;opacity:.6;
+}
+#q-invite-sheet .bottom-sheet-content{
+  position:relative;padding:39px 20px 13px;margin-top:-12px;
+  border-radius:23px 23px 0 0;background:#f7f4ef;overflow:visible;
+}
+#q-invite-sheet .q-invite-emoji{
+  position:absolute;top:0;left:50%;transform:translate(-50%,-50%);
+  display:grid;place-items:center;width:44px;height:44px;margin:0;
+  border-radius:50%;background:#f8f7ef;color:#3d5140;
+  box-shadow:0 4px 10px rgb(48 58 37 / .13);
+}
+#q-invite-sheet .q-invite-emoji svg{display:block;width:25px;height:28px}
+#q-invite-sheet .q-invite-title{
+  margin:0 0 9px;font-family:'Cormorant Garamond',Georgia,serif;
+  font-weight:500;font-style:italic;font-size:clamp(21px,6.3vw,25px);
+  line-height:1.2;letter-spacing:-.015em;color:#2a4a38;text-wrap:balance;
+}
+#q-invite-sheet .q-invite-text{
+  margin:0 auto 17px;max-width:none;font:400 12.2px/1.65 Manrope,sans-serif;
+  color:#5c6659;text-align:center;text-wrap:pretty;
+}
+#q-invite-start-btn{
+  position:relative;min-height:48px;height:auto;padding:13px 48px;
+  border:0;border-radius:26px;background:#234632;color:#fff;
+  font:500 14px/1.5 Manrope,sans-serif;letter-spacing:0;white-space:normal;
+  box-shadow:0 6px 12px rgb(29 57 38 / .17);text-align:center;
+}
+#q-invite-start-btn .invite-arrow{
+  position:absolute;right:9px;top:50%;transform:translateY(-50%);
+  display:grid;place-items:center;width:31px;height:31px;
+  border-radius:50%;background:rgb(255 255 255 / .08);
+}
+#q-invite-start-btn svg{width:19px;height:19px;display:block}
+#q-invite-start-btn:hover{background:#1b3d2a}
+#q-invite-start-btn:active{background:#193825;box-shadow:0 2px 5px rgb(29 57 38 / .15)}
+#q-invite-sheet .q-invite-later{
+  min-height:44px;padding:10px 8px;margin:6px 0 0;
+  font:400 12.5px/1.5 Manrope,sans-serif;color:#606958;background:none;
+}
+#q-invite-sheet .q-invite-later:hover{color:#2a4a38;text-decoration:underline;text-underline-offset:4px}
+#q-invite-sheet button:focus-visible{outline:2px solid #2a4a38;outline-offset:4px}
+#q-invite-sheet ::selection{background:#dce4d4;color:#203c2a}
+#q-invite-overlay{background:rgb(32 38 27 / .24);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+@media(max-width:350px){
+  #q-invite-sheet{left:10px;right:10px;border-radius:25px}
+  #q-invite-sheet .invite-visual{height:116px;background-position:50% 25%}
+  #q-invite-sheet .bottom-sheet-content{padding-inline:17px;padding-top:35px}
+  #q-invite-sheet .q-invite-text{font-size:12px;line-height:1.6}
+  #q-invite-start-btn{font-size:13px;padding-inline:42px;min-height:46px}
+}
+@media(max-height:560px){#q-invite-sheet .invite-visual{height:96px}#q-invite-sheet .bottom-sheet-content{padding-top:29px;padding-bottom:7px}#q-invite-sheet .q-invite-text{margin-bottom:12px}}
+@media(prefers-reduced-motion:reduce){#q-invite-sheet,#q-invite-overlay{transition:none!important;animation:none!important}}
+
+/* Fetch the original image only when this invitation is open. */
+#q-invite-sheet.active .invite-visual{background-image:url('/media/app/questionnaire-invite-owner.png')}

@@ -45,12 +45,13 @@ const screenFocus = new Map();
 let accessibleScreen = null;
 function syncScreenAccessibility() {
   const activeScreen = document.querySelector('.screen--active');
+  const inviteOpen = document.getElementById('q-invite-sheet')?.classList.contains('active');
   document.querySelectorAll('.screen').forEach(screen => {
-    const active = screen.classList.contains('screen--active');
+    const active = !inviteOpen && screen.classList.contains('screen--active');
     screen.inert = !active;
     if (active) screen.removeAttribute('aria-hidden'); else screen.setAttribute('aria-hidden', 'true');
   });
-  if (accessibleScreen && activeScreen && accessibleScreen !== activeScreen && !activeScreen.contains(document.activeElement)) {
+  if (!inviteOpen && accessibleScreen && activeScreen && accessibleScreen !== activeScreen && !activeScreen.contains(document.activeElement)) {
     activeScreen.tabIndex = -1;
     activeScreen.focus({ preventScroll: true });
   }
@@ -92,6 +93,7 @@ function goTo(screenId, back = false) {
 }
 
 function goBack() {
+  if (document.getElementById('q-invite-sheet')?.classList.contains('active')) { closeQInvite(); return; }
   if (currentScreen === 'stream-overview') { closeStreamOverview(); return; }
   if (currentScreen === 'access-admin') { closeAccessManagement(); return; }
   if (currentScreen === 'data-export-preview') { closePrivatePreview(); return; }
@@ -109,7 +111,7 @@ function goBack() {
 
 function updateBackBtn() {
   if (!tg?.BackButton) return;
-  if (['data-rights','data-export-preview'].includes(currentScreen) || !Api.clubBlocked && (screenStack.length > 0 || habitualView !== 'summary' && currentScreen === 'home' && activeTab === 'diag')) {
+  if (document.getElementById('q-invite-sheet')?.classList.contains('active') || ['data-rights','data-export-preview'].includes(currentScreen) || !Api.clubBlocked && (screenStack.length > 0 || habitualView !== 'summary' && currentScreen === 'home' && activeTab === 'diag')) {
     tg.BackButton.show();
   } else {
     tg.BackButton.hide();
@@ -2920,13 +2922,21 @@ async function checkAndShowQuestionnaire(streamId) {
 
 // ─── Bottom sheet — приглашение ───────────────────────────────────────────
 
+let qInviteReturnFocus = null;
 function showQInvite() {
   if (Api.isClubAdmin || Api.clubBlocked || !qStreamId || !qStatusVerified || qStatusDone || qStreamId !== selectedProgramId || Api.userId !== qStatusIdentity?.owner || Api._authGeneration !== qStatusIdentity?.generation) return;
   const overlay = document.getElementById('q-invite-overlay');
   const sheet   = document.getElementById('q-invite-sheet');
   if (!overlay || !sheet) return;
+  if (sheet.classList.contains('active')) return;
+  qInviteReturnFocus = { element: document.activeElement, owner: Api.userId, generation: Api._authGeneration };
+  sheet.inert = false;
+  sheet.removeAttribute('aria-hidden');
   overlay.classList.add('active');
   sheet.classList.add('active');
+  sheet.focus({ preventScroll: true });
+  syncScreenAccessibility();
+  updateBackBtn();
   haptic('light');
 }
 
@@ -2936,9 +2946,37 @@ function closeQInvite() {
   const overlay = document.getElementById('q-invite-overlay');
   const sheet   = document.getElementById('q-invite-sheet');
   if (!overlay || !sheet) return;
+  const wasOpen = sheet.classList.contains('active');
   overlay.classList.remove('active');
   sheet.classList.remove('active');
+  const previous = qInviteReturnFocus;
+  qInviteReturnFocus = null;
+  syncScreenAccessibility();
+  if (wasOpen && previous?.owner === Api.userId && previous?.generation === Api._authGeneration && previous.element?.isConnected && document.querySelector('.screen--active')?.contains(previous.element)) {
+    previous.element.focus({ preventScroll: true });
+  } else if (sheet.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  sheet.inert = true;
+  sheet.setAttribute('aria-hidden', 'true');
+  updateBackBtn();
 }
+
+document.addEventListener('keydown', event => {
+  const sheet = document.getElementById('q-invite-sheet');
+  if (!sheet?.classList.contains('active')) return;
+  if (event.key === 'Escape') { event.preventDefault(); closeQInvite(); return; }
+  if (event.key !== 'Tab') return;
+  const first = document.getElementById('q-invite-start-btn');
+  const last = sheet.querySelector('.q-invite-later');
+  if (document.activeElement === sheet || !sheet.contains(document.activeElement)) {
+    event.preventDefault(); (event.shiftKey ? last : first)?.focus();
+  } else if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault(); last?.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault(); first?.focus();
+  }
+});
 
 // ─── Открыть / закрыть экран анкеты ──────────────────────────────────────
 
