@@ -12,5 +12,7 @@
   "codeChanged": false,
   "webImplementationStarted": false,
   "messagesSent": 0,
-  "generatedBuildRemovedFromApp": true
+  "generatedBuildRemovedFromApp": true,
+  "fullProductAndReleaseLinksChecked": 12,
+  "missingProductAndReleaseLinks": []
 }
