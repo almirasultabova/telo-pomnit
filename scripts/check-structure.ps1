@@ -81,7 +81,7 @@ foreach ($area in @('site', 'app')) {
         }
     }
     if ($Built) {
-        $allowedPages = if ($area -eq 'site') { @('landing_final.html', 'thanks.html', 'offer.html', 'privacy.html', 'gaid-body-stress.html', 'admin.html', 'presentation.html') } else { @('index.html', 'admin.html', 'access-admin.html', 'screen-review.html') }
+        $allowedPages = if ($area -eq 'site') { @('landing_final.html', 'thanks.html', 'offer.html', 'privacy.html', 'gaid-body-stress.html', 'admin.html', 'presentation.html') } else { @('index.html', 'admin.html', 'access-admin.html', 'screen-review.html', 'stream-overview.html') }
         foreach ($file in Get-ChildItem -LiteralPath $folder -File -Recurse -Force) {
             $relative = $file.FullName.Substring($folder.Length).TrimStart('\', '/').Replace('\', '/')
             $mediaPath = '^media/(?:' + $area + '|shared)/'

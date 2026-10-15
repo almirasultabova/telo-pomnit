@@ -1,0 +1,46 @@
+ok 1 anonymous denied
+ok 2 no inherited full/role access HOST
+ok 3 no inherited full/role access ADMIN
+ok 4 no inherited full/role access PARTICIPANT
+ok 5 host sees only granted stream
+ok 6 owner sees streams
+ok 7 cross-stream read denied
+ok 8 granted overview loads
+ok 9 owner host excluded-test excluded from cohort
+ok 10 unique pre submitters
+ok 11 scale-specific pair denominator
+ok 12 anxiety has independent pairs
+ok 13 empty category is missing
+ok 14 no diary or questionnaire free text leaked
+ok 15 private overview is not cached
+ok 16 old weeks not inferred from current access
+ok 17 server save time used, not client backdate
+ok 18 unique weekly savers
+ok 19 return denominator prior active eligible in both
+ok 20 return intersection
+ok 21 new this week separate
+ok 22 database cutoff uses end of Moscow stream day
+ok 23 adjacent eligibility intervals retain continuous coverage
+ok 24 revocation closes historical interval
+ok 25 routed request saved
+ok 26 retry returns same record
+ok 27 retry does not duplicate notifier
+ok 28 same operation different intent conflicts
+ok 29 participant cannot route to foreign flow
+ok 30 participant cannot process requests
+ok 31 atomic concurrent take has exactly one winner
+ok 32 other assignee cannot overwrite
+ok 33 answer requires explicit confirmation
+ok 34 confirmed answer persists
+ok 35 audit records take and answer once
+ok 36 workflow sends no notification
+ok 37 host cannot read global legacy
+ok 38 owner sees unclassified separate
+ok 39 legacy triage owner only
+ok 40 owner explicitly classifies legacy
+ok 41 retry immutable original scope after staff classification
+ok 42 grant revoke effective on existing token
+ok 43 write denied after grant revoke
+ok 44 soft delete clears eligibility identifiers
+ok 45 deleted user feedback absent
+{"checks":45,"externalNetworkCalls":0,"notifierStubCalls":2,"realSends":0}

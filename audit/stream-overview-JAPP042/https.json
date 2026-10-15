@@ -1,0 +1,1037 @@
+[
+  {
+    "origin": "main",
+    "file": "access-admin.html",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "admin.html",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "index.html",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "screen-review.html",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "stream-overview.html",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/fonts.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/form-layout.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/launch.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/questionnaire-cycle.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/questionnaire-flow.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/screen-review.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/stream-overview-base.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/stream-overview.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/styles.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/ux-diary-path.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/ux-personal.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/ux-program.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "css/ux-review-refinements.css",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/access-management.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/api.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/app.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/boot.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/data.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/form-viewport.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/habitual.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/launch.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/questionnaire-cycle.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/questionnaire-polish.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/screen-review-fixture.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/screen-review-frame.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/screen-review.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/storage.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/stream-overview-entry.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/stream-overview.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "js/telegram-web-app.js",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/body-front.png",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/body-glow.png",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/body-rear.png",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/fonts/cormorant-garamond-italic-500-cyrillic.woff2",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/fonts/cormorant-garamond-italic-500-latin.woff2",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/fonts/cormorant-garamond-normal-500-cyrillic.woff2",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/fonts/cormorant-garamond-normal-500-latin.woff2",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/fonts/cormorant-garamond-OFL.txt",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/fonts/manrope-normal-400-cyrillic.woff2",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/fonts/manrope-normal-400-latin.woff2",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/fonts/manrope-OFL.txt",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/icons/lucide.svg",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/launch/bud-tall.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/launch/bud.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/launch/first-standard.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/launch/first-tall.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/launch/flower-720.mp4",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/launch/flower-tall.mp4",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/launch/open.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/launch/return-standard.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/launch/return-tall.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/redesign/body-back-owner.png",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/redesign/body-front-owner.png",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/redesign/fabric-sage-owner.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/redesign/home-portrait-r01.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/redesign/home-sanctuary.jpg",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/redesign/leaf-gold-owner.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/redesign/leaf-shadow-owner.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/redesign/olive-foreground.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/redesign/pair-linen-v2.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/redesign/questionnaire-silk-owner-r01.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/app/redesign/stream-olive-r04.webp",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/shared/almira.jpg",
+    "ok": true
+  },
+  {
+    "origin": "main",
+    "file": "media/shared/nastya.jpg",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "access-admin.html",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "admin.html",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "index.html",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "screen-review.html",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "stream-overview.html",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/fonts.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/form-layout.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/launch.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/questionnaire-cycle.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/questionnaire-flow.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/screen-review.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/stream-overview-base.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/stream-overview.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/styles.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/ux-diary-path.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/ux-personal.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/ux-program.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "css/ux-review-refinements.css",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/access-management.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/api.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/app.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/boot.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/data.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/form-viewport.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/habitual.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/launch.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/questionnaire-cycle.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/questionnaire-polish.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/screen-review-fixture.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/screen-review-frame.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/screen-review.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/storage.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/stream-overview-entry.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/stream-overview.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "js/telegram-web-app.js",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/body-front.png",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/body-glow.png",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/body-rear.png",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/fonts/cormorant-garamond-italic-500-cyrillic.woff2",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/fonts/cormorant-garamond-italic-500-latin.woff2",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/fonts/cormorant-garamond-normal-500-cyrillic.woff2",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/fonts/cormorant-garamond-normal-500-latin.woff2",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/fonts/cormorant-garamond-OFL.txt",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/fonts/manrope-normal-400-cyrillic.woff2",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/fonts/manrope-normal-400-latin.woff2",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/fonts/manrope-OFL.txt",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/icons/lucide.svg",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/launch/bud-tall.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/launch/bud.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/launch/first-standard.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/launch/first-tall.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/launch/flower-720.mp4",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/launch/flower-tall.mp4",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/launch/open.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/launch/return-standard.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/launch/return-tall.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/redesign/body-back-owner.png",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/redesign/body-front-owner.png",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/redesign/fabric-sage-owner.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/redesign/home-portrait-r01.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/redesign/home-sanctuary.jpg",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/redesign/leaf-gold-owner.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/redesign/leaf-shadow-owner.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/redesign/olive-foreground.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/redesign/pair-linen-v2.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/redesign/questionnaire-silk-owner-r01.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/app/redesign/stream-olive-r04.webp",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/shared/almira.jpg",
+    "ok": true
+  },
+  {
+    "origin": "reserve",
+    "file": "media/shared/nastya.jpg",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "access-admin.html",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "admin.html",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "index.html",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "screen-review.html",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "stream-overview.html",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/fonts.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/form-layout.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/launch.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/questionnaire-cycle.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/questionnaire-flow.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/screen-review.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/stream-overview-base.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/stream-overview.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/styles.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/ux-diary-path.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/ux-personal.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/ux-program.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "css/ux-review-refinements.css",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/access-management.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/api.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/app.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/boot.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/data.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/form-viewport.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/habitual.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/launch.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/questionnaire-cycle.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/questionnaire-polish.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/screen-review-fixture.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/screen-review-frame.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/screen-review.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/storage.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/stream-overview-entry.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/stream-overview.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "js/telegram-web-app.js",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/body-front.png",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/body-glow.png",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/body-rear.png",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/fonts/cormorant-garamond-italic-500-cyrillic.woff2",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/fonts/cormorant-garamond-italic-500-latin.woff2",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/fonts/cormorant-garamond-normal-500-cyrillic.woff2",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/fonts/cormorant-garamond-normal-500-latin.woff2",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/fonts/cormorant-garamond-OFL.txt",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/fonts/manrope-normal-400-cyrillic.woff2",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/fonts/manrope-normal-400-latin.woff2",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/fonts/manrope-OFL.txt",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/icons/lucide.svg",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/launch/bud-tall.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/launch/bud.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/launch/first-standard.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/launch/first-tall.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/launch/flower-720.mp4",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/launch/flower-tall.mp4",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/launch/open.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/launch/return-standard.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/launch/return-tall.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/redesign/body-back-owner.png",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/redesign/body-front-owner.png",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/redesign/fabric-sage-owner.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/redesign/home-portrait-r01.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/redesign/home-sanctuary.jpg",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/redesign/leaf-gold-owner.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/redesign/leaf-shadow-owner.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/redesign/olive-foreground.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/redesign/pair-linen-v2.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/redesign/questionnaire-silk-owner-r01.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/app/redesign/stream-olive-r04.webp",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/shared/almira.jpg",
+    "ok": true
+  },
+  {
+    "origin": "recovery",
+    "file": "media/shared/nastya.jpg",
+    "ok": true
+  }
+]
