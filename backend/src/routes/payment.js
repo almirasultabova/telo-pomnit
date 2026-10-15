@@ -1,4 +1,4 @@
-const { sendWelcomeEmail } = require('../services/email')
+const { welcomeReturnUrl, sendPaidWelcome } = require('../services/welcome-email')
 const https = require('https')
 const { randomUUID } = require('crypto')
 const db = require('../db')
@@ -47,7 +47,7 @@ async function paymentRoutes(app) {
     try {
       const payment = await yukassaRequest('POST', '/payments', {
         amount: { value: price, currency: 'RUB' },
-        confirmation: { type: 'redirect', return_url: `${process.env.APP_URL || 'https://telo-pomnit.ru'}/thanks.html` },
+        confirmation: { type: 'redirect', return_url: welcomeReturnUrl(order) },
         capture: true, description: 'Программа «Тело помнит»',
         metadata: { orderId: order.id, streamId: stream.id, email, name: name || '', telegramUsername },
         receipt: { customer: { email }, items: [{ description: 'Программа «Тело помнит»', quantity: '1', amount: { value: price, currency: 'RUB' }, vat_code: 1 }] }
@@ -102,7 +102,10 @@ async function paymentRoutes(app) {
       return { user }
     })
     if (applied) {
-      try { await sendWelcomeEmail(order.email, order.name || '') }
+      try {
+        const status = await sendPaidWelcome(order.id)
+        if (status === 'unconfirmed') request.log.warn({ orderId: order.id }, 'Отправка welcome-письма не подтверждена; автоматический повтор отключён')
+      }
       catch (err) { request.log.error({ orderId: order.id, message: err.message }, 'Не удалось отправить welcome-письмо') }
       if (applied.user) {
         try {

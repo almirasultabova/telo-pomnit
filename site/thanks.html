@@ -209,12 +209,11 @@ footer{padding:32px 0;border-top:1px solid rgba(42,74,56,0.08);text-align:center
   <div class="container">
     <div class="email-card reveal animate">
       <h2>Получите инструкцию на почту</h2>
-      <p>Введите email — мы пришлём ссылку на бота, чтобы она всегда была под рукой.</p>
+      <p id="emailHint">Письмо со ссылкой на бота придёт на адрес, указанный при оплате.</p>
       <form class="email-form" id="emailForm" onsubmit="sendEmail(event)">
-        <input class="email-input" type="email" id="emailInput" placeholder="ваш@email.ru" required autocomplete="email">
-        <button type="submit" class="btn btn--primary" id="emailBtn" style="width:auto;padding:12px 24px">Отправить</button>
+        <button type="submit" class="btn btn--primary" id="emailBtn" style="width:auto;padding:12px 24px" disabled>Получить письмо</button>
       </form>
-      <p class="email-status" id="emailStatus"></p>
+      <p class="email-status" id="emailStatus" role="status" aria-live="polite"></p>
     </div>
   </div>
 </section>
@@ -233,7 +232,7 @@ footer{padding:32px 0;border-top:1px solid rgba(42,74,56,0.08);text-align:center
       <p class="note-text">
         Доступ к программе привязан к <strong>Telegram-аккаунту</strong>, с которого вы зарегистрировались.
         Если вы входите с другого устройства — просто откройте того же бота.
-        На вашу почту также отправлено письмо с подтверждением оплаты.
+        Инструкция приходит на почту, указанную при оплате. Если письмо не пришло, напишите Анастасии по кнопке выше.
       </p>
     </div>
   </div>
@@ -248,12 +247,28 @@ footer{padding:32px 0;border-top:1px solid rgba(42,74,56,0.08);text-align:center
 </footer>
 
 <script>
-// Send welcome email
+// Only a signed payment return can request the order's existing welcome email.
+var welcomeRequest = (function () {
+  var params = new URLSearchParams(location.hash.slice(1))
+  var orderId = params.get('welcome_order')
+  var token = params.get('welcome_token')
+  if (params.getAll('welcome_order').length !== 1 || params.getAll('welcome_token').length !== 1 ||
+      !/^[a-zA-Z0-9-]{16,64}$/.test(orderId || '') || !/^[A-Za-z0-9_-]{43}$/.test(token || '')) {
+    document.getElementById('emailHint').textContent = 'Письмо отправляется после подтверждения оплаты. Для запроса откройте ссылку возврата из оплаты; если письма нет, напишите Анастасии по кнопке выше.'
+    return null
+  }
+  document.getElementById('emailBtn').disabled = false
+  return { orderId: orderId, token: token }
+})()
+
 async function sendEmail(e) {
   e.preventDefault()
   var btn = document.getElementById('emailBtn')
   var status = document.getElementById('emailStatus')
-  var email = document.getElementById('emailInput').value
+  if (!welcomeRequest || btn.disabled) return
+  var retryable = true
+  var controller = new AbortController()
+  var timer = setTimeout(function () { controller.abort() }, 20000)
 
   btn.disabled = true
   btn.textContent = 'Отправляем...'
@@ -264,20 +279,29 @@ async function sendEmail(e) {
     var res = await fetch('https://api.telo-pomnit.ru/send-welcome', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email })
+      body: JSON.stringify(welcomeRequest),
+      referrerPolicy: 'no-referrer',
+      signal: controller.signal
     })
-    if (res.ok) {
+    var result = await res.json()
+    if (res.status === 200 && result.status === 'sent') {
       status.textContent = 'Письмо отправлено — проверьте почту'
       status.className = 'email-status email-status--ok'
       btn.textContent = 'Отправлено'
+    } else if (res.status === 202 && result.status === 'sending') {
+      status.textContent = 'Запрос обрабатывается. Проверьте почту немного позже.'
+      btn.textContent = 'Запрос принят'
     } else {
-      throw new Error()
+      retryable = result.retryable !== false
+      throw new Error(result.error || 'Не удалось отправить. Попробуйте ещё раз.')
     }
-  } catch {
-    status.textContent = 'Не удалось отправить. Попробуйте ещё раз.'
+  } catch (error) {
+    status.textContent = error.name === 'AbortError' || error.name === 'TypeError' ? 'Не удалось проверить отправку. Повторите запрос: уже отправленное письмо не будет отправлено ещё раз.' : error.message
     status.className = 'email-status email-status--err'
-    btn.disabled = false
-    btn.textContent = 'Отправить'
+    btn.disabled = !retryable
+    btn.textContent = retryable ? 'Повторить запрос' : 'Запрос недоступен'
+  } finally {
+    clearTimeout(timer)
   }
 }
 

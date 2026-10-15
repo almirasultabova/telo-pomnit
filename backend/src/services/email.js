@@ -4,6 +4,9 @@ const transporter = nodemailer.createTransport({
   host: 'smtp.yandex.ru',
   port: 465,
   secure: true,
+  connectionTimeout: 5000,
+  greetingTimeout: 5000,
+  socketTimeout: 10000,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
@@ -11,7 +14,8 @@ const transporter = nodemailer.createTransport({
 })
 
 async function sendWelcomeEmail(to, name) {
-  const firstName = name ? name.split(' ')[0] : 'участница'
+  const firstName = (typeof name === 'string' && name.trim() ? name.trim().split(/\s+/)[0] : 'участница')
+    .replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character])
 
   await transporter.sendMail({
     from: `«Тело помнит» <${process.env.SMTP_USER}>`,

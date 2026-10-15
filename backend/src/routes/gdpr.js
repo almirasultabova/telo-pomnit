@@ -47,6 +47,7 @@ async function gdprRoutes(app) {
       profile: { id: user.id, telegramId: String(user.telegramId), name: user.name, firstName: user.firstName,
         lastName: user.lastName, username: user.username, telegramUsername: user.telegramUsername, phone: user.phone,
         photoUrl: user.photoUrl, notificationsEnabled: user.notificationsEnabled, notificationsTime: user.notificationsTime,
+        dailyReminderAttemptDay: user.dailyReminderAttemptDay, questionnaireReminderAttemptDay: user.questionnaireReminderAttemptDay,
         createdAt: user.createdAt, deletedAt: user.deletedAt, accessStatus: user.accessStatus,
         role: user.role, lastSeenAt: user.lastSeenAt, accessRequestedAt: user.accessRequestedAt, accessDecidedAt: user.accessDecidedAt, accessNotifiedAt: user.accessNotifiedAt,
         consentGivenAt: user.consentGivenAt, consentText: user.consentText, consentVersion: user.consentVersion, consentSource: user.consentSource },
@@ -78,6 +79,7 @@ async function gdprRoutes(app) {
       await tx.user.update({ where: { id: userId }, data: {
         name: null, firstName: null, lastName: null, username: null, telegramUsername: null,
         phone: null, photoUrl: null, lastSeenAt: null, preferredAppUrl: null, admissionDeliveredIds: [], admissionLeaseUntil: null, notificationsEnabled: false, notificationsTime: '20:00',
+        dailyReminderAttemptDay: null, questionnaireReminderAttemptDay: null,
         consentText: null, accessStatus: 'rejected', accessRequestedAt: null, accessNotifiedAt: null,
         accessDecidedAt: null, accessDecidedBy: null, deletedAt: new Date(), tokenVersion: { increment: 1 }
       } })

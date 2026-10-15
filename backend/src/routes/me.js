@@ -40,6 +40,7 @@ async function meRoutes(app) {
         photoUrl: user.photoUrl,
         telegramUsername: user.telegramUsername,
         notificationsTime: user.notificationsTime,
+        notificationsEnabled: user.notificationsEnabled,
         consentGivenAt: user.consentGivenAt,
         consentVersion: user.consentVersion,
         consentSource: user.consentSource
@@ -50,7 +51,7 @@ async function meRoutes(app) {
     }
   })
 
-  // PATCH /me — обновить имя или время уведомлений
+  // PATCH /me — обновить имя, время и включение напоминаний
   app.patch('/me', {
     preHandler: requireAuth,
     schema: {
@@ -58,20 +59,22 @@ async function meRoutes(app) {
         type: 'object',
         properties: {
           name: { type: 'string', maxLength: 100 },
-          notificationsTime: { type: 'string', pattern: '^([01]\\d|2[0-3]):[0-5]\\d$' }
+          notificationsTime: { type: 'string', pattern: '^([01]\\d|2[0-3]):[0-5]\\d$' },
+          notificationsEnabled: { type: 'boolean' }
         }
       }
     }
   }, async (request) => {
-    const { name, notificationsTime } = request.body
+    const { name, notificationsTime, notificationsEnabled } = request.body
     const updated = await withActiveUser(request, tx => tx.user.update({
       where: { id: request.user.id },
       data: {
         ...(name !== undefined && { name }),
-        ...(notificationsTime !== undefined && { notificationsTime })
+        ...(notificationsTime !== undefined && { notificationsTime }),
+        ...(notificationsEnabled !== undefined && { notificationsEnabled })
       }
     }))
-    return { name: updated.name, notificationsTime: updated.notificationsTime }
+    return { name: updated.name, notificationsTime: updated.notificationsTime, notificationsEnabled: updated.notificationsEnabled }
   })
 
   // PATCH /me/consent — зафиксировать согласие на обработку данных (ФЗ-152)

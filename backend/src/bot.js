@@ -247,41 +247,15 @@ bot.command('participants', async (ctx) => {
 
 // ─── Ежедневное напоминание ───────────────────────────────────────────────
 
-async function sendDailyReminder() {
-  const enrollments = await db.enrollment.findMany({
-    where: {
-      status: 'active',
-      user: { notificationsEnabled: true, accessStatus: 'approved', deletedAt: null },
-    },
-    include: { user: true },
-    take: 500,
-  })
+const reminderService = require('./services/reminders').createReminderService({
+  sendMessage: (id, text, options) => bot.api.sendMessage(id, text, options, AbortSignal.timeout(15000)),
+  miniAppUrl: MINI_APP_URL
+})
 
-  const keyboard = new InlineKeyboard().webApp('Сделать запись', MINI_APP_URL)
-
-  const messages = [
-    'Как тело чувствует себя сегодня?\n\nОдна минута внимания — и запись в дневнике.',
-    'Время для короткой практики.\n\nЗамечаете что-то в теле прямо сейчас?',
-    'Ежедневная минута с собой.\n\nЧто происходит в теле в этот момент?',
-    'Маленький шаг каждый день — это и есть практика.\n\nОткройте дневник и сделайте запись.',
-    'Тело говорит постоянно. Сегодня — день его послушать.',
-  ]
-
-  let sent = 0
-  for (const enrollment of enrollments) {
-    try {
-      const text = messages[Math.floor(Math.random() * messages.length)]
-      await bot.api.sendMessage(Number(enrollment.user.telegramId), text, {
-        reply_markup: keyboard,
-      })
-      sent++
-      if (sent % 20 === 0) await new Promise(r => setTimeout(r, 1000))
-    } catch {
-      // Пользователь мог заблокировать бота — пропускаем
-    }
-  }
-
-  console.log(`[cron] Напоминания отправлены: ${sent} из ${enrollments.length}`)
+async function sendDailyReminder(now = new Date()) {
+  const result = await reminderService.sendDailyReminder(now)
+  if (result.attempted || result.errors) console.log('[cron] Ежедневные напоминания:', result)
+  return result
 }
 
 // ─── Напоминание перед встречей ──────────────────────────────────────────
@@ -298,7 +272,7 @@ async function sendMeetingReminder() {
 
   for (const meeting of meetings) {
     const enrollments = await db.enrollment.findMany({
-      where: { streamId: meeting.streamId, status: 'active', user: { accessStatus: 'approved', deletedAt: null } },
+      where: { streamId: meeting.streamId, status: 'active', user: { notificationsEnabled: true, accessStatus: 'approved', deletedAt: null } },
       include: { user: true }
     })
 
@@ -330,69 +304,16 @@ async function sendMeetingReminder() {
   }
 }
 
-// ─── Cron: 20:00 МСК (17:00 UTC) каждый день ──────────────────────────────
-
-cron.schedule('0 17 * * *', sendDailyReminder, { timezone: 'UTC' })
-
-// ─── Cron: каждый час — проверка встреч ────────────────────────────────────
-
-cron.schedule('0 * * * *', sendMeetingReminder, { timezone: 'UTC' })
-
-// ─── Напоминание заполнить анкету ─────────────────────────────────────────
-
-async function sendQuestionnairReminder(dayNumber) {
-  const messages = {
-    1: `📋 Добро пожаловать в программу «Тело помнит»!\n\nПожалуйста, заполните короткую анкету участницы — займёт около 5 минут. Это поможет нам лучше вас узнать и сделать программу точнее.\n\nОткройте приложение → вкладка «Мой поток» → нажмите на баннер анкеты.`,
-    3: `📋 Напоминание об анкете\n\nЕсли ещё не заполнили анкету участницы — самое время. Это займёт 5 минут и поможет нам подготовить программу именно для вашей группы.\n\nОткройте приложение → вкладка «Мой поток».`,
-    5: `📋 Последнее напоминание\n\nАнкета участницы ждёт вас в приложении. После этого напоминания больше не будем беспокоить — но анкету всегда можно заполнить в разделе «Мой поток».`
-  }
-
-  const text = messages[dayNumber]
-  if (!text) return
-
-  // Находим всех активных участниц, у кого нет заполненной анкеты
-  const enrollments = await db.enrollment.findMany({
-    where: { status: 'active', user: { accessStatus: 'approved', deletedAt: null } },
-    include: {
-      user: true,
-      stream: true
-    }
-  })
-
-  let sent = 0
-  for (const en of enrollments) {
-    const user = en.user
-    if (!user || user.deletedAt) continue
-
-    // Проверяем, что участница зачислена именно N дней назад
-    const daysSinceEnroll = Math.floor(
-      (Date.now() - new Date(en.createdAt).getTime()) / (1000 * 60 * 60 * 24)
-    )
-    if (daysSinceEnroll !== dayNumber) continue
-
-    // Проверяем, не заполнена ли уже анкета
-    const existing = await db.questionnaire.findFirst({
-      where: { userId: user.id, streamId: en.streamId, type: 'pre' }
-    })
-    if (existing) continue
-
-    try {
-      await bot.api.sendMessage(Number(user.telegramId), text)
-      sent++
-    } catch (e) {
-      console.warn(`[cron] Не удалось отправить напоминание об анкете ${user.telegramId}:`, e.message)
-    }
-  }
-
-  if (sent > 0) console.log(`[cron] Напоминание об анкете (день ${dayNumber}): отправлено ${sent}`)
-}
-
-// Cron: каждый день в 10:00 МСК (07:00 UTC) — проверяем дни 1, 3, 5
-cron.schedule('0 7 * * *', async () => {
-  await sendQuestionnairReminder(1)
-  await sendQuestionnairReminder(3)
-  await sendQuestionnairReminder(5)
+// Minute polling uses each user's saved Moscow time; claims persist across restarts.
+cron.schedule('* * * * *', async () => {
+  const now = new Date()
+  await sendDailyReminder(now)
+  const result = await reminderService.sendQuestionnaireReminders(now)
+  if (result.attempted || result.errors) console.log('[cron] Напоминания об анкете:', result)
 }, { timezone: 'UTC' })
+
+// Meeting delivery remains disabled in sendMeetingReminder.
+cron.schedule('0 * * * *', sendMeetingReminder, { timezone: 'UTC' })
 
 // Cron: каждую ночь в 03:00 МСК (00:00 UTC) — чистим незавершённые оплаты старше 60 дней
 cron.schedule('0 0 * * *', async () => {
