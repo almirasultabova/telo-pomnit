@@ -3297,8 +3297,9 @@ function renderQuestionnaireBannerAt(container) {
     <button class="q-banner" type="button" onclick="openQuestionnaire()">
       <span class="q-banner-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 4H5v17h14V4h-3M8 3h8v4H8zM8 12h8M8 16h5"/></svg></span>
       <span class="q-banner-body">
-        <span class="q-banner-title">Заполните анкету участницы</span>
-        <span class="q-banner-sub">Ваш запрос и ожидания от программы · первая неделя</span>
+        <span class="q-banner-title">Анкета первой недели</span>
+        <span class="q-banner-sub">Расскажите, с чем вы пришли и чего ждёте от программы.</span>
+        <span class="q-banner-action">Заполнить анкету</span>
       </span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
     </button>`;

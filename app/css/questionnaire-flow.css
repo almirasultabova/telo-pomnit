@@ -41,13 +41,15 @@
 :is(#screen-questionnaire,#screen-post-questionnaire) button:focus-visible{outline:2px solid var(--color-action);outline-offset:3px}
 :is(#screen-questionnaire,#screen-post-questionnaire) ::selection{color:var(--color-paper);background:var(--color-action)}
 :is(#screen-questionnaire,#screen-post-questionnaire) [role='status']{font:400 13px/1.6 var(--font-body);color:var(--color-action)}
-#home-q-banner-wrap .q-banner,#tab-profile #q-banner-wrap .q-banner{display:flex;position:relative;gap:14px;align-items:center;width:100%;padding:24px 18px;border:0;border-radius:16px;background:var(--color-sage);text-align:left;color:var(--color-action);box-shadow:none}
-#home-q-banner-wrap .q-banner-title,#tab-profile #q-banner-wrap .q-banner-title{display:block;font:500 27px/1.02 var(--font-serif);color:var(--color-action);letter-spacing:-.015em;margin:0 0 10px;text-wrap:balance}
-#home-q-banner-wrap .q-banner-sub,#tab-profile #q-banner-wrap .q-banner-sub{display:block;font:400 14px/1.6 var(--font-body);color:var(--color-action);max-width:30ch}
-#home-q-banner-wrap .q-banner-icon{display:grid;place-items:center;width:36px;flex-shrink:0}
-#home-q-banner-wrap .q-banner-icon svg{width:30px;height:30px;color:var(--color-action)}
-#home-q-banner-wrap .q-banner>svg{width:20px;height:20px;stroke:var(--color-action);flex:0 0 auto}
-#home-q-banner-wrap .q-banner:focus-visible{outline:2px solid var(--color-action);outline-offset:4px}
+#home-q-banner-wrap:not(:empty){margin-top:18px}
+#home-q-banner-wrap .q-banner,#tab-profile #q-banner-wrap .q-banner{display:flex;position:relative;gap:12px;align-items:flex-start;width:100%;max-width:100%;margin:0;padding:18px 16px;border:0;border-radius:16px;background:var(--color-sage);text-align:left;color:var(--color-action);box-shadow:none}
+#home-q-banner-wrap .q-banner-title,#tab-profile #q-banner-wrap .q-banner-title{display:block;font:500 22px/1.15 var(--font-serif);color:var(--color-action);letter-spacing:-.015em;margin:0 0 6px;text-wrap:balance;overflow-wrap:break-word}
+#home-q-banner-wrap .q-banner-sub,#tab-profile #q-banner-wrap .q-banner-sub{display:block;font:400 13px/1.5 var(--font-body);color:var(--color-action);max-width:none;margin:0;overflow-wrap:break-word}
+#home-q-banner-wrap .q-banner-action,#tab-profile #q-banner-wrap .q-banner-action{display:block;margin-top:10px;font:600 12px/1.5 var(--font-body);color:var(--color-action)}
+#home-q-banner-wrap .q-banner-icon,#tab-profile #q-banner-wrap .q-banner-icon{display:grid;place-items:center;width:28px;height:28px;flex:0 0 28px}
+#home-q-banner-wrap .q-banner-icon svg,#tab-profile #q-banner-wrap .q-banner-icon svg{width:24px;height:24px;color:var(--color-action)}
+#home-q-banner-wrap .q-banner>svg,#tab-profile #q-banner-wrap .q-banner>svg{width:16px;height:16px;stroke:var(--color-action);flex:0 0 16px;align-self:center}
+#home-q-banner-wrap .q-banner:focus-visible,#tab-profile #q-banner-wrap .q-banner:focus-visible{outline:2px solid var(--color-action);outline-offset:4px}
 #screen-ai-chat:has(#ai-questionnaire-btn:not([hidden])) .screen-header{padding-bottom:22px}
 #screen-ai-chat #ai-questionnaire-btn{min-height:52px;margin-top:18px;border-radius:14px;font:500 16px/1.4 var(--font-body)}
 @media(max-width:350px){:is(#screen-questionnaire,#screen-post-questionnaire) .questionnaire-header{padding-inline:18px}:is(#screen-questionnaire,#screen-post-questionnaire) .questionnaire-body{padding-inline:18px}:is(#screen-questionnaire,#screen-post-questionnaire) .q-form-intro{margin-inline:-18px;padding-inline:20px}:is(#screen-questionnaire,#screen-post-questionnaire) .q-block-title{font-size:34px}:is(#screen-questionnaire,#screen-post-questionnaire) .q-form-note{max-width:73%}:is(#screen-questionnaire,#screen-post-questionnaire) .q-option{padding:11px 12px}:is(#screen-questionnaire,#screen-post-questionnaire) .questionnaire-footer{padding-inline:18px}}
