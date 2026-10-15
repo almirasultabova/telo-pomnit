@@ -1,0 +1,16 @@
+{
+  "publicFilesIdenticalToFunctionalRelease": 71,
+  "functionalRelease": "a7a746fa8c214f544c489b436da576d1346cac85",
+  "sourceStructureFiles": 41,
+  "builtStructureFiles": 43,
+  "structureWarnings": 0,
+  "changedTrackedDocs": 9,
+  "newMarkdownLinksChecked": 23,
+  "missingNewLinks": [],
+  "removedGeneratedFiles": 47,
+  "removedGeneratedBytes": 8753248,
+  "codeChanged": false,
+  "webImplementationStarted": false,
+  "messagesSent": 0,
+  "generatedBuildRemovedFromApp": true
+}

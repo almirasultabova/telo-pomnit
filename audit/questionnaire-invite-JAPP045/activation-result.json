@@ -1,0 +1,18 @@
+{
+  "backup": "/root/telo-backups/invite-JAPP045-20261015T200154Z",
+  "files": 71,
+  "changed": [
+    "css/questionnaire-invite.css",
+    "js/app.js",
+    "media/app/questionnaire-invite-owner.png",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "protectedUnchanged": true,
+  "backendRestarted": false,
+  "messagesSent": 0
+}
