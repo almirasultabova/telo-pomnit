@@ -19,7 +19,8 @@ with sync_playwright() as pw:
   assert page.locator('.program-meeting-row > .meeting-attendance-control > button.meeting-attendance').count()==1
   assert page.locator('.meeting-attendance').bounding_box()['width']==44
   page.locator('summary').click()
-  assert 'Подробная подготовка' in page.locator('.program-meeting-body').inner_text()
+  assert 'Подготовка' not in page.locator('.program-meeting-body').inner_text()
+  assert 'Подробная подготовка' not in page.locator('.program-meeting-body').inner_text()
   assert 'Анастасия' in page.locator('.program-meeting-body').inner_text()
   page.evaluate("""programAccess.streams[0].canAttend=true;programAccess.streams[0].canReadRecordings=true;programAccess.streams[0].phase='current';programAccess.streams[0].meetings[0].description='Exact server description';programAccess.streams[0].meetings[0].prepare='Exact server preparation';renderZoomBtn();renderSchedule()""")
   assert page.locator('#zoom-btn-wrap a').count()==2

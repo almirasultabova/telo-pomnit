@@ -1675,7 +1675,7 @@ function renderSchedule(){
   const expanded=new Set([...container.querySelectorAll('details[open]')].map(row=>row.dataset.meeting));
   const stream=currentProgram();container.replaceChildren();
   if(stream){
-    const heading=document.createElement('h2');heading.className='schedule-title';heading.textContent='Встречи и подготовка';container.append(heading);
+    const heading=document.createElement('h2');heading.className='schedule-title';heading.textContent='Встречи потока';container.append(heading);
     (stream.meetings||[]).forEach(meeting=>{
       const row=document.createElement('div');row.className='program-meeting-row';
       const details=document.createElement('details');details.className='access-meeting';details.dataset.meeting=String(meeting.id);details.open=expanded.has(String(meeting.id));
@@ -1686,7 +1686,9 @@ function renderSchedule(){
       const timeOnly=/^\d{1,2}:\d{2}[–—-]\d{1,2}:\d{2} МСК$/.test(meeting.description||'');
       const description=meeting.description&&!timeOnly?meeting.description:meeting.topic==='Психосоматические разборы'?'Анастасия ведёт психосоматические разборы. Разбор каждой участницы проходит в группе по очереди.':meeting.topic==='Телесная практика'?'Практика проходит в прямом эфире. Анастасия объясняет последовательность и сопровождает процесс.':null;
       if(timeOnly){const duration=document.createElement('p');duration.className='program-meeting-duration';duration.textContent=meeting.description;body.append(duration);}
-      for(const [label,text] of [['О встрече',description||'Описание этой встречи ещё не добавлено.'],['Подготовка',meeting.prepare||'Подробная подготовка к этой встрече ещё не добавлена. Уточнить её можно у ведущей.']]){
+      const sections=[['О встрече',description||'Описание этой встречи ещё не добавлено.']];
+      if(typeof meeting.prepare==='string'&&meeting.prepare.trim())sections.push(['Подготовка',meeting.prepare.trim()]);
+      for(const [label,text] of sections){
         const heading=document.createElement('h3');heading.textContent=label;const p=document.createElement('p');p.textContent=text;body.append(heading,p);
       }
       if(stream.canAttend)appendAccessLink(body,meeting.zoomLink||stream.zoomLink,'Присоединиться в Zoom');

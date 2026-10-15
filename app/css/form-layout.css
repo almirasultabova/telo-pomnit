@@ -4,9 +4,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 #app:has(>.screen--active.form-viewport){overflow:clip}
 :is(#screen-questionnaire,#screen-post-questionnaire) .questionnaire-header{padding:8px 18px;gap:12px}
 :is(#screen-questionnaire,#screen-post-questionnaire) .questionnaire-body{padding:0 18px 18px;scroll-padding-block:12px}
-:is(#screen-questionnaire,#screen-post-questionnaire) .q-form-intro{padding:24px 20px 22px;margin:0 -18px 22px;min-height:124px}
-:is(#screen-questionnaire,#screen-post-questionnaire) .q-form-intro::before{background-image:url('/media/app/redesign/questionnaire-silk-owner-r01.webp');background-position:right center;background-size:auto 100%;opacity:1}
-:is(#screen-questionnaire,#screen-post-questionnaire) .q-form-intro::after{background:linear-gradient(90deg,var(--color-bg) 0%,rgba(246,244,239,.88) 38%,rgba(246,244,239,.08) 80%),linear-gradient(0deg,var(--color-bg),transparent 28%)}
+:is(#screen-questionnaire,#screen-post-questionnaire) .q-form-intro{padding:32px 18px 34px;margin:0 -18px 22px;min-height:180px}
+:is(#screen-questionnaire,#screen-post-questionnaire) .q-form-intro::before{background-image:url('/media/app/redesign/questionnaire-silk-owner-r01.webp');background-position:center 58%;background-size:cover;opacity:1}
+:is(#screen-questionnaire,#screen-post-questionnaire) .q-form-intro::after{background:linear-gradient(180deg,var(--color-bg),transparent 22%,transparent 65%,var(--color-bg)),linear-gradient(90deg,rgba(247,244,239,.78),rgba(247,244,239,.45) 50%,rgba(247,244,239,.08))}
 :is(#screen-questionnaire,#screen-post-questionnaire) .q-block-title{font-size:29px;line-height:1.12;margin-bottom:10px;max-width:68%}
 :is(#screen-questionnaire,#screen-post-questionnaire) .q-form-note{font-size:13px;line-height:1.5;max-width:68%}
 :is(#screen-questionnaire,#screen-post-questionnaire) .q-field{margin-bottom:20px;padding-bottom:18px}
@@ -18,8 +18,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 :is(#screen-questionnaire,#screen-post-questionnaire) .q-option{min-height:44px;padding:10px 11px;gap:8px}
 :is(#screen-questionnaire,#screen-post-questionnaire) .q-option-label{font-size:14px;line-height:1.45}
 :is(#screen-questionnaire,#screen-post-questionnaire) .q-options[aria-labelledby='q-label-age'] .q-option{flex-basis:96px}
-:is(#screen-questionnaire,#screen-post-questionnaire) .q-scale{gap:6px}
-:is(#screen-questionnaire,#screen-post-questionnaire) .q-scale-btn{height:44px;font-size:15px}
+:is(#screen-questionnaire,#screen-post-questionnaire) .q-scale{grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}
+:is(#screen-questionnaire,#screen-post-questionnaire) .q-scale-btn{height:40px;min-width:0;padding:0;border-radius:8px;font-size:12px;line-height:1;box-sizing:border-box}
+:is(#screen-questionnaire,#screen-post-questionnaire) .q-scale-hint{margin:10px 0 0;font-size:12px;line-height:1.5}
 :is(#screen-questionnaire,#screen-post-questionnaire) :is(.questionnaire-footer,.post-flow-footer){padding:10px 18px max(10px,env(safe-area-inset-bottom));gap:10px}
 :is(#screen-questionnaire,#screen-post-questionnaire) :is(.questionnaire-footer,.post-flow-footer) .btn{min-height:46px;font-size:15px;padding:10px 12px}
 :is(#screen-questionnaire,#screen-post-questionnaire).form-editing :is(.questionnaire-footer,.post-flow-footer){padding-block:6px;box-shadow:none}
