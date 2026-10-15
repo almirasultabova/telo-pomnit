@@ -2121,10 +2121,11 @@ let aiContextLoadState = 'idle';
 let aiContextLoadRequest = 0;
 let aiDraftScope = null;
 let aiDraftDurable = true;
+let aiSendError = '';
 function ensureAiDraftScope() {
   const scope = Storage._userId ? Storage._userId + ':' + (aiSessionId || 'new') : null;
   if (scope === aiDraftScope) return;
-  aiDraftScope = scope; aiDraftDurable = scope ? Storage.isAiDraftPersistent(aiSessionId) : true;
+  aiSendError = ''; aiDraftScope = scope; aiDraftDurable = scope ? Storage.isAiDraftPersistent(aiSessionId) : true;
   const input = document.getElementById('ai-input');
   if (input) input.value = scope ? Storage.getAiDraft(aiSessionId) : '';
 }
@@ -2140,15 +2141,15 @@ function renderAiDraftStatus() {
   let status = document.getElementById('ai-draft-status');
   if (!status) { status = document.createElement('p'); status.id = 'ai-draft-status'; status.setAttribute('role','status'); bar.append(status); }
   const text = document.getElementById('ai-input')?.value || '';
-  status.hidden = !text;
-  status.textContent = aiDraftDurable ? 'Черновик сохранён на этом устройстве. Он не отправляется сам.' : 'Черновик не сохранён на устройстве. Не закрывайте приложение: текст пока только в этом окне.';
+  status.hidden = !text && !aiPending && !aiSendError;
+  status.textContent = aiPending ? 'Отправляем сообщение. Ожидаем ответ AI…' : aiSendError || (aiDraftDurable ? 'Черновик сохранён на этом устройстве. Он не отправляется сам.' : 'Черновик не сохранён на устройстве. Не закрывайте приложение: текст пока только в этом окне.');
 }
 function clearPrivateConversationState() {
   clearAccessManagementState();
   document.getElementById('screen-data-export-preview')?.remove();
   homeUser = null;
   renderMainTab();
-  aiScreenRequest++; aiSessionId = null; aiMessages = []; aiPending = false;
+  aiScreenRequest++; aiSessionId = null; aiMessages = []; aiPending = false; aiSendError = '';
   aiContext = { mode: 'none', ids: [], preview: null, reviewed: false };
   aiContextLoadRequest++; aiContextLoadState = 'idle';
   aiContextCandidates = []; aiSessionContext = null; aiContextLoading = false; aiDraftScope = null; aiDraftDurable = true;
@@ -2168,7 +2169,7 @@ function initAiChat() {
   document.getElementById('ai-send-btn')?.addEventListener('click', sendAiMessage);
   const input = document.getElementById('ai-input');
   input?.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendAiMessage(); } });
-  input?.addEventListener('input', () => { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 100) + 'px'; saveCurrentAiDraft(); });
+  input?.addEventListener('input', () => { aiSendError = ''; input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 100) + 'px'; saveCurrentAiDraft(); });
 }
 async function refreshAiScreen() {
   if (aiPending) return;
@@ -2319,7 +2320,7 @@ async function sendAiMessage() {
   if (!message || aiPending || !aiContextReady()) return;
   const generation = Storage._generation, request = aiScreenRequest, owner = Storage._userId, sentSessionId = aiSessionId;
   saveCurrentAiDraft();
-  aiPending = true; renderAiChat(); const select = document.getElementById('ai-history-select'); select.disabled = true;
+  aiSendError = ''; aiPending = true; renderAiChat(); const select = document.getElementById('ai-history-select'); select.disabled = true;
   try {
     await refreshProgramAccess();
     if (generation !== Storage._generation || request !== aiScreenRequest || Api.clubBlocked || aiAccessGranted !== true) return;
@@ -2340,8 +2341,11 @@ async function sendAiMessage() {
   } catch (error) {
     if (error.code === 'AI_ACCESS_REQUIRED') { aiAccessGranted = false; if (programAccess) programAccess.ai = error.access; }
     if (error.code === 'CONTEXT_CHANGED') { aiContext.preview = null; aiContext.reviewed = false; }
-    if (generation === Storage._generation && !Api.clubBlocked) { renderAiChat(); document.getElementById('ai-access-notice').textContent = error.message || 'Не удалось отправить. Ваш текст остаётся в поле ввода.'; }
-  } finally { aiPending = false; select.disabled = false; if (generation === Storage._generation && !Api.clubBlocked) document.getElementById('ai-send-btn').disabled = aiAccessGranted !== true || !aiContextReady(); }
+    if (generation === Storage._generation && request === aiScreenRequest && !Api.clubBlocked) {
+      aiSendError = error.name === 'AbortError' ? 'Ответ задерживается. Отправка не подтверждена; ваш текст остаётся в поле.' : (error.message || 'Не удалось отправить сообщение.') + ' Ваш текст остаётся в поле.';
+      renderAiChat(); document.getElementById('ai-access-notice').textContent = aiSendError;
+    }
+  } finally { aiPending = false; select.disabled = false; if (generation === Storage._generation && request === aiScreenRequest && !Api.clubBlocked) { document.getElementById('ai-send-btn').disabled = aiAccessGranted !== true || !aiContextReady(); renderAiMessages(); renderAiDraftStatus(); } }
 }
 document.addEventListener('visibilitychange', async () => {
   if (!document.hidden && Api.isAuthed()) { await refreshProgramAccess(); if (currentScreen === 'ai-chat' && !aiPending) renderAiChat(); if (activeTab === 'profile') renderProfileTab(); }
@@ -2698,6 +2702,7 @@ function stepSlider(key, delta) {
 
 let savedCheckinDayKey = null;
 function checkinStatusText(row) {
+  if (window.ScreenReviewMode === true) return row.syncStatus === 'synced' ? 'Учебный пример сохранён только в этом просмотре. Ваши настоящие данные не изменены.' : 'Учебные изменения остаются только в этом просмотре.';
   if (row.syncStatus === 'synced') return 'Все пять оценок сохранены на сервере.';
   if (row.syncStatus === 'memory-only') return 'Пока только в открытом приложении: хранилище недоступно. Не закрывайте окно до подтверждения сервера.';
   return row.syncError ? 'Оценки сохранены на устройстве. Отправить на сервер пока не удалось; можно повторить.' : 'Оценки сохранены на устройстве. Ожидают подтверждения сервера.';

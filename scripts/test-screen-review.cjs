@@ -22,6 +22,13 @@ function context(view) {
   const answer={bodyContactScale:7,anxietyScale:null,currentSituation:'Synthetic typed answer'};
   const saved=await (await request('/api/questionnaires/post','POST',{answers:answer})).json();assert.deepEqual(saved.answers,answer);
   const after=await (await request('/api/questionnaires/fictional-stream')).json();assert.deepEqual(after.pre,before.pre);
+  const observation={createdAt:'2026-10-15T12:00:00Z',clientUpdatedAt:'2026-10-15T12:01:00Z',tension:2,anxiety:3,energy:7,safety:8,bodyContact:6,note:'Synthetic review only'};
+  let observationResponse=await request('/api/checkins','POST',observation);assert.equal(observationResponse.status,200);
+  const ack=await observationResponse.json();assert.equal(ack.dayKey,'2026-10-15');assert.equal(ack.note,observation.note);
+  observation.tension=4;observation.clientUpdatedAt='2026-10-15T12:02:00Z';await request('/api/checkins','POST',observation);
+  const edited=await(await request('/api/checkins')).json();assert.equal(edited.length,1);assert.equal(edited[0].tension,4);
+  assert.equal((await request('/api/checkins','POST',{...observation,energy:99})).status,400);
+  const newFrame=context(view);const freshCheckins=await(await newFrame.window.fetch('/api/checkins')).json();assert.equal(freshCheckins.length,view==='path-example'?4:0);
   const fresh=context(view),reset=await (await fresh.window.fetch('/api/questionnaires/fictional-stream')).json();assert.deepEqual(reset,before);
  }
  const html=fs.readFileSync(path.join(root,'output/app/screen-review.html'),'utf8');
@@ -29,6 +36,6 @@ function context(view) {
  assert(html.includes("connect-src 'none'"));assert(html.includes('data:font/woff2;base64,'));
  assert(html.indexOf('Object.defineProperty(window')<html.indexOf('const AppLocalStorage'));
  assert(!html.includes('window.LaunchSplash ='));assert(!html.includes('Telegram.WebView ='));
- assert(!main.includes("token:'fictional-review-only'"));assert(!main.includes('Object.defineProperty(window'));
+ assert(!main.includes('window.ScreenReviewMode=true'));assert(!main.includes("token:'fictional-review-only'"));assert(!main.includes('Object.defineProperty(window'));
  console.log('PASS: ten views, device storage denied, no AI/feedback, memory-only answers/reset, real pre preserved, CSP and fonts, fixture absent from main app');
 })().catch(error=>{console.error(error);process.exitCode=1});

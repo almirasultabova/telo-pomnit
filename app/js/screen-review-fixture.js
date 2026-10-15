@@ -4,6 +4,8 @@
   const noop=()=>{};
   window.Telegram={WebApp:{initData:'',ready:noop,expand:noop,onEvent:noop,offEvent:noop,openLink:noop,openTelegramLink:noop,
     BackButton:{show:noop,hide:noop,onClick:noop,offClick:noop},HapticFeedback:{impactOccurred:noop,notificationOccurred:noop}}};
+  window.ScreenReviewMode=true;
+  let reviewCheckins=[];
   const view=new URLSearchParams(location.search).get('view') || 'pre';
   const before={currentSituation:'После сложных разговоров я ещё долго чувствую напряжение в теле.',successMeans:'Замечать напряжение раньше и находить способ поддержать себя.',bodyContactScale:3,anxietyScale:8};
   const after={currentSituation:'Напряжение ещё бывает. Я чаще замечаю его во время разговора и могу сделать паузу.',bodyContactScale:6,anxietyScale:5,situationChange:'Стало немного легче',criterionMatch:'Частично соответствует',lifeExample:'Во время разговора я заметила, что сжала челюсть. Сделала паузу и вернулась к разговору спокойнее.'};
@@ -22,6 +24,12 @@
     else if(pathname==='/api/questionnaires/pre' && options.method==='POST'){pre={id:'fictional-pre',type:'pre',streamId:stream.id,formVersion:1,submittedAt:'2026-09-01T10:00:00Z',answers:structuredClone(data.answers)};body=pre;}
     else if(pathname==='/api/questionnaires/post' && options.method==='POST'){post={id:'fictional-post',type:'post',streamId:stream.id,formVersion:2,submittedAt:'2026-10-02T10:00:00Z',answers:structuredClone(data.answers)};body=post;}
     else if(pathname.startsWith('/api/questionnaires/') && (!options.method || options.method==='GET'))body={pre,post};
+    else if(pathname==='/api/checkins' && method==='POST') {
+      const keys=['tension','anxiety','energy','safety','bodyContact'];
+      if(!keys.every(key=>Number.isInteger(data[key])&&data[key]>=1&&data[key]<=10)||!Number.isFinite(Date.parse(data.createdAt))||!Number.isFinite(Date.parse(data.clientUpdatedAt))){status=400;body={error:'Проверьте учебные оценки'};}
+      else {const dayKey=new Date(Date.parse(data.createdAt)+10800000).toISOString().slice(0,10);body={...data,id:'fictional-checkin-'+dayKey,dayKey};reviewCheckins=reviewCheckins.filter(row=>row.dayKey!==dayKey).concat(body);}
+    }
+    else if(pathname==='/api/checkins' && method==='GET' && reviewCheckins.length)body=reviewCheckins;
     else if(pathname==='/api/checkins' && method==='GET' && view==='path-example') body=[
       {id:'example-state-1',date:'2026-09-02T10:00:00Z',tension:7,anxiety:8,energy:3,safety:4,bodyContact:3},
       {id:'example-state-2',date:'2026-09-10T10:00:00Z',tension:6,anxiety:7,energy:5,safety:4,bodyContact:4},

@@ -4,6 +4,7 @@ const root = path.resolve(__dirname, '../backend'), local = p => require(path.jo
 process.env.JWT_SECRET = 'questionnaire-gate-fixture';
 process.env.ADMIN_TELEGRAM_IDS = '100';
 let user = { id: 'A', telegramId: 200n, role: 'PARTICIPANT', accessStatus: 'approved', tokenVersion: 0, createdAt: new Date('2026-10-01') };
+let providerFailure = null;
 let forms = [], providerCalls = 0, sessions = [], status = 'active';
 const stream = { id: 'own', name: 'Synthetic', startDate: '2020-01-01', endDate: '2030-01-01', meetings: [] };
 const db = {
@@ -22,7 +23,7 @@ const db = {
 };
 require.cache[require.resolve(path.join(root, 'src/db'))] = { exports: db };
 require.cache[require.resolve(path.join(root, 'node_modules/openai'))] = { exports: class {
-  chat = { completions: { create: async () => { providerCalls++; return { choices: [{ message: { content: 'Synthetic response' } }] }; } } };
+  chat = { completions: { create: async () => { providerCalls++; if(providerFailure)throw providerFailure; return { choices: [{ message: { content: 'Synthetic response' } }] }; } } };
 } };
 (async () => {
   const app = local('node_modules/fastify')({ logger: false });
@@ -50,6 +51,11 @@ require.cache[require.resolve(path.join(root, 'node_modules/openai'))] = { expor
   assert.equal((await access()).ai.reason, 'not_started');
   for (const [role, telegramId] of [['HOST', 200n], ['PARTICIPANT', 100n]]) {
     user = { ...user, role, telegramId }; assert.equal((await access()).ai.canWrite, true);
+  }
+  for (const [failure,expected] of [[{status:429,code:'insufficient_quota'},'AI_QUOTA_EXHAUSTED'],[{status:429,type:'insufficient_quota'},'AI_QUOTA_EXHAUSTED'],[{status:429,code:'rate_limit_exceeded'},'AI_RATE_LIMITED'],[{status:500},'AI_PROVIDER_UNAVAILABLE']]) {
+    providerFailure=Object.assign(new Error('Synthetic provider failure'),failure);
+    response=await app.inject({method:'POST',url:'/ai/chat',headers,payload:{message:'Synthetic failure test',contextMode:'none'}});
+    assert.equal(response.statusCode,503);assert.equal(response.json().code,expected);
   }
   await app.close();
   console.log('PASS: own pre questionnaire gates AI, direct POST denied before provider/session, unlock after save, personal tools/meetings preserved, future/expired/cancelled/service access unchanged');

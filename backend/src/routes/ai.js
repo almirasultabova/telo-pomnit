@@ -84,7 +84,11 @@ async function aiRoutes(app) {
       let completion
       try { completion = await openai.chat.completions.create({ model: 'gpt-4o-mini', store: false,
         messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...dataContext, ...history, { role: 'user', content: message }], max_tokens: 400, temperature: 0.7 }) }
-      catch (error) { request.log.error({ status: Number.isInteger(error.status) ? error.status : undefined }, 'Ошибка OpenAI API'); return reply.code(503).send({ error: 'AI-ассистент временно недоступен, попробуйте позже' }) }
+      catch (error) {
+        const code = (error.code === 'insufficient_quota' || error.type === 'insufficient_quota' || error.code === 'billing_hard_limit_reached') ? 'AI_QUOTA_EXHAUSTED' : error.status === 429 ? 'AI_RATE_LIMITED' : 'AI_PROVIDER_UNAVAILABLE'
+        request.log.error({ status: Number.isInteger(error.status) ? error.status : undefined, code }, 'Ошибка OpenAI API')
+        return reply.code(503).send({ code, error: 'Сервис AI сейчас недоступен. Сообщение не отправлено.' })
+      }
       const assistantMessage = completion.choices?.[0]?.message?.content
       if (typeof assistantMessage !== 'string' || !assistantMessage) { request.log.error('OpenAI вернул пустой ответ'); return reply.code(503).send({ error: 'AI-ассистент не смог ответить, попробуйте ещё раз' }) }
       await db.$transaction(async tx => {
