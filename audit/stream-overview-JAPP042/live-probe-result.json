@@ -1,0 +1,29 @@
+{
+  "anonymousDenied": true,
+  "hostScoped": true,
+  "hostFullAdminDenied": true,
+  "crossStreamDenied": true,
+  "privateNoStore": true,
+  "readOnlyLiveChecks": true,
+  "testSends": 0,
+  "results": [
+    {
+      "viewer": "OWNER",
+      "members": 0,
+      "pre": 0,
+      "post": 0,
+      "requests": 0,
+      "unclassified": 1,
+      "historySince": "2026-10-15T19:24:04.975Z"
+    },
+    {
+      "viewer": "HOST",
+      "members": 0,
+      "pre": 0,
+      "post": 0,
+      "requests": 0,
+      "unclassified": 0,
+      "historySince": "2026-10-15T19:24:04.975Z"
+    }
+  ]
+}

@@ -92,6 +92,7 @@ function goTo(screenId, back = false) {
 }
 
 function goBack() {
+  if (currentScreen === 'stream-overview') { closeStreamOverview(); return; }
   if (currentScreen === 'access-admin') { closeAccessManagement(); return; }
   if (currentScreen === 'data-export-preview') { closePrivatePreview(); return; }
   if (currentScreen === 'data-rights') { closeDataRights(); return; }
@@ -1507,6 +1508,7 @@ function renderProfileTab() {
   renderSchedule();
   renderHosts();
   renderAccessManagementEntry();
+  renderStreamOverviewEntry();
   window.ScreenReview?.renderEntry();
 }
 
@@ -3322,7 +3324,7 @@ let feedbackIdentity = null;
 function persistFeedbackDraft(changed = false) {
   if (!feedbackIdentity || feedbackIdentity.owner !== Api.userId || feedbackIdentity.generation !== Api._authGeneration) return;
   if (changed || !feedbackOperation) feedbackOperation = crypto.randomUUID();
-  const durable = Storage.saveFormDraft('feedback', { text: document.getElementById('fb-text')?.value || '', rating: feedbackRating, operationId: feedbackOperation });
+  const durable = Storage.saveFormDraft('feedback', { text: document.getElementById('fb-text')?.value || '', rating: feedbackRating, operationId: feedbackOperation, streamId: document.getElementById('fb-stream')?.value || null, kind: document.getElementById('fb-kind')?.value || 'feedback', needsReply: document.getElementById('fb-reply')?.value === 'yes' });
   let status = document.getElementById('fb-draft-status');
   if (!status) { status = document.createElement('p'); status.id = 'fb-draft-status'; status.setAttribute('role','status'); document.getElementById('feedback-form-wrap')?.append(status); }
   status.textContent = durable ? 'Черновик сохранён.' : 'Черновик пока только в этом окне. Не закрывайте его до отправки.';
@@ -3348,6 +3350,13 @@ function openFeedback() {
   const thanks   = document.getElementById('feedback-thanks');
   if (formWrap) formWrap.style.display = '';
   if (thanks)   thanks.style.display = 'none';
+  const scope = document.getElementById('fb-stream');
+  scope.innerHTML = '<option value="">Общие вопросы</option>';
+  for (const stream of programAccess?.streams || []) {const option = document.createElement('option');option.value=stream.id;option.textContent=stream.name;scope.append(option);}
+  if(draft?.streamId && ![...scope.options].some(o=>o.value===draft.streamId)){const option=document.createElement('option');option.value=draft.streamId;option.textContent='Ранее выбранный поток';scope.append(option);}
+  scope.value = draft?.streamId || '';
+  document.getElementById('fb-kind').value = draft?.kind || 'feedback';
+  document.getElementById('fb-reply').value = draft?.needsReply ? 'yes' : 'no';
   updateFeedbackSubmitState();
   goTo('feedback');
 }
@@ -3377,6 +3386,7 @@ function initFeedback() {
     updateFeedbackSubmitState();
   });
 
+  for (const id of ['fb-stream','fb-kind','fb-reply']) document.getElementById(id)?.addEventListener('change', () => persistFeedbackDraft(true));
   document.getElementById('fb-submit')?.addEventListener('click', submitFeedback);
 }
 
@@ -3401,7 +3411,7 @@ async function submitFeedback() {
   submit.disabled = true;
   submit.textContent = 'Отправляем…';
   try {
-    await Api.sendFeedback({ rating: rating || null, text: value, operationId });
+    await Api.sendFeedback({ rating: rating || null, text: value, operationId, streamId: document.getElementById('fb-stream').value || null, kind: document.getElementById('fb-kind').value, needsReply: document.getElementById('fb-reply').value === 'yes' });
     if (!current()) return;
     if (feedbackOperation !== operationId) {
       const status = document.getElementById('fb-draft-status');

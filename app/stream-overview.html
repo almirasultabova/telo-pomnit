@@ -1,0 +1,41 @@
+<!doctype html><html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; base-uri 'none'; form-action 'none'">
+<title>Обзор потока · Команда</title><link rel="stylesheet" href="css/fonts.css"><link rel="stylesheet" href="css/stream-overview-base.css?v=JAPP042"><link rel="stylesheet" href="css/stream-overview.css?v=JAPP042">
+<script src="js/stream-overview.js?v=JAPP042" defer></script>
+</head><body>
+<a class="skip" href="#overview">К обзору</a>
+
+<div class="shell">
+  <header class="app-head"><span class="wordmark">Тело помнит</span><button id="about" class="text-button">Обновить</button></header>
+  <main id="overview">
+    <div class="page-head"><div><h1>Обзор потока</h1><p>Анкеты, участие и внимание команды</p></div><button id="permissions" class="quiet-button">Доступ команды</button></div>
+    <div class="scope-bar"><label>Поток<select id="stream" disabled></select></label><div class="viewer">Вы вошли как<br><strong id="viewer"></strong></div></div>
+    <div class="freshness"><span id="stream-dates"></span><span id="freshness"></span></div>
+    <div id="state-panel" class="state-panel" hidden role="status"></div>
+    <div id="loaded-content" hidden>
+      <section class="attention" aria-label="Внимание команды"><button id="go-waiting"><strong id="waiting-total"></strong><span>ждут ответа</span></button><button id="go-progress"><strong id="progress-total"></strong><span>в работе</span></button><div><strong id="oldest-age"></strong><span>самое давнее</span></div></section>
+      <nav class="section-nav" aria-label="Разделы обзора"><a href="#requests">Обращения</a><a href="#surveys">Анкеты</a><a href="#activity">Участие</a><a href="#outcomes">Итоги</a></nav>
+      <div class="work-grid">
+        <section class="section requests" id="requests" aria-labelledby="requests-title">
+          <div class="section-heading"><h2 id="requests-title">Обращения</h2><button class="help" data-help="requests" aria-label="Как учитываются обращения">i</button></div>
+          <p class="body-note" id="queue-summary"></p>
+          <div class="filters" role="group" aria-label="Статус обращения"><button data-status="waiting" aria-pressed="true">Ждут ответа</button><button data-status="answered" aria-pressed="false">С ответом</button><button data-status="all" aria-pressed="false">Все</button></div>
+          <div class="queue-selects"><label>Ответственный<select id="owner-filter"><option value="all">Все</option><option value="mine">Мои</option><option value="unassigned">Без ответственного</option><option value="assigned">Назначены</option></select></label><label>Тема<select id="kind-filter"><option value="all">Все темы</option><option value="technical">Приложение и доступ</option><option value="programme">Программа</option><option value="schedule">Расписание</option><option value="feedback">Обратная связь</option></select></label></div>
+          <div id="request-list"></div><div id="legacy-list"></div>
+          <p class="queue-foot">Только сообщения, отправленные команде. Назначение ответственного не считается ответом.</p>
+        </section>
+        <div class="evidence-column">
+          <section class="section" id="surveys" aria-labelledby="survey-title"><div class="section-heading"><h2 id="survey-title">Анкеты</h2><button class="help" data-help="surveys" aria-label="Как считаются анкеты">i</button></div><div id="survey-summary" class="survey-grid"></div><div class="survey-bottom"><p id="survey-context"></p><button id="survey-list" class="inline-action">Посмотреть статусы</button></div></section>
+          <section class="section activity" id="activity" aria-labelledby="activity-title"><div class="section-heading"><h2 id="activity-title">Между встречами</h2><button class="help" data-help="activity" aria-label="Как считаются участие и возвращение">i</button></div><p class="period" id="activity-period"></p><div class="activity-pair"><div><p>Вели дневник</p><strong id="active-value"></strong><span>из всего доступного состава</span></div><div><p>Вернулись</p><strong id="returned-value"></strong><span>из сохранявших неделей раньше</span></div></div><p class="body-note" id="return-note"></p><details class="trend-detail" open><summary>По неделям</summary><div id="week-chart"></div></details><p class="body-note interpretation">Это использование дневника. Участница может практиковать и вне приложения.</p></section>
+        </div>
+      </div>
+      <section class="section outcomes" id="outcomes" aria-labelledby="outcome-title"><div class="section-heading"><h2 id="outcome-title">Что участницы замечают после потока</h2><button class="help" data-help="outcomes" aria-label="Как сравниваются ответы до и после">i</button></div><div id="outcome-content"></div></section>
+    </div>
+
+    <footer class="page-footer"><span>Личные дневники и переписка с AI в обзор не передаются.</span><span>Время — московское</span></footer>
+  </main>
+</div>
+<dialog id="detail" aria-labelledby="detail-title"><div class="dialog-head"><span id="detail-context"></span><button id="close-detail" class="icon-button" aria-label="Закрыть окно">×</button></div><h2 id="detail-title"></h2><div id="detail-content"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body></html>

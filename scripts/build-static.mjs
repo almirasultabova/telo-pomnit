@@ -103,6 +103,7 @@ try {
   const app = [
     { source: path.join(repository, 'app/index.html'), relative: 'index.html' },
     { source: path.join(repository, 'app/index.html'), relative: 'screen-review.html' },
+    { source: path.join(repository, 'app/stream-overview.html'), relative: 'stream-overview.html' },
     { source: path.join(repository, 'app/access-admin.html'), relative: 'access-admin.html' },
     { source: path.join(repository, 'site/admin.html'), relative: 'admin.html' },
   ];

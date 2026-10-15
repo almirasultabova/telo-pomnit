@@ -41,6 +41,11 @@ model User {
   admissionLeaseUntil DateTime? @map("admission_lease_until")
   admissionDeliveredIds String[] @default([]) @map("admission_delivered_ids")
 
+  analyticsExcluded Boolean @default(false) @map("analytics_excluded")
+  overviewGrants StreamOverviewGrant[]
+  overviewMemberships OverviewMembership[]
+  feedbackActions FeedbackAction[]
+
   enrollments        Enrollment[]
   diaryEntries       DiaryEntry[]
   triggerEntries     TriggerEntry[]
@@ -63,6 +68,9 @@ model Stream {
   chatLink  String?  @map("chat_link")
   createdAt DateTime @default(now()) @map("created_at")
 
+  overviewGrants StreamOverviewGrant[]
+  overviewMemberships OverviewMembership[]
+  feedback Feedback[]
   enrollments    Enrollment[]
   meetings       Meeting[]
   diaryEntries   DiaryEntry[]
@@ -104,6 +112,7 @@ model Enrollment {
 }
 
 model DiaryEntry {
+  savedAt    DateTime? @default(now()) @map("saved_at")
   id         String   @id @default(uuid())
   userId     String   @map("user_id")
   streamId   String?  @map("stream_id")
@@ -204,6 +213,45 @@ model AiChatSession {
   @@map("ai_chat_sessions")
 }
 
+model StreamOverviewGrant {
+  userId String @map("user_id")
+  streamId String @map("stream_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  stream Stream @relation(fields:[streamId],references:[id],onDelete:Cascade)
+  @@id([userId,streamId])
+  @@map("stream_overview_grants")
+}
+model OverviewHistory {
+  id String @id
+  startedAt DateTime @default(now()) @map("started_at")
+  @@map("overview_history")
+}
+model OverviewMembership {
+  id String @id @default(uuid())
+  userId String @map("user_id")
+  streamId String @map("stream_id")
+  startedAt DateTime @default(now()) @map("started_at")
+  endedAt DateTime? @map("ended_at")
+  eligibleUntil DateTime @map("eligible_until")
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  stream Stream @relation(fields:[streamId],references:[id],onDelete:Cascade)
+  @@index([streamId,startedAt])
+  @@map("overview_memberships")
+}
+model FeedbackAction {
+  id String @id @default(uuid())
+  feedbackId String @map("feedback_id")
+  actorId String? @map("actor_id")
+  action String
+  revision Int
+  details Json
+  createdAt DateTime @default(now()) @map("created_at")
+  feedback Feedback @relation(fields:[feedbackId],references:[id],onDelete:Cascade)
+  actor User? @relation(fields:[actorId],references:[id],onDelete:SetNull)
+  @@unique([feedbackId,revision])
+  @@map("feedback_actions")
+}
 model Feedback {
   id        String   @id @default(uuid())
   userId    String   @map("user_id")
@@ -212,7 +260,20 @@ model Feedback {
   operationId String? @map("operation_id")
   createdAt DateTime @default(now()) @map("created_at")
 
+  streamId String? @map("stream_id")
+  needsReply Boolean? @map("needs_reply")
+  submittedScope Json? @map("submitted_scope")
+  kind String @default("unknown")
+  status String @default("unclassified")
+  revision Int @default(0)
+  assigneeId String? @map("assignee_id")
+  takenAt DateTime? @map("taken_at")
+  answeredById String? @map("answered_by_id")
+  answeredAt DateTime? @map("answered_at")
+  actions FeedbackAction[]
+  stream Stream? @relation(fields:[streamId],references:[id],onDelete:SetNull)
   user      User     @relation(fields: [userId], references: [id])
+  @@index([streamId,status,createdAt])
 
   @@index([createdAt])
   @@unique([userId, operationId])

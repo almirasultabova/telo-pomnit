@@ -101,6 +101,7 @@ const Api = {
 
   logout() {
     if (typeof clearAccessManagementState === 'function') clearAccessManagementState();
+    if (typeof clearStreamOverviewState === 'function') clearStreamOverviewState();
     this._authGeneration++;
     window.QuestionnaireCycle?.invalidate();
     window.ScreenReview?.invalidate();
@@ -129,6 +130,7 @@ const Api = {
   async getAccess() {
     return this._request('GET', '/me/enrollment/access');
   },
+  async getStreamOverviewSession() { return this._request('GET', '/stream-overview/session'); },
   async getManagementSession() { return this._request('GET', '/access-admin/session'); },
   async getAdmissions() { return this._request('GET', '/admin/admissions'); },
   async decideAdmission(id, status) { return this._request('PATCH', '/admin/admissions/' + encodeURIComponent(id), { status }); },
@@ -238,12 +240,7 @@ const Api = {
 
   // ─── Обратная связь ──────────────────────────────────────────────────────
 
-  async sendFeedback({ rating, text, operationId }) {
-    const body = { text };
-    if (rating) body.rating = rating;
-    if (operationId) body.operationId = operationId;
-    return this._request('POST', '/feedback', body);
-  },
+  async sendFeedback(body) { return this._request('POST', '/feedback', body); },
 };
 
 // Purpose-limited token is kept only in this WebView memory. It never replaces

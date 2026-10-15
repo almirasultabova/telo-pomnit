@@ -49,6 +49,7 @@ app.register(require('./routes/access-admin'), { prefix: '/' })
 app.register(require('./routes/ai'), { prefix: '/' })
 app.register(require('./routes/email'), { prefix: '/' })
 app.register(require('./routes/payment'), { prefix: '/' })
+app.register(require('./routes/stream-overview'), { prefix: '/' })
 app.register(require('./routes/feedback'), { prefix: '/' })
 app.register(require('./routes/waitlist'), { prefix: '/' })
 

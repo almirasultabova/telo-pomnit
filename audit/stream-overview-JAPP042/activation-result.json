@@ -1,0 +1,11 @@
+{
+  "release": "J-APP-042",
+  "backup": "/root/telo-backups/overview-JAPP042-2026-10-15T192401638Z",
+  "countsPreserved": true,
+  "rolesPreferencesPreserved": true,
+  "backendHashesMatch": true,
+  "health": true,
+  "frontendFiles": 69,
+  "grant": "confirmed-host-october-only",
+  "testRealSends": 0
+}

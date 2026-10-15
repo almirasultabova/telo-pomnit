@@ -3353,3 +3353,6 @@ textarea:focus,input:focus,select:focus {outline:2px solid var(--color-action);o
 #tab-profile .profile-closing p::after {content:'';display:block;width:32px;height:1px;background:var(--color-caption-gold,#765D32);margin-top:24px;}
 #tab-profile .app-footer {padding-top:22px;}
 @media(max-width:350px){#tab-profile > .screen-header .screen-title{font-size:46px;}#tab-profile .profile-avatar{width:72px;height:72px;flex-basis:72px;}#tab-profile .profile-name{font-size:30px;}#tab-profile .profile-user{gap:16px;}#tab-profile .profile-quote{font-size:22px;}#tab-profile .profile-metrics-title{font-size:26px;}#tab-profile .profile-link-btn>span{font-size:21px;}#tab-profile .profile-closing p{font-size:30px;}}
+
+#screen-stream-overview{padding-bottom:0}#stream-overview-entry-frame{width:100%;height:100%;flex:1;border:0;background:var(--bg,#F7F4EF)}.fb-routing{width:100%;min-height:44px;font-size:16px;color:var(--text,#2A4A38);background:transparent;border:1px solid #c5c9be;border-radius:12px;padding:10px 12px;margin:7px 0 16px}
+#screen-stream-overview .overview-loading{padding:0 20px}#screen-stream-overview .overview-loading:has(#overview-frame-status[hidden]){display:none}

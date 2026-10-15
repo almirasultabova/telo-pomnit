@@ -198,6 +198,8 @@
         </section>
         <div id="consent-banner-wrap"></div>
         <div id="admission-admin-panel" hidden></div>
+        <button type="button" id="stream-overview-entry-btn" class="profile-link-btn" hidden><span>Обзор потока</span><span aria-hidden="true">›</span></button>
+        <p id="stream-overview-entry-status" class="access-notice" role="status" hidden></p>
         <button type="button" id="access-management-btn" class="profile-link-btn" hidden>
           <svg aria-hidden="true" class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg>
           <span>Управление</span>
@@ -656,7 +658,7 @@
   </div>
   <div class="screen-scroll">
     <div id="feedback-form-wrap">
-      <p class="fb-hint">Поделитесь впечатлением — что работает, что неудобно, чего не хватает. Сообщение прочитает Альмира. Если нужен ответ, она свяжется с вами лично в Telegram.</p>
+      <p class="fb-hint">Поделитесь впечатлением — что работает, что неудобно, чего не хватает. Сообщение прочитает команда. Укажите, нужен ли вам личный ответ в Telegram.</p>
 
       <div class="fb-section-label">Оценка</div>
       <div class="fb-stars" id="fb-stars" role="group" aria-label="Оценка приложения от 1 до 5">
@@ -667,6 +669,12 @@
         <button type="button" class="fb-star" data-star="5" aria-label="5 звёзд">★</button>
       </div>
 
+      <label class="fb-section-label" for="fb-stream">К какому потоку относится</label>
+      <select id="fb-stream" class="fb-routing"><option value="">Общие вопросы</option></select>
+      <label class="fb-section-label" for="fb-kind">Тема</label>
+      <select id="fb-kind" class="fb-routing"><option value="feedback">Обратная связь</option><option value="technical">Приложение и доступ</option><option value="programme">Программа</option><option value="schedule">Расписание</option></select>
+      <label class="fb-section-label" for="fb-reply">Нужен ответ команды?</label>
+      <select id="fb-reply" class="fb-routing"><option value="no">Нет, хочу поделиться</option><option value="yes">Да, жду ответ в Telegram</option></select>
       <label class="fb-section-label" for="fb-text">Сообщение</label>
       <textarea id="fb-text" class="fb-textarea" placeholder="Напишите, что хотите сказать…" maxlength="2000" rows="6"></textarea>
       <div class="fb-counter"><span id="fb-counter">0</span> / 2000</div>
@@ -677,7 +685,7 @@
     <div id="feedback-thanks" class="fb-thanks" style="display:none">
       <div class="fb-thanks-icon">🌿</div>
       <div class="fb-thanks-title">Спасибо</div>
-      <div class="fb-thanks-text">Сообщение сохранено. Альмира прочитает его и при необходимости ответит лично в Telegram.</div>
+      <div class="fb-thanks-text">Сообщение сохранено для команды. Если вы попросили ответ, вам ответят лично в Telegram.</div>
       <button class="btn btn--outline btn--full mt-16" onclick="goBack()">Вернуться</button>
     </div>
   </div>
@@ -708,6 +716,7 @@
 <script src="js/habitual.js?v=habitual-20261009"></script>
 <script src="js/api.js?v=access-20260922"></script>
 <script src="js/storage.js?v=access-20260922"></script>
+<script src="js/stream-overview-entry.js?v=JAPP042"></script>
 <script src="js/access-management.js?v=access-20261011"></script>
 <script src="js/launch.js?v=silk-return-25-20261014"></script>
 <script src="js/app.js?v=access-20260922"></script>
