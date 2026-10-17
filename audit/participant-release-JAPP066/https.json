@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://api.telo-pomnit.ru/admin/participants/00000000-0000-4000-8000-000000000000",
+    "credential": "none",
+    "status": 401
+  },
+  {
+    "url": "https://api.telo-pomnit.ru/admin/participants/00000000-0000-4000-8000-000000000000",
+    "credential": "invalid synthetic",
+    "status": 401
+  },
+  {
+    "url": "https://api.telo-pomnit.ru/access-admin/users",
+    "status": 401
+  },
+  {
+    "url": "https://api.telo-pomnit.ru/me/enrollment/access",
+    "status": 401
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/api/admin/participants/00000000-0000-4000-8000-000000000000",
+    "credential": "none",
+    "status": 401
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/api/admin/participants/00000000-0000-4000-8000-000000000000",
+    "credential": "invalid synthetic",
+    "status": 401
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/api/access-admin/users",
+    "status": 401
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/api/me/enrollment/access",
+    "status": 401
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/api/admin/participants/00000000-0000-4000-8000-000000000000",
+    "credential": "none",
+    "status": 401
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/api/admin/participants/00000000-0000-4000-8000-000000000000",
+    "credential": "invalid synthetic",
+    "status": 401
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/api/access-admin/users",
+    "status": 401
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/api/me/enrollment/access",
+    "status": 401
+  },
+  {
+    "health": 200
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/index.html",
+    "publicHashUnchanged": true
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/js/app.js",
+    "publicHashUnchanged": true
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/index.html",
+    "publicHashUnchanged": true
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/js/app.js",
+    "publicHashUnchanged": true
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/recovery/j293/index.html",
+    "publicHashUnchanged": true
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/recovery/j293/js/app.js",
+    "publicHashUnchanged": true
+  }
+]

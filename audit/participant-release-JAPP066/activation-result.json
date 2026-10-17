@@ -1,0 +1,21 @@
+{
+  "backup": "/root/telo-backups/participant-JAPP066-2026-10-17T203007177Z",
+  "changedBackend": [
+    "src/routes/admin.js"
+  ],
+  "installedHash": "dfbf3c9470beb040200e28d67d8e9c838045b94174cbda6223623224a8a4ab12",
+  "otherBackendSourceUnchanged": true,
+  "protectedFilesUnchanged": true,
+  "publicFilesUnchanged": 80,
+  "publicRoots": 2,
+  "syntheticChecks": 33,
+  "syntheticDbWrites": 0,
+  "syntheticExternalCalls": 0,
+  "syntheticProviderCalls": 0,
+  "syntheticNotifications": 0,
+  "productionDbOperations": 0,
+  "migrations": 0,
+  "productionHealth": 200,
+  "unauthenticatedCard": 401,
+  "backendRestarted": true
+}
