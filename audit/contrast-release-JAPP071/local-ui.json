@@ -1,0 +1,24 @@
+[
+  {
+    "engine": "chromium",
+    "origin": "http://127.0.0.1:8918/",
+    "states": 4,
+    "statusAndFocus": true,
+    "preScaleSelection": true,
+    "feedback": true,
+    "aiPlaceholder": true,
+    "pageErrors": [],
+    "realApiRequests": 0
+  },
+  {
+    "engine": "webkit",
+    "origin": "http://127.0.0.1:8918/",
+    "states": 4,
+    "statusAndFocus": true,
+    "preScaleSelection": true,
+    "feedback": true,
+    "aiPlaceholder": true,
+    "pageErrors": [],
+    "realApiRequests": 0
+  }
+]

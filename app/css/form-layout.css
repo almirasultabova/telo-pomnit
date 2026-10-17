@@ -1,4 +1,6 @@
 /* J-APP-021: compact answering surfaces and keyboard space. Keep native zoom available. */
+/* J-APP-070: restore the keyboard ring after the feedback field's legacy focus reset. */
+#screen-feedback .fb-textarea:focus-visible{outline:2px solid var(--color-action);outline-offset:3px}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .screen.form-viewport{inset:auto 0 auto;top:var(--form-visible-top,0px);height:var(--form-visible-height,100dvh)}
 #app:has(>.screen--active.form-viewport){overflow:clip}

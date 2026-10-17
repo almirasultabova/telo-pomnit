@@ -12,6 +12,9 @@ body{background:#f7f4ef}::selection{background:#dde4d8;color:#1a211a}
 #tab-main .home-scene-message{top:138px;font-size:14px;line-height:1.55;max-width:154px}
 #tab-main .home-scene-message::after{margin-top:16px}
 #tab-main .home-person strong{font:500 22px/1.05 var(--font-serif)}
+/* A stable reading surface for the greeting where the photo crop becomes dark. */
+#tab-main .home-person{position:relative;isolation:isolate}
+#tab-main .home-person::before{content:'';position:absolute;inset:-7px -8px;z-index:-1;border-radius:12px;background:rgba(247,244,239,.96)}
 #tab-main .home-primary-action{margin-top:-52px}
 #tab-main .home-action--body{min-height:88px;padding:18px;display:flex;flex-direction:row;align-items:center;gap:13px;border-radius:20px;background:#2a4a38;box-shadow:0 8px 20px #1c382c15;border:0;backdrop-filter:none}
 #tab-main .home-action--body .home-action-icon{position:static;display:block;width:32px;height:32px;padding:0;background:transparent;border:0;flex:0 0 32px}
@@ -44,7 +47,7 @@ body{background:#f7f4ef}::selection{background:#dde4d8;color:#1a211a}
 #tab-main #home-stream .home-meeting p:last-child{grid-column:1/-1;grid-row:3}
 #tab-main #home-stream .home-meeting-day{font:500 20px/1.15 var(--font-serif);white-space:nowrap}
 #tab-main #home-stream .home-meeting-clock{font:400 11px/1.5 var(--font-body);margin-top:4px;white-space:nowrap}
-#tab-main #home-stream .home-status{background:#e3e9d8;color:#294534;opacity:1;order:1;font-size:12px}
+#app #tab-main #home-stream .home-status{background:#e3e9d8;color:#294534;opacity:1;order:1;font-size:12px}
 #tab-main #home-stream .home-stream-card>p{margin:7px 0 0;font:400 12px/1.5 var(--font-body)}
 #tab-main #home-stream .home-stream-card .home-link{min-height:44px;font-size:12px;padding-top:6px;margin-top:3px}
 #tab-main .home-stream-card .home-link{min-height:44px;padding:10px 0 0;margin:3px 0 0;font:500 12px/1.4 var(--font-body);color:#f7f4ef}
@@ -137,7 +140,7 @@ body{background:#f7f4ef}::selection{background:#dde4d8;color:#1a211a}
 #app .bottom-nav{background:#fffdf8;box-shadow:0 8px 25px #20382912;border-radius:28px;bottom:8px;min-height:64px}
 #app .nav-btn{font-size:11px;min-height:58px}
 #app .nav-btn--active::before{box-shadow:0 4px 10px #1e392923}
-#app button:focus-visible,#app a:focus-visible,#app summary:focus-visible{outline:2px solid #2a4a38;outline-offset:3px}
+#app button:focus-visible,#app a:focus-visible,#app summary:focus-visible{outline:2px solid #2a4a38;outline-offset:2px;box-shadow:0 0 0 2px #fcfaf6}
 @media(max-width:350px){
  #tab-main .home-scene{height:325px}
  #tab-main .home-scene-brand{font-size:30px}
