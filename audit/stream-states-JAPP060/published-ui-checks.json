@@ -1,0 +1,18 @@
+[
+  {
+    "state": "stream-current",
+    "realProviderCalls": 0,
+    "apiRequests": 0,
+    "overflow": false,
+    "postForm": false,
+    "pageErrors": []
+  },
+  {
+    "state": "stream-completed",
+    "realProviderCalls": 0,
+    "apiRequests": 0,
+    "overflow": false,
+    "postForm": true,
+    "pageErrors": []
+  }
+]

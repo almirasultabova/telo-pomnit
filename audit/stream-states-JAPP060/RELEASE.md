@@ -1,6 +1,6 @@
 # J-APP-060 — принятые состояния потока
 
-17 октября2026. Альмира приняла оба состояния J-APP-059 и поручила перенос/публикацию; отдельно уточнила три месяца хранения после окончания потока. Статус записи: подготовлено, выпуск пока не подтверждён.
+17 октября2026. Альмира приняла оба состояния J-APP-059 и поручила перенос/публикацию; отдельно уточнила три месяца хранения после окончания потока. **Статус: опубликовано и технически проверено; физическая проверка Telegram остаётся владельцу.**
 
 ## Реализация
 
@@ -16,4 +16,16 @@
 
 PathDynamics8+scope, календарь, questionnaire POST/gate/identity/navigation/empty-confirmation, ScreenReview/access, профильные счётчики/черновики AI и launch8 пройдены. Source/built структура48/50 без предупреждений, JS syntax/git diff check успешны. Детектор — только19 advisory о scoped-тонах принятого слоя, не подтверждение физического Telegram. Источник сборки — отдельный checkout output/silk-launch-release на базеcda3d26, посторонние изменения корневого checkout не публикуются.
 
-Backup/commit/Vercel/HTTPS/откат будут записаны по фактическому выпуску. Следующий этап после публикации — физическая проверка владельца в Telegram.
+## Выпуск и эксплуатация
+
+Функциональный commit `8bb5b8bf573d9920afcc4cbafd46093a2631d554` отправлен в GitHub main, SHA сверён. Vercel `dpl_HWK2pmBWg8ptg7z8W7cq9yatGPAZ`, production READY, точный commit8bb5b8b. Основной адрес https://tg-app-telo-pomnit.vercel.app/.
+
+Beget `/var/www/telo-app` и `/var/www/telo-app/recovery/j293`:76 прежних файлов каждого дерева и точный me.js проверены до записи;9 публичных файлов заменены assets-first/atomic rename, nginx -t до/после. Изменён только backend/src/routes/me.js, процесс telo-backend перезапущен, миграций0. Private backup `/root/telo-backups/stream-states-JAPP060-2026-10-17T192101796Z` содержит backend-before/app-before/recovery-before tar.gz и database-before.dump, архивы/оглавление проверены. Количества существующих записей/роли/настройки сохранены, .env и обе версии мониторинга неизменны; встречи не включались, тестовых отправок людям0. [Активация](activation-result.json).
+
+**78/78 файлов каждого из main/reserve/recovery совпали через HTTPS/TLS**, тексты нормализованы только по CRLF/LF, бинарные точно. Health200 и GET access без авторизации401. [Сверка](https.json), [manifest](manifest.json). Опубликованные два состояния повторно проверены в Chromium375, post-анкета открывается; overflow/pageerrors/API-запросов нет, все ответы только в fixture. [Опубликованный UI](published-ui-checks.json). Отдельно HOST открыл оба пункта через настоящий ScreenReview controller в синтетическом стенде, opaque sandbox без передачи токена/данных. [Проверка ведущей](staff-checks.json).
+
+## Проверка владельца и откат
+
+Полностью закрыть Mini App и открыть из бота заново. Текущий поток — в Профиле; оба учебных состояния доступны ведущей через «Профиль → Проверить экраны → Поток идёт / Поток завершён». Физический Telegram/клавиатура iPhone/Android не подтверждаются HTTPS или браузерным стендом. Реальные видео и членство Telegram не читались/не менялись; их удаление этот выпуск не автоматизирует.
+
+Откат frontend: предыдущий Vercel dpl_FXrH7US4Ltewkh1tw6ZV8FjvmCQj и соответствующие app/recovery backup через staging/atomic replacement после nginx -t. Backend: вернуть прежний src/routes/me.js из backend-before и перезапустить telo-backend; схема не менялась, Prisma generate/восстановление старой БД не нужны. Новые неиспользуемые static-файлы могут остаться; личные записи поверх старого dump не откатывать.
