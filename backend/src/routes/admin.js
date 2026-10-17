@@ -130,16 +130,28 @@ async function adminRoutes(app) {
 
   // GET /admin/participants/:id — профиль участницы
   app.get('/admin/participants/:id', { preHandler: requireAdmin }, async (request, reply) => {
+    reply.header('Cache-Control', 'private, no-store')
     const user = await db.user.findUnique({
       where: { id: request.params.id },
-      include: {
+      select: {
+        id: true,
+        telegramId: true,
+        telegramUsername: true,
+        firstName: true,
+        lastName: true,
+        name: true,
+        phone: true,
+        role: true,
+        createdAt: true,
+        deletedAt: true,
         enrollments: { include: { stream: true } },
         questionnaires: true,
         diagnosticResults: { orderBy: { createdAt: 'desc' }, take: 1 }
       }
     })
-    if (!user) return reply.code(404).send({ error: 'Участница не найдена' })
-    return user
+    if (!user || user.deletedAt) return reply.code(404).send({ error: 'Участница не найдена' })
+    const { deletedAt, ...participant } = user
+    return { ...participant, telegramId: String(participant.telegramId) }
   })
 
   // POST /admin/meetings — создать встречу

@@ -23,7 +23,11 @@ function load(relative, dependencies) {
   return module.exports;
 }
 const me = load('backend/src/routes/me.js', {
-  '../db': db, '../services/auth': {}, '../services/consent': {}
+  '../db': db, '../services/auth': {}, '../services/consent': {},
+  '../services/app-visits': {
+    currentVisitStreak: () => { throw Error('Visit statistics are outside this access test'); },
+    recordAppVisit: () => { throw Error('Visit writes are forbidden in this access test'); }
+  }
 });
 const auth = load('backend/src/services/auth.js', {
   crypto: require('crypto'), jsonwebtoken: { verify: () => ({ userId: current.id, tokenVersion: 0, purpose: 'club' }) },
