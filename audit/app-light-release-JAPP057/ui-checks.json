@@ -1,0 +1,122 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "tab": "main",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "tab": "diary",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "tab": "diag",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "tab": "profile",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "checkinOpened": true,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "tab": "main",
+    "overflow": false
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "tab": "diary",
+    "overflow": false
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "tab": "diag",
+    "overflow": false
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "tab": "profile",
+    "overflow": false
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "checkinOpened": true,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 375,
+    "tab": "main",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 375,
+    "tab": "diary",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 375,
+    "tab": "diag",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 375,
+    "tab": "profile",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 375,
+    "checkinOpened": true,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 1280,
+    "tab": "main",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 1280,
+    "tab": "diary",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 1280,
+    "tab": "diag",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 1280,
+    "tab": "profile",
+    "overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 1280,
+    "checkinOpened": true,
+    "pageErrors": []
+  }
+]

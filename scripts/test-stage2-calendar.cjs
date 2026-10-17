@@ -10,12 +10,17 @@ const october = { id: 'oct', name: 'October fixture', startDate: '2026-10-15T00:
 const archive = { id: 'spring', name: 'Archive fixture', startDate: '2026-04-16T00:00:00Z', endDate: '2026-05-14T00:00:00Z', meetings: [{ id: 'spring1' }] };
 let selected = october, rows = [];
 const context = vm.createContext({
-  Date, Intl, currentProgram: () => selected, programNow: () => Date.parse('2026-10-20T10:00:00Z'),
-  Storage: { getCheckins: () => rows, getAttended: () => ['spring1', 'oct2'] },
+  Date, Intl, currentProgram: () => selected, programNow: () => Date.parse('2026-10-29T10:00:00Z'),
+  Api: {userId:'fixture-user',clubBlocked:false,isAuthed:()=>true},
+  Storage: {_userId:'fixture-user',_generation:1,getHistoryLoadStatus:()=>({checkins:'loaded'}),getCheckins: () => rows, getAttended: () => ['spring1', 'oct2'] },
   CHECKIN_SCALES: ['tension', 'anxiety', 'energy', 'safety', 'bodyContact'].map(key => ({ key, label: key })),
   avgOf: values => values.reduce((a,b) => a+b, 0) / values.length
 });
 context.escapeAccessText = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+context.window=context;
+Object.defineProperty(context,'selectedProgramId',{get:()=>selected?.id});
+vm.runInContext(fs.readFileSync('app/js/path-dynamics-model.js','utf8'),context);
+vm.runInContext(fs.readFileSync('app/js/path-dynamics.js','utf8'),context);
 vm.runInContext(calendar + '\n' + chart + '\n' + notes, context);
 const { moscowDay, streamPeriod, streamState, getStreamWeek, inStreamPeriod, periodStreak, selectedAttendance, renderCheckinChart, scaleValue } = context;
 assert.equal(moscowDay('2026-10-14T21:00:00Z'), '2026-10-15');
@@ -39,19 +44,19 @@ assert.equal(periodStreak([{ date: '2026-10-15T21:30:00Z' }, { date: '2026-10-17
 const five = { tension: 1, anxiety: 3, energy: 5, safety: 7, bodyContact: 9 };
 rows = [{ ...five, date: '2026-10-16T12:00:00Z' }, { bodyScore: 7, legacyScale: true, date: '2026-10-23T12:00:00Z' }];
 const graph = renderCheckinChart();
-assert.equal((graph.match(/data-scale=/g) || []).length, 5);
+assert.equal((graph.match(/data-pd-scale=/g) || []).length, 5);
 assert(!graph.includes('NaN'));
 assert(!graph.includes('Ресурс'));
 assert.equal(scaleValue({ tension: null }, 'tension'), null);
 assert.equal(scaleValue({ tension: 7, legacyScale: true }, 'tension'), null);
 rows = [{ bodyScore: 7, legacyScale: true, date: '2026-10-23T12:00:00Z' }];
-assert(!renderCheckinChart().includes('data-scale='));
-assert(renderCheckinChart().includes('только прежние средние оценки'));
+assert(!renderCheckinChart().includes('class="pd-dot"'));
+assert(renderCheckinChart().includes('В прежних записях есть только общая оценка'));
 selected = archive;
 assert.equal(getStreamWeek('2026-04-16T12:00:00Z'), 1);
 assert.equal(getStreamWeek('2026-10-16T12:00:00Z'), null);
 assert.equal(selectedAttendance().count, 1);
-assert.equal(renderCheckinChart(), '');
+assert(renderCheckinChart().includes('Здесь появятся ваши отметки'));
 const unsafe = '<img src=x onerror="fixture()">';
 const noteHTML = context.renderRecentNotes([{ date: '2026-10-14T21:30:00Z', note: unsafe }, { date: '2026-10-16T12:00:00Z', note: 'Plain fixture' }]);
 assert(!noteHTML.includes('<img'));

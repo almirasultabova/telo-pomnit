@@ -19,6 +19,8 @@
     const data=options.body?JSON.parse(options.body):{};
     let body,status=200;
     if(pathname==='/api/auth/telegram' && method==='POST')body={token:'fictional-review-only',user:{id:'fictional-review-user',name:'Участница · пример',role:'PARTICIPANT',consentGivenAt:'2026-09-01'}};
+    else if(pathname==='/api/me/visit' && method==='POST')body={ok:true};
+    else if(pathname==='/api/me/profile-stats' && method==='GET')body={visitStreak:1,savedObservations:0};
     else if(pathname==='/api/me' && method==='GET')body={user:{id:'fictional-review-user',name:'Участница · пример',consentGivenAt:'2026-09-01'}};
     else if(pathname==='/api/me/enrollment/access' && method==='GET')body={serverTime: ['home-pending','q-invite','profile-pending','path-empty','path-example'].includes(view) ? '2026-09-24T10:00:00Z' : '2026-10-02T10:00:00Z',streams:[stream],diary:true,checkins:true,reactions:true,aiHistory:true,ai:{canWrite:false,reason:'ended',message:'Режим просмотра'}};
     else if(pathname==='/api/questionnaires/pre' && options.method==='POST'){pre={id:'fictional-pre',type:'pre',streamId:stream.id,formVersion:1,submittedAt:'2026-09-01T10:00:00Z',answers:structuredClone(data.answers)};body=pre;}

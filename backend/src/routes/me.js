@@ -1,8 +1,17 @@
 const db = require('../db')
+const { currentVisitStreak, recordAppVisit } = require('../services/app-visits')
 const { requireAuth, withActiveUser } = require('../services/auth')
 const { CONSENT_VERSION, CONSENT_SOURCE, CONSENT_TEXT } = require('../services/consent')
 
 async function meRoutes(app) {
+  app.post('/me/visit', { preHandler: requireAuth }, request => withActiveUser(request, async (tx, user) => {
+    await recordAppVisit(tx, user)
+    return { ok: true }
+  }))
+  app.get('/me/profile-stats', { preHandler: requireAuth }, async request => ({
+    visitStreak: currentVisitStreak(request.user),
+    savedObservations: await db.diaryEntry.count({ where: { userId: request.user.id } })
+  }))
   // GET /me — профиль + текущий поток + стрик
   app.get('/me', { preHandler: requireAuth }, async (request) => {
     const user = request.user

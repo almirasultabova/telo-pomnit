@@ -1,5 +1,6 @@
 const db = require('../db')
-const { verifyTelegramInitData, createToken, createDataRightsToken } = require('../services/auth')
+const { recordAppVisit } = require('../services/app-visits')
+const { verifyTelegramInitData, createToken, createDataRightsToken, withActiveUser } = require('../services/auth')
 const { admissionError, requestAdmission, isClubAdmin } = require('../services/admission')
 
 async function authRoutes(app) {
@@ -51,7 +52,7 @@ async function authRoutes(app) {
     await requestAdmission(user)
     const denied = admissionError(user)
     if (denied) return reply.code(403).send(denied)
-    await db.user.updateMany({ where: { id: user.id, deletedAt: null }, data: { lastSeenAt: new Date() } })
+    await withActiveUser({ user }, (tx, current) => recordAppVisit(tx, current))
     const token = createToken(user.id, user.tokenVersion)
 
     return {

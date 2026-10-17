@@ -115,6 +115,9 @@ const Api = {
 
   // ─── Профиль ──────────────────────────────────────────────────────────────
 
+  async getProfileStats() { return this._request('GET', '/me/profile-stats'); },
+  async recordAppVisit() { return this._request('POST', '/me/visit', {}); },
+
   async getMe() {
     return this._request('GET', '/me');
   },

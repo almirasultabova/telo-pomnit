@@ -289,10 +289,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentScreen === 'checkin-history') renderCheckinHistory();
     if (currentScreen === 'trigger-history') renderTriggerHistory();
     if (activeTab === 'diag') renderMyPathTab();
+    if (activeTab === 'profile') renderStats();
   });
   window.addEventListener('online', () => { Storage.flushPending(); Storage.flushCheckinsPending(); Storage.flushTriggersPending(); });
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) { Storage.flushPending(); Storage.flushCheckinsPending(); Storage.flushTriggersPending(); }
+    if (!document.hidden) {
+      Storage.flushPending(); Storage.flushCheckinsPending(); Storage.flushTriggersPending();
+      if (Api.isAuthed() && !Api.clubBlocked) {
+        const owner = Api.userId, generation = Api._authGeneration;
+        void Api.recordAppVisit().then(() => {
+          if (owner === Api.userId && generation === Api._authGeneration && activeTab === 'profile') renderStats();
+        }).catch(() => {});
+      }
+    }
   });
 
   function startApp() {
@@ -1045,7 +1054,7 @@ function renderMyPathTab() {
   const entries = Storage.getDiaryEntries().filter(row => inStreamPeriod(row));
   const diagResult = Storage.getDiagResult();
 
-  const analyticsHtml = !streamPeriod() ? '<section class="path-no-stream"><h2>Личные наблюдения</h2><p>Чтобы увидеть наблюдения и динамику за поток, выберите доступный поток. Все ваши записи остаются в Дневнике.</p></section>' : renderStreamSummary(entries) + (renderCheckinChart() || renderPathChartEmpty()) + (entries.length
+  const analyticsHtml = !streamPeriod() ? '<section class="path-no-stream"><h2>Личные наблюдения</h2><p>Чтобы увидеть наблюдения и динамику за поток, выберите доступный поток. Все ваши записи остаются в Дневнике.</p></section>' : renderStreamSummary(entries) + (entries.length
     ? renderMirrorCard(entries) +
       renderHeatmapSection(entries) +
       renderTopSensations(entries) +
@@ -1056,11 +1065,12 @@ function renderMyPathTab() {
         <div class="mypath-empty-sub">Здесь появятся области тела и ощущения из ваших записей. Можно начать с того, что вы чувствуете сейчас.</div><button class="btn btn--accent" id="path-first-observation" type="button">Почувствовать тело</button>
       </div>`);
 
-  container.innerHTML = programPickerHTML() + streamStatusHTML() +
+  container.innerHTML = renderCheckinChart() + programPickerHTML() + streamStatusHTML() +
     `<button type="button" class="path-program-link" id="path-program-btn"><span>Мой поток</span><small>${Api.userRole === 'HOST' || Api.isClubAdmin ? 'Расписание' : 'Анкета и расписание'} · в Профиле →</small></button>` +
     '<section class="path-questionnaire" aria-label="Опрос привычных реакций">' + renderDiagBlock(diagResult) + '</section>' +
     '<section class="path-analysis" aria-label="Личные наблюдения">' + analyticsHtml + '</section>';
-  renderHistoryLoadWarning(container, ['diary', 'checkins'], 'path');
+  renderHistoryLoadWarning(container, ['diary'], 'path');
+  window.PathDynamics?.bind(container, { context: pathDynamicsContext, checkin: () => document.getElementById('main-state-btn')?.click(), retry: button => refreshPathDynamics(button, false), sync: button => refreshPathDynamics(button, true) });
   container.querySelector('#path-first-observation')?.addEventListener('click',()=>document.getElementById('main-body-btn')?.click());
   container.querySelector('#path-first-checkin')?.addEventListener('click',()=>document.getElementById('main-state-btn')?.click());
   container.querySelector('#path-stream-select')?.addEventListener('change', event => selectProgram(event.target.value));
@@ -1072,11 +1082,6 @@ function renderMyPathTab() {
       renderMyPathTab();
     });
   });
-}
-
-function renderPathChartEmpty() {
-  const failed = Storage.getHistoryLoadStatus?.().checkins === 'failed';
-  return `<section class="path-chart-empty" aria-label="Динамика состояния"><h2>Динамика состояния</h2><div class="path-chart-placeholder" aria-hidden="true"><span>10</span><span>5</span><span>1</span></div><p>${failed ? 'Не удалось загрузить отметки состояния. Повторите загрузку истории выше.' : 'После отметки состояния здесь появится график пяти шкал. Пока точек для выбранного потока нет.'}</p>${failed ? '' : '<button class="btn btn--outline" id="path-first-checkin" type="button">Отметить состояние</button>'}</section>`;
 }
 
 // ─── Блок диагностики паттерна ────────────────────────────────────────────
@@ -1346,38 +1351,27 @@ function scaleValue(row, key) {
   const value = row[key];
   return !row.legacyScale && Number.isInteger(value) && value >= 1 && value <= 10 ? value : null;
 }
+function pathDynamicsContext() {
+  const allowed = !Api.clubBlocked && Api.isAuthed() && Api.userId === Storage._userId;
+  return { allowed, scope: [Storage._userId, Storage._generation, selectedProgramId].join(':'),
+    stream: currentProgram(), period: streamPeriod(), now: programNow(), scales: CHECKIN_SCALES,
+    rows: allowed ? selectedCheckins() : [], loadState: Storage.getHistoryLoadStatus?.().checkins };
+}
 function renderCheckinChart() {
-  const period = streamPeriod();
-  const checkins = selectedCheckins();
-  if (!period || !checkins.length) return '';
-  const colors = ['#a75c52', '#ae7d3b', '#637f49', '#467882', '#7e648f'];
-  const W = 280, H = 130, left = 22, right = 8, top = 8, bottom = 22;
-  const xp = week => left + ((week - 1) / Math.max(1, period.weeks - 1)) * (W - left - right);
-  const yp = value => top + (10 - value) / 9 * (H - top - bottom);
-  const weeks = Array.from({ length: period.weeks }, (_, i) => i + 1);
-  const scalePoints = CHECKIN_SCALES.map(scale => weeks.map(week => {
-    const values = checkins.filter(row => getStreamWeek(row.date) === week).map(row => scaleValue(row, scale.key)).filter(value => value !== null);
-    return values.length ? { week, value: avgOf(values) } : null;
-  }));
-  const series = CHECKIN_SCALES.map((scale, index) => {
-    const points = scalePoints[index];
-    const available = points.filter(Boolean);
-    if (!available.length) return '';
-    // Missing weeks break a line; missing observations never become a value 5.
-    let previous = null;
-    const segments = points.map(point => {
-      if (!point) { previous = null; return ''; }
-      const segment = previous ? `<line x1="${xp(previous.week)}" y1="${yp(previous.value)}" x2="${xp(point.week)}" y2="${yp(point.value)}" stroke="${colors[index]}" stroke-width="2"/>` : '';
-      previous = point;
-      return segment + `<circle cx="${xp(point.week)}" cy="${yp(point.value)}" r="3" fill="${colors[index]}"><title>${escapeAccessText(scale.label)} · неделя ${point.week}: ${point.value}</title></circle>`;
-    }).join('');
-    return `<g data-scale="${scale.key}">${segments}</g>`;
-  }).join('');
-  if (!series) return '<p class="access-notice">В этом периоде сохранены только прежние средние оценки. Отдельные шкалы по ним восстановить нельзя.</p>';
-  const grid = [1, 5, 10].map(value => `<line x1="${left}" y1="${yp(value)}" x2="${W - right}" y2="${yp(value)}" stroke="rgba(0,0,0,.06)"/><text x="${left - 4}" y="${yp(value) + 3}" text-anchor="end" font-size="9">${value}</text>`).join('');
-  const labels = weeks.map(week => `<text x="${xp(week)}" y="${H - 5}" text-anchor="middle" font-size="9">Н${week}</text>`).join('');
-  const valuesTable = `<details class="checkin-values"><summary>Значения по неделям</summary><p class="checkin-values-note">Средние оценки от 1 до 10. «Нет данных» означает отсутствие оценки. Таблицу можно листать в сторону.</p><div class="checkin-values-scroll" tabindex="0" role="region" aria-label="Средние значения пяти шкал"><table><caption>Средние оценки пяти шкал по неделям</caption><thead><tr><th scope="col">Шкала</th>${weeks.map(week => `<th scope="col">Неделя ${week}</th>`).join('')}</tr></thead><tbody>${CHECKIN_SCALES.map((scale,index) => `<tr><th scope="row">${escapeAccessText(scale.label)}</th>${scalePoints[index].map(point => `<td>${point ? point.value.toLocaleString('ru-RU') : 'Нет данных'}</td>`).join('')}</tr>`).join('')}</tbody></table></div></details>`;
-  return `<div class="section-label mt-16 mb-8">Пять шкал по неделям потока</div><div class="checkin-chart-wrap"><svg viewBox="0 0 ${W} ${H}" class="checkin-chart-svg" role="img" aria-label="Недельные средние по каждой из пяти шкал. Точные значения доступны ниже в раскрытии «Значения по неделям»">${grid}${labels}${series}</svg><div class="checkin-chart-legend">${CHECKIN_SCALES.map((scale, i) => `<span class="cchart-leg"><span class="cchart-dot" style="background:${colors[i]}"></span>${scale.label}</span>`).join('')}</div><p class="access-notice">Точка — средняя оценка за неделю. Линия соединяет соседние недели с оценками одной шкалы. Пропуски не заполняются.</p>${valuesTable}</div>`;
+  return window.PathDynamics?.render(pathDynamicsContext()) || '';
+}
+async function refreshPathDynamics(button, syncOnly) {
+  const owner = Storage._userId, generation = Storage._generation, scope = pathDynamicsContext().scope;
+  if (!pathDynamicsContext().allowed || button?.disabled) return;
+  if (button) button.disabled = true;
+  try {
+    if (syncOnly) await Storage.flushCheckinsPending();
+    else await Storage.initFromApi();
+  } catch {} finally {
+    const current = owner === Storage._userId && generation === Storage._generation && scope === pathDynamicsContext().scope && !Api.clubBlocked && Api.isAuthed();
+    if (current && button?.isConnected) button.disabled = false;
+    if (current && currentScreen === 'home' && activeTab === 'diag') renderMyPathTab();
+  }
 }
 
 // ─── 3. Итоговое резюме выбранного завершённого потока ─────────────────────────────
@@ -1794,24 +1788,41 @@ function renderUserCard() {
   renderVerifiedAvatar(container.querySelector('.profile-avatar'));
 }
 
+let profileStatsRequest = 0;
 function renderStats() {
   const container = document.getElementById('profile-stats');
   if (!container) return;
-
-  const streak  = Storage.getStreak();
-  const total   = Storage.getDiaryEntries().length;
-
-  container.innerHTML = `
-    <div class="stat-box">
-      <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="/media/app/icons/lucide.svg#chart-no-axes-column-increasing"/></svg></span>
-      <div class="stat-box-num">${streak}</div>
-      <div class="stat-box-label">${pluralDays(streak)}</div>
-    </div>
-    <div class="stat-box">
-      <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="/media/app/icons/lucide.svg#notebook-pen"/></svg></span>
-      <div class="stat-box-num">${total}</div>
-      <div class="stat-box-label">записей</div>
-    </div><p class="profile-streak-note">Серия дней с записями в дневнике · по московскому времени</p>`;
+  const owner = Api.userId, generation = Api._authGeneration, ticket = ++profileStatsRequest;
+  const paint = (streak, total) => {
+    const observationLabel = total === null ? 'сохранённых<br>наблюдений'
+      : total % 100 >= 11 && total % 100 <= 14 ? 'сохранённых<br>наблюдений'
+      : total % 10 === 1 ? 'сохранённое<br>наблюдение'
+      : [2, 3, 4].includes(total % 10) ? 'сохранённых<br>наблюдения' : 'сохранённых<br>наблюдений';
+    container.innerHTML = `
+      <div class="stat-box">
+        <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="/media/app/icons/lucide.svg#chart-no-axes-column-increasing"/></svg></span>
+        <div class="stat-box-num">${streak === null ? '—' : streak}</div>
+        <div class="stat-box-label">${streak === null ? 'дней подряд' : pluralStreakDays(streak)}</div>
+      </div>
+      <div class="stat-box">
+        <span class="profile-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="/media/app/icons/lucide.svg#notebook-pen"/></svg></span>
+        <div class="stat-box-num">${total === null ? '—' : total}</div>
+        <div class="stat-box-label">${observationLabel}</div>
+      </div>`;
+  };
+  paint(null, null);
+  if (!owner || !Api.isAuthed()) return;
+  const current = () => ticket === profileStatsRequest && Api.userId === owner && Api._authGeneration === generation && !Api.clubBlocked;
+  Api.getProfileStats().then(stats => {
+    if (!current()) return;
+    if (![stats?.visitStreak, stats?.savedObservations].every(n => Number.isSafeInteger(n) && n >= 0)) throw new Error('Invalid profile statistics');
+    paint(stats.visitStreak, stats.savedObservations);
+  }).catch(() => {
+    if (!current()) return;
+    const retry = document.createElement('button');
+    retry.type = 'button'; retry.className = 'profile-stats-retry';
+    retry.textContent = 'Обновить цифры'; retry.onclick = renderStats; container.append(retry);
+  });
 }
 
 // ─── Ссылки в профиле ─────────────────────────────────────────────────────
@@ -2149,6 +2160,8 @@ function renderAiDraftStatus() {
   status.textContent = aiPending ? 'Отправляем сообщение. Ожидаем ответ AI…' : aiSendError || (aiDraftDurable ? 'Черновик сохранён на этом устройстве. Он не отправляется сам.' : 'Черновик не сохранён на устройстве. Не закрывайте приложение: текст пока только в этом окне.');
 }
 function clearPrivateConversationState() {
+  window.PathDynamics?.reset();
+  document.querySelector?.('.path-dynamics')?.remove();
   clearAccessManagementState();
   document.getElementById('screen-data-export-preview')?.remove();
   homeUser = null;

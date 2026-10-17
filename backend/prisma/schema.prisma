@@ -37,6 +37,8 @@ model User {
   accessNotifiedAt     DateTime? @map("access_notified_at")
   accessRevision       Int       @default(0) @map("access_revision")
   lastSeenAt           DateTime? @map("last_seen_at")
+  appVisitDay          String?   @map("app_visit_day")
+  appVisitStreak       Int       @default(0) @map("app_visit_streak")
   preferredAppUrl      String?   @map("preferred_app_url")
   admissionLeaseUntil DateTime? @map("admission_lease_until")
   admissionDeliveredIds String[] @default([]) @map("admission_delivered_ids")

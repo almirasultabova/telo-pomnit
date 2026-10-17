@@ -1,0 +1,46 @@
+/* J-APP-050: approved app component, inheriting the current app's palette and fonts. */
+.path-dynamics{margin:0 0 30px;padding:0;color:#2a4a38;font:400 14px/1.55 Manrope,sans-serif}
+.path-dynamics *{box-sizing:border-box}
+.path-dynamics h2{margin:0 0 5px;font:500 28px/1.12 'Cormorant Garamond',Georgia,serif;color:#2a4a38}
+.path-dynamics .pd-period{margin:0 0 18px;font-size:12px;color:#726a60}
+.pd-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
+.pd-tab{min-height:44px;padding:9px 13px;border:1px solid #c6ccbf;border-radius:23px;background:#faf9f5;color:#38533f;font:500 12px/1.4 Manrope,sans-serif;cursor:pointer}
+.pd-tab[aria-selected=true]{background:#2a4a38;color:#fff;border-color:#2a4a38}
+.pd-tab:hover{border-color:#2a4a38}
+.path-dynamics button:focus-visible,.path-dynamics summary:focus-visible{outline:2px solid #2a4a38;outline-offset:3px}
+.pd-panel{background:#fdfbf7;border:1px solid #e1ded4;border-radius:20px;padding:19px 16px 8px}
+.pd-panel h3{margin:0 0 5px;font:500 25px/1.12 'Cormorant Garamond',Georgia,serif;color:#2a4a38}
+.pd-meaning{display:flex;justify-content:space-between;gap:12px;margin:0 0 12px;font-size:12px;color:#5c6557}
+.pd-meaning span{max-width:48%}
+.pd-meaning span:last-child{text-align:right}
+.pd-chart{display:block;width:100%;height:auto;overflow:visible}
+.pd-chart text{font-family:Manrope,sans-serif;fill:#62685b;font-size:10px;font-variant-numeric:tabular-nums}
+.pd-chart .pd-grid{stroke:#e2e3d9;stroke-width:1}
+.pd-chart .pd-line{stroke:#2a4a38;stroke-width:2.3;stroke-linecap:round;fill:none}
+.pd-chart .pd-dot{fill:#2a4a38;stroke:#fdfbf7;stroke-width:2}
+.pd-chart .pd-value{fill:#2a4a38;font-weight:600;font-size:11px}
+.pd-chart-note{margin:10px 0 18px;font-size:12px;line-height:1.55;color:#62685b}
+.pd-comparison{display:grid;grid-template-columns:1fr 1fr;gap:16px;border-top:1px solid #e1ded4;padding-top:15px}
+.pd-comparison p{margin:0;font-size:12px;color:#62685b}
+.pd-comparison strong{display:block;font:600 18px/1.4 Manrope,sans-serif;font-variant-numeric:tabular-nums;color:#2a4a38;margin:2px 0}
+.pd-comparison time{font-size:12px;color:#62685b}
+.pd-delta{margin:11px 0 0;font-size:13px;font-weight:600;color:#2a4a38}
+.pd-explanation{margin:5px 0 15px;font-size:12px;line-height:1.6;color:#62685b}
+.pd-details{border-top:1px solid #e1ded4;margin-top:16px}
+.pd-details summary{padding:14px 0;min-height:44px;cursor:pointer;color:#2a4a38;font-size:13px;font-weight:500}
+.pd-details table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px;font-variant-numeric:tabular-nums}
+.pd-details th,.pd-details td{padding:9px 0;text-align:left;border-bottom:1px solid #e1ded4;font-weight:400}
+.pd-details th{font-weight:600}.pd-details td:last-child,.pd-details th:last-child{text-align:right}
+.pd-details caption{text-align:left;margin:0 0 10px;color:#62685b;font-size:12px}
+.pd-state{padding:23px 2px 13px}.pd-state p{margin:0 0 14px;color:#62685b;font-size:13px;line-height:1.65}
+.pd-state strong{display:block;font:500 25px/1.15 'Cormorant Garamond',Georgia,serif;color:#2a4a38;margin:0 0 10px}
+.pd-primary{width:100%;min-height:44px;padding:11px 15px;border:0;border-radius:24px;background:#2a4a38;color:white;font:500 13px/1.5 Manrope,sans-serif;cursor:pointer}
+.pd-primary:disabled{opacity:.65;cursor:wait}
+.pd-primary:hover{background:#203c2c}
+.pd-state .pd-empty-rule{height:1px;background:#d3d9ca;margin:22px 0}
+.path-dynamics ::selection{background:#dce4d4;color:#203c2a}
+@media(max-width:350px){.pd-tab{padding-inline:10px}.pd-tabs{gap:5px}.pd-panel{padding-inline:12px}.path-dynamics h2{font-size:26px}}
+@media(prefers-reduced-motion:reduce){.path-dynamics *{animation:none!important;transition:none!important}}
+
+.pd-pending{margin:12px 0;padding-top:12px;border-top:1px solid #e1ded4}
+.pd-pending p{font-size:12px;line-height:1.6;color:#62685b;margin:0 0 12px}
