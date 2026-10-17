@@ -1,0 +1,29 @@
+[
+  {
+    "engine": "chromium",
+    "origin": "http://127.0.0.1:8912/",
+    "zones": 35,
+    "decodedBothSides": true,
+    "continuesToSensations": true,
+    "pageErrors": [],
+    "realApiRequests": 0
+  },
+  {
+    "engine": "msedge",
+    "origin": "http://127.0.0.1:8912/",
+    "zones": 35,
+    "decodedBothSides": true,
+    "continuesToSensations": true,
+    "pageErrors": [],
+    "realApiRequests": 0
+  },
+  {
+    "engine": "webkit",
+    "origin": "http://127.0.0.1:8912/",
+    "zones": 35,
+    "decodedBothSides": true,
+    "continuesToSensations": true,
+    "pageErrors": [],
+    "realApiRequests": 0
+  }
+]

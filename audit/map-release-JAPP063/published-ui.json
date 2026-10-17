@@ -1,0 +1,47 @@
+[
+  {
+    "engine": "chromium",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "zones": 35,
+    "decodedBothSides": true,
+    "continuesToSensations": true,
+    "pageErrors": [],
+    "realApiRequests": 0
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://app.telo-pomnit.ru/",
+    "zones": 35,
+    "decodedBothSides": true,
+    "continuesToSensations": true,
+    "pageErrors": [],
+    "realApiRequests": 0
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://app.telo-pomnit.ru/recovery/j293/",
+    "zones": 35,
+    "decodedBothSides": true,
+    "continuesToSensations": true,
+    "pageErrors": [],
+    "realApiRequests": 0
+  },
+  {
+    "engine": "msedge",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "zones": 35,
+    "decodedBothSides": true,
+    "continuesToSensations": true,
+    "pageErrors": [],
+    "realApiRequests": 0
+  },
+  {
+    "engine": "webkit",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "zones": 35,
+    "decodedBothSides": true,
+    "continuesToSensations": true,
+    "pageErrors": [],
+    "realApiRequests": 0
+  }
+]

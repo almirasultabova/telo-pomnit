@@ -1,0 +1,20 @@
+{
+  "backup": "/root/telo-backups/map-JAPP063-2026-10-17T195946954Z",
+  "publicFiles": 80,
+  "changedPublic": [
+    "js/app.js",
+    "media/app/redesign/body-back-owner-lossless.webp",
+    "media/app/redesign/body-front-owner-lossless.webp",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}
