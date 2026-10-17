@@ -1,0 +1,26 @@
+[
+  {
+    "engine": "chromium",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "states": 4,
+    "statusAndFocus": true,
+    "preScaleSelection": true,
+    "feedback": true,
+    "aiPlaceholder": true,
+    "pageErrors": [],
+    "realApiRequests": 0,
+    "checkpointSource": "PASS stdout from first published run; subsequent recovery navigation timed out"
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://app.telo-pomnit.ru/",
+    "states": 4,
+    "statusAndFocus": true,
+    "preScaleSelection": true,
+    "feedback": true,
+    "aiPlaceholder": true,
+    "pageErrors": [],
+    "realApiRequests": 0,
+    "checkpointSource": "PASS stdout from first published run; subsequent recovery navigation timed out"
+  }
+]

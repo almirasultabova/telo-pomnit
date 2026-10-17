@@ -3,11 +3,13 @@ from playwright.sync_api import sync_playwright,expect
 import json,re,sys
 HERE=Path(__file__).resolve().parent;published='--published'in sys.argv
 origins=['https://tg-app-telo-pomnit.vercel.app/','https://app.telo-pomnit.ru/','https://app.telo-pomnit.ru/recovery/j293/']if published else['http://127.0.0.1:8918/']
-records=[]
+resultfile=HERE/('published-ui.json'if published else'local-ui.json')
+records=json.loads(resultfile.read_text(encoding='utf-8'))if '--resume'in sys.argv and resultfile.exists()else[]
 with sync_playwright()as p:
- for name in ['chromium','webkit']:
+ for name in ['webkit']if '--webkit-only'in sys.argv else['chromium','webkit']:
   b=getattr(p,name).launch(args=['--disable-features=BackForwardCache']if name=='chromium'else[])
   for base in origins if name=='chromium'else origins[:1]:
+   if any(row['engine']==name and row['origin']==base for row in records):continue
    c=b.new_context(viewport={'width':390,'height':844},reduced_motion='reduce');errors=[];requests=[]
    c.on('page',lambda pg:pg.on('pageerror',lambda e:errors.append(str(e))))
    c.route('**/api/**',lambda r:r.abort())
@@ -18,6 +20,6 @@ with sync_playwright()as p:
    page=load('home-pending');expect(page.locator('#screen-home')).to_have_class(re.compile('screen--active'));page.evaluate('openFeedback()');expect(page.locator('#screen-feedback')).to_have_class(re.compile('screen--active'));expect(page.locator('#fb-kind')).to_have_css('border-top-color','rgb(123, 130, 115)');page.locator('#fb-text').focus();assert page.locator('#fb-text').evaluate('(e)=>getComputedStyle(e).outlineWidth==="2px"&&getComputedStyle(e).outlineStyle==="solid"');page.close()
    page=load('stream-current');expect(page.locator('[data-assistant]')).to_have_count(1);expect(page.locator('#tab-profile .app-footer')).to_have_css('opacity','1');page.locator('[data-assistant]').click();expect(page.locator('#screen-ai-chat')).to_have_class(re.compile('screen--active'));assert page.locator('#ai-input').evaluate('(e)=>getComputedStyle(e,"::placeholder").color==="rgb(114, 106, 96)"');assert page.locator('#screen-ai-chat').evaluate('(e)=>e.scrollWidth<=e.clientWidth');page.screenshot(path=str(HERE/f'{"published"if published else"local"}-{name}-{len(records)}.png'));page.close()
    assert not errors,errors;assert not any('/api/'in url for url in requests),requests
-   records.append({'engine':name,'origin':base,'states':4,'statusAndFocus':True,'preScaleSelection':True,'feedback':True,'aiPlaceholder':True,'pageErrors':errors,'realApiRequests':0});c.close();print(name,base,'PASS',flush=True)
+   records.append({'engine':name,'origin':base,'states':4,'statusAndFocus':True,'preScaleSelection':True,'feedback':True,'aiPlaceholder':True,'pageErrors':errors,'realApiRequests':0});resultfile.write_text(json.dumps(records,ensure_ascii=False,indent=2),encoding='utf-8');c.close();print(name,base,'PASS',flush=True)
   b.close()
 (HERE/('published-ui.json'if published else'local-ui.json')).write_text(json.dumps(records,ensure_ascii=False,indent=2),encoding='utf-8')

@@ -1,0 +1,15 @@
+{
+  "publishedPassed": [
+    "chromium-main",
+    "chromium-reserve"
+  ],
+  "incomplete": [
+    "chromium-recovery-navigation-timeout",
+    "webkit-main-target-closed"
+  ],
+  "localWebkitBuildPassed": true,
+  "recoveryTlsHashes": "80/80 passed",
+  "freePhysicalMemoryKiB": 372776,
+  "cause": "undetermined; low local memory observed, no product defect established",
+  "systemCaStore": "one separate diagnostic used outdated system CA; authoritative hash checks use certifi and passed; TLS verification was not disabled"
+}

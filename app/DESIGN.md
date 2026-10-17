@@ -8,6 +8,7 @@ colors:
   primary: "#2A4A38"
   text: "#1A211A"
   text-secondary: "#726A60"
+  control-border: "#7B8273"
 typography:
   display:
     fontFamily: "Cormorant Garamond, Georgia, serif"
@@ -16,6 +17,8 @@ typography:
 ---
 
 ## Текущий визуальный контракт — 15 октября 2026
+
+**J-APP-071,18октября — принятый контраст опубликован.** Локальный кандидат J-APP-070 принят владельцем, выпуск7dfc0cf/Vercel READY/Beget с backup проверен. Control-border #7B8273 отличается от декоративного line, состояния/палитра/фото/размеры сохранены. [Выпуск](../audit/contrast-release-JAPP071/RELEASE.md). Ниже прежние статусы кандидатов — история; физическая приёмка отдельно.
 
 Палитра и пара Cormorant Garamond / Manrope сохраняются. Текущие правила имеют приоритет над прежними статусами кандидатов в истории ниже; сами исторические решения не удалены.
 

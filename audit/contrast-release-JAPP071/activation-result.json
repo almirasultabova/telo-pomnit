@@ -1,0 +1,23 @@
+{
+  "backup": "/root/telo-backups/contrast-JAPP071-2026-10-17T220723172Z",
+  "publicFiles": 80,
+  "changedPublic": [
+    "css/form-layout.css",
+    "css/light-sections.css",
+    "css/questionnaire-flow.css",
+    "css/styles.css",
+    "css/ux-personal.css",
+    "css/ux-program.css",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}
