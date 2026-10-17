@@ -719,7 +719,7 @@ function initBodyMap() {
 
 // Presentation coordinates for the owner's two plates (100 × 150).
 // Persisted zone IDs, labels and the observation model remain in DATA.
-const BODY_PLATES = {front:'/media/app/redesign/body-front-owner.png',back:'/media/app/redesign/body-back-owner.png'};
+const BODY_PLATES = {front:'/media/app/redesign/body-front-owner-lossless.webp',back:'/media/app/redesign/body-back-owner-lossless.webp'};
 const BODY_PLATE_REGIONS = {
   head:[36,0,26,22],eyes:[49,8,10,3],jaw:[48,16,10,5],throat:[44,21,12,8],
   chest:[33,29,30,12],diaphragm:[38,41,24,10],belly:[39,51,24,13],pelvis:[38,64,24,16],
