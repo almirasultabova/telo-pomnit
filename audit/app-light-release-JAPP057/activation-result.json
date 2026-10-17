@@ -1,0 +1,33 @@
+{
+  "backup": "/root/telo-backups/light-JAPP057-2026-10-17T112920547Z",
+  "files": 76,
+  "changedPublic": [
+    "css/light-sections.css",
+    "css/path-dynamics.css",
+    "js/api.js",
+    "js/app.js",
+    "js/light-sections.js",
+    "js/path-dynamics-model.js",
+    "js/path-dynamics.js",
+    "js/screen-review-fixture.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "backend": [
+    "backend/src/routes/auth.js",
+    "backend/src/routes/me.js",
+    "backend/src/services/app-visits.js",
+    "backend/prisma/schema.prisma",
+    "backend/prisma/migrations/20261017143000_app_visit_streak/migration.sql"
+  ],
+  "migration": "20261017143000_app_visit_streak",
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "protectedUnchanged": true,
+  "recordCountsUnchanged": true,
+  "preferencesUnchanged": true,
+  "unauthorizedRoutesDenied": true,
+  "messagesSent": 0
+}
