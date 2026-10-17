@@ -31,6 +31,7 @@
 <link rel="stylesheet" href="css/questionnaire-invite.css?v=JAPP045">
 <link rel="stylesheet" href="css/path-dynamics.css?v=JAPP050">
 <link rel="stylesheet" href="css/light-sections.css?v=JAPP057">
+<link rel="stylesheet" href="css/stream-state.css?v=JAPP060">
 </head>
 <body>
 <div id="startup-error" role="alert" hidden>
@@ -222,7 +223,7 @@
             <button class="btn btn--primary btn--full mb-8" id="chat-btn" hidden>💬 Войти в групповой чат</button>
             <div id="zoom-btn-wrap"></div>
           </div>
-          <div id="schedule-section"></div>
+          <details class="ss-calendar" id="program-calendar" open><summary id="program-calendar-title">Расписание встреч</summary><div id="schedule-section"></div></details>
         </section>
         <section class="profile-people" aria-labelledby="profile-hosts-heading">
           <h2 class="profile-section-title" id="profile-hosts-heading">Ведущие</h2>
@@ -723,6 +724,7 @@
 <script src="js/stream-overview-entry.js?v=JAPP042"></script>
 <script src="js/access-management.js?v=access-20261011"></script>
 <script src="js/launch.js?v=silk-return-25-20261014"></script>
+<script src="js/stream-state.js?v=JAPP060"></script>
 <script src="js/app.js?v=access-20260922"></script>
 <script src="js/path-dynamics-model.js?v=JAPP050"></script>
 <script src="js/path-dynamics.js?v=JAPP050"></script>

@@ -27,7 +27,10 @@
     if (notice) notice.hidden=durable;
   }
   function leaving(screen) { if (screen === 'post-questionnaire') {capture();saveDraft();if (sending) {navigation++;sending=false;}} }
-  window.QuestionnaireCycle={invalidate,setStatus,setPre,refreshEntries,leaving};
+  window.QuestionnaireCycle={invalidate,setStatus,setPre,refreshEntries,leaving,
+    getPostState:()=>{const current=source();return !Api.isClubAdmin && Api.userRole!=='HOST' && current.stream?.phase==='completed' ? {streamId:current.stream.id,done:Boolean(current.post)} : null;},
+    openSummary:()=>{if(source().post)showComparison();else openPost();}
+  };
   const initial = () => source().pre?.answers || {};
   let answers = {}, step = 0, sending = false, navigation = 0, emptyConfirmed = false;
   const formats = [['benefit_group','Психосоматические разборы'],['benefit_body','Телесные практики на встречах'],
@@ -187,7 +190,7 @@
   }
   function refreshEntries() {
     const current = source();
-    if (!isCurrent(record) || Api.isClubAdmin || Api.userRole==='HOST' || current.stream?.phase !== 'completed') return;
+    if (!isCurrent(record) || Api.isClubAdmin || Api.userRole==='HOST' || current.stream?.phase !== 'completed') {window.StreamStatePanel?.refreshQuestionnaire();return;}
     closeQInvite();
     for (const id of ['home-q-banner-wrap','q-banner-wrap']) {
       const target = document.getElementById(id);
@@ -197,6 +200,7 @@
       target.innerHTML = `<button class="q-banner cycle-entry" type="button" data-post-entry data-post-status="${status}"><span class="q-banner-body"><span class="q-banner-title">${current.post ? 'Мой путь' : 'Что изменилось за время программы'}</span><span class="q-banner-sub">${current.post ? 'С чем я пришла и что замечаю сейчас' : 'Вернитесь к своему запросу и сохраните опыт потока'}</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>`;
       target.querySelector('[data-post-entry]').addEventListener('click',current.post ? showComparison : openPost);
     }
+    window.StreamStatePanel?.refreshQuestionnaire();
   }
   function decoratePreThanks() {
     const body = document.getElementById('questionnaire-body');

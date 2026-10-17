@@ -1,0 +1,54 @@
+/* J-APP-060: accepted native stream states. */
+#tab-profile .stream-state-panel{margin-top:2px;color:#1a211a}
+.ss-hero{position:relative;overflow:hidden;border-radius:18px;padding:22px;background:linear-gradient(105deg,rgba(24,49,34,.98) 12%,rgba(24,49,34,.75) 70%,rgba(24,49,34,.45)),url('/media/app/redesign/stream-olive-r04.webp') center/cover;color:#fffdf8}
+.ss-status{display:inline-flex;align-items:center;gap:7px;background:#e3e9d8;color:#294534;padding:5px 10px;border-radius:20px;font:500 11px/1.4 var(--font-body)}
+.ss-status svg{width:7px;height:7px;fill:currentColor}
+.ss-hero h2{font:500 32px/1.05 var(--font-serif);margin:17px 0 7px;letter-spacing:-.02em}
+.ss-dates{font:400 12px/1.5 var(--font-body);color:#edf0e6;margin:0}
+.ss-next{margin-top:21px;padding-top:16px;border-top:1px solid #b5c1ad66}
+.ss-next p{margin:0;font:400 12px/1.5 var(--font-body);color:#edf0e6}
+.ss-next strong{display:block;margin:4px 0 3px;font:500 22px/1.15 var(--font-serif)}
+.ss-hero-note{font:400 13px/1.6 var(--font-body);color:#edf0e6;margin:18px 0 0;max-width:29ch}
+.ss-recordings{margin-top:18px;padding:20px;border-radius:16px;background:#fffdf8}
+.ss-recordings-top{display:flex;gap:11px;align-items:center}
+.ss-icon{width:24px;height:24px;flex:0 0 24px;color:#2a4a38}
+.ss-recordings h3{font:500 25px/1.1 var(--font-serif);margin:0;color:#2a4a38}
+.ss-location{margin:5px 0 0;font:400 12px/1.5 var(--font-body);color:#596650}
+.ss-recordings>p{font:400 13px/1.6 var(--font-body);margin:15px 0;color:#344a38}
+.ss-group-btn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:48px;padding:12px 15px;border:0;border-radius:24px;background:#2a4a38;color:#fffdf8;font:500 13px/1.4 var(--font-body);text-align:left}
+.ss-group-btn svg{width:19px;height:19px;flex:0 0 19px}
+.ss-recordings small{display:block;font:400 11px/1.6 var(--font-body);margin-top:11px;color:#596650}
+.ss-missing{font:400 13px/1.6 var(--font-body);margin:0;color:#596650}
+.ss-section-title{font:500 25px/1.1 var(--font-serif);color:#2a4a38;margin:27px 0 9px}
+.ss-personal-intro{font:400 13px/1.6 var(--font-body);color:#596650;margin:0 0 11px}
+.ss-personal-row{display:flex;align-items:center;gap:13px;width:100%;min-height:70px;padding:14px 0;border:0;border-bottom:1px solid #dce0d4;background:transparent;text-align:left;color:#2a4a38}
+.ss-personal-row>span{flex:1;min-width:0}
+.ss-personal-row strong{display:block;font:500 14px/1.4 var(--font-body)}
+.ss-personal-row small{display:block;margin-top:4px;font:400 12px/1.5 var(--font-body);color:#596650}
+.ss-arrow{width:18px;height:18px;flex:0 0 18px}
+.ss-reflection{padding:20px;margin-top:22px;background:#e5eadd;border-radius:16px}
+.ss-reflection h3{font:500 25px/1.1 var(--font-serif);color:#2a4a38;margin:0 0 10px}
+.ss-reflection p{font:400 13px/1.6 var(--font-body);color:#344a38;margin:0 0 15px}
+.ss-reflection button{font:600 13px/1.5 var(--font-body);padding:5px 0;min-height:44px;border:0;background:transparent;display:flex;gap:12px;align-items:center;color:#2a4a38}
+.ss-ended{margin:23px 0 0;padding-bottom:1px}
+.ss-ended h3{font:500 20px/1.2 var(--font-serif);color:#2a4a38;margin:0 0 10px}
+.ss-ended p{font:400 12px/1.65 var(--font-body);color:#596650;margin:4px 0}
+.ss-assistant{margin-top:18px;display:flex;gap:10px;align-items:center;min-height:48px;border:0;background:transparent;padding:8px 0;font:500 13px/1.5 var(--font-body);color:#2a4a38}
+.ss-calendar{margin-top:21px;border-bottom:1px solid #dce0d4;padding-bottom:8px}
+.ss-calendar>summary{font:500 13px/1.5 var(--font-body);min-height:44px;padding:12px 0;color:#2a4a38;cursor:pointer}
+.ss-calendar #schedule-section{padding:10px 0}
+#tab-profile .ss-calendar .program-meeting-summary .meeting-summary-topic{font-size:19px}
+#tab-profile .ss-calendar .attendance-control{min-width:62px}
+.stream-state-panel button:focus-visible,.stream-state-panel summary:focus-visible{outline:2px solid #2a4a38;outline-offset:4px}
+@media(max-width:350px){.ss-hero{padding:19px}.ss-hero h2{font-size:30px}.ss-recordings,.ss-reflection{padding:18px}.ss-recordings h3,.ss-section-title,.ss-reflection h3{font-size:24px}}
+
+.profile-program--state .profile-program-access{display:none}
+.profile-program--state #next-meeting-card{background:transparent;padding:0}
+.ss-hero h2{overflow-wrap:anywhere}.ss-next strong{overflow-wrap:anywhere}
+.ss-live:empty{display:none}.ss-live .btn{margin:15px 0 0;min-height:44px;border-color:#b5c1ad;color:#fffdf8;font-size:13px;background:transparent}
+.profile-program:not(.profile-program--state)>.ss-calendar>summary{display:none}
+.profile-program--state .ss-calendar #schedule-section>h2{display:none}
+.profile-program--state #owned-stream-select{margin:6px 0 15px}
+
+.ss-pre #q-banner-wrap:empty{display:none}
+.ss-reflection:empty{display:none}

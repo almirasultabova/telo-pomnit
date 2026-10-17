@@ -1,0 +1,28 @@
+{
+  "backup": "/root/telo-backups/stream-states-JAPP060-2026-10-17T192101796Z",
+  "publicFiles": 78,
+  "changedPublic": [
+    "css/stream-state.css",
+    "js/app.js",
+    "js/questionnaire-cycle.js",
+    "js/screen-review-fixture.js",
+    "js/screen-review-frame.js",
+    "js/screen-review.js",
+    "js/stream-state.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "backend": [
+    "src/routes/me.js"
+  ],
+  "migrations": 0,
+  "existingCountsUnchanged": true,
+  "rolesAndPreferencesUnchanged": true,
+  "protectedFilesUnchanged": true,
+  "unauthorizedAccessDenied": true,
+  "messagesSent": 0,
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ]
+}

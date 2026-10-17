@@ -1,6 +1,6 @@
 // Staff-only visual review. The opaque sandbox receives no token or participant data.
 (() => {
-  const views=[['pre','Начальная анкета'],['pre-thanks','Спасибо · начальная анкета'],['post','Итоговая анкета'],['post-thanks','Спасибо · итоговая анкета'],['compared','Мой путь · ответы до и после'],['home-pending','Главная · анкета не заполнена'],['q-invite','Приглашение к анкете'],['profile-pending','Профиль · анкета не заполнена'],['path-empty','Мой путь · без записей'],['path-example','Мой путь · пример динамики']];
+  const views=[['pre','Начальная анкета'],['pre-thanks','Спасибо · начальная анкета'],['post','Итоговая анкета'],['post-thanks','Спасибо · итоговая анкета'],['compared','Мой путь · ответы до и после'],['home-pending','Главная · анкета не заполнена'],['q-invite','Приглашение к анкете'],['profile-pending','Профиль · анкета не заполнена'],['path-empty','Мой путь · без записей'],['path-example','Мой путь · пример динамики'],['stream-current','Поток идёт'],['stream-completed','Поток завершён']];
   let frame=null, identity=null, loadingTimer=null;
   const allowed=()=>Api.isAuthed() && !Api.clubBlocked && (Api.isClubAdmin || ['HOST','ADMIN'].includes(Api.userRole));
   const current=()=>allowed() && identity?.owner===Api.userId && identity?.generation===Api._authGeneration;
@@ -19,7 +19,7 @@
     const status=document.getElementById('screen-review-status');status.hidden=false;status.textContent='Открываем экран…';
     frame=document.createElement('iframe');frame.id='screen-review-frame';frame.title=views.find(([id])=>id===view)[1];
     frame.setAttribute('sandbox','allow-scripts');frame.setAttribute('referrerpolicy','no-referrer');
-    frame.src='screen-review.html?v=JAPP021&view='+encodeURIComponent(view);frame.hidden=true;
+    frame.src='screen-review.html?v=JAPP060&view='+encodeURIComponent(view);frame.hidden=true;
     const expected=frame;
     document.getElementById('screen-review-stage').append(frame);
     frame.addEventListener('error',()=>{if(current())status.textContent='Не удалось открыть экран. Выберите его ещё раз.';});

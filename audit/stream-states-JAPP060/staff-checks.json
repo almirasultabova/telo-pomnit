@@ -1,0 +1,11 @@
+{
+  "states": [
+    "stream-current",
+    "stream-completed"
+  ],
+  "hostEntry": true,
+  "opaqueSandbox": true,
+  "credentialsTransferred": false,
+  "actualApiRequests": 0,
+  "pageErrors": []
+}

@@ -160,12 +160,13 @@ async function getProgramAccess(user, now = Date.now()) {
     const bounds = streamBounds(e.stream)
     const revokedByExpiry = e.accessExpires && now >= new Date(e.accessExpires).getTime()
     const live = e.status === 'active' && now >= bounds.start && now < bounds.end && !revokedByExpiry
-    const recordings = now >= bounds.start && now < bounds.end && !revokedByExpiry
+    const recordings = now >= bounds.start && now < bounds.recordingsEnd && !revokedByExpiry
     return {
       id: e.stream.id, name: e.stream.name, startDate: e.stream.startDate, endDate: e.stream.endDate,
       status: e.status, phase: now < bounds.start ? 'upcoming' : now >= bounds.end ? 'completed' : 'current',
       canUseAi: live, canAttend: live, canReadRecordings: recordings,
-      aiExpiresAt: new Date(bounds.end).toISOString(), recordingsExpiresAt: new Date(bounds.end).toISOString(),
+      aiExpiresAt: new Date(bounds.end).toISOString(), recordingsExpiresAt: new Date(bounds.recordingsEnd).toISOString(),
+      accessExpired: Boolean(revokedByExpiry),
       zoomLink: live ? e.stream.zoomLink : null,
       chatLink: recordings ? e.stream.chatLink : null,
       meetings: e.stream.meetings.map(m => ({ id: m.id, number: m.number, date: m.date, topic: m.topic, description: m.description, prepare: m.prepare, zoomLink: live ? m.zoomLink : null }))

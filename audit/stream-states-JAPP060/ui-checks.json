@@ -1,0 +1,123 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "view": "stream-current",
+    "overflow": false,
+    "forms": true,
+    "zoomPreserved": true,
+    "groupMocked": true,
+    "expiryClickBlocked": true,
+    "errors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "view": "stream-completed",
+    "overflow": false,
+    "forms": true,
+    "zoomPreserved": false,
+    "groupMocked": true,
+    "expiryClickBlocked": true,
+    "errors": []
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "view": "stream-current",
+    "overflow": false,
+    "forms": true,
+    "zoomPreserved": true,
+    "groupMocked": true,
+    "expiryClickBlocked": true,
+    "errors": []
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "view": "stream-completed",
+    "overflow": false,
+    "forms": true,
+    "zoomPreserved": false,
+    "groupMocked": true,
+    "expiryClickBlocked": true,
+    "errors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 375,
+    "view": "stream-current",
+    "overflow": false,
+    "forms": true,
+    "zoomPreserved": true,
+    "groupMocked": true,
+    "expiryClickBlocked": true,
+    "errors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 375,
+    "view": "stream-completed",
+    "overflow": false,
+    "forms": true,
+    "zoomPreserved": false,
+    "groupMocked": true,
+    "expiryClickBlocked": true,
+    "errors": []
+  },
+  {
+    "case": "expired",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "case": "revoked",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "case": "missing",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "case": "badurl",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "case": "long",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "case": "host",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "case": "multi",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "case": "pre",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "case": "network",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "case": "upcoming",
+    "passed": true,
+    "errors": []
+  },
+  {
+    "case": "none",
+    "passed": true,
+    "errors": []
+  }
+]

@@ -9,7 +9,7 @@
     started=true;
     if(view==='q-invite') {showQInvite();}
     else if(view==='home-pending') {closeQInvite();}
-    else if(view==='profile-pending') {switchTab('profile');closeQInvite();}
+    else if(['profile-pending','stream-current','stream-completed'].includes(view)) {switchTab('profile');closeQInvite();}
     else if(view==='path-empty' || view==='path-example') {switchTab('diag');closeQInvite();}
     else if(view==='pre')openQuestionnaire();
     else if(view==='pre-thanks') {

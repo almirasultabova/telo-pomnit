@@ -1617,6 +1617,7 @@ function renderNextMeeting(){
   if(!el)return;
   const streams=programAccess?.streams||[];
   el.replaceChildren();
+  window.StreamStatePanel?.clear();
   if(programRefreshError && programAccess){const notice=document.createElement('p');notice.className='program-status';notice.setAttribute('role','status');notice.textContent='Не удалось обновить расписание. Показаны последние загруженные данные.';el.append(notice);}
   if(!programAccess){
     const p=document.createElement('p');p.className='program-status';p.textContent='Не удалось загрузить поток и расписание.';el.append(p);
@@ -1637,13 +1638,21 @@ function renderNextMeeting(){
       }else{
         const note=document.createElement('p');note.textContent=phase==='completed'?'Ваши личные наблюдения сохранены в Дневнике.':'Расписание встреч появится здесь.';feature.append(note);
       }
-      el.append(feature);
+      const owner=Api.userId,generation=Api._authGeneration,streamId=stream.id;
+      const panel=window.StreamStatePanel?.render({stream:{...stream,phase},now:programNow,refreshAccess:()=>refreshProgramAccess().then(renderProfileTab),
+        aiAvailable:programAccess.ai?.canWrite===true,serviceAccess:['host','admin'].includes(programAccess.ai?.reason),
+        isCurrent:()=>Api.isAuthed() && !Api.clubBlocked && Api.userId===owner && Api._authGeneration===generation && currentProgram()?.id===streamId,
+        openTab:switchTab,appendLink:appendAccessLink,
+        postState:()=>window.QuestionnaireCycle?.getPostState(),openSummary:()=>window.QuestionnaireCycle?.openSummary(),
+        openAi:history=>{document.getElementById('ai-chat-btn')?.click();if(history){const details=document.querySelector('.ai-history-disclosure');if(details)details.open=true;}}
+      });
+      el.append(panel||feature);
     }
     if(streams.length>1){
       const label=document.createElement('label');label.textContent='Ваши потоки';label.htmlFor='owned-stream-select';el.append(label);
       const select=document.createElement('select');select.id='owned-stream-select';select.className='access-select';
       streams.forEach(stream=>{const option=document.createElement('option');option.value=stream.id;option.textContent=stream.name+(streamState(stream)==='completed'?' · завершён':'');select.append(option);});
-      select.value=selectedProgramId;select.addEventListener('change',()=>selectProgram(select.value));el.append(select);
+      select.value=selectedProgramId;select.addEventListener('change',()=>selectProgram(select.value));el.prepend(label,select);
     }
   }
   const refresh=document.createElement('button');refresh.className='btn btn--ghost btn--sm program-refresh';refresh.textContent='Обновить расписание';
@@ -1672,6 +1681,13 @@ function renderSchedule(){
   const container=document.getElementById('schedule-section');if(!container)return;
   const expanded=new Set([...container.querySelectorAll('details[open]')].map(row=>row.dataset.meeting));
   const stream=currentProgram();container.replaceChildren();
+  const calendar=document.getElementById('program-calendar');
+  if(calendar){
+    const scope=[Api.userId,Api._authGeneration,stream?.id].join(':');
+    calendar.hidden=!stream;
+    if(calendar.dataset.scope!==scope){calendar.open=!document.querySelector('.profile-program--state');calendar.dataset.scope=scope;}
+    document.getElementById('program-calendar-title').textContent=stream?.phase==='completed'?'Прошедшие встречи':'Расписание встреч';
+  }
   if(stream){
     const heading=document.createElement('h2');heading.className='schedule-title';heading.textContent='Встречи потока';container.append(heading);
     (stream.meetings||[]).forEach(meeting=>{
@@ -2161,6 +2177,7 @@ function renderAiDraftStatus() {
 }
 function clearPrivateConversationState() {
   window.PathDynamics?.reset();
+  window.StreamStatePanel?.clear();
   document.querySelector?.('.path-dynamics')?.remove();
   clearAccessManagementState();
   document.getElementById('screen-data-export-preview')?.remove();
