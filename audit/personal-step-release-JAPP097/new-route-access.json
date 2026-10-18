@@ -1,0 +1,10 @@
+[
+  {
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "newOwnerReadRoute": 401
+  },
+  {
+    "origin": "https://app.telo-pomnit.ru/",
+    "newOwnerReadRoute": 401
+  }
+]
