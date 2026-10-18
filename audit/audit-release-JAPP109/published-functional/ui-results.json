@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "passed": true,
+      "engine": "chromium",
+      "width": 390,
+      "cases": [
+        "map title/caption describe record counts; multiple sensations count once; out-of-stream entry excluded",
+        "week filters preserve counts for tension, warmth and lightness",
+        "empty period, all periods and full-zone disclosure remain available",
+        "save from main returns to Main with cleared back stack; confirmed save retained",
+        "save from diary returns to Main with cleared back stack; late ACK preserves Main"
+      ],
+      "pageErrors": []
+    },
+    {
+      "passed": true,
+      "engine": "webkit",
+      "width": 390,
+      "cases": [
+        "map title/caption describe record counts; multiple sensations count once; out-of-stream entry excluded",
+        "week filters preserve counts for tension, warmth and lightness",
+        "empty period, all periods and full-zone disclosure remain available",
+        "save from main returns to Main with cleared back stack; confirmed save retained",
+        "save from diary returns to Main with cleared back stack; late ACK preserves Main"
+      ],
+      "pageErrors": []
+    }
+  ],
+  "sourceHashes": {
+    "app/js/app.js": "fe870c7844719c28791a3ee921c98be1a4b82e4c20c203d7d3243157d008b844",
+    "app/css/ux-diary-path.css": "80fd3c79f95e95552844c2ab26b3e36d7be474bad4ff0c4b04a46dee5921acc2"
+  }
+}
