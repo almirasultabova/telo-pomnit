@@ -1,0 +1,20 @@
+[
+  {
+    "engine": "chromium",
+    "publishedFinal": true,
+    "syntheticSaveAndOpen": true,
+    "headerVisible": true,
+    "outerAppScrollZero": true,
+    "realApiCalls": 0,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "publishedFinal": true,
+    "syntheticSaveAndOpen": true,
+    "headerVisible": true,
+    "outerAppScrollZero": true,
+    "realApiCalls": 0,
+    "pageErrors": []
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "returnDraft": true,
+    "reloadDraft": true,
+    "ackOnly": true,
+    "failurePreservesText": true,
+    "lostAckNoDuplicate": true,
+    "reloadServerHistory": true,
+    "edit": true,
+    "safeText": true,
+    "accountDraftIsolation": true,
+    "pageErrors": [],
+    "realApi": 0,
+    "notifications": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "returnDraft": true,
+    "reloadDraft": true,
+    "ackOnly": true,
+    "failurePreservesText": true,
+    "lostAckNoDuplicate": true,
+    "reloadServerHistory": true,
+    "edit": true,
+    "safeText": true,
+    "accountDraftIsolation": true,
+    "pageErrors": [],
+    "realApi": 0,
+    "notifications": 0
+  }
+]
