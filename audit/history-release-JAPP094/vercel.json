@@ -1,0 +1,43 @@
+{
+  "result": {
+    "deployment": {
+      "id": "dpl_BWvrmSovaJt7wqfYP6ixuSHAnHNb",
+      "name": "telo-pomnit-t6my",
+      "url": "telo-pomnit-t6my-rk0hdfj1u-almirasultabovas-projects.vercel.app",
+      "type": "LAMBDAS",
+      "state": "READY",
+      "createdAt": 1792333926857,
+      "creator": {
+        "uid": "RtPUdfWc4Z1RX7kqZLXb4jgI",
+        "username": "almirasultabova"
+      },
+      "project": {
+        "id": "prj_VHWoN1WtNRgJxkidNPGJPJGt7S4v",
+        "name": "telo-pomnit-t6my",
+        "framework": null
+      },
+      "meta": {
+        "githubCommitRef": "main",
+        "githubCommitSha": "81a40caddb19f4ac34c33a68ab7e20ffaf4bc0dc",
+        "githubCommitMessage": "feat(app): поиск и важное в личной истории дневника",
+        "githubRepo": "telo-pomnit",
+        "githubOrg": "almirasultabova"
+      },
+      "alias": [
+        "tg-app-telo-pomnit.vercel.app",
+        "telo-pomnit-t6my.vercel.app",
+        "telo-pomnit-t6my-almirasultabovas-projects.vercel.app",
+        "telo-pomnit-t6my-git-main-almirasultabovas-projects.vercel.app"
+      ],
+      "target": "production",
+      "regions": [
+        "iad1"
+      ],
+      "buildingAt": 1792333927953,
+      "ready": 1792333931355,
+      "readyState": "READY",
+      "source": "git",
+      "aliasError": null
+    }
+  }
+}
