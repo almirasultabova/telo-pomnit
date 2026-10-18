@@ -35,7 +35,7 @@ async function changeAction(actorId,id,changes) {
   const {action,actor,target} = await readAction(actorId,id)
   if ((changes.status || action.status) === 'rejected') changes = {...changes,role:target.role,streamId:null,basis:'none'}
   const next = {...action,...changes}
-  if (!['approved','rejected'].includes(next.status) || !['HOST','ADMIN','PARTICIPANT'].includes(next.role) || !['none','paid','free','revoke'].includes(next.basis)) throw error('Неверные параметры решения',400)
+  if (!['approved','rejected'].includes(next.status) || !['HOST','ADMIN','PARTICIPANT'].includes(next.role) || !['none','paid','cash','free','revoke'].includes(next.basis)) throw error('Неверные параметры решения',400)
   authorize(actor,target,next.role)
   if (next.basis !== 'none' && !next.streamId) throw error('Выберите поток',400)
   if (next.streamId && !await db.stream.findUnique({where:{id:next.streamId}})) throw error('Поток не найден',404)
@@ -54,16 +54,28 @@ async function confirmAction(actorId,id) {
     if (target.accessRevision !== action.expectedRevision || action.usedAt || action.expiresAt <= new Date()) throw error('Решение устарело или уже принято. Обновите список.')
     const claimed = await tx.accessAction.updateMany({where:{id,usedAt:null,expiresAt:{gt:new Date()},status:action.status,role:action.role,streamId:action.streamId,basis:action.basis,expectedRevision:action.expectedRevision},data:{usedAt:new Date()}})
     if (!claimed.count) throw error('Решение уже принято или выбор изменился. Откройте карточку заново.')
-    let enrollment = null
+    let enrollment = null, enrollmentBefore = null
     if (action.status === 'approved' && action.streamId && action.basis !== 'none') {
       const stream = await tx.stream.findUnique({where:{id:action.streamId}})
       if (!stream) throw error('Поток не найден',404)
       const all = await tx.enrollment.findMany({where:{userId:target.id,streamId:stream.id},orderBy:{createdAt:'desc'}})
+      enrollmentBefore = all.map(e=>({id:e.id,status:e.status,basis:e.accessBasis,paidAt:e.paidAt?new Date(e.paidAt).toISOString():null,paymentId:e.paymentId}))
       const paid = all.find(e=>e.paidAt && ['active','completed'].includes(e.status))
       if (action.basis === 'paid') {
         const verified = paid?.paymentId && await tx.paymentOrder.findFirst({where:{paymentId:paid.paymentId,streamId:stream.id,processedAt:{not:null}}})
-        if (!verified) throw error('Подтверждённой оплаты этого потока нет. Выберите бесплатный допуск либо оформите оплату.',400)
+        if (!verified) throw error('Онлайн-оплата этого потока не подтверждена. Если деньги получены наличными, выберите «Оплачено наличными».',400)
         enrollment = {streamId:stream.id,basis:'paid'}
+      } else if (action.basis === 'cash') {
+        if (all.some(e=>e.paidAt && e.paymentId && ['active','completed'].includes(e.status))) throw error('Для этого потока уже есть онлайн-оплата. Выберите «Оплачено онлайн».',400)
+        const previous = all.find(e=>e.accessBasis==='cash' && !e.paymentId) || all.find(e=>!e.paymentId && ['active','pending','completed'].includes(e.status) && (!e.paidAt || !e.accessBasis || e.accessBasis==='free'))
+        const data = {status:'active',accessBasis:'cash',paidAt:previous?.paidAt || new Date(),accessExpires:null}
+        let saved
+        if (previous) {
+          const changed = await tx.enrollment.updateMany({where:{id:previous.id,status:previous.status,accessBasis:previous.accessBasis,paidAt:previous.paidAt,paymentId:null},data})
+          if (!changed.count) throw error('Оплата уже изменилась. Откройте карточку заново.')
+          saved = {id:previous.id,...data}
+        } else saved = await tx.enrollment.create({data:{...data,userId:target.id,streamId:stream.id}})
+        enrollment = {id:saved.id,streamId:stream.id,basis:'cash',paidAt:new Date(saved.paidAt).toISOString(),confirmation:'manual_cash'}
       } else if (action.basis === 'revoke') {
         await tx.enrollment.updateMany({where:{userId:target.id,streamId:stream.id,status:{in:['active','completed']}},data:{status:'cancelled'}})
         enrollment = {streamId:stream.id,basis:'revoke'}
@@ -76,7 +88,7 @@ async function confirmAction(actorId,id) {
         enrollment = {streamId:stream.id,basis:'free'}
       }
     }
-    const before = {role:target.role,status:target.accessStatus,revision:target.accessRevision}
+    const before = {role:target.role,status:target.accessStatus,revision:target.accessRevision,...(enrollmentBefore?{enrollments:enrollmentBefore}:{})}
     const updated = await tx.user.update({where:{id:target.id},data:{role:action.status==='approved'?action.role:target.role,accessStatus:action.status,accessDecidedAt:new Date(),accessDecidedBy:actorId,accessRevision:{increment:1},tokenVersion:{increment:1}}})
     const after = {role:updated.role,status:updated.accessStatus,revision:updated.accessRevision,enrollment}
     await tx.accessAudit.create({data:{actorId,targetId:target.id,actionId:id,before,after}})

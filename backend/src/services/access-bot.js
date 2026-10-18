@@ -1,7 +1,7 @@
 const db = require('../db')
 const m = require('./access-management')
 const roles = {PARTICIPANT:'Участница',HOST:'Ведущая',ADMIN:'Администратор'}
-const bases = {none:'Без изменения потока',free:'Бесплатный допуск',paid:'Подтверждённая оплата',revoke:'Закрыть доступ к потоку'}
+const bases = {none:'Без изменения потока',free:'Бесплатный допуск',paid:'Оплачено онлайн',cash:'Оплачено наличными · подтверждаю получение вручную',revoke:'Закрыть доступ к потоку'}
 const button = (text,data) => ({text,callback_data:data})
 const card = u => [u.name || [u.firstName,u.lastName].filter(Boolean).join(' ') || 'Новый пользователь',(u.telegramUsername || u.username) ? '@'+(u.telegramUsername || u.username) : '',`Telegram ID: ${u.telegramId}`,`Роль: ${roles[u.role] || u.role}`].filter(Boolean).join('\n')
 const entryKeyboard = id => ({inline_keyboard:[[button('Настроить и одобрить','am:o:'+id),button('Отказать','am:x:'+id)]]})
@@ -19,7 +19,7 @@ async function render(ctx,id,step) {
     rows.push([button('Без потока',prefix+'s:'+id+':n')])
   } else if(step==='basis') {
     text+='Основание доступа к выбранному потоку:'
-    rows=[[button('Оплата подтверждена',prefix+'b:'+id+':p')],[button('Бесплатно',prefix+'b:'+id+':f')],[button('Закрыть доступ к потоку',prefix+'b:'+id+':r')]]
+    rows=[[button('Оплачено онлайн',prefix+'b:'+id+':p')],[button('Оплачено наличными',prefix+'b:'+id+':c')],[button('Бесплатно',prefix+'b:'+id+':f')],[button('Закрыть доступ к потоку',prefix+'b:'+id+':r')]]
   } else {
     const stream=a.streamChoices.find(s=>s.id===a.streamId)
     text+=`Решение: ${a.status==='approved'?'разрешить вход':'отказать во входе'}\nРоль: ${roles[a.role]}\nПоток: ${stream?.name || 'без изменения'}\n${bases[a.basis]}\n\nПодтвердить? Личная история не удаляется.${a.role==='HOST'?' Ведущей доступны служебный AI постоянно и все активные потоки.':''}`
@@ -70,7 +70,7 @@ function registerAccessBot(bot) {
         await m.changeAction(actor.id,id,{streamId:stream,basis:stream?'free':'none'})
         return render(ctx,id,stream?'basis':'review')
       }
-      if(op==='b') {await m.changeAction(actor.id,id,{basis:{p:'paid',f:'free',r:'revoke'}[value]});return render(ctx,id,'review')}
+      if(op==='b') {await m.changeAction(actor.id,id,{basis:{p:'paid',c:'cash',f:'free',r:'revoke'}[value]});return render(ctx,id,'review')}
       if(op==='v') return render(ctx,id,'role')
       if(op==='q') {await m.readAction(actor.id,id);await db.accessAction.update({where:{id},data:{usedAt:new Date()}});return ctx.editMessageText('Изменения отменены. Доступ сохранён.')}
       if(op==='c') {

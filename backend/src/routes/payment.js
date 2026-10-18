@@ -92,8 +92,8 @@ async function paymentRoutes(app) {
       ] } })
       if (user) {
         const existing = await tx.enrollment.findFirst({ where: { userId: user.id, streamId: order.streamId } })
-        if (existing) await tx.enrollment.update({ where: { id: existing.id }, data: { status: 'active', paymentId, paidAt: new Date() } })
-        else await tx.enrollment.create({ data: { userId: user.id, streamId: order.streamId, status: 'active', paymentId, paidAt: new Date() } })
+        if (existing) await tx.enrollment.update({ where: { id: existing.id }, data: { status: 'active', paymentId, accessBasis: 'paid', paidAt: new Date() } })
+        else await tx.enrollment.create({ data: { userId: user.id, streamId: order.streamId, status: 'active', paymentId, accessBasis: 'paid', paidAt: new Date() } })
       } else {
         await tx.pendingEnrollment.upsert({ where: { paymentId }, create: {
           telegramUsername: order.telegramUsername, email: order.email, name: order.name, paymentId, streamId: order.streamId

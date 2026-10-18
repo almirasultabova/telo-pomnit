@@ -94,7 +94,7 @@ bot.command('start', async (ctx) => {
             if (existing) {
               await db.enrollment.update({
                 where: { id: existing.id },
-                data: { status: 'active', paymentId: pending.paymentId, paidAt: new Date() }
+                data: { status: 'active', paymentId: pending.paymentId, accessBasis: 'paid', paidAt: new Date() }
               })
             } else {
               await db.enrollment.create({
@@ -103,6 +103,7 @@ bot.command('start', async (ctx) => {
                   streamId: stream.id,
                   status: 'active',
                   paymentId: pending.paymentId,
+                  accessBasis: 'paid',
                   paidAt: new Date()
                 }
               })

@@ -16,7 +16,7 @@ function registerAccessDemo(bot) {
    let text='ТЕСТ — реальный доступ не меняется.\n\n',rows=[]
    if(op==='open'){text+='Выберите роль.';rows=[[button('Участница','role:p'),button('Ведущая','role:h')],[button('Администратор','role:a')]]}
    else if(op==='role'){text+='Роль: '+roles[role]+'\nВыберите поток.';rows=[[button('Тестовый поток','stream:'+role+':1')],[button('Без потока','stream:'+role+':0')]]}
-   else if(op==='stream'&&stream==='1'){text+='Выберите основание доступа.';rows=[[button('Оплата подтверждена','basis:'+role+':1:p')],[button('Бесплатно','basis:'+role+':1:f')]]}
+   else if(op==='stream'&&stream==='1'){text+='Выберите основание доступа.';rows=[[button('Оплачено онлайн','basis:'+role+':1:p')],[button('Оплачено наличными','basis:'+role+':1:c')],[button('Бесплатно','basis:'+role+':1:f')]]}
    else if(op==='confirm'||op==='reject-confirm'){
     const approved=op==='confirm'
     await ctx.editMessageText(text+(approved?'Тестовое одобрение подтверждено.':'Тестовый отказ подтверждён.'))
@@ -25,7 +25,7 @@ function registerAccessDemo(bot) {
    }else if(op==='cancel')return ctx.editMessageText('Тест завершён. Реальные аккаунты не изменены.')
    else {
     const rejected=op==='reject'
-    text+=rejected?'Решение: отказать во входе.\nПодтвердить тестовый отказ?':`Решение: разрешить вход.\nРоль: ${roles[role]}\nПоток: ${stream==='0'?'без потока':'Тестовый поток'}\nОснование: ${stream==='0'?'без изменения':basis==='p'?'подтверждённая оплата':'бесплатный допуск'}\n\nПодтвердить тестовое одобрение?`
+    text+=rejected?'Решение: отказать во входе.\nПодтвердить тестовый отказ?':`Решение: разрешить вход.\nРоль: ${roles[role]}\nПоток: ${stream==='0'?'без потока':'Тестовый поток'}\nОснование: ${stream==='0'?'без изменения':basis==='p'?'оплачено онлайн':basis==='c'?'оплачено наличными · подтверждаю получение вручную':'бесплатный допуск'}\n\nПодтвердить тестовое одобрение?`
     rows=[[button('Подтвердить',rejected?'reject-confirm':`confirm:${role}:${stream}:${basis}`)]]
    }
    rows.push([button('Отмена','cancel')])

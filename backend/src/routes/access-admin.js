@@ -33,7 +33,7 @@ async function routes(app) {
     return {pending,approved,rejected,entered,diary,checkins,triggers,paid,free,errors,measuredSince:'2026-10-11',serverTime:new Date().toISOString()}
   })
   app.post('/access-admin/actions',{preHandler:guard,schema:{body:{type:'object',additionalProperties:false,required:['targetId'],properties:{targetId:{type:'string',format:'uuid'}}}}},req=>management.openAction(req.user.id,req.body.targetId))
-  app.patch('/access-admin/actions/:id',{preHandler:guard,schema:{body:{type:'object',additionalProperties:false,properties:{status:{type:'string',enum:['approved','rejected']},role:{type:'string',enum:['PARTICIPANT','HOST','ADMIN']},streamId:{type:['string','null'],maxLength:40},basis:{type:'string',enum:['none','free','paid','revoke']}}}}},req=>management.changeAction(req.user.id,req.params.id,req.body))
+  app.patch('/access-admin/actions/:id',{preHandler:guard,schema:{body:{type:'object',additionalProperties:false,properties:{status:{type:'string',enum:['approved','rejected']},role:{type:'string',enum:['PARTICIPANT','HOST','ADMIN']},streamId:{type:['string','null'],maxLength:40},basis:{type:'string',enum:['none','free','paid','cash','revoke']}}}}},req=>management.changeAction(req.user.id,req.params.id,req.body))
   app.post('/access-admin/actions/:id/confirm',{preHandler:guard},async req=>{
     const result=await management.confirmAction(req.user.id,req.params.id)
     return {ok:true,after:result.after}
