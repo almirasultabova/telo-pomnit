@@ -27,6 +27,7 @@ def serve(delayed=True):
 def wait(page,condition):
  until=time.monotonic()+6
  while time.monotonic()<until:
+  if hasattr(page,"_flush_mock"):page._flush_mock()
   if page.evaluate(condition):return
   page.wait_for_timeout(40)
  raise AssertionError('State timeout: '+condition)
@@ -35,7 +36,16 @@ def run(engine,width):
  try:
   with sync_playwright() as p:
    browser=getattr(p,engine).launch();page=browser.new_page(viewport={'width':width,'height':844});errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-   page.route('**/api/**',lambda route:route.fulfill(response=route.fetch(url=f'http://127.0.0.1:{server.server_port}/api/'+route.request.url.split('/api/',1)[1])))
+   held=[]
+   def mock_api(route):
+    path=route.request.url.split('/api/',1)[1]
+    if path.startswith('triggers?') and not f.gate.is_set():held.append(route);return
+    route.fulfill(response=route.fetch(url=f'http://127.0.0.1:{server.server_port}/api/'+path))
+   def release_routes():
+    if f.gate.is_set():
+     for route in held[:]:route.fulfill(json=[]);held.remove(route)
+   page._flush_mock=release_routes
+   page.route('**/api/**',mock_api)
    url='https://tg-app-telo-pomnit.vercel.app/?verify=JAPP111#tgWebAppData=preview&tgWebAppVersion=8.0&tgWebAppPlatform=ios'
    page.goto(url);expect(page.locator('#screen-home')).to_have_class('screen screen--active');page.evaluate('LaunchSplash.cancel()')
    wait(page,'()=>Storage.getHistoryLoadStatus().diary==="loaded"&&Storage.getHistoryLoadStatus().checkins==="loaded"')

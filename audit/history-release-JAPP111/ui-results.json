@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "passed": true,
+      "engine": "chromium",
+      "width": 390,
+      "cases": [
+        "diary/checkins visible on Main before reaction history completes",
+        "server HOST role reaches existing schedule UI without admin grant",
+        "failed checkins reported while diary is ready and reactions still loading",
+        "explicit retry restores failed history without losing ready data",
+        "participant retains own questionnaire UI and is not admin"
+      ],
+      "pageErrors": []
+    },
+    {
+      "passed": true,
+      "engine": "webkit",
+      "width": 390,
+      "cases": [
+        "diary/checkins visible on Main before reaction history completes",
+        "server HOST role reaches existing schedule UI without admin grant",
+        "failed checkins reported while diary is ready and reactions still loading",
+        "explicit retry restores failed history without losing ready data",
+        "participant retains own questionnaire UI and is not admin"
+      ],
+      "pageErrors": []
+    }
+  ],
+  "sourceHashes": {
+    "app/js/storage.js": "c68c4af51796a11ecc13bbceaf14b65bd5d9330fb447b1ca3aa321b99c70f323",
+    "backend/src/routes/auth.js": "66a4560705d90016c2785e4e25bff60ea36b07dd0868b86de1ab35036a13241d"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "deploymentId": "dpl_GENvi3eGEhA3K52Eev5eBQ8nEdBY",
+  "readyState": "READY",
+  "githubCommitSha": "3bcea4b3e922373804f3a81994793b718c2f398c",
+  "productionAlias": [
+    "tg-app-telo-pomnit.vercel.app",
+    "telo-pomnit-t6my.vercel.app",
+    "telo-pomnit-t6my-almirasultabovas-projects.vercel.app",
+    "telo-pomnit-t6my-git-main-almirasultabovas-projects.vercel.app"
+  ],
+  "aliasError": null
+}

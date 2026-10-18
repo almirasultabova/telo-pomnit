@@ -8,7 +8,7 @@
 
 Private backup /root/telo-backups/history-JAPP111-2026-10-18T202215486Z содержит backend src/prisma/manifests, app/recovery, custom pg_dump;0700/0600, архивы/pg_restore-list проверены. Backup остаётся на сервере. Backend и Beget/recovery установлены атомарными файлами; PM2 online,health200,защищённый маршрут без личности401,nginx-t до/после,хеши88файлов обоих каталогов совпали. .env/AI/мониторинг не менялись. [Активация](activation-result.json).
 
-Основной Git/Vercel-выпуск и опубликованные проверки ещё завершаются. Ниже будет зафиксирован фактический результат.
+Основной выпуск завершён: Git **3bcea4b3e922373804f3a81994793b718c2f398c**, Vercel **dpl_GENvi3eGEhA3K52Eev5eBQ8nEdBY** READY, основной alias подтверждён. Все88файлов каждого из main/reserve/recovery совпали по HTTPS(264/264). Опубликованный Chromium390/WebKit390 прошёл10групп независимой загрузки, ошибок/повтора и ролей с искусственным API, pageErrors0. [Vercel](vercel.json), [HTTPS](https.json), [published UI](ui-results.json). В первом запуске задержанный искусственный API проксировался синхронным route.fetch и блокировал работу тестового gate; переделан на удерживаемый Playwright-route с явным освобождением. Код продукта по этой причине не менялся.
 
 Откат: прежний Vercel READY dpl_EHLmLC8AgKmcBpmoUsoFRpP32BNe/Git1b7aefb. Backend остановить, восстановить прежний src/routes/auth.js из private backend-before.tar.gz и перезапустить с health/401; Prisma/БД не менять. Клиент Beget/recovery восстановить через staging/временные файлы с nginx-t и атомарной заменой из backup. Рабочую БД не восстанавливать из dump: схема этим выпуском не меняется, новые записи сохраняются.
 
