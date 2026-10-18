@@ -1,0 +1,38 @@
+[
+  {
+    "engine": "chromium",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "draftReturn": true,
+    "discard": true,
+    "syntheticSave": true,
+    "realApiRequests": 0,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://app.telo-pomnit.ru/",
+    "draftReturn": true,
+    "discard": true,
+    "syntheticSave": true,
+    "realApiRequests": 0,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://app.telo-pomnit.ru/recovery/j293/",
+    "draftReturn": true,
+    "discard": true,
+    "syntheticSave": true,
+    "realApiRequests": 0,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "draftReturn": true,
+    "discard": true,
+    "syntheticSave": true,
+    "realApiRequests": 0,
+    "pageErrors": []
+  }
+]

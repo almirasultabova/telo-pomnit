@@ -1,0 +1,18 @@
+{
+  "backup": "/root/telo-backups/draft-JAPP073-2026-10-18T090607639Z",
+  "publicFiles": 80,
+  "changedPublic": [
+    "js/app.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}

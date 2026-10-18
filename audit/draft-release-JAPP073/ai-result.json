@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "routeStatus": 200,
+  "credential": {
+    "present": true,
+    "source": "backend-env",
+    "consistent": true
+  },
+  "hashes": {
+    "src/routes/ai.js": "13c29688c9f6c88e4ab64fd868a0e4b45d783311a5c45b48d2db7ab847c97701",
+    "src/routes/me.js": "18da5f2cd243cd94dc61b98ac6c6753d11ad7a6082ee21970be563c47718bbcb",
+    "src/services/auth.js": "5928f6f6e0eed057cb3d84023c997e34e1c4a8275abd613b6558496900a89c46"
+  },
+  "provider": {
+    "status": 200,
+    "requestId": "req_76f61313c45b40acb3feda5dae88fc0f",
+    "model": "gpt-4o-mini-2024-07-18",
+    "usage": {
+      "prompt_tokens": 146,
+      "completion_tokens": 73,
+      "total_tokens": 219,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "errorCode": null,
+    "errorType": null
+  },
+  "providerCalls": 1,
+  "diaryReads": 0,
+  "realDbReads": 0,
+  "realDbWrites": 0,
+  "notifications": 0,
+  "contextMode": "none",
+  "contextEntryCount": 0,
+  "syntheticHistoryRestored": true,
+  "reply": "Вы можете обратить внимание на то, где именно сосредоточено это напряжение — в верхней части плеч или может быть, в области шеи. Какое ощущение оно вызывает: тяжесть, жжение или что-то другое? Также попробуйте заметить, как это напряжение меняется, когда вы дышите глубже или расслабляетесь.",
+  "sessionId": "29f857c1-de9e-4960-8ef7-560af3652e7c",
+  "uiErrorCode": null
+}

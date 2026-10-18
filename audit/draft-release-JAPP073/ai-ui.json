@@ -1,0 +1,18 @@
+[
+  {
+    "engine": "chromium",
+    "actualProviderReplyReplayed": true,
+    "sendAndHistoryUI": true,
+    "realApiRequests": 0,
+    "additionalProviderCalls": 0,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "actualProviderReplyReplayed": true,
+    "sendAndHistoryUI": true,
+    "realApiRequests": 0,
+    "additionalProviderCalls": 0,
+    "pageErrors": []
+  }
+]
