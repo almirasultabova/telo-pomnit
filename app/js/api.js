@@ -167,6 +167,9 @@ const Api = {
     return this._request('POST', '/diary', entry);
   },
 
+  async getAfterMeetingNote(id) { return this._request('GET', '/after-meeting-notes/' + encodeURIComponent(id)); },
+  async updateAfterMeetingStep(id, data) { return this._request('PUT', '/after-meeting-notes/' + encodeURIComponent(id) + '/step', data); },
+  async addAfterMeetingObservation(id, data) { return this._request('POST', '/after-meeting-notes/' + encodeURIComponent(id) + '/observations', data); },
   async getAfterMeetingNotes() { return this._getAll('/after-meeting-notes', 50); },
   async createAfterMeetingNote(data) { return this._request('POST', '/after-meeting-notes', data); },
   async updateAfterMeetingNote(id, data) { return this._request('PUT', '/after-meeting-notes/' + encodeURIComponent(id), data); },

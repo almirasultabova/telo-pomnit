@@ -14,7 +14,7 @@
   let post=view==='compared' ? {id:'fictional-post',type:'post',streamId:'fictional-stream',formVersion:2,submittedAt:'2026-10-02T10:00:00Z',answers:after} : null;
   const stream=streamView?{id:'fictional-stream',name:'Осенний поток',phase:ended?'completed':'current',startDate:'2026-10-01',endDate:'2026-11-05',status:ended?'completed':'active',meetings:[{id:'example-meeting-1',number:1,date:'2026-10-18T08:00:00Z',topic:'Телесная практика',description:'Учебная встреча'},{id:'example-meeting-2',number:2,date:'2026-10-22T15:00:00Z',topic:'Психосоматические разборы',description:'Учебная встреча'}],canUseAi:!ended,canAttend:!ended,canReadRecordings:true,accessExpired:false,aiExpiresAt:'2026-11-05T21:00:00Z',recordingsExpiresAt:'2027-02-05T21:00:00Z',zoomLink:ended?null:'https://example.invalid/zoom',chatLink:'https://t.me/fictional_review_group'}:{id:'fictional-stream',name:'Пример потока',phase:['pre','pre-thanks','home-pending','q-invite','profile-pending','path-empty','path-example'].includes(view)?'current':'completed',startDate:'2026-09-01',endDate:'2026-09-30',meetings:[{id:'example-meeting-1',number:1,date:'2026-09-03T16:00:00Z',topic:'Встреча · учебный пример',description:'Вымышленное расписание для проверки оформления'}],canUseAi:false,canAttend:false,canReadRecordings:false};
   const meetingNotes=[],historyMarks=new Set();
-  const historyRows=()=>meetingNotes.map(r=>({id:r.id,source:'meeting',kind:r.kind,day:r.meetingDate,date:r.createdAt,title:r.kind==='analysis'?'После разбора':'После практики',text:r.text,important:historyMarks.has('meeting:'+r.id)}));
+  const historyRows=()=>meetingNotes.map(r=>({id:r.id,source:'meeting',kind:r.kind,day:r.meetingDate,date:r.createdAt,title:r.kind==='analysis'?'После разбора':'После практики',text:[r.text,r.stepText,...(r.events||[]).map(e=>e.text)].filter(Boolean).join('\n\n'),hasStep:Boolean(r.stepText||r.events?.length),important:historyMarks.has('meeting:'+r.id)}));
   window.fetch=async (url,options={})=>{
     const parsed=new URL(typeof url==='string'?url:url.url,location.href);
     if(parsed.origin!==new URL(location.href).origin)return new Response(JSON.stringify({error:'Внешние запросы отключены'}),{status:403});
@@ -42,7 +42,23 @@
       {id:'example-state-4',date:'2026-09-23T10:00:00Z',tension:4,anxiety:6,energy:6,safety:6,bodyContact:7}
     ];
     else if(pathname==='/api/after-meeting-notes' && (!options.method || options.method==='GET'))body=meetingNotes.slice(Number(parsed.searchParams.get('offset')||0),Number(parsed.searchParams.get('offset')||0)+Number(parsed.searchParams.get('limit')||50));
-    else if(pathname==='/api/after-meeting-notes' && options.method==='POST'){const data=JSON.parse(options.body);body=meetingNotes.find(x=>x.clientId===data.clientId);if(!body){body={...data,id:crypto.randomUUID(),revision:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};meetingNotes.push(body);}}
+    else if(pathname==='/api/after-meeting-notes' && options.method==='POST'){const data=JSON.parse(options.body);body=meetingNotes.find(x=>x.clientId===data.clientId);if(!body){body={stepText:'',stepPaused:false,events:[],...data,id:crypto.randomUUID(),revision:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};meetingNotes.push(body);}}
+    else if(pathname.startsWith('/api/after-meeting-notes/') && method==='GET'){
+      body=meetingNotes.find(r=>r.id===pathname.split('/').pop());if(!body){status=404;body={error:'Учебная заметка не найдена'};}
+    }
+    else if(pathname.startsWith('/api/after-meeting-notes/') && pathname.endsWith('/step')){
+      const row=meetingNotes.find(r=>r.id===pathname.split('/').at(-2));
+      if(!row){status=404;body={error:'Заметка не найдена'};}
+      else if(row.revision!==data.revision&&((data.stepText!==undefined&&data.stepText!==row.stepText)||(data.stepPaused!==undefined&&data.stepPaused!==row.stepPaused))){status=409;body={error:'Запись изменилась на другом устройстве'};}
+      else{if(data.stepText!==undefined&&data.stepText!==row.stepText){if(row.stepText)row.events.push({id:crypto.randomUUID(),clientId:null,type:'change',date:new Date().toISOString(),from:row.stepText,stepText:data.stepText,text:data.stepText});row.stepText=data.stepText;}
+        if(data.stepPaused!==undefined)row.stepPaused=data.stepPaused;row.revision++;body=structuredClone(row);}
+    }
+    else if(pathname.startsWith('/api/after-meeting-notes/') && pathname.endsWith('/observations')){
+      const row=meetingNotes.find(r=>r.id===pathname.split('/').at(-2));
+      if(!row){status=404;body={error:'Заметка не найдена'};}
+      else if(data.stepText!==row.stepText){status=409;body={error:'Личный шаг изменился'};}
+      else {if(!row.events.some(e=>e.clientId===data.clientId)){row.events.push({id:crypto.randomUUID(),clientId:data.clientId,type:'observation',date:new Date().toISOString(),stepText:row.stepText,text:data.text.trim(),from:''});row.revision++;}body=structuredClone(row);}
+    }
     else if(pathname.startsWith('/api/after-meeting-notes/') && options.method==='PUT'){const i=meetingNotes.findIndex(x=>x.id===pathname.split('/').pop());if(i<0){status=404;body={error:'Заметка не найдена'};}else{body={...meetingNotes[i],...JSON.parse(options.body),revision:meetingNotes[i].revision+1};meetingNotes[i]=body;}}
     else if(pathname==='/api/diary-history/search' && method==='POST'){
       const norm=s=>s.toLocaleLowerCase('ru-RU').replace(/ё/g,'е');

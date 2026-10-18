@@ -13,7 +13,8 @@ function present(row) {
   const p = row.payload, source = row.source
   const item = { id: row.id, source, kind: row.kind, day: row.event_day_text, date: new Date(row.created_at).toISOString(), important: row.important }
   if (source === 'body') return { ...item, title: zone(p.zone) || 'Наблюдение за телом', text: p.note || '', tags: sensationNames(p.sensations) }
-  if (source === 'meeting') return { ...item, title: row.kind === 'analysis' ? 'После разбора' : 'После практики', text: p.text || '' }
+  if (source === 'meeting') return { ...item, title: row.kind === 'analysis' ? 'После разбора' : 'После практики', hasStep: Boolean(p.step_text || p.step_events?.length),
+    text: [p.text, p.step_text && ('Личный шаг\n' + p.step_text), ...(p.step_events || []).map(e => e.type === 'change' ? ['Шаг изменён', e.previous_step && ('Раньше: ' + e.previous_step), e.text || 'Шаг убран'].filter(Boolean).join('\n') : 'Моё наблюдение\n' + e.text)].filter(Boolean).join('\n\n') }
   if (source === 'reaction') return { ...item, title: 'Моя реакция', text: [p.situation, p.note].filter(Boolean).join('\n\n'),
     tags: [reactions[p.reaction_type], zone(p.zone), ...sensationNames(p.sensations)].filter(Boolean), scores: { 'Сила реакции': p.intensity } }
   const scores = Object.fromEntries(Object.entries(scoreNames).filter(([key]) => Number.isInteger(p[key === 'bodyContact' ? 'body_contact' : key])).map(([key, name]) => [name, p[key === 'bodyContact' ? 'body_contact' : key]]))
@@ -35,7 +36,7 @@ const union = `WITH history AS (
  concat_ws(' ','Моя реакция',e.situation,e.note,CASE e.reaction_type::text WHEN 'freeze' THEN 'Замирание' WHEN 'fight' THEN 'Нападение' WHEN 'flight' THEN 'Бегство' WHEN 'fawn' THEN 'Угождение' END,coalesce($2::jsonb->'zones'->>e.zone,e.zone),
  (SELECT string_agg(coalesce($2::jsonb->'sensations'->>s,s),' ') FROM unnest(e.sensations) s)) FROM trigger_entries e WHERE e.user_id=$1
  UNION ALL
- SELECT e.id,'meeting',e.kind,e.meeting_date,e.created_at,to_jsonb(e),concat_ws(' ',CASE e.kind WHEN 'analysis' THEN 'После разбора' ELSE 'После практики' END,e.text)
+ SELECT e.id,'meeting',e.kind,e.meeting_date,e.created_at,to_jsonb(e)||jsonb_build_object('step_events',coalesce((SELECT jsonb_agg(to_jsonb(s) ORDER BY s.created_at,s.id) FROM after_meeting_step_events s WHERE s.note_id=e.id AND s.user_id=$1),'[]'::jsonb)),concat_ws(' ',CASE e.kind WHEN 'analysis' THEN 'После разбора' ELSE 'После практики' END,e.text,e.step_text,(SELECT string_agg(concat_ws(' ',s.text,s.step_text,s.previous_step),' ') FROM after_meeting_step_events s WHERE s.note_id=e.id AND s.user_id=$1))
  FROM after_meeting_notes e WHERE e.user_id=$1
 ), scoped AS (
  SELECT h.*,f.id IS NOT NULL important FROM history h LEFT JOIN diary_important f ON f.user_id=$1 AND f.source=h.source AND f.entry_id=h.id

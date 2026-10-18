@@ -50,6 +50,7 @@ model User {
 
   enrollments        Enrollment[]
   diaryImportant     DiaryImportant[]
+  afterMeetingStepEvents AfterMeetingStepEvent[]
   afterMeetingNotes  AfterMeetingNote[]
   diaryEntries       DiaryEntry[]
   triggerEntries     TriggerEntry[]
@@ -144,9 +145,29 @@ model DiaryImportant {
   @@map("diary_important")
 }
 
+model AfterMeetingStepEvent {
+  id String @id @default(uuid())
+  userId String @map("user_id")
+  noteId String @map("note_id")
+  clientId String? @map("client_id")
+  type String
+  text String
+  stepText String @map("step_text")
+  previousStep String @default("") @map("previous_step")
+  createdAt DateTime @default(now()) @map("created_at")
+  user User @relation(fields: [userId], references: [id])
+  note AfterMeetingNote @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  @@unique([userId, clientId])
+  @@index([noteId, createdAt])
+  @@map("after_meeting_step_events")
+}
+
 model AfterMeetingNote {
   id          String   @id @default(uuid())
   userId      String   @map("user_id")
+  stepText String @default("") @map("step_text")
+  stepPaused Boolean @default(false) @map("step_paused")
+  stepEvents AfterMeetingStepEvent[]
   kind        String
   meetingDate DateTime @db.Date @map("meeting_date")
   text        String

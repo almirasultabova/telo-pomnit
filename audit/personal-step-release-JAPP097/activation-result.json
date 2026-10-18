@@ -1,0 +1,14 @@
+{
+  "activated": true,
+  "backup": "/root/telo-backups/personal-step-JAPP097-2026-10-18T163823121Z",
+  "publicFiles": 84,
+  "backendFiles": 5,
+  "additiveTable": true,
+  "health": true,
+  "unauthorizedStatus": 401,
+  "publishedAIUnchanged": true,
+  "protectedFilesUnchanged": 4,
+  "notifications": 0,
+  "openai": 0,
+  "testWritesToProduction": 0
+}

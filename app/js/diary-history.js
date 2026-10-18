@@ -105,6 +105,7 @@
     const content=detail.querySelector('.hm-detail-scroll'),scroll=content.scrollTop;content.replaceChildren();const top=el('div','hm-detail-top'),copy=el('div');copy.append(el('h2','',row.title),el('p','hm-meta',fullDate(row)+' · '+meta(row)));top.append(copy,star(row));content.append(top);
     if(row.tags?.length){const tags=el('div','hm-tags');for(const tag of row.tags)tags.append(el('span','',tag));content.append(tags);}
     if(row.scores){const scores=el('dl','hm-scores');for(const[name,value]of Object.entries(row.scores)){const line=el('div');line.append(el('dt','',name),el('dd','',value+' из 10'));scores.append(line);}content.append(scores);}
+    if(row.source==='meeting'&&row.hasStep){content.append(button('Открыть личный шаг',()=>window.AfterMeeting.openStepById(row.id).catch(()=>{const n=el('p','hm-write-error','Не удалось открыть личный шаг. Попробуйте ещё раз.');content.append(n);}),'hm-open'));}
     if(row.text){const text=el('p','hm-full-text');highlight(text,row.text);content.append(text);}if(notice.textContent){const n=el('p','hm-write-error',notice.textContent);n.setAttribute('role','alert');content.append(n);}content.scrollTop=scroll;
   }
   function showLocal(){++sequence;loading=false;local=true;controlsRoot.hidden=true;headerTitle.textContent='Записи на устройстве';renderLocalDiaryHistory();const caption=el('div','hm-local-caption','Здесь только наблюдения, сохранённые на этом устройстве. Поиск и «Важное» появятся после подключения.');caption.append(button('Загрузить всю историю',()=>load()));list.prepend(caption);}
