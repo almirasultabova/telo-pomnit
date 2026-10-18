@@ -1,0 +1,146 @@
+[
+  {
+    "id": "body-zone-list",
+    "cls": "body-zone-list",
+    "parent": "",
+    "rect": {
+      "x": 36,
+      "y": 808.109375,
+      "width": 318,
+      "height": 16,
+      "top": 808.109375,
+      "right": 354,
+      "bottom": 824.109375,
+      "left": 36
+    },
+    "position": "static",
+    "transform": "none",
+    "shadow": "none"
+  },
+  {
+    "id": "",
+    "cls": "section-label mt-16",
+    "parent": "",
+    "rect": {
+      "x": 20,
+      "y": 846.484375,
+      "width": 350,
+      "height": 21.75,
+      "top": 846.484375,
+      "right": 370,
+      "bottom": 868.234375,
+      "left": 20
+    },
+    "position": "static",
+    "transform": "none",
+    "shadow": "none"
+  },
+  {
+    "id": "am-step-input",
+    "cls": "",
+    "parent": "am-step",
+    "rect": {
+      "x": 20,
+      "y": 799.28125,
+      "width": 350,
+      "height": 125,
+      "top": 799.28125,
+      "right": 370,
+      "bottom": 924.28125,
+      "left": 20
+    },
+    "position": "static",
+    "transform": "none",
+    "shadow": "none"
+  },
+  {
+    "id": "meeting-detail-sheet",
+    "cls": "bottom-sheet",
+    "parent": "",
+    "rect": {
+      "x": 0,
+      "y": 844,
+      "width": 390,
+      "height": 210,
+      "top": 844,
+      "right": 390,
+      "bottom": 1054,
+      "left": 0
+    },
+    "position": "fixed",
+    "transform": "matrix(1, 0, 0, 1, 0, 210)",
+    "shadow": "none"
+  },
+  {
+    "id": "q-invite-sheet",
+    "cls": "bottom-sheet",
+    "parent": "",
+    "rect": {
+      "x": 12,
+      "y": 832,
+      "width": 366,
+      "height": 361.71875,
+      "top": 832,
+      "right": 378,
+      "bottom": 1193.71875,
+      "left": 12
+    },
+    "position": "fixed",
+    "transform": "matrix(1, 0, 0, 1, 0, 361.719)",
+    "shadow": "rgba(27, 39, 27, 0.2) 0px 14px 42px 0px"
+  },
+  {
+    "id": "",
+    "cls": "invite-visual",
+    "parent": "q-invite-sheet",
+    "rect": {
+      "x": 13,
+      "y": 833,
+      "width": 364,
+      "height": 126,
+      "top": 833,
+      "right": 377,
+      "bottom": 959,
+      "left": 13
+    },
+    "position": "relative",
+    "transform": "none",
+    "shadow": "none"
+  },
+  {
+    "id": "",
+    "cls": "fb-counter",
+    "parent": "feedback-form-wrap",
+    "rect": {
+      "x": 20,
+      "y": 791,
+      "width": 350,
+      "height": 18,
+      "top": 791,
+      "right": 370,
+      "bottom": 809,
+      "left": 20
+    },
+    "position": "static",
+    "transform": "none",
+    "shadow": "none"
+  },
+  {
+    "id": "fb-submit",
+    "cls": "btn btn--primary btn--full mt-16",
+    "parent": "feedback-form-wrap",
+    "rect": {
+      "x": 20,
+      "y": 825,
+      "width": 350,
+      "height": 52,
+      "top": 825,
+      "right": 370,
+      "bottom": 877,
+      "left": 20
+    },
+    "position": "static",
+    "transform": "none",
+    "shadow": "none"
+  }
+]

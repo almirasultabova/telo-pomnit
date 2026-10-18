@@ -49,6 +49,7 @@ model User {
   feedbackActions FeedbackAction[]
 
   enrollments        Enrollment[]
+  discussionNotes    DiscussionNote[]
   diaryImportant     DiaryImportant[]
   afterMeetingStepEvents AfterMeetingStepEvent[]
   afterMeetingNotes  AfterMeetingNote[]
@@ -447,4 +448,24 @@ enum ReactionType {
 enum QuestionnaireType {
   pre
   post
+}
+
+model DiscussionNote {
+  id String @id @default(uuid())
+  userId String @map("user_id")
+  clientId String @map("client_id")
+  text String @default("")
+  done Boolean @default(false)
+  revision Int @default(1)
+  sourceType String? @map("source_type")
+  sourceId String? @map("source_id")
+  sourceLabel String @default("") @map("source_label")
+  sourceDay String @default("") @map("source_day")
+  excerpt String @default("")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, clientId])
+  @@index([userId, createdAt])
+  @@map("discussion_notes")
 }

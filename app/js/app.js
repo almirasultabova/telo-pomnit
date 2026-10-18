@@ -543,6 +543,7 @@ function renderMainTab() {
 // ─────────────────────────────────────────────────────────────────────────
 function renderDiaryTab() {
   window.AfterMeeting?.refresh();
+  window.DiscussionNotes?.refresh();
   renderDiarySyncStatus();
   renderAccessNotice();
   renderStreak();

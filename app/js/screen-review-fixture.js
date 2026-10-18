@@ -13,6 +13,7 @@
   let pre=['pre','home-pending','q-invite','profile-pending'].includes(view) ? null : {id:'fictional-pre',type:'pre',streamId:'fictional-stream',formVersion:1,submittedAt:'2026-09-01T10:00:00Z',answers:before};
   let post=view==='compared' ? {id:'fictional-post',type:'post',streamId:'fictional-stream',formVersion:2,submittedAt:'2026-10-02T10:00:00Z',answers:after} : null;
   const stream=streamView?{id:'fictional-stream',name:'Осенний поток',phase:ended?'completed':'current',startDate:'2026-10-01',endDate:'2026-11-05',status:ended?'completed':'active',meetings:[{id:'example-meeting-1',number:1,date:'2026-10-18T08:00:00Z',topic:'Телесная практика',description:'Учебная встреча'},{id:'example-meeting-2',number:2,date:'2026-10-22T15:00:00Z',topic:'Психосоматические разборы',description:'Учебная встреча'}],canUseAi:!ended,canAttend:!ended,canReadRecordings:true,accessExpired:false,aiExpiresAt:'2026-11-05T21:00:00Z',recordingsExpiresAt:'2027-02-05T21:00:00Z',zoomLink:ended?null:'https://example.invalid/zoom',chatLink:'https://t.me/fictional_review_group'}:{id:'fictional-stream',name:'Пример потока',phase:['pre','pre-thanks','home-pending','q-invite','profile-pending','path-empty','path-example'].includes(view)?'current':'completed',startDate:'2026-09-01',endDate:'2026-09-30',meetings:[{id:'example-meeting-1',number:1,date:'2026-09-03T16:00:00Z',topic:'Встреча · учебный пример',description:'Вымышленное расписание для проверки оформления'}],canUseAi:false,canAttend:false,canReadRecordings:false};
+  const discussionNotes=[];
   const meetingNotes=[],historyMarks=new Set();
   const historyRows=()=>meetingNotes.map(r=>({id:r.id,source:'meeting',kind:r.kind,day:r.meetingDate,date:r.createdAt,title:r.kind==='analysis'?'После разбора':'После практики',text:[r.text,r.stepText,...(r.events||[]).map(e=>e.text)].filter(Boolean).join('\n\n'),hasStep:Boolean(r.stepText||r.events?.length),important:historyMarks.has('meeting:'+r.id)}));
   window.fetch=async (url,options={})=>{
@@ -41,6 +42,21 @@
       {id:'example-state-3',date:'2026-09-17T10:00:00Z',tension:7,anxiety:5,energy:4,safety:6,bodyContact:5},
       {id:'example-state-4',date:'2026-09-23T10:00:00Z',tension:4,anxiety:6,energy:6,safety:6,bodyContact:7}
     ];
+    else if(pathname==='/api/discussion-notes' && method==='GET')body=discussionNotes.slice(Number(parsed.searchParams.get('offset')||0),Number(parsed.searchParams.get('offset')||0)+Number(parsed.searchParams.get('limit')||50));
+    else if(pathname==='/api/discussion-notes' && method==='POST'){
+      body=discussionNotes.find(r=>r.clientId===data.clientId);
+      if(!body){const source=data.source?historyRows().find(r=>r.source===data.source.type&&r.id===data.source.id):null;
+        if(data.source&&!source){status=400;body={error:'Учебная исходная запись не найдена'};}
+        else{body={id:crypto.randomUUID(),clientId:data.clientId,text:data.text,source:source?{...data.source,label:source.title,day:source.day}:null,done:false,revision:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};discussionNotes.unshift(body);}}
+    }
+    else if(pathname.startsWith('/api/discussion-notes/')){
+      const row=discussionNotes.find(r=>r.id===pathname.split('/').pop());
+      if(!row){status=404;body={error:'Учебная запись не найдена'};}
+      else if(method==='GET')body=row;
+      else if(method==='PUT'&&row.revision!==data.revision){status=409;body={error:'Учебная запись изменилась'};}
+      else if(method==='PUT'){if(data.text!==undefined)row.text=data.text;if(data.source!==undefined)row.source=data.source?{...row.source,...data.source}:null;if(data.done!==undefined)row.done=data.done;row.revision++;body=row;}
+      else{status=403;body={error:'Действие недоступно'};}
+    }
     else if(pathname==='/api/after-meeting-notes' && (!options.method || options.method==='GET'))body=meetingNotes.slice(Number(parsed.searchParams.get('offset')||0),Number(parsed.searchParams.get('offset')||0)+Number(parsed.searchParams.get('limit')||50));
     else if(pathname==='/api/after-meeting-notes' && options.method==='POST'){const data=JSON.parse(options.body);body=meetingNotes.find(x=>x.clientId===data.clientId);if(!body){body={stepText:'',stepPaused:false,events:[],...data,id:crypto.randomUUID(),revision:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};meetingNotes.push(body);}}
     else if(pathname.startsWith('/api/after-meeting-notes/') && method==='GET'){

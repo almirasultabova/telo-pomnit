@@ -1,0 +1,21 @@
+{
+  "nativePostgreSQLRoutes": true,
+  "exactAdditiveMigration": true,
+  "parallelCreateRetries": 12,
+  "parallelStatusRetries": 12,
+  "noDuplicates": true,
+  "revisionConflict": true,
+  "ownerIsolation": true,
+  "hostIsolation": true,
+  "sourceOwnership": true,
+  "snapshotOnly": true,
+  "originalUnchanged": true,
+  "snapshotSurvivesOriginalRemoval": true,
+  "pagination": true,
+  "validation": true,
+  "ownExport": true,
+  "ownErasure": true,
+  "otherOwnerPreserved": true,
+  "externalCalls": 0,
+  "productionRowsUsed": 0
+}

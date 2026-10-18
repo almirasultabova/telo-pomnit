@@ -1,0 +1,14 @@
+{
+  "activated": true,
+  "backup": "/root/telo-backups/discuss-JAPP100-2026-10-18T172603887Z",
+  "publicFiles": 86,
+  "backendFiles": 5,
+  "additiveTable": true,
+  "health": true,
+  "unauthorizedStatus": 401,
+  "publishedAIUnchanged": true,
+  "protectedFilesUnchanged": 4,
+  "notifications": 0,
+  "openai": 0,
+  "testWritesToProduction": 0
+}

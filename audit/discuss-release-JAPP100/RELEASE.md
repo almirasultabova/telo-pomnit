@@ -1,0 +1,11 @@
+# Выпуск «К разбору» — J-APP-100
+
+18 октября2026. Прямое поручение Альмиры после принятия JAPP099. Название принято; выполнены локальные native PostgreSQL/UI проверки, создана private резервная копия. Backend и резервный/recovery frontend установлены; health200/новый маршрут401/nginx и защищённые AI/env/мониторинг проверены. Installed native-тесты на отдельной базе прошли, временная база/роль/пароль удалены. Основная версия ожидает точного Git/Vercel-выпуска и HTTPS/UI-проверок; публикация на основном адресе пока не подтверждается.
+
+Backup: `/root/telo-backups/discuss-JAPP100-2026-10-18T172603887Z`. Backend src/prisma и package manifests, app/recovery, full pg_dump custom;0700 каталог/0600 файлы, tarlist и pg_restorelist проверены. Настоящая база не скачивалась, тестовые данные в ней не создавались.
+
+Откат: прежний Vercel READY `dpl_8hthj1D4f7VzeDCfGBn3DVxMJeuW`, Git3e51f3148938555b22a6f60379624f95abec3137. Beget app/recovery вернуть через staging из backup, после nginx -t атомарно восстановить предыдущие HTML/assets по publicBefore. Backend остановить telo-backend, вернуть src/prisma из backend-before.tar.gz, сгенерировать прежний Prisma Client, перезапустить/проверить health/401/nginx. **Новую таблицу discussion_notes сохранять**, не удалять внесённые после выпуска записи и не восстанавливать полный старый dump поверх живых данных. При возврате старого GDPR-handler новые записи временно не видны в JSON-выгрузке; восстановление нового handler возвращает их учёт. Тестовые временные база/роль/пароль удаляются отдельно после installed-проверки.
+
+Проверка владельцем: закрыть/открыть Telegram Mini App → Дневник → К разбору → Написать → Сохранить для себя → закрыть/открыть и найти запись. Затем Из заметки → выбрать фрагмент → сократить → сохранить; оригинал остаётся целым. Проверить Обсудили/Вернуть к встрече и черновик. Ведущая может проверить собственную личную запись; роль не даёт доступа к чужим. Physical iPhone/Android этим документом не подтверждены.
+
+Доказательства: [manifest.json](manifest.json), [postgres-results.json](postgres-results.json), [ui-results.json](ui-results.json), [backup-receipt.json](backup-receipt.json), [финальный review](FINISH-REVIEW.md). OpenAI/уведомлений/настоящих дневников в тестах0.

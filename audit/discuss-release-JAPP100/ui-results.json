@@ -1,0 +1,62 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "completeFlow": true,
+    "draftAndServerReload": true,
+    "lostAckEditedDraftNoDuplicate": true,
+    "sourceSnapshotOnly": true,
+    "crossDeviceConflict": true,
+    "logoutGuard": true,
+    "safeText": true,
+    "realPeople": 0,
+    "openai": 0,
+    "notifications": 0,
+    "errors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 320,
+    "completeFlow": false,
+    "draftAndServerReload": false,
+    "lostAckEditedDraftNoDuplicate": false,
+    "sourceSnapshotOnly": false,
+    "crossDeviceConflict": false,
+    "logoutGuard": false,
+    "safeText": false,
+    "realPeople": 0,
+    "openai": 0,
+    "notifications": 0,
+    "errors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "completeFlow": false,
+    "draftAndServerReload": false,
+    "lostAckEditedDraftNoDuplicate": false,
+    "sourceSnapshotOnly": false,
+    "crossDeviceConflict": false,
+    "logoutGuard": false,
+    "safeText": false,
+    "realPeople": 0,
+    "openai": 0,
+    "notifications": 0,
+    "errors": []
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "completeFlow": true,
+    "draftAndServerReload": true,
+    "lostAckEditedDraftNoDuplicate": true,
+    "sourceSnapshotOnly": true,
+    "crossDeviceConflict": true,
+    "logoutGuard": true,
+    "safeText": true,
+    "realPeople": 0,
+    "openai": 0,
+    "notifications": 0,
+    "errors": []
+  }
+]

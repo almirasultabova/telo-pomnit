@@ -1,0 +1,7 @@
+{
+  "temporaryDatabaseRemoved": true,
+  "temporaryRoleRemoved": true,
+  "privateTestCredentialsRemoved": true,
+  "source": "test-postgres.cjs --cleanup returned PASS",
+  "productionRowsUsed": 0
+}
