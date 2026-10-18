@@ -103,6 +103,7 @@ const Api = {
     if (typeof clearAccessManagementState === 'function') clearAccessManagementState();
     if (typeof clearStreamOverviewState === 'function') clearStreamOverviewState();
     window.AfterMeeting?.invalidate();
+    window.DiaryHistory?.invalidate();
     this._authGeneration++;
     window.QuestionnaireCycle?.invalidate();
     window.ScreenReview?.invalidate();
@@ -169,6 +170,10 @@ const Api = {
   async getAfterMeetingNotes() { return this._getAll('/after-meeting-notes', 50); },
   async createAfterMeetingNote(data) { return this._request('POST', '/after-meeting-notes', data); },
   async updateAfterMeetingNote(id, data) { return this._request('PUT', '/after-meeting-notes/' + encodeURIComponent(id), data); },
+
+  async searchDiaryHistory(data) { return this._request('POST', '/diary-history/search', data); },
+  async getDiaryHistoryRecord(source, id) { return this._request('GET', '/diary-history/' + encodeURIComponent(source) + '/' + encodeURIComponent(id)); },
+  async setDiaryImportant(source, id, important) { return this._request('PUT', '/diary-history/' + encodeURIComponent(source) + '/' + encodeURIComponent(id) + '/important', { important }); },
 
   async getDiaryStats() {
     return this._request('GET', '/diary/stats');

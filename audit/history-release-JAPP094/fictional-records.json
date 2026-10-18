@@ -1,0 +1,1434 @@
+[
+  {
+    "id": "b303fb4f-3db2-45a3-a731-c4b4abdc7a7e",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-18",
+    "date": "2026-10-18T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 0",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "453707f1-b50e-4b8a-b973-1aa19eb19bd5",
+    "source": "meeting",
+    "kind": "analysis",
+    "day": "2026-10-18",
+    "date": "2026-10-18T09:00:00.000Z",
+    "important": false,
+    "title": "После разбора",
+    "text": "Вымышленная заметка после разбора"
+  },
+  {
+    "id": "1617b009-e874-4de0-9aa6-b9deb15cca7a",
+    "source": "meeting",
+    "kind": "analysis",
+    "day": "2026-10-18",
+    "date": "2026-10-18T09:00:00.000Z",
+    "important": true,
+    "title": "После разбора",
+    "text": "Вымышленная заметка после практики"
+  },
+  {
+    "id": "95a4c0fd-2e61-4480-b994-cccbb611689b",
+    "source": "reaction",
+    "kind": "reaction",
+    "day": "2026-10-18",
+    "date": "2026-10-18T09:00:00.000Z",
+    "important": false,
+    "title": "Моя реакция",
+    "text": "Вымышленный сложный разговор\n\nЗаметила челюсть",
+    "tags": [
+      "Челюсть",
+      "Зажатость"
+    ],
+    "scores": {
+      "Сила реакции": 4
+    }
+  },
+  {
+    "id": "b303fb4f-3db2-45a3-a731-c4b4abdc7a7e",
+    "source": "state",
+    "kind": "state",
+    "day": "2026-10-18",
+    "date": "2026-10-18T09:00:00.000Z",
+    "important": true,
+    "title": "Моё состояние",
+    "text": "Вымышленная отметка состояния",
+    "scores": {
+      "Напряжение": 4,
+      "Тревога": 3,
+      "Энергия": 5,
+      "Безопасность": 6,
+      "Контакт с телом": 7
+    }
+  },
+  {
+    "id": "aa914fd7-5c5d-4008-a4b2-e6c6100a24d3",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-17",
+    "date": "2026-10-17T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 1",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "d1c1703c-ab70-48e7-be81-ead0e2a14009",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-16",
+    "date": "2026-10-16T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 2",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "80f63d6b-e288-4c04-b780-7231eabc6a92",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-15",
+    "date": "2026-10-15T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 3",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "c0c66869-5668-43d4-9d2c-8b5b24f294ee",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-14",
+    "date": "2026-10-14T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 4",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "57b3d3ac-544d-40fd-951d-b1464ec08112",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-13",
+    "date": "2026-10-13T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 5",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "04ef297d-37b3-4521-bbac-e225c8923468",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-12",
+    "date": "2026-10-12T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 6",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "d9662c0e-14fb-4cb9-a8e0-32a2e53ef03b",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-11",
+    "date": "2026-10-11T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 7",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "31f5b4ac-40ad-49c8-8127-69d684855934",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-10",
+    "date": "2026-10-10T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 8",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "92d39593-69cc-4d0a-88b7-5c0aecf7553e",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-09",
+    "date": "2026-10-09T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 9",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "73dc05bd-1520-4f18-8712-c020610831a1",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-08",
+    "date": "2026-10-08T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 10",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "db4100e4-eab1-4a0c-b2a1-2e7c254881a8",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-07",
+    "date": "2026-10-07T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 11",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "f5a6f5e0-15e5-4136-8ab3-916fdc38eba7",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-06",
+    "date": "2026-10-06T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 12",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "e7fb153b-233a-4119-b478-26aded9cc5b7",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-05",
+    "date": "2026-10-05T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 13",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "f77f1b51-8a8c-4907-a01a-2bee48beccfb",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-04",
+    "date": "2026-10-04T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 14",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "a215d302-b35e-4e90-b8a0-ce2b3a734301",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-03",
+    "date": "2026-10-03T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 15",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "4193f1ef-872b-49c3-94c7-06747b9a0c6c",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-02",
+    "date": "2026-10-02T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 16",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "42e9c572-9223-4bef-84a8-b2fcc2ce7019",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-10-01",
+    "date": "2026-10-01T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 17",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "a84987d2-96e8-4988-827f-1b53a4c44402",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-30",
+    "date": "2026-09-30T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 18",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "2ee9e24d-c51b-4aea-8ad1-53fc8dbc543c",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-29",
+    "date": "2026-09-29T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 19",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "406d4fb4-21af-438d-ac1d-e6872fced4eb",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-28",
+    "date": "2026-09-28T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 20",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "019e036e-1022-49e7-b418-22ae060bfc94",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-27",
+    "date": "2026-09-27T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 21",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "77676fcc-cf29-4e21-b5ef-c86dc44b14e6",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-26",
+    "date": "2026-09-26T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 22",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "fc8b2a96-58ea-462a-b74a-9b98390d6040",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-25",
+    "date": "2026-09-25T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 23",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "0cf3a500-def4-4114-8e67-5d4a89de9b6b",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-24",
+    "date": "2026-09-24T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 24",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "2a607200-9a71-405e-87bf-a90ac200dcf3",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-23",
+    "date": "2026-09-23T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 25",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "03a2d0b8-3aa0-4493-b963-1122e515d377",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-22",
+    "date": "2026-09-22T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 26",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "3865dc1c-39fd-44a1-a2a1-c345cd5b2e8a",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-21",
+    "date": "2026-09-21T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 27",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "42e6ce19-2f5a-498e-a2a5-4ce3fb90c534",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-20",
+    "date": "2026-09-20T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 28",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "8b3129f6-2558-4174-86c6-0fd6e6b09081",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-19",
+    "date": "2026-09-19T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 29",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "25316906-60ed-44e1-85ad-b7d1ecc11f97",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-18",
+    "date": "2026-09-18T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 30",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "85d137e5-fe61-4628-b88a-ecc517b4f5a3",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-17",
+    "date": "2026-09-17T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 31",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "dd58d979-568f-457e-b3e7-e29b11ad20ca",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-16",
+    "date": "2026-09-16T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 32",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "74616ee2-90e7-483e-a2b7-1d3795282501",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-15",
+    "date": "2026-09-15T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 33",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "68c9abb8-e6c8-442a-8421-570adddc40a4",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-14",
+    "date": "2026-09-14T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 34",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "ecf5d6c1-275a-482c-81f6-14e89fb2a232",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-13",
+    "date": "2026-09-13T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 35",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "99659cb7-f10a-4333-bc66-f31bf84dc3fe",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-12",
+    "date": "2026-09-12T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 36",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "76633e31-2783-47af-9677-dcc7d282557f",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-11",
+    "date": "2026-09-11T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 37",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "caee00e8-f390-4767-a9a9-2686dec6d5e2",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-10",
+    "date": "2026-09-10T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 38",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "6c0e88b9-479e-46e9-89bb-a4881f0e5c9d",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-09",
+    "date": "2026-09-09T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 39",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "23ada038-2209-439e-ba31-b191e74ef30c",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-08",
+    "date": "2026-09-08T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 40",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "6143e012-d0db-4bfd-b8c6-d3cf3bccc41e",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-07",
+    "date": "2026-09-07T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 41",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "56c9e95d-73db-41ce-81fc-662c18b5ad28",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-06",
+    "date": "2026-09-06T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 42",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "37e7051b-79c5-4758-9376-b7a9bc1d4467",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-05",
+    "date": "2026-09-05T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 43",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "e5afeb40-da06-4684-adc1-dc481bb68e4f",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-04",
+    "date": "2026-09-04T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 44",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "84539b23-98b4-445d-9bf3-aafa850b4ceb",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-03",
+    "date": "2026-09-03T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 45",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "5b986247-2bee-45a5-b98c-f029cb3b3505",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-02",
+    "date": "2026-09-02T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 46",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "7a20ab95-51fa-4dcb-83c6-066deab9176c",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-09-01",
+    "date": "2026-09-01T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 47",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "6b12ece8-084d-4f00-b2af-18e9aad7bdf0",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-31",
+    "date": "2026-08-31T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 48",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "34fb3fd9-34be-4c40-a56c-e354b804003f",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-30",
+    "date": "2026-08-30T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 49",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "7c5272c4-ad8f-400a-b4a9-be240a663d8e",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-29",
+    "date": "2026-08-29T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 50",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "a7b4b5fc-cf8b-42a8-ac2f-7e0259c3191e",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-28",
+    "date": "2026-08-28T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 51",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "6bffeca2-d781-4299-a277-d3deef01fc3d",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-27",
+    "date": "2026-08-27T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 52",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "00204bfc-5ba2-4706-a180-68275cb94af1",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-26",
+    "date": "2026-08-26T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 53",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "252dc37c-1bf0-40da-8f9d-cc24b271479b",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-25",
+    "date": "2026-08-25T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 54",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "20493e70-fb88-4358-aecf-6ff1f755c3c6",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-24",
+    "date": "2026-08-24T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 55",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "454017d4-5395-4ee6-ad91-b4eae417a6a7",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-23",
+    "date": "2026-08-23T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 56",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "832ac82b-c790-4e43-a917-ac822a1c9505",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-22",
+    "date": "2026-08-22T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 57",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "98d5fc34-5a55-4981-abf6-48af4b12234f",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-21",
+    "date": "2026-08-21T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 58",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "060a42aa-25d3-4c70-845a-099ea7c7454b",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-20",
+    "date": "2026-08-20T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 59",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "8a1c59c7-22ca-461b-9fe4-f6f4adad4c44",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-19",
+    "date": "2026-08-19T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 60",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "2ad2d7fb-cda6-4413-905b-eb576e56fe03",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-18",
+    "date": "2026-08-18T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 61",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "ce1bc303-52a5-4e18-a178-f4aed4452b11",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-17",
+    "date": "2026-08-17T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 62",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "6068effd-18ba-4a9a-a1ff-7093fdce4c33",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-16",
+    "date": "2026-08-16T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 63",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "4eb4e910-430d-480d-94b3-97da8ace7cfb",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-15",
+    "date": "2026-08-15T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 64",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "063624cc-d5ff-49e0-b0c9-63aea17b1b9e",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-14",
+    "date": "2026-08-14T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 65",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "7efca986-98c0-4347-950b-a4af596bc898",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-13",
+    "date": "2026-08-13T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 66",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "e459725c-b766-474b-af20-b64a029ab91e",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-12",
+    "date": "2026-08-12T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 67",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "f06048f8-61c5-424a-9746-e2f3d38228dd",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-11",
+    "date": "2026-08-11T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 68",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "cd10730a-de3a-4faa-9d3e-17bd0ac90e4e",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-10",
+    "date": "2026-08-10T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 69",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "4211887c-4f82-4ae2-a2bd-ac1f821d7291",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-09",
+    "date": "2026-08-09T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 70",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "a805644e-6a23-43d5-ab2b-96eb73dba7c5",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-08",
+    "date": "2026-08-08T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 71",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "f8039bbd-0590-46a4-9bf0-18cf9ff183d8",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-07",
+    "date": "2026-08-07T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 72",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "a1a287c3-ffc5-4af0-b092-71b6dd7d93f4",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-06",
+    "date": "2026-08-06T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 73",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "2f9d03d0-258f-43f3-a7b2-9ce5fd853db3",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-05",
+    "date": "2026-08-05T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 74",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "c63df864-58cc-4c88-aa26-90a68503067c",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-04",
+    "date": "2026-08-04T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 75",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "612c1c71-1549-4008-ab42-e13df5e372c8",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-03",
+    "date": "2026-08-03T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 76",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "8b4c5b50-6a25-47ef-9b30-105f98d88ee8",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-02",
+    "date": "2026-08-02T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 77",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "a1847b13-ebbb-4115-a32f-03f23e4fa748",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-08-01",
+    "date": "2026-08-01T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 78",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "2db47b8f-85b1-4e47-97ba-29327e668a5e",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-31",
+    "date": "2026-07-31T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 79",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "634fb522-2228-4add-9b5b-b9e809adee16",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-30",
+    "date": "2026-07-30T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 80",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "78d34f39-1ffa-4bc0-b164-2de837a713ba",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-29",
+    "date": "2026-07-29T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 81",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "85be6d3a-39c2-4e5c-9e4d-430c8b65d5e5",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-28",
+    "date": "2026-07-28T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 82",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "c510eac8-d83f-4cd3-a792-3f5c0240605d",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-27",
+    "date": "2026-07-27T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 83",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "9b3d6702-d754-460c-add6-efddeb7f0cf5",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-26",
+    "date": "2026-07-26T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 84",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "b886f10e-76c9-45de-a00f-5666c7ee93ab",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-25",
+    "date": "2026-07-25T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 85",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "54dadf1d-4758-42e4-8004-63256460f1a8",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-24",
+    "date": "2026-07-24T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 86",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "37406ac5-4e7d-4cdb-851b-95e0555f1fd9",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-23",
+    "date": "2026-07-23T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 87",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "59376605-3bd6-4652-80c9-8f2878f945dc",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-22",
+    "date": "2026-07-22T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 88",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "28f5aee3-9de4-4f87-beec-b8766351e0dc",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-21",
+    "date": "2026-07-21T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 89",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "99f6c6e2-c56d-4f41-98fb-4d9f6f10e5b5",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-20",
+    "date": "2026-07-20T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 90",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "ae00eccf-7a10-4d17-a0e2-af99650ae2d3",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-19",
+    "date": "2026-07-19T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 91",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "c9010b4f-1cbe-4fd6-9f7c-d99abe379b2a",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-18",
+    "date": "2026-07-18T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 92",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "f54043fe-5faa-4d50-b8d3-d20cc0400b7e",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-17",
+    "date": "2026-07-17T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 93",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "7b248f21-dc0e-4845-a064-46ca4edadedf",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-16",
+    "date": "2026-07-16T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 94",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "905d0403-f592-40c8-87fb-35488ff6a356",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-15",
+    "date": "2026-07-15T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 95",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "0f3d35ea-74f5-402c-930b-e715b0de59db",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-14",
+    "date": "2026-07-14T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 96",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "239275d0-038f-462c-93c5-a82c95e09fd8",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-13",
+    "date": "2026-07-13T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 97",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "df9df541-4f3a-491a-951c-c2ea139f8b03",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-12",
+    "date": "2026-07-12T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 98",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "7ca50d7c-30d5-414a-b135-a6d3abd6e6a2",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-11",
+    "date": "2026-07-11T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 99",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "1f018f22-753d-42aa-8ba6-cc533b5bc744",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-10",
+    "date": "2026-07-10T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 100",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "89c9d175-fba0-4e80-bad8-027e37ac07cf",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-09",
+    "date": "2026-07-09T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 101",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "ebca2542-3b61-4f9d-a2b7-a9bec39dc848",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-08",
+    "date": "2026-07-08T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 102",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "6be1bcb8-6c05-467b-ac97-c94af550d13b",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-07",
+    "date": "2026-07-07T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 103",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "fc2474b7-edec-494e-b962-8092c2205093",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-06",
+    "date": "2026-07-06T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Учебное наблюдение 104",
+    "tags": [
+      "Зажатость"
+    ]
+  },
+  {
+    "id": "bc6599fb-73fb-4ab4-99af-056398687c4c",
+    "source": "body",
+    "kind": "body",
+    "day": "2026-07-05",
+    "date": "2026-07-05T09:00:00.000Z",
+    "important": false,
+    "title": "Грудь",
+    "text": "Вымышленная ёлка тихая пауза %_ <img src=x onerror=alert(1)>",
+    "tags": [
+      "Зажатость"
+    ]
+  }
+]

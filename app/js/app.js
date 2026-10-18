@@ -1014,6 +1014,10 @@ function renderDiarySyncStatus() {
 function initHistory() {}
 
 function renderHistory() {
+  if (window.DiaryHistory) return window.DiaryHistory.refresh();
+  renderLocalDiaryHistory();
+}
+function renderLocalDiaryHistory() {
   const container = document.getElementById('history-list');
   if (!container) return;
   const entries = Storage.getDiaryEntries();

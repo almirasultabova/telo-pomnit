@@ -49,6 +49,7 @@ model User {
   feedbackActions FeedbackAction[]
 
   enrollments        Enrollment[]
+  diaryImportant     DiaryImportant[]
   afterMeetingNotes  AfterMeetingNote[]
   diaryEntries       DiaryEntry[]
   triggerEntries     TriggerEntry[]
@@ -130,6 +131,17 @@ model DiaryEntry {
 
   @@unique([userId, clientId])
   @@map("diary_entries")
+}
+
+model DiaryImportant {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  source    String
+  entryId   String   @map("entry_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  user User @relation(fields: [userId], references: [id])
+  @@unique([userId, source, entryId])
+  @@map("diary_important")
 }
 
 model AfterMeetingNote {

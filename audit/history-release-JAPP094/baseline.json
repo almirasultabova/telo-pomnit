@@ -1,0 +1,10 @@
+{
+  "app/index.html": "f8bd3dc17171826031d9be8cd47caf43b8b6e07a21b0c721833505d20b4178d8",
+  "app/js/api.js": "d19ba78fbd37091693d51623e0ee77ac4270febd1269b5409b17ca465cbe6433",
+  "app/js/app.js": "2693ecb85ff5e1123b22011ec49ab712de6d6170015f39c7389d732ae31dfead",
+  "app/js/screen-review-fixture.js": "ae13d36247088d2a00608e5452e937d1d5a6f8900571067c12e5d7abeafdac61",
+  "backend/src/index.js": "dcb9842a7a2fa8c5193c9c011472f1497770b1d3011af93fd00fbdc38ef7ec67",
+  "backend/src/routes/gdpr.js": "d64078aedfda6db72f3142444de2c6182042f11c557ee3c0f2e2a0af5ebdbd3f",
+  "backend/prisma/schema.prisma": "11dbe628dd6ed8a893c1dcf79b4405a44b8696fbb3f134b1b2e73b9f9c7ecc0d",
+  "backend/src/routes/ai.js": "e00e35c8a9fd2458e7ed7b62ec8f304dc1a4220c2b8bb58e7279791656e09663"
+}
