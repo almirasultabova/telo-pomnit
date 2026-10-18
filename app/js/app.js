@@ -542,6 +542,7 @@ function renderMainTab() {
 // ВКЛАДКА: ДНЕВНИК
 // ─────────────────────────────────────────────────────────────────────────
 function renderDiaryTab() {
+  window.AfterMeeting?.refresh();
   renderDiarySyncStatus();
   renderAccessNotice();
   renderStreak();

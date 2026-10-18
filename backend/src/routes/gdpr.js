@@ -1,7 +1,7 @@
 const db = require('../db')
 const { requireDataRights } = require('../services/auth')
 const { createDiaryPdf } = require('../services/diary-pdf')
-const personalModels = ['diaryEntry','triggerEntry','checkin','diagnosticResult','questionnaire','aiChatSession','feedback']
+const personalModels = ['diaryEntry','triggerEntry','checkin','diagnosticResult','questionnaire','aiChatSession','feedback','afterMeetingNote']
 const ownRows = rows => rows.map(({ userId, ...row }) => row)
 async function gdprRoutes(app) {
   app.get('/diary.pdf', { preHandler: requireDataRights }, async (request, reply) => {
@@ -33,11 +33,12 @@ async function gdprRoutes(app) {
   })
   app.get('/my-data', { preHandler: requireDataRights }, async request => {
     const userId = request.user.id
-    const [user, diary, triggers, checkins, diagnostic, questionnaires, aiSessions, feedback, enrollments] = await Promise.all([
+    const [user, diary, triggers, checkins, diagnostic, questionnaires, aiSessions, feedback, enrollments, afterMeetingNotes] = await Promise.all([
       db.user.findUnique({ where: { id: userId } }),
       ...personalModels.slice(0,5).map(model => db[model].findMany({ where: { userId } })),
       db.aiChatSession.findMany({ where: { userId } }), db.feedback.findMany({ where: { userId } }),
-      db.enrollment.findMany({ where: { userId }, select: { id: true, streamId: true, status: true, paymentId: true, paidAt: true, accessExpires: true, accessBasis: true, createdAt: true } })
+      db.enrollment.findMany({ where: { userId }, select: { id: true, streamId: true, status: true, paymentId: true, paidAt: true, accessExpires: true, accessBasis: true, createdAt: true } }),
+      db.afterMeetingNote.findMany({ where: { userId } })
     ])
     const paymentIds = [...new Set(enrollments.map(row => row.paymentId).filter(Boolean))]
     const paymentOrders = paymentIds.length ? await db.paymentOrder.findMany({ where: { paymentId: { in: paymentIds } },
@@ -51,7 +52,7 @@ async function gdprRoutes(app) {
         createdAt: user.createdAt, deletedAt: user.deletedAt, accessStatus: user.accessStatus,
         role: user.role, lastSeenAt: user.lastSeenAt, accessRequestedAt: user.accessRequestedAt, accessDecidedAt: user.accessDecidedAt, accessNotifiedAt: user.accessNotifiedAt,
         consentGivenAt: user.consentGivenAt, consentText: user.consentText, consentVersion: user.consentVersion, consentSource: user.consentSource },
-      diary: ownRows(diary), triggers: ownRows(triggers), checkins: ownRows(checkins), diagnostic: ownRows(diagnostic),
+      afterMeetingNotes: ownRows(afterMeetingNotes), diary: ownRows(diary), triggers: ownRows(triggers), checkins: ownRows(checkins), diagnostic: ownRows(diagnostic),
       questionnaires: ownRows(questionnaires), aiSessions: ownRows(aiSessions), feedback: ownRows(feedback), enrollments, paymentOrders,
       scope: { database: 'owned-application-records', unlinkedFinancialRecords: 'not-attributed-by-username',
         unlinkedWaitlistRecords: 'not-linked-to-account-id',

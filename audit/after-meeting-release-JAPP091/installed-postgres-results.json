@@ -1,0 +1,20 @@
+{
+  "migration": true,
+  "nativePostgreSQLRoutes": true,
+  "parallelCreateRetries": 12,
+  "duplicateRows": 0,
+  "ownerIsolation": true,
+  "hostIsolation": true,
+  "invalidInputs": 6,
+  "editReplay": true,
+  "staleEdit409": true,
+  "pagination": true,
+  "exportOwnNotes": true,
+  "erasureOwnNotes": true,
+  "deletedWriteDenied": true,
+  "externalCalls": 0,
+  "productionDataRowsRead": 0,
+  "productionDataRowsWritten": 0,
+  "notifications": 0,
+  "openai": 0
+}

@@ -1,0 +1,9 @@
+{
+  "app/index.html": "12b01f7d69ad238fbc45f2a64debee0d82a42348adb80bc8d4b7efc098062fd9",
+  "app/js/api.js": "b940717c20efec1477cd745714a48cc502b2f3989c40404f849c2b57a499d80d",
+  "app/js/app.js": "ff7c6c930981248d89c60bc28ea1427186fbd8403761f58f468bb5afb0ee09b9",
+  "backend/prisma/schema.prisma": "c9715b9f3e22ab098d819859401fc7e0774c92a58262b470d2554fcade6a5748",
+  "backend/src/index.js": "28188e3cb6aee678b472588067bcf676dc53810100f9b922dd3de710c46bcd4f",
+  "backend/src/routes/gdpr.js": "5a421522a8c42603bb6fddb88e9f1839a4c5acf48de869ecaebc5893af60c622",
+  "backend/src/routes/ai.js": "e00e35c8a9fd2458e7ed7b62ec8f304dc1a4220c2b8bb58e7279791656e09663"
+}

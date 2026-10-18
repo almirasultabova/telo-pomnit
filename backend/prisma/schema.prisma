@@ -49,6 +49,7 @@ model User {
   feedbackActions FeedbackAction[]
 
   enrollments        Enrollment[]
+  afterMeetingNotes  AfterMeetingNote[]
   diaryEntries       DiaryEntry[]
   triggerEntries     TriggerEntry[]
   checkins           Checkin[]
@@ -129,6 +130,22 @@ model DiaryEntry {
 
   @@unique([userId, clientId])
   @@map("diary_entries")
+}
+
+model AfterMeetingNote {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  kind        String
+  meetingDate DateTime @db.Date @map("meeting_date")
+  text        String
+  clientId    String   @map("client_id")
+  revision    Int      @default(1)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  user User @relation(fields: [userId], references: [id])
+  @@unique([userId, clientId])
+  @@index([userId, meetingDate])
+  @@map("after_meeting_notes")
 }
 
 model TriggerEntry {

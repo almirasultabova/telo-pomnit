@@ -39,6 +39,7 @@ app.addHook('onResponse', async (request,reply) => {
 app.register(require('./routes/auth'), { prefix: '/auth' })
 app.register(require('./routes/me'), { prefix: '/' })
 app.register(require('./routes/diary'), { prefix: '/' })
+app.register(require('./routes/after-meeting'), { prefix: '/' })
 app.register(require('./routes/checkins'), { prefix: '/' })
 app.register(require('./routes/triggers'), { prefix: '/' })
 app.register(require('./routes/diagnostic'), { prefix: '/' })
