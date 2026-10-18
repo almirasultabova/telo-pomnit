@@ -1,0 +1,11 @@
+{
+  "changed": [
+    "js/after-meeting.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "backup": "/root/telo-backups/after-meeting-JAPP091-2026-10-18T133856166Z/layout-before",
+  "publicFiles": 82,
+  "backendChanges": 0,
+  "notifications": 0
+}

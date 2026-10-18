@@ -1,0 +1,14 @@
+{
+  "activated": true,
+  "backup": "/root/telo-backups/after-meeting-JAPP091-2026-10-18T133856166Z",
+  "publicFiles": 82,
+  "backendFiles": 5,
+  "additiveTable": true,
+  "health": true,
+  "unauthorizedStatus": 401,
+  "publishedAIUnchanged": true,
+  "protectedFilesUnchanged": 4,
+  "notifications": 0,
+  "openai": 0,
+  "testWritesToProduction": 0
+}

@@ -10,7 +10,7 @@ fixture='\n'.join(line for line in fixture.splitlines()if "Object.defineProperty
 fixture="const transportFetch=window.fetch;\n"+fixture+"\nconst fixtureFetch=window.fetch;window.fetch=(url,options={})=>new URL(url,location.href).pathname.includes('/after-meeting-notes')?transportFetch(url,options):fixtureFetch(url,options);window.ScreenReviewMode=false;"
 results=[]
 with sync_playwright()as p:
- for engine,width in [('chromium',390),('chromium',320),('chromium',1440),('webkit',390)]:
+ for engine,width in ([('chromium',390),('webkit',390)] if published else [('chromium',390),('chromium',320),('chromium',1440),('webkit',390)]):
   if os.getenv('UI_ENGINE') and engine!=os.getenv('UI_ENGINE'):continue
   browser=getattr(p,engine).launch();context=browser.new_context(viewport={'width':width,'height':844 if width<1000 else 1000},reduced_motion='reduce');context.add_init_script(fixture)
   rows=[];calls=[];errors=[];state={'fail':False,'lost':False,'lostPut':False}
@@ -52,6 +52,8 @@ with sync_playwright()as p:
   page.get_by_text('После разбора',exact=True).click();page.locator('#am-note').fill('После разбора заметила, что мне важно дать себе время.')
   page.get_by_text('Если не знаете, с чего начать',exact=True).click();expect(page.get_by_text('Что стало понятнее?',exact=True)).to_be_visible()
   expect(page.locator('.screen--enter,.screen--exit,.screen--enter-back,.screen--exit-back')).to_have_count(0)
+  assert page.locator('#app').evaluate('e=>e.scrollTop')==0,'Outer app scrolled after returning from saved history'
+  assert page.locator('.am-header').bounding_box()['y']>=0,'Header shifted above viewport'
   assert page.locator('#screen-after-meeting').evaluate('e=>e.scrollWidth<=e.clientWidth')
   page.screenshot(path=str(H/f'{"published" if published else "local"}-{engine}-{width}.png'),full_page=True)
   page.locator('#am-save').click();expect(page.locator('.am-record-text')).to_have_text('После разбора заметила, что мне важно дать себе время.');assert len(rows)==1

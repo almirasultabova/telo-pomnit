@@ -78,7 +78,7 @@
     screen.querySelectorAll('input[name=am-kind]').forEach(x=>x.checked=x.value===draft.kind);
     screen.querySelector('details').open=false;error.hidden=true;status.hidden=true;
     if(note.value || chosen())persist();
-    sync();goTo('after-meeting');screen.querySelector('.am-scroll').scrollTop=0;
+    sync();goTo('after-meeting');document.getElementById('app').scrollTop=0;screen.querySelector('.am-scroll').scrollTop=0;
   }
   function render(message=''){
     if(!mounted||!current())return;
@@ -132,7 +132,9 @@
       busy=false;editing=null;draft=null;note.value='';date.value=today();status.hidden=true;
       screen.querySelectorAll('input[name=am-kind]').forEach(x=>x.checked=false);sync();render();
       if(currentScreen==='after-meeting'){
-        document.activeElement?.blur();goBack();switchTab('diary');history.scrollIntoView({block:'center',behavior:'auto'});
+        document.activeElement?.blur();goBack();switchTab('diary');
+        const scroll=document.querySelector('#tab-diary .screen-scroll');
+        scroll.scrollTop+=history.getBoundingClientRect().top-scroll.getBoundingClientRect().top-16;
       }
     }catch(e){
       if(version!==epoch||person!==owner||!current())return;
