@@ -2646,6 +2646,32 @@ const CHECKIN_SCALES = [
 
 const checkinDraft = { tension: 5, anxiety: 5, energy: 5, safety: 5, bodyContact: 5 };
 let checkinHasUnsavedChanges = false;
+let checkinDraftOwner = null, checkinDraftGeneration = null, checkinDraftDate = null;
+const CHECKIN_DRAFT_SCOPE = 'checkin';
+
+function checkinOwnerIsCurrent() {
+  return !!checkinDraftOwner && checkinDraftOwner === Storage._userId && checkinDraftGeneration === Storage._generation;
+}
+
+function persistCheckinDraft() {
+  if (!checkinOwnerIsCurrent()) { renderCheckinScales(); renderCheckinSyncStatus(); return; }
+  checkinHasUnsavedChanges = true;
+  checkinDraftDate ||= new Date().toISOString();
+  Storage.saveFormDraft(CHECKIN_DRAFT_SCOPE, {
+    version: 1, date: checkinDraftDate, ...checkinDraft,
+    note: document.getElementById('checkin-note')?.value || '',
+  });
+  renderCheckinSyncStatus();
+}
+
+function discardCheckinDraft() {
+  if (!checkinOwnerIsCurrent()) return;
+  // A null tombstone also masks an older stored draft when removal is blocked.
+  const durable = Storage.saveFormDraft(CHECKIN_DRAFT_SCOPE, null);
+  renderCheckinScales();
+  renderCheckinSyncStatus();
+  if (!durable && window.ScreenReviewMode !== true) showToast('Черновик убран в этом окне. Хранилище устройства недоступно.', false);
+}
 
 function initCheckin() {
   // Кнопка «📊 Трекер изменений» в дневнике
@@ -2674,7 +2700,7 @@ function initCheckin() {
   // Сохранить чекин
   document.getElementById('checkin-save-btn')?.addEventListener('click', saveCheckinEntry);
   document.getElementById('checkin-note')?.addEventListener('input', () => {
-    checkinHasUnsavedChanges = true; renderCheckinSyncStatus();
+    persistCheckinDraft();
   });
 }
 
@@ -2683,12 +2709,20 @@ function renderCheckinScales() {
   if (!container) return;
   savedCheckinDayKey = null;
   checkinHasUnsavedChanges = false;
+  checkinDraftOwner = Storage._userId;
+  checkinDraftGeneration = Storage._generation;
 
   const today = Storage.checkinDayKey(new Date());
   const existing = Storage.getCheckins().find(row => row.dayKey === today && !row.legacyScale);
+  const stored = Storage.getFormDraft(CHECKIN_DRAFT_SCOPE);
+  const restored = stored?.version === 1 && typeof stored.note === 'string' &&
+    typeof stored.date === 'string' && Number.isFinite(Date.parse(stored.date)) &&
+    CHECKIN_SCALES.every(s => Number.isInteger(stored[s.key]) && stored[s.key] >= 1 && stored[s.key] <= 10) ? stored : null;
+  checkinDraftDate = restored?.date || null;
+  checkinHasUnsavedChanges = !!restored;
   const note = document.getElementById('checkin-note');
-  if (note) note.value = existing?.note || '';
-  CHECKIN_SCALES.forEach(scale => { checkinDraft[scale.key] = scaleValue(existing || {}, scale.key) ?? 5; });
+  if (note) note.value = (restored || existing)?.note || '';
+  CHECKIN_SCALES.forEach(scale => { checkinDraft[scale.key] = scaleValue(restored || existing || {}, scale.key) ?? 5; });
   container.innerHTML = CHECKIN_SCALES.map(s => `
     <div class="checkin-scale-item">
       <div class="checkin-scale-header">
@@ -2712,9 +2746,9 @@ function renderCheckinScales() {
     const slider = document.getElementById(`slider-${s.key}`);
     if (slider) {
       slider.addEventListener('input', () => {
+        if (!checkinOwnerIsCurrent()) { renderCheckinScales(); renderCheckinSyncStatus(); return; }
         checkinDraft[s.key] = Number(slider.value);
-        checkinHasUnsavedChanges = true;
-        renderCheckinSyncStatus();
+        persistCheckinDraft();
         const valEl = document.getElementById(`val-${s.key}`);
         if (valEl) valEl.textContent = slider.value;
       });
@@ -2723,13 +2757,13 @@ function renderCheckinScales() {
 }
 
 function stepSlider(key, delta) {
+  if (!checkinOwnerIsCurrent()) { renderCheckinScales(); renderCheckinSyncStatus(); return; }
   const slider = document.getElementById(`slider-${key}`);
   if (!slider) return;
   const newVal = Math.min(10, Math.max(1, Number(slider.value) + delta));
   slider.value = newVal;
   checkinDraft[key] = newVal;
-  checkinHasUnsavedChanges = true;
-  renderCheckinSyncStatus();
+  persistCheckinDraft();
   const valEl = document.getElementById(`val-${key}`);
   if (valEl) valEl.textContent = newVal;
 }
@@ -2754,7 +2788,17 @@ function renderCheckinSyncStatus() {
   panel.replaceChildren();
   if (checkinHasUnsavedChanges) {
     panel.dataset.syncStatus = 'draft';
-    panel.textContent = 'Оценки изменены. Нажмите «Сохранить оценки», чтобы сохранить изменения.';
+    const text = document.createElement('p');
+    const previousDay = checkinDraftDate && Storage.checkinDayKey(checkinDraftDate) !== Storage.checkinDayKey(new Date());
+    const date = previousDay ? ' за ' + new Date(checkinDraftDate).toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' }) : '';
+    text.textContent = window.ScreenReviewMode === true ? 'Учебный черновик остаётся только в этом просмотре.' :
+      AppLocalStorage.isPersistent() ? `Черновик${date} сохранён на этом устройстве. Нажмите «Сохранить оценки», чтобы добавить запись.` :
+      `Черновик${date} остаётся только в открытом приложении: хранилище устройства недоступно. Не закрывайте окно до сохранения на сервере.`;
+    panel.append(text);
+    const discard = document.createElement('button');
+    discard.id = 'checkin-draft-discard'; discard.type = 'button'; discard.className = 'btn btn--outline';
+    discard.textContent = 'Удалить черновик'; discard.onclick = discardCheckinDraft;
+    panel.append(discard);
     return;
   }
   if (!row) return;
@@ -2769,19 +2813,31 @@ function renderCheckinSyncStatus() {
 async function saveCheckinEntry() {
   const button = document.getElementById('checkin-save-btn');
   if (button?.disabled) return;
+  if (!checkinOwnerIsCurrent()) { renderCheckinScales(); renderCheckinSyncStatus(); return; }
+  const owner = checkinDraftOwner, generation = checkinDraftGeneration;
+  const current = () => owner === Storage._userId && generation === Storage._generation;
   try {
     if (button) button.disabled = true;
     const note = document.getElementById('checkin-note')?.value?.trim() || '';
-    const row = Storage.saveCheckin({ ...checkinDraft, note });
+    const row = Storage.saveCheckin({ ...checkinDraft, note, ...(checkinDraftDate ? { date: checkinDraftDate } : {}) });
+    const submittedDraft = Storage.getFormDraft(CHECKIN_DRAFT_SCOPE);
+    const clearSubmittedDraft = () => {
+      if (current() && JSON.stringify(Storage.getFormDraft(CHECKIN_DRAFT_SCOPE)) === JSON.stringify(submittedDraft)) {
+        Storage.saveFormDraft(CHECKIN_DRAFT_SCOPE, null);
+      }
+    };
+    if (row.syncStatus !== 'memory-only') clearSubmittedDraft();
     checkinHasUnsavedChanges = false;
+    checkinDraftDate = null;
     savedCheckinDayKey = row.dayKey;
     renderCheckinSyncStatus();
     await Storage.flushCheckinsPending();
+    if (!current()) return;
     renderCheckinSyncStatus();
     const actual = Storage.getCheckins().find(item => item.dayKey === row.dayKey);
-    if (actual?.syncStatus === 'synced') hapticNotify('success');
+    if (actual?.syncStatus === 'synced') { clearSubmittedDraft(); hapticNotify('success'); }
   } catch {
-    showToast('Не удалось сохранить оценки. Ответы остаются в этом окне.', false);
+    if (current()) showToast('Не удалось сохранить оценки. Ответы остаются в этом окне.', false);
   } finally { if (button) button.disabled = false; }
 }
 
