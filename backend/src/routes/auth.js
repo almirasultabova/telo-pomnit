@@ -60,6 +60,7 @@ async function authRoutes(app) {
       user: {
         id: user.id,
         isClubAdmin: isClubAdmin(user),
+        role: user.role,
         name: user.name,
         photoUrl: user.photoUrl,
         telegramUsername: user.telegramUsername,

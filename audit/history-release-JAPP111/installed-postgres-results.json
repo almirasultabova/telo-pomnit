@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "nativePostgres": true,
+  "signedSyntheticTelegram": true,
+  "serverOwnedRole": true,
+  "spoofIgnored": true,
+  "hostNotAdmin": true,
+  "adminRechecked": true,
+  "pendingRejectedDeletedDenied": true,
+  "invalidAndExpiredDenied": true,
+  "externalCalls": 0,
+  "productionRows": 0,
+  "noMigration": true
+}

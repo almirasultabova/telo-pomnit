@@ -33,6 +33,7 @@ const Storage = {
   _triggerFlushing: new Map(),
   _triggerRetryTimer: null,
   _triggerHistoryLoading: new Map(),
+  _historyInitializing: new Map(),
 
   // Only a server-confirmed identity may select a cache. Unowned legacy keys
   // stay untouched for explicit export; they are never attributed to this user.
@@ -673,71 +674,81 @@ const Storage = {
     const userId = this._userId;
     const generation = this._generation;
     if (!userId) return;
-    this._historyLoads.set(userId, { diary: 'loading', checkins: 'loading', triggers: 'loading' });
-    try {
-      const [diary, diag, triggers, checkins, habitual] = await Promise.allSettled([
-        Api.getDiary(),
-        Api.getDiagResult(),
-        this.loadTriggerHistory(),
-        Api.getCheckins(),
-        Api.getHabitualResult(),
-      ]);
-      if (this._userId !== userId || this._generation !== generation) return;
-      this._historyLoads.set(userId, {
-        diary: diary.status === 'fulfilled' && (Array.isArray(diary.value) || Array.isArray(diary.value?.entries)) ? 'loaded' : 'failed',
-        checkins: checkins.status === 'fulfilled' && Array.isArray(checkins.value) ? 'loaded' : 'failed',
-        triggers: triggers.status === 'fulfilled' && Array.isArray(triggers.value) ? 'loaded' : 'failed'
-      });
-      if (diary.status === 'fulfilled') {
-        const entries = Array.isArray(diary.value) ? diary.value : diary.value?.entries;
-        if (Array.isArray(entries)) {
+    const key = userId + ':' + generation;
+    if (this._historyInitializing.has(key)) return this._historyInitializing.get(key);
+    const current = () => this._userId === userId && this._generation === generation && !this._deletedUsers.has(userId);
+    const status = (kind, value) => {
+      if (!current()) return;
+      this._historyLoads.set(userId, { ...this.getHistoryLoadStatus(), [kind]: value });
+      this._emit();
+    };
+    const restore = async (kind, load, apply) => {
+      try {
+        const value = await load();
+        if (!current()) return;
+        apply(value);
+        if (kind) status(kind, 'loaded');
+        else this._emit();
+      } catch {
+        if (kind) status(kind, 'failed');
+      }
+    };
+    const run = async () => {
+      this._historyLoads.set(userId, { diary: 'loading', checkins: 'loading', triggers: 'loading' });
+      this._emit();
+      await Promise.allSettled([
+        restore('diary', () => Api.getDiary(), value => {
+          const entries = Array.isArray(value) ? value : value?.entries;
+          if (!Array.isArray(entries)) throw new Error('INVALID_DIARY_HISTORY');
           const remote = entries.map(entry => ({
             ...entry, date: entry.date || entry.createdAt,
             sensations: entry.sensations || [], note: entry.note || '', syncStatus: 'synced'
           }));
           const byIdentity = new Map(remote.map(row => [row.clientId || String(row.id), row]));
-          // A paginated/empty GET is never a deletion instruction. Keep cached
-          // history and every pending row; server echoes replace its client ID.
+          // Empty GET is never a deletion instruction; keep cache and pending rows.
           for (const row of this._state(userId)) {
             const identity = row.clientId || String(row.id);
             if (!byIdentity.has(identity)) byIdentity.set(identity, row);
           }
           this._writeDiary([...byIdentity.values()], userId);
-        }
+        }),
+        restore(null, () => Api.getDiagResult(), value => {
+          if (value) this._set(KEYS.DIAG, JSON.stringify({ ...value, date: value.date || value.createdAt }));
+        }),
+        this.loadTriggerHistory(),
+        restore('checkins', () => Api.getCheckins(), value => {
+          if (!Array.isArray(value)) throw new Error('INVALID_CHECKIN_HISTORY');
+          const identity = row => row.dayKey || String(row.id);
+          const merged = new Map(value.map(row => {
+            const normalized = { ...this._normalizeCheckin(row), syncStatus: 'synced' };
+            return [identity(normalized), normalized];
+          }));
+          const remoteDates = new Set([...merged.values()].map(row => new Date(row.date).getTime()));
+          for (const row of this._checkinState(userId)) {
+            // Old timestamp cache identifies its original date, never fake scales.
+            if (row.legacyCache && remoteDates.has(new Date(row.date).getTime())) continue;
+            const remote = merged.get(identity(row));
+            if (!remote || (row.syncStatus !== 'synced' && new Date(row.clientUpdatedAt).getTime() > new Date(remote.clientUpdatedAt || 0).getTime())) merged.set(identity(row), row);
+          }
+          this._writeCheckins([...merged.values()], userId);
+        }),
+        restore(null, () => Api.getHabitualResult(), value => {
+          const local = this.getHabitualResult();
+          if (value && (!local || (local.syncStatus === 'synced' && Date.parse(value.date) > Date.parse(local.date)))) {
+            try { Habitual.calculate(value.answers); this._set('habitual_result_v2', JSON.stringify({ ...value, syncStatus: 'synced' })); } catch {}
+          }
+          if (local?.syncStatus === 'pending') this.flushHabitualResult();
+        })
+      ]);
+      if (current()) {
+        void this.flushPending().catch(() => this._scheduleRetry(userId));
+        void this.flushCheckinsPending().catch(() => this._scheduleCheckinRetry(userId));
+        void this.flushTriggersPending();
       }
-      if (diag.status === 'fulfilled' && diag.value) {
-        this._set(KEYS.DIAG, JSON.stringify({ ...diag.value, date: diag.value.date || diag.value.createdAt }));
-      }
-      const localHabitual = this.getHabitualResult();
-      if (habitual.status === 'fulfilled' && habitual.value && (!localHabitual || (localHabitual.syncStatus === 'synced' && Date.parse(habitual.value.date) > Date.parse(localHabitual.date)))) {
-        try { Habitual.calculate(habitual.value.answers); this._set('habitual_result_v2', JSON.stringify({ ...habitual.value, syncStatus: 'synced' })); } catch {}
-      }
-      if (localHabitual?.syncStatus === 'pending') this.flushHabitualResult();
-      if (checkins.status === 'fulfilled' && Array.isArray(checkins.value)) {
-        const identity = row => row.dayKey || String(row.id);
-        const merged = new Map(checkins.value.map(row => {
-          const normalized = { ...this._normalizeCheckin(row), syncStatus: 'synced' };
-          return [identity(normalized), normalized];
-        }));
-        const remoteDates = new Set([...merged.values()].map(row => new Date(row.date).getTime()));
-        for (const row of this._checkinState(userId)) {
-          // Stage1's cache used a timestamp ID; the server supplies a UUID.
-          // Its exact original date identifies that cached copy, never its fake scales.
-          if (row.legacyCache && remoteDates.has(new Date(row.date).getTime())) continue;
-          const remote = merged.get(identity(row));
-          if (!remote || (row.syncStatus !== 'synced' && new Date(row.clientUpdatedAt).getTime() > new Date(remote.clientUpdatedAt || 0).getTime())) merged.set(identity(row), row);
-        }
-        this._writeCheckins([...merged.values()], userId);
-      }
-    } catch {
-      // Нет связи — работаем с локальным кэшем
-      if (this._userId === userId && this._generation === generation) this._historyLoads.set(userId, { diary: 'failed', checkins: 'failed', triggers: this.getHistoryLoadStatus().triggers });
-    }
-    if (this._userId === userId && this._generation === generation) {
-      void this.flushPending().catch(() => this._scheduleRetry(userId));
-      void this.flushCheckinsPending().catch(() => this._scheduleCheckinRetry(userId));
-      void this.flushTriggersPending();
-    }
+    };
+    const promise = run();
+    this._historyInitializing.set(key, promise);
+    try { await promise; } finally { this._historyInitializing.delete(key); }
   }
 };
 

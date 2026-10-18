@@ -1,0 +1,44 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": [
+      "body draft survives reload and backward/forward navigation",
+      "successful save clears draft; new entry has no previous text",
+      "late ACK cannot clear the next body draft",
+      "account isolation and explicit draft deletion",
+      "reaction draft restores text/type/intensity/zone and clears after queueing",
+      "400 does not block next save; correction retains clientId/date",
+      "over-limit legacy draft is preserved and cannot be submitted",
+      "over-limit check-in note stays in the form and is not queued",
+      "logout clears private form DOM",
+      "blocked storage is explicitly memory-only"
+    ],
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": true,
+    "cases": [
+      "favorite busy/ACK retains keyboard focus; repeated Enter sends once",
+      "favorite rejection retains focus and previous authoritative state",
+      "late ACK does not steal focus after user moves to search",
+      "removal from Important focuses adjacent surviving record",
+      "last Important removal focuses Important filter in empty state",
+      "detail view keeps focus on success and failure",
+      "front/back state follows keyboard activation without losing toggle focus",
+      "custom sensation new/reused/reselected/deselected state is immediate",
+      "initial entry focuses title then Tab reaches first field; validation focuses missing answer",
+      "initial forward/back focuses each title and retains free-text answer",
+      "post entry/forward/back focus titles; selecting a scale retains control focus and answers"
+    ],
+    "pageErrors": [],
+    "sourceHashes": {
+      "app/js/diary-history.js": "6fd5013a8896171833de56059a34d53ab020e34c054084c5c18afbac724f4ef3",
+      "app/js/app.js": "fe870c7844719c28791a3ee921c98be1a4b82e4c20c203d7d3243157d008b844",
+      "app/js/questionnaire-cycle.js": "3532e6b3ab8289d02781fa3dfb1d29b551248e835b71f3212e03614d89091516",
+      "app/css/diary-history.css": "4a8a3e963c3075b80f6559f92221a5db66f26921981c22172be3361d74727487"
+    }
+  }
+]
