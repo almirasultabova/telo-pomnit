@@ -1,0 +1,13 @@
+{
+  "verified": true,
+  "source": "free",
+  "destination": "cash",
+  "sameEnrollment": true,
+  "activeEnrollments": 1,
+  "roleUnchanged": true,
+  "accessUnchanged": true,
+  "manualConfirmationTimeStored": true,
+  "noOnlinePaymentCreated": true,
+  "beforeAfterAndActorAudited": true,
+  "noNoticeCreated": true
+}

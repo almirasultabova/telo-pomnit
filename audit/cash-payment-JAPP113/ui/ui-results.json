@@ -1,0 +1,62 @@
+[
+  {
+    "engine": "chromium",
+    "scenario": "owner",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "owner",
+    "width": 1100,
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "admin",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "denied",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "retry",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "owner",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "owner",
+    "width": 1100,
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "admin",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "denied",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "retry",
+    "width": 390,
+    "passed": true
+  }
+]

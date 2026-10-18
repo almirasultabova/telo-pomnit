@@ -1,0 +1,14 @@
+{
+  "activated": true,
+  "backup": "/root/telo-backups/cash-JAPP113-2026-10-18T204605677Z",
+  "publicFiles": 88,
+  "backendFiles": 6,
+  "noMigration": true,
+  "health": true,
+  "unauthorizedStatus": 401,
+  "publishedAIUnchanged": true,
+  "protectedFilesUnchanged": 4,
+  "notifications": 0,
+  "openai": 0,
+  "testWritesToProduction": 0
+}

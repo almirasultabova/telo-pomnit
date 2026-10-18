@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "isolatedBuild": "C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP113-build-z4ltabm4",
+  "sourceHashes": {
+    "app/access-admin.html": "b2a93f42fba107644ce7ca955c1c7b19ecb7fa9c439f168173957a8565860055",
+    "backend/src/bot.js": "13a63787dc36745ec0d78d9c3ae58de55e1e87210003e7af622f1895c51de1e1",
+    "backend/src/routes/access-admin.js": "da8055472a3a562a8633517ffb47933147650fe6713f53386d453dd146394de9",
+    "backend/src/routes/payment.js": "cff1163c1bcf0a4349ed875bc03c654a2818f0920afbe54b1814703f721564b2",
+    "backend/src/services/access-bot.js": "9b78a4a8ae8bb2beea2bbf257096833779e73442fbf407544fd7f17eb70ea8e6",
+    "backend/src/services/access-demo.js": "92d5c9db1f510e332c3090521a92bfa9c361585f5ffc69bf91ccdeeb4729c29b",
+    "backend/src/services/access-management.js": "afd6b563fb7257413c2e49a58ec61f34a41260b840ed4591bc733a1809ac3535"
+  },
+  "output": "site: 45 public files -> C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP113-build-z4ltabm4\\output\\site\napp: 88 public files -> C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP113-build-z4ltabm4\\output\\app\nBuilt public files only. Knowledge base, media/library, PDFs, .env and internal documents are excluded. Nothing was deployed.\n"
+}
