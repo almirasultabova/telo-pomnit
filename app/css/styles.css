@@ -2790,9 +2790,9 @@ textarea,select,.profile-user,.stat-box,.entry-card,.today-card {--tg-hint: var(
 #tab-main .home-scene::after {content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom,transparent 80%,var(--color-bg) 100%); pointer-events: none;}
 #tab-main .home-heading {display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 30px 24px 0;}
 #tab-main .home-brand {flex: 0 0 auto; font: 500 34px/.9 var(--font-serif); letter-spacing: -.02em; color: var(--color-action); margin: 0;}
-#tab-main .home-person {display: flex; align-items: center; gap: 10px; width: 150px; max-width: 48%; padding-top: 3px;}
-#tab-main .home-person p {flex: 1 1 100px; min-width: 0; margin: 0; font: 400 12px/1.5 var(--font-body); color: var(--color-text);}
-#tab-main .home-person strong {display: block; font-weight: 500; max-width: 100px; overflow-wrap: anywhere;}
+#tab-main .home-person {display: flex; align-items: center; gap: 10px; width: 190px; max-width: none; min-width: 0; flex: 0 1 auto; padding-top: 3px;}
+#tab-main .home-person p {flex: 1 1 auto; min-width: 0; margin: 0; font: 400 12px/1.5 var(--font-body); color: var(--color-text);}
+#tab-main .home-person strong {display: block; font-weight: 500; max-width: none; overflow-wrap: normal; word-break: normal; hyphens: manual; overflow-x: auto;}
 #tab-main .home-avatar {flex: 0 0 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--color-action); background: var(--color-surface); font: 500 23px/1 var(--font-serif);}
 #tab-main .home-avatar[hidden],#tab-main #home-welcome[hidden] {display: none;}
 #tab-main .home-scene-message {position: absolute; top: 155px; left: 24px; width: 46%; max-width: 178px; margin: 0; color: var(--color-text); font: 400 14px/1.6 var(--font-body);}
@@ -3357,3 +3357,9 @@ textarea:focus,input:focus,select:focus {outline:2px solid var(--color-action);o
 
 #screen-stream-overview{padding-bottom:0}#stream-overview-entry-frame{width:100%;height:100%;flex:1;border:0;background:var(--bg,#F7F4EF)}.fb-routing{width:100%;min-height:44px;font-size:16px;color:var(--text,#2A4A38);background:transparent;border:1px solid var(--color-control-line);border-radius:12px;padding:10px 12px;margin:7px 0 16px}
 #screen-stream-overview .overview-loading{padding:0 20px}#screen-stream-overview .overview-loading:has(#overview-frame-status[hidden]){display:none}
+
+/* JAPP103: delivery feedback shares the existing compact composer. */
+#ai-message-limit {margin:0;font-size:12px;line-height:1.4;color:var(--color-text);}
+#ai-delivery-actions {display:grid;gap:6px;min-width:0;}
+#ai-delivery-actions[hidden] {display:none;}
+#ai-input[aria-invalid="true"] {border-color:var(--color-text);}

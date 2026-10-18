@@ -8,7 +8,7 @@
 #tab-profile .profile-avatar { display:grid; place-items:center; overflow:hidden; width:64px; height:64px; flex:0 0 64px; background:var(--color-sage); border-radius:50%; font:500 23px/1 var(--font-body); }
 #tab-profile .profile-avatar img,#tab-main .home-avatar img { display:block; width:100%; height:100%; object-fit:cover; }
 #tab-profile .profile-avatar svg { width:30px; height:30px; stroke-width:1.75; }
-#tab-profile .profile-name { font:600 19px/1.3 var(--font-body); white-space:nowrap; text-wrap:nowrap; overflow-wrap:normal; color:var(--color-text); letter-spacing:-.025em; }
+#tab-profile .profile-name { font:600 19px/1.3 var(--font-body); white-space:normal; text-wrap:wrap; overflow-wrap:anywhere; color:var(--color-text); letter-spacing:-.025em; }
 #tab-profile .profile-meta { font:400 13px/1.5 var(--font-body); letter-spacing:0; text-transform:none; margin-top:4px; color:var(--color-muted); }
 #tab-profile .profile-metrics { padding:18px; min-height:0; border-radius:16px; margin:0 0 24px; background:var(--color-sage); }
 #tab-profile .profile-metrics-title { font:500 25px/1.15 var(--font-serif); margin:0 0 16px; }

@@ -3,11 +3,13 @@ const { requireAuth, withActiveUser } = require('../services/auth')
 
 async function triggerRoutes(app) {
   // GET /triggers — список
-  app.get('/triggers', { preHandler: requireAuth }, async (request) => {
+  app.get('/triggers', { preHandler: requireAuth, schema: { querystring: { type: 'object', properties: {
+    limit: { type: 'integer', minimum: 1, maximum: 100 }, offset: { type: 'integer', minimum: 0, maximum: 100000 }
+  } } } }, async (request) => {
     const { limit = 20, offset = 0 } = request.query
     return db.triggerEntry.findMany({
       where: { userId: request.user.id },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       take: Number(limit),
       skip: Number(offset)
     })

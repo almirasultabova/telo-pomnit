@@ -348,6 +348,8 @@
       <textarea
         class="note-textarea"
         id="note-textarea"
+        aria-label="Заметка к наблюдению"
+        maxlength="20000"
         placeholder="Можно описать ощущения, происходящее сейчас, свои чувства, мысли или образы."
         rows="6"
       ></textarea>
@@ -475,12 +477,13 @@
       <!-- Рендерится в app.js -->
     </div>
     <div class="ai-input-bar" id="ai-input-bar">
-      <textarea class="ai-input" id="ai-input" placeholder="Что вы хотите обсудить?" aria-label="Сообщение AI-ассистенту" rows="1"></textarea>
+      <textarea class="ai-input" id="ai-input" placeholder="Что вы хотите обсудить?" aria-label="Сообщение AI-ассистенту" aria-describedby="ai-message-limit ai-draft-status" rows="1"></textarea>
       <button class="ai-send-btn" id="ai-send-btn" aria-label="Отправить сообщение">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
           <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
         </svg>
       </button>
+      <p id="ai-message-limit">0 / 1000 символов</p>
     </div>
   </div>
 
@@ -566,6 +569,7 @@
 
       <label class="section-label mt-16" for="checkin-note">Заметка <span class="optional-hint">необязательно</span></label>
       <textarea class="note-textarea" id="checkin-note"
+        maxlength="20000"
         placeholder="Что вы замечаете? Что изменилось на этой неделе?" rows="3"></textarea>
 
     </div>
@@ -728,7 +732,9 @@
 <script src="js/access-management.js?v=access-20261011"></script>
 <script src="js/launch.js?v=silk-return-25-20261014"></script>
 <script src="js/stream-state.js?v=JAPP060"></script>
+<script src="js/ai-delivery.js?v=JAPP103"></script>
 <script src="js/app.js?v=access-20260922"></script>
+<script src="js/observation-drafts.js?v=JAPP102"></script>
 <script src="js/path-dynamics-model.js?v=JAPP050"></script>
 <script src="js/path-dynamics.js?v=JAPP050"></script>
 <script src="js/questionnaire-polish.js?v=JAPP015"></script>

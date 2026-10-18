@@ -1,0 +1,14 @@
+{
+  "activated": true,
+  "backup": "/root/telo-backups/audit-JAPP109-2026-10-18T200026874Z",
+  "publicFiles": 88,
+  "backendFiles": 5,
+  "additiveTable": true,
+  "health": true,
+  "unauthorizedStatus": 401,
+  "promptUnchanged": true,
+  "protectedFilesUnchanged": 3,
+  "notifications": 0,
+  "openai": 0,
+  "testWritesToProduction": 0
+}

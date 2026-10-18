@@ -37,7 +37,20 @@
   function sync(){range.hidden=state.period!=='custom';reset.hidden=!filterActive();document.getElementById('hm-clear').hidden=!state.query;document.getElementById('hm-all').setAttribute('aria-pressed',String(!state.onlyImportant));document.getElementById('hm-important').setAttribute('aria-pressed',String(state.onlyImportant));}
   function clearFilters(){Object.assign(state,{query:'',period:'all',kind:'all',from:'',to:''});search.value='';period.value='all';kind.value='all';from.value='';to.value='';sync();load();}
   function message(title,text,action,label){const box=el('section','hm-empty');box.innerHTML=svg('book');box.append(el('h2','',title),el('p','',text));if(action)box.append(button(label,action));list.append(box);}
-  function render(){
+  function preserveFocus(root,draw){
+    const focused=document.activeElement;
+    const selector=focused?.matches('.hm-star')?'.hm-star':focused?.matches('.hm-open')?'.hm-open':focused?.matches('.hm-more')?'.hm-more':null;
+    const owned=selector&&root.contains(focused),id=owned?focused.dataset.recordId||focused.closest('[data-record-id]')?.dataset.recordId:null;
+    const index=owned?[...root.querySelectorAll(selector)].indexOf(focused):-1;
+    draw();
+    if(!owned||focused.isConnected||!root.closest('.screen--active'))return;
+    const controls=[...root.querySelectorAll(selector)];
+    const same=id&&controls.find(node=>(node.dataset.recordId||node.closest('[data-record-id]')?.dataset.recordId)===id);
+    const target=same||controls[Math.min(index,controls.length-1)]||document.getElementById('hm-important');
+    target?.focus({preventScroll:true});
+  }
+  function render(){preserveFocus(list,renderRows);}
+  function renderRows(){
     if(local)return;
     sync();list.setAttribute('aria-busy',String(loading));count.textContent=loading?'Загружаем…':loadError?'':total+' '+plural(total);list.replaceChildren();
     if(loadError&&!rows.length){message('История пока не загрузилась','Проверьте соединение и попробуйте ещё раз.',()=>load(),'Повторить');list.append(button('Открыть записи на устройстве',showLocal));return;}
@@ -80,7 +93,7 @@
     if(!valid(s)||seq!==sequence)return;loading=false;render();list.scrollTop=scroll;
   }
   function star(row){
-    const b=button('',()=>toggle(row),'hm-star');b.innerHTML=svg('star');b.dataset.recordId=key(row);b.disabled=pending.has(key(row));b.setAttribute('aria-pressed',String(row.important));b.setAttribute('aria-label',(row.important?'Убрать из важного: ':'Отметить как важное: ')+row.title);return b;
+    const b=button('',()=>toggle(row),'hm-star');b.innerHTML=svg('star');b.dataset.recordId=key(row);b.setAttribute('aria-disabled',String(pending.has(key(row))));b.setAttribute('aria-busy',String(pending.has(key(row))));b.setAttribute('aria-pressed',String(row.important));b.setAttribute('aria-label',(row.important?'Убрать из важного: ':'Отметить как важное: ')+row.title);return b;
   }
   async function toggle(row){
     const id=key(row);if(pending.has(id))return;const s=session(),desired=!row.important;pending.add(id);notice.textContent='';
@@ -102,6 +115,9 @@
     catch{if(valid(s)&&seq===detailSequence&&currentScreen==='history-record'){content.replaceChildren(el('p','hm-load','Не удалось открыть запись. Проверьте соединение и попробуйте ещё раз.'),button('Повторить',()=>fetchDetail(row)));}}
   }
   function renderDetail(row){
+    preserveFocus(detail.querySelector('.hm-detail-scroll'),()=>renderDetailContent(row));
+  }
+  function renderDetailContent(row){
     const content=detail.querySelector('.hm-detail-scroll'),scroll=content.scrollTop;content.replaceChildren();const top=el('div','hm-detail-top'),copy=el('div');copy.append(el('h2','',row.title),el('p','hm-meta',fullDate(row)+' · '+meta(row)));top.append(copy,star(row));content.append(top);
     if(row.tags?.length){const tags=el('div','hm-tags');for(const tag of row.tags)tags.append(el('span','',tag));content.append(tags);}
     if(row.scores){const scores=el('dl','hm-scores');for(const[name,value]of Object.entries(row.scores)){const line=el('div');line.append(el('dt','',name),el('dd','',value+' из 10'));scores.append(line);}content.append(scores);}

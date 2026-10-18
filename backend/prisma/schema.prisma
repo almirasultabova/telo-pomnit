@@ -59,6 +59,7 @@ model User {
   diagnosticResults  DiagnosticResult[]
   questionnaires     Questionnaire[]
   aiChatSessions     AiChatSession[]
+  aiChatOperations   AiChatOperation[]
   feedback           Feedback[]
 
   @@map("users")
@@ -264,6 +265,21 @@ model AiChatSession {
   user      User?    @relation(fields: [userId], references: [id])
 
   @@map("ai_chat_sessions")
+}
+
+model AiChatOperation {
+  userId String @map("user_id")
+  operationId String @map("operation_id")
+  requestHash String @map("request_hash")
+  sessionId String @map("session_id")
+  status String
+  result Json?
+  createdAt DateTime @default(now()) @map("created_at")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, operationId])
+  @@index([userId, sessionId, status])
+  @@map("ai_chat_operations")
 }
 
 model StreamOverviewGrant {

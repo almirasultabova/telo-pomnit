@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "twoWorkerConcurrency": 12,
+  "oneProviderPerOperation": true,
+  "immutablePayload": true,
+  "ownerAndHostIsolation": true,
+  "admissionEnforced": true,
+  "canonicalMessagePair": true,
+  "unicodeLimit": true,
+  "knownRejection": true,
+  "uncertainNotRetried": true,
+  "crashedWorkerNotReclaimed": true,
+  "ownExport": true,
+  "deletionDuringProvider": true,
+  "lateResultNotRestored": true,
+  "realOpenAI": 0,
+  "productionRows": 0
+}

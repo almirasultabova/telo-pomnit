@@ -595,9 +595,7 @@ function renderTodayCard() {
   const container = document.getElementById('today-card');
   if (!container) return;
 
-  const today = new Date().toDateString();
-  const todayEntries = Storage.getDiaryEntries()
-    .filter(e => new Date(e.date).toDateString() === today);
+  const todayEntries = Storage.getTodayEntries();
 
   if (!todayEntries.length) {
     container.className = 'today-card';
@@ -614,7 +612,7 @@ function renderTodayCard() {
     container.className = 'today-card today-card--done';
     const chips = todayEntries.map(e => {
       const zone = DATA.zones.find(z => z.id === e.zone);
-      const time = new Date(e.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+      const time = new Date(e.date).toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow', hour: '2-digit', minute: '2-digit' });
       const sLabels = (e.sensations || [])
         .map(id => getSensation(id))
         .filter(Boolean)
@@ -663,7 +661,7 @@ function entryCardHTML(entry) {
     .map(s => `<span class="entry-sens-chip">${s.emoji} ${escapeAccessText(s.label)}</span>`)
     .join('');
   const date = new Date(entry.date);
-  const dateStr = date.toLocaleDateString('ru-RU', { day:'numeric', month:'short' });
+  const dateStr = date.toLocaleDateString('ru-RU', { timeZone:'Europe/Moscow', day:'numeric', month:'short' });
   return `
     <div class="entry-card">
       <div class="entry-card-header">
@@ -675,12 +673,14 @@ function entryCardHTML(entry) {
     </div>`;
 }
 
-function startDiaryEntry() {
+function startDiaryEntry(repairId = null) {
   diarySaveStarted = false;
   draft.zone = null;
   draft.sensations = [];
   draft.note = '';
   bodyMapView = 'front';
+  document.getElementById('note-textarea').value = '';
+  if (window.ObservationDrafts?.openBody(typeof repairId === 'string' ? repairId : null) === false) return;
   haptic('medium');
   renderBodyMap();
   goTo('body-map');
@@ -758,7 +758,6 @@ function renderBodyMap() {
   document.getElementById('body-zone-list').innerHTML=zones.map(z=>`<button class="zone-btn" data-zone="${z.id}" aria-pressed="false">${escapeAccessText(z.label)}</button>`).join('');
 
   // Reset selection state
-  draft.zone = null;
   document.getElementById('zone-info-card')?.classList.add('hidden');
   const continueBtn = document.getElementById('zone-continue-btn');
   if (continueBtn) continueBtn.disabled = true;
@@ -766,6 +765,9 @@ function renderBodyMap() {
   // Sync toggle buttons
   document.getElementById('view-front-btn')?.classList.toggle('view-toggle-btn--active', bodyMapView === 'front');
   document.getElementById('view-back-btn')?.classList.toggle('view-toggle-btn--active', bodyMapView === 'back');
+  document.getElementById('view-front-btn')?.setAttribute('aria-pressed',String(bodyMapView === 'front'));
+  document.getElementById('view-back-btn')?.setAttribute('aria-pressed',String(bodyMapView === 'back'));
+  if (draft.zone) selectZone(draft.zone);
 }
 
 function setBodyView(v) {
@@ -827,10 +829,8 @@ function renderSensations() {
   const label = document.getElementById('sensations-zone-label');
   if (label) label.textContent = zone?.label || '';
 
-  // Сбрасываем выбор
-  draft.sensations = [];
   const btn = document.getElementById('sensations-continue-btn');
-  if (btn) btn.disabled = true;
+  if (btn) btn.disabled = !draft.sensations.length;
 
   // Рендерим кнопки
   const grid = document.getElementById('sensations-grid');
@@ -845,7 +845,7 @@ function renderSensations() {
   const all = [...builtIn, ...custom];
 
   grid.innerHTML = all.map(s => `
-    <button class="sensation-btn" data-sensation="${escapeAccessText(s.id)}">
+    <button class="sensation-btn${draft.sensations.includes(s.id) ? ' sensation-btn--active' : ''}" data-sensation="${escapeAccessText(s.id)}" aria-pressed="${draft.sensations.includes(s.id)}">
       <span class="sensation-emoji">${s.emoji}</span>
       <span class="sensation-label">${escapeAccessText(s.label)}</span>
     </button>
@@ -868,6 +868,7 @@ function renderSensations() {
         btn.classList.add('sensation-btn--active');
       }
       const continueBtn = document.getElementById('sensations-continue-btn');
+      btn.setAttribute('aria-pressed', String(draft.sensations.includes(id)));
       if (continueBtn) continueBtn.disabled = draft.sensations.length === 0;
     });
   }
@@ -886,11 +887,13 @@ function renderSensations() {
       if (!draft.sensations.includes(id)) {
         draft.sensations.push(id);
         existing.classList.add('sensation-btn--active');
+        existing.setAttribute('aria-pressed','true');
       }
     } else {
       addCustomSensation(label);
       const btn = document.createElement('button');
       btn.className = 'sensation-btn sensation-btn--active';
+      btn.setAttribute('aria-pressed','true');
       btn.dataset.sensation = id;
       btn.innerHTML = `<span class="sensation-emoji">${CUSTOM_SENSATION_ICON}</span><span class="sensation-label">${label}</span>`;
       grid.insertBefore(btn, grid.querySelector('.sensation-custom-row'));
@@ -932,7 +935,11 @@ function saveEntry() {
     note:       draft.note
   };
   try {
-    const row = Storage.saveDiaryEntry(entry);
+    if (!entry.zone || !entry.sensations.length || entry.note.length > 20000) {
+      window.ObservationDrafts?.renderBody();
+      return;
+    }
+    const row = window.ObservationDrafts ? window.ObservationDrafts.submitBody(entry) : Storage.saveDiaryEntry(entry);
     diarySaveStarted = true;
     savedDiaryClientId = row.clientId;
     renderSavedScreen();
@@ -964,8 +971,7 @@ function initSaved() {
     }
     if (screenStack[screenStack.length-1] === 'home') screenStack.pop();
     goTo('home', true);
-    switchTab('diary');
-    renderDiaryTab();
+    switchTab('main');
     haptic('light');
   });
 }
@@ -983,6 +989,19 @@ function renderSavedScreen() {
       : 'Отправляем на сервер. До подтверждения запись доступна только на этом устройстве.';
     document.getElementById('saved-icon').textContent = synced ? '✓' : '…';
     document.getElementById('saved-retry-btn').hidden = synced;
+    if (row.retryBlocked) {
+      document.getElementById('saved-title').textContent = 'Запись не отправлена';
+      document.getElementById('saved-sub').textContent = row.rejectedStatus === 409
+        ? 'Сервер обнаружил конфликт записи. Исходный текст сохранён; повторная отправка остановлена. Сохраните копию через «Мои данные и приватность».'
+        : 'Сервер отклонил запись. Откройте её для исправления; остальные записи продолжают отправляться.';
+      document.getElementById('saved-retry-btn').hidden = true;
+    }
+    document.getElementById('saved-repair-btn')?.remove();
+    if (row.retryBlocked && [400, 422].includes(row.rejectedStatus)) {
+      const repair = document.createElement('button'); repair.id = 'saved-repair-btn'; repair.className = 'btn btn--outline';
+      repair.textContent = 'Исправить запись'; repair.onclick = () => startDiaryEntry(row.clientId);
+      document.getElementById('saved-retry-btn').after(repair);
+    }
   }
   const streak = Storage.getStreak();
   const el = document.getElementById('saved-streak-num');
@@ -1007,6 +1026,16 @@ function renderDiarySyncStatus() {
   retry.textContent = 'Повторить отправку';
   retry.addEventListener('click', () => Storage.flushPending());
   container.append(message, retry);
+  retry.hidden = !pending.some(row => !row.retryBlocked);
+  for (const row of pending.filter(row => row.retryBlocked)) {
+    const text = document.createElement('p');
+    text.textContent = row.rejectedStatus === 409 ? 'Есть конфликт записи. Исходный текст сохранён; автоматический повтор остановлен.' : 'Есть отклонённая запись. Откройте её для исправления.';
+    container.append(text);
+    if ([400, 422].includes(row.rejectedStatus)) {
+      const edit = document.createElement('button'); edit.className = 'btn btn--outline btn--sm'; edit.textContent = 'Исправить запись';
+      edit.onclick = () => startDiaryEntry(row.clientId); container.append(edit);
+    }
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -1036,7 +1065,7 @@ function renderLocalDiaryHistory() {
   const groups = {};
   entries.forEach(e => {
     const d = new Date(e.date);
-    const key = d.toLocaleDateString('ru-RU', { day:'numeric', month:'long', year:'numeric' });
+    const key = d.toLocaleDateString('ru-RU', { timeZone:'Europe/Moscow', day:'numeric', month:'long', year:'numeric' });
     if (!groups[key]) groups[key] = [];
     groups[key].push(e);
   });
@@ -1226,7 +1255,8 @@ function renderHeatmapSection(entries) {
     return `<button class="hmap-week-btn${active}" data-week="${w}" aria-pressed="${heatmapWeek === w}">${label}</button>`;
   }).join('');
 
-  return `<div class="section-label mt-16 mb-4">Карта напряжений</div>
+  return `<div class="section-label mt-16 mb-4">Карта ощущений</div>
+    <p class="hmap-description">Области тела, которые вы отмечали в дневнике. Числа — количество записей за выбранный период.</p>
     <div class="hmap-week-filter">${weekBtns}</div>
     ${renderHeatmapBody(filtered)}`;
 }
@@ -1895,7 +1925,7 @@ function showAccessDenied(code) {
       <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px;text-align:center;gap:20px;">
         <div style="font-size:48px;">🌿</div>
         <div style="font-family:Georgia,serif;font-size:22px;color:#1a110a;">Тело помнит</div>
-        <div style="font-size:15px;color:#8a7a6a;line-height:1.6;">${club ? message+'<br>Это закрытое приложение для одобренного круга участниц.' : code === 'SESSION_EXPIRED' ? 'Сессия завершилась. Откройте приложение заново через бота.' : 'У вас нет доступа к приложению.'}</div>
+        <div class="access-denied-message" style="font-size:15px;color:var(--color-muted);line-height:1.6;">${club ? message+'<br>Это закрытое приложение для одобренного круга участниц.' : code === 'SESSION_EXPIRED' ? 'Сессия завершилась. Откройте приложение заново через бота.' : 'У вас нет доступа к приложению.'}</div>
         ${club || code === 'SESSION_EXPIRED' ? '<button class="btn btn--primary" id="check-club-access">Проверить доступ</button>' : ''}
       </div>`;
     el.classList.add('screen--active');
@@ -2180,6 +2210,7 @@ function renderAiDraftStatus() {
   const text = document.getElementById('ai-input')?.value || '';
   status.hidden = !text && !aiPending && !aiSendError;
   status.textContent = aiPending ? 'Отправляем сообщение. Ожидаем ответ AI…' : aiSendError || (aiDraftDurable ? 'Черновик сохранён на этом устройстве. Он не отправляется сам.' : 'Черновик не сохранён на устройстве. Не закрывайте приложение: текст пока только в этом окне.');
+  window.AiDelivery?.render();
 }
 function clearPrivateConversationState() {
   window.PathDynamics?.reset();
@@ -2221,7 +2252,7 @@ async function refreshAiScreen() {
     const sessions = await Api.getAiSessions();
     if (request !== aiScreenRequest || generation !== Storage._generation || Api.clubBlocked) return;
     const select = document.getElementById('ai-history-select'); select.replaceChildren(new Option('Новый диалог', ''));
-    sessions.forEach(session => select.add(new Option(accessDate(session.createdAt), session.sessionId)));
+    sessions.forEach(session => select.add(new Option(window.AiDelivery.label(session), session.sessionId)));
     select.value = aiSessionId || '';
   } catch { document.getElementById('ai-access-notice').textContent += ' Историю не удалось загрузить — можно повторить.'; }
 }
@@ -2257,6 +2288,7 @@ function renderAiChat() {
   const bar = document.getElementById('ai-input-bar');
   if (bar) bar.style.display = programAccess?.ai?.reason === 'questionnaire_required' ? 'none' : aiAccessGranted === true || document.getElementById('ai-input')?.value ? '' : 'none';
   document.getElementById('ai-send-btn').disabled = aiPending || aiAccessGranted !== true || !aiContextReady();
+  window.AiDelivery?.render();
   renderAiMessages();
 }
 function appendAiContextPreview(panel, snapshot, exactText) {
@@ -2340,7 +2372,8 @@ function renderAiContext(container) {
         appendAiContextPreview(panel, aiContext.preview.contextSnapshot, aiContext.preview.contextText);
         if (aiContext.preview.contextSnapshot?.some(row => row.noteTruncated || row.sensationsTruncated)) { const hint = document.createElement('p'); hint.textContent = 'В OpenAI отправится только показанная часть длинной записи. Полная запись останется в дневнике.'; panel.append(hint); }
         const reviewLabel = document.createElement('label'); reviewLabel.className = 'privacy-context-choice'; const review = document.createElement('input'); review.type = 'checkbox'; review.id = 'ai-context-review'; review.checked = aiContext.reviewed; review.disabled = aiPending;
-        review.onchange = () => { aiContext.reviewed = review.checked; document.getElementById('ai-send-btn').disabled = aiPending || aiAccessGranted !== true || !aiContextReady(); };
+        review.onchange = () => { aiContext.reviewed = review.checked; document.getElementById('ai-send-btn').disabled = aiPending || aiAccessGranted !== true || !aiContextReady();
+  window.AiDelivery?.render(); };
         const reviewText = document.createElement('span'); reviewText.textContent = 'Я просмотрела записи и разрешаю использовать их в этом разговоре с OpenAI.'; reviewLabel.append(review, reviewText); panel.append(reviewLabel);
       }
     }
@@ -2355,38 +2388,8 @@ function renderAiMessages() {
   aiMessages.forEach(message => { const row = document.createElement('div'); row.className = 'ai-msg ai-msg--' + (message.role === 'user' ? 'user' : 'assistant'); const text = document.createElement('div'); text.className = 'ai-msg-text'; text.textContent = String(message.content || ''); row.append(text); container.append(row); });
   container.scrollTop = aiSessionId ? container.scrollHeight : previousScroll;
 }
-async function sendAiMessage() {
-  const input = document.getElementById('ai-input'), rawText = input?.value || '', message = rawText.trim();
-  if (!message || aiPending || !aiContextReady()) return;
-  const generation = Storage._generation, request = aiScreenRequest, owner = Storage._userId, sentSessionId = aiSessionId;
-  saveCurrentAiDraft();
-  aiSendError = ''; aiPending = true; renderAiChat(); const select = document.getElementById('ai-history-select'); select.disabled = true;
-  try {
-    await refreshProgramAccess();
-    if (generation !== Storage._generation || request !== aiScreenRequest || Api.clubBlocked || aiAccessGranted !== true) return;
-    const context = { contextMode: aiContext.mode, diaryEntryIds: [...aiContext.ids], contextPreviewHash: aiContext.preview?.contextHash };
-    const result = await Api.aiChat(message, aiSessionId, context);
-    if (generation !== Storage._generation || request !== aiScreenRequest || Api.clubBlocked) return;
-    if (!aiSessionId) aiSessionContext = { mode: context.contextMode, snapshot: aiContext.preview?.contextSnapshot || [], text: aiContext.preview?.contextText || '' };
-    Storage.clearAiDraftIfMatches(sentSessionId, rawText, owner, generation);
-    const remainingDraft = Storage.getAiDraft(sentSessionId);
-    if (!sentSessionId && remainingDraft) {
-      Storage.moveAiDraftIfMatches(null, result.sessionId, remainingDraft, owner, generation);
-    }
-    aiSessionId = result.sessionId; aiDraftScope = owner + ':' + aiSessionId; aiDraftDurable = Storage.isAiDraftPersistent(aiSessionId); aiMessages.push({ role: 'user', content: message }, { role: 'assistant', content: result.reply });
-    if (input.value === rawText) { input.value = ''; input.style.height = 'auto'; }
-    renderAiDraftStatus();
-    renderAiMessages(); hapticNotify('success');
-    if (!Array.from(select.options).some(option => option.value === aiSessionId)) select.add(new Option('Текущий диалог', aiSessionId)); select.value = aiSessionId;
-  } catch (error) {
-    if (error.code === 'AI_ACCESS_REQUIRED') { aiAccessGranted = false; if (programAccess) programAccess.ai = error.access; }
-    if (error.code === 'CONTEXT_CHANGED') { aiContext.preview = null; aiContext.reviewed = false; }
-    if (generation === Storage._generation && request === aiScreenRequest && !Api.clubBlocked) {
-      aiSendError = error.name === 'AbortError' ? 'Ответ задерживается. Отправка не подтверждена; ваш текст остаётся в поле.' : (error.message || 'Не удалось отправить сообщение.') + ' Ваш текст остаётся в поле.';
-      renderAiChat(); document.getElementById('ai-access-notice').textContent = aiSendError;
-    }
-  } finally { aiPending = false; select.disabled = false; if (generation === Storage._generation && request === aiScreenRequest && !Api.clubBlocked) { document.getElementById('ai-send-btn').disabled = aiAccessGranted !== true || !aiContextReady(); renderAiMessages(); renderAiDraftStatus(); } }
-}
+async function sendAiMessage() { return window.AiDelivery.send(); }
+
 document.addEventListener('visibilitychange', async () => {
   if (!document.hidden && Api.isAuthed()) { await refreshProgramAccess(); if (currentScreen === 'ai-chat' && !aiPending) renderAiChat(); if (activeTab === 'profile') renderProfileTab(); }
 });
@@ -2471,6 +2474,7 @@ function resetTriggerForm() {
   document.querySelectorAll('#trigger-sensations-grid .checklist-item--selected').forEach(el => { el.classList.remove('checklist-item--selected'); el.setAttribute('aria-checked', 'false'); });
 
   updateTriggerSaveBtn();
+  window.ObservationDrafts?.openReaction();
 }
 
 function updateTriggerSaveBtn() {
@@ -2570,6 +2574,7 @@ function saveTriggerEntry() {
   };
 
   const saved = Storage.saveTriggerEntry(entry);
+  window.ObservationDrafts?.submittedReaction();
   goBack();
   showToast(saved.syncStatus === 'memory-only'
     ? 'Запись пока только в этом окне. Не закрывайте его до отправки.'
@@ -2581,13 +2586,20 @@ function renderTriggerHistory() {
   if (!container) return;
 
   const entries = Storage.getTriggerEntries();
+  const loadState = Storage.getHistoryLoadStatus().triggers;
+  const statusText = loadState === 'loading' ? (entries.length ? 'Загружаем всю историю. Пока показаны записи с этого устройства.' : 'Загружаем историю реакций…')
+    : loadState === 'failed' ? (entries.length ? 'Всю историю загрузить не удалось. Показаны записи с этого устройства.' : 'Историю реакций загрузить не удалось. Проверьте соединение и повторите.')
+    : loadState !== 'loaded' ? 'История реакций ещё не загружена.' : '';
+  const statusHtml = statusText ? `<div class="access-notice" style="margin:16px"><p role="status">${statusText}</p>${loadState !== 'loading' ? '<button type="button" class="btn btn--outline" id="trigger-history-retry">Загрузить историю</button>' : ''}</div>` : '';
+  const bindRetry = () => document.getElementById('trigger-history-retry')?.addEventListener('click', () => { void Storage.loadTriggerHistory().catch(() => {}); });
   if (!entries.length) {
-    container.innerHTML = `
+    container.innerHTML = loadState === 'loaded' ? `
       <div style="text-align:center; padding: 48px 24px; color:var(--tg-hint)">
         <div style="font-size:2rem; margin-bottom:12px">⚡</div>
         <div>Записей пока нет.</div>
         <div style="margin-top:4px; font-size:13px">Запишите ситуацию и свою реакцию</div>
-      </div>`;
+      </div>` : statusHtml;
+    bindRetry();
     return;
   }
 
@@ -2614,7 +2626,7 @@ function renderTriggerHistory() {
   // Список записей
   const listHtml = entries.map(e => {
     const p = DATA.patterns[e.reactionType];
-    const date = new Date(e.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+    const date = new Date(e.date).toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow', day: 'numeric', month: 'short' });
     const zoneName = e.zone ? DATA.zones.find(z => z.id === e.zone)?.label : null;
     return `<div class="trigger-card">
       <div class="trigger-card-top">
@@ -2628,7 +2640,7 @@ function renderTriggerHistory() {
     </div>`;
   }).join('');
 
-  container.innerHTML = `
+  container.innerHTML = statusHtml + `
     <div style="padding: 0 16px 16px">
       <div class="section-label" style="padding-top:16px">Паттерны реакций</div>
       ${statsHtml}
@@ -2636,6 +2648,7 @@ function renderTriggerHistory() {
       ${entries.some(e => e.clientId && e.syncStatus !== 'synced') ? '<button class="btn btn--outline" onclick="Storage.flushTriggersPending()">Повторить отправку</button>' : ''}
       ${listHtml}
     </div>`;
+  bindRetry();
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -2792,6 +2805,12 @@ function renderCheckinSyncStatus() {
   const day = savedCheckinDayKey || Storage.checkinDayKey(new Date());
   const row = Storage.getCheckins().find(item => item.dayKey === day && !item.legacyScale);
   panel.replaceChildren();
+  if ((document.getElementById('checkin-note')?.value || '').length > 20000) {
+    panel.dataset.syncStatus = 'invalid';
+    const warning = document.createElement('p'); warning.setAttribute('role', 'alert');
+    warning.textContent = 'В заметке больше 20 000 символов. Сократите текст перед сохранением. Исходный текст остался в форме.';
+    panel.append(warning); return;
+  }
   if (checkinHasUnsavedChanges) {
     panel.dataset.syncStatus = 'draft';
     const text = document.createElement('p');
@@ -2819,6 +2838,7 @@ function renderCheckinSyncStatus() {
 async function saveCheckinEntry() {
   const button = document.getElementById('checkin-save-btn');
   if (button?.disabled) return;
+  if ((document.getElementById('checkin-note')?.value || '').length > 20000) { renderCheckinSyncStatus(); return; }
   if (!checkinOwnerIsCurrent()) { renderCheckinScales(); renderCheckinSyncStatus(); return; }
   const owner = checkinDraftOwner, generation = checkinDraftGeneration;
   const current = () => owner === Storage._userId && generation === Storage._generation;
@@ -2857,8 +2877,8 @@ function showToast(msg, ok = true) {
     document.body.appendChild(t);
   }
   t.textContent = msg;
-  t.style.background = ok ? '#22c55e' : '#ef4444';
-  t.style.color = '#fff';
+  t.style.background = ok ? 'var(--color-action)' : 'var(--color-error)';
+  t.style.color = 'var(--color-paper)';
   t.style.opacity = '1';
   clearTimeout(t._hide);
   t._hide = setTimeout(() => { t.style.opacity = '0'; }, 2200);
@@ -3083,6 +3103,7 @@ function openQuestionnaire() {
   qAnswers = draft?.version === 1 && draft.answers && typeof draft.answers === 'object' && !Array.isArray(draft.answers) ? draft.answers : {};
   renderQBlock();
   goTo('questionnaire');
+  focusQuestionnaireBlock();
 }
 
 function closeQuestionnaire() {
@@ -3115,7 +3136,7 @@ function renderQBlock() {
 
   const fieldsHtml = block.fields.map(f => renderQField(f)).join('');
   body.innerHTML = `
-    <div class="q-block-title">${block.title}</div>
+    <h1 class="q-block-title" tabindex="-1">${block.title}</h1>
     ${fieldsHtml}
   `;
   body.scrollTop = 0;
@@ -3281,6 +3302,10 @@ function validateQBlock(block) {
 
 // ─── Навигация по блокам ─────────────────────────────────────────────────
 
+function focusQuestionnaireBlock() {
+  document.querySelector('#questionnaire-body .q-block-title')?.focus({preventScroll:true});
+}
+
 function qNext() {
   collectQBlock();
   if (!validateQBlock(Q_BLOCKS[qStep])) return;
@@ -3289,6 +3314,7 @@ function qNext() {
   if (qStep < Q_BLOCKS.length - 1) {
     qStep++;
     renderQBlock();
+    focusQuestionnaireBlock();
     return;
   }
 
@@ -3302,6 +3328,7 @@ function qPrev() {
   if (qStep > 0) {
     qStep--;
     renderQBlock();
+    focusQuestionnaireBlock();
   }
 }
 

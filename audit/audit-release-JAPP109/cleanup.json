@@ -1,0 +1,1 @@
+{"temporaryDatabaseRemoved": true, "roleAndCredentialsRemoved": true, "confirmedBy": "test-postgres.cjs --cleanup exit0"}

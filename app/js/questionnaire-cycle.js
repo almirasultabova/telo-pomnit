@@ -123,6 +123,7 @@
     saveDraft();
   }
   function home() { capture(); navigation++; sending = false; goTo('home'); refreshEntries(); }
+  function focusStage() { document.querySelector('#post-body .q-block-title')?.focus({preventScroll:true}); }
   function openPost() {
     if (!isCurrent(record) || source().stream?.phase !== 'completed') return;
     if (source().post) { showComparison(); return; }
@@ -131,6 +132,7 @@
     answers=draft?.version===2 && draft.answers && typeof draft.answers==='object' && !Array.isArray(draft.answers) ? draft.answers : {};
     step=draft?.version===2 && Number.isInteger(draft.step) ? Math.max(0,Math.min(draft.step,steps().length-1)) : 0;
     closeQInvite(); draw(); goTo('post-questionnaire');
+    focusStage();
   }
   function completionMarkup(post) {
     return `<div class="q-completion"><img class="completion-photo" src="/media/app/redesign/home-portrait-r01.webp" alt=""><div class="completion-shade"></div><div class="completion-brand" aria-label="Тело помнит">Тело<br>помнит</div><div class="completion-content"><h1 tabindex="-1">Спасибо</h1><p>${post ? hasResponses(source().post?.answers || {}) ? 'Вы сохранили свой опыт программы. Можно вернуться к тому, с чем вы пришли, и посмотреть, что происходит сейчас.' : 'Анкета отправлена без ответов. Можно вернуться в приложение.' : 'Анкета заполнена. Ваш запрос и ожидания сохранены — к ним можно вернуться в конце программы.'}</p></div></div>`;
@@ -221,8 +223,8 @@
       const screen = document.getElementById(id); screen.inert = true; screen.setAttribute('aria-hidden','true');
     }
     document.getElementById('post-close').onclick = home;
-    document.getElementById('post-back').onclick = () => { if (sending) return; capture(); step = Math.max(0,step-1); draw(); };
-    document.getElementById('post-next').onclick = () => { if (sending) return; capture(); if (steps()[step] === 'review') submit(); else { step++; draw(); } };
+    document.getElementById('post-back').onclick = () => { if (sending) return; capture(); step = Math.max(0,step-1); draw(); focusStage(); };
+    document.getElementById('post-next').onclick = () => { if (sending) return; capture(); if (steps()[step] === 'review') submit(); else { step++; draw(); focusStage(); } };
     document.getElementById('post-body').addEventListener('input',capture);
     document.getElementById('post-body').addEventListener('change',event => {
       if (event.target.id === 'post-empty-confirm') {

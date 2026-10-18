@@ -32,6 +32,7 @@ const Storage = {
   _aiDrafts: new Map(),
   _triggerFlushing: new Map(),
   _triggerRetryTimer: null,
+  _triggerHistoryLoading: new Map(),
 
   // Only a server-confirmed identity may select a cache. Unowned legacy keys
   // stay untouched for explicit export; they are never attributed to this user.
@@ -84,7 +85,7 @@ const Storage = {
   },
   getHistoryLoadStatus() {
     const status = this._userId && this._historyLoads.get(this._userId);
-    return { ...(status || { diary: 'idle', checkins: 'idle' }) };
+    return { triggers: 'idle', ...(status || { diary: 'idle', checkins: 'idle' }) };
   },
   exportPendingForUser(verifiedUserId) {
     const userId = String(verifiedUserId);
@@ -223,7 +224,7 @@ const Storage = {
     if (this._flushing.has(flushKey)) return this._flushing.get(flushKey);
     const run = async () => {
       for (const candidate of [...this._state(userId)]) {
-        if (candidate.syncStatus === 'synced') continue;
+        if (candidate.syncStatus === 'synced' || candidate.retryBlocked) continue;
         if (this._userId !== userId || this._generation !== generation || !Api.isAuthed()) break;
         try {
           const saved = await Api.saveDiaryEntry({
@@ -242,17 +243,25 @@ const Storage = {
           const row = this._state(userId).find(item => item.clientId === candidate.clientId);
           if (row) {
             row.syncError = error.code || (error.status ? 'HTTP_' + error.status : 'NETWORK');
-            if (this._userId === userId) this._emit(row);
+            row.retryBlocked = [400, 409, 422].includes(error.status);
+            row.rejectedStatus = row.retryBlocked ? error.status : null;
+            this._writeDiary(this._state(userId), userId);
+            if (this._userId === userId && this._generation === generation) this._emit(row);
           }
-          // Invalid payload/conflict need explicit correction, not busy retry.
-          if (![400, 409, 422].includes(error.status)) this._scheduleRetry(userId);
+          // Independent valid entries may proceed; rejected payloads never retry unchanged.
+          if ([400, 409, 422].includes(error.status)) continue;
+          if (![401, 403].includes(error.status)) this._scheduleRetry(userId);
           break;
         }
       }
     };
     const promise = run();
     this._flushing.set(flushKey, promise);
-    try { await promise; } finally { this._flushing.delete(flushKey); }
+    try { await promise; } finally {
+      this._flushing.delete(flushKey);
+      if (this._userId === userId && this._generation === generation && Api.isAuthed() &&
+          this._state(userId).some(row => row.syncStatus !== 'synced' && !row.retryBlocked)) this._scheduleRetry(userId);
+    }
   },
 
   // ─── Дневник ──────────────────────────────────────────────────────────────
@@ -267,6 +276,7 @@ const Storage = {
    */
   saveDiaryEntry(entry) {
     if (!this._userId) throw new Error('USER_REQUIRED');
+    if ((entry.note || '').length > 20000) throw new Error('NOTE_TOO_LONG');
     const clientId = crypto.randomUUID();
     const row = { ...entry, clientId, id: clientId, date: entry.date || new Date().toISOString(), syncStatus: 'pending' };
     const rows = [row, ...this._state()];
@@ -277,13 +287,29 @@ const Storage = {
     return row;
   },
 
-  /** Запись за сегодня (или null) */
-  getTodayEntry() {
-    const today = new Date().toDateString();
-    return this.getDiaryEntries().find(
-      e => new Date(e.date).toDateString() === today
-    ) || null;
+  // Only a definite validation rejection may change its payload under the same clientId.
+  // Conflicts and unknown network outcomes retain their original immutable request.
+  repairDiaryEntry(clientId, entry) {
+    if (!this._userId) throw new Error('USER_REQUIRED');
+    const previous = this._state().find(row => row.clientId === clientId);
+    if (!previous?.retryBlocked || ![400, 422].includes(previous.rejectedStatus)) throw new Error('REPAIR_NOT_ALLOWED');
+    if ((entry.note || '').length > 20000) throw new Error('NOTE_TOO_LONG');
+    const row = { ...previous, zone: entry.zone, sensations: [...entry.sensations], note: entry.note || '', syncStatus: 'pending' };
+    delete row.syncError; delete row.retryBlocked; delete row.rejectedStatus;
+    const rows = this._state().map(item => item.clientId === clientId ? row : item);
+    if (!this._writeDiary(rows)) row.syncStatus = 'memory-only';
+    this._emit(row);
+    Promise.resolve().then(() => this.flushPending());
+    return row;
   },
+
+  /** Запись за сегодня (или null) */
+  getTodayEntries(now = new Date()) {
+    if (!Number.isFinite(new Date(now).getTime())) return [];
+    const today = this.checkinDayKey(now);
+    return this.getDiaryEntries().filter(entry => Number.isFinite(Date.parse(entry.date)) && this.checkinDayKey(entry.date) === today);
+  },
+  getTodayEntry(now = new Date()) { return this.getTodayEntries(now)[0] || null; },
 
   /** Последние N записей (исключая сегодня, если нужна история) */
   getRecentEntries(n = 5) {
@@ -294,7 +320,7 @@ const Storage = {
 
   /** Подсчёт серии дней подряд */
   getStreak(now = new Date()) {
-    const dayKey = time => new Date(time + 10800000).toISOString().slice(0,10);
+    const dayKey = time => this.checkinDayKey(time);
     const time = new Date(now).getTime();
     if (!Number.isFinite(time)) return 0;
     const todayKey = dayKey(time);
@@ -389,6 +415,45 @@ const Storage = {
     } catch {
       return [];
     }
+  },
+
+  async loadTriggerHistory() {
+    const owner = this._userId, generation = this._generation;
+    if (!owner || !Api.isAuthed()) return;
+    const key = owner + ':' + generation;
+    if (this._triggerHistoryLoading.has(key)) return this._triggerHistoryLoading.get(key);
+    const current = () => owner === this._userId && generation === this._generation && !this._deletedUsers.has(owner);
+    const status = value => {
+      this._historyLoads.set(owner, { ...this.getHistoryLoadStatus(), triggers: value });
+      this._emit();
+    };
+    const run = async () => {
+      status('loading');
+      try {
+        const remote = await Api.getTriggers();
+        if (!current()) return;
+        if (!Array.isArray(remote) || remote.some(row => !row?.id || !Number.isFinite(Date.parse(row.createdAt || row.date)) ||
+            typeof row.situation !== 'string' || !['freeze','fight','flight','fawn'].includes(row.reactionType) ||
+            !Number.isInteger(row.intensity) || row.intensity < 1 || row.intensity > 10)) throw new Error('INVALID_TRIGGER_HISTORY');
+        const entries = remote.map(row => ({ ...row, date: row.createdAt || row.date, sensations: row.sensations || [], note: row.note || '', syncStatus: 'synced' }));
+        const merged = new Map(entries.map(row => [row.clientId || String(row.id), row]));
+        for (const row of this.getTriggerEntries()) {
+          if (!row.clientId && entries.some(saved => saved.date === row.date && saved.situation === row.situation && saved.reactionType === row.reactionType && saved.intensity === row.intensity && (saved.note || '') === (row.note || ''))) continue;
+          const identity = row.clientId || String(row.id);
+          if (!merged.has(identity)) merged.set(identity, row);
+        }
+        const rows = [...merged.values()].sort((a,b) => Date.parse(b.date) - Date.parse(a.date) || String(b.id).localeCompare(String(a.id)));
+        this._set(KEYS.TRIGGERS, JSON.stringify(rows));
+        status('loaded');
+        return rows;
+      } catch (error) {
+        if (current()) status('failed');
+        throw error;
+      }
+    };
+    const promise = run();
+    this._triggerHistoryLoading.set(key, promise);
+    try { return await promise; } finally { this._triggerHistoryLoading.delete(key); }
   },
 
   /** Формат: { id, date, situation, reactionType, intensity, zone, sensations, note } */
@@ -512,7 +577,7 @@ const Storage = {
     if (this._checkinFlushing.has(flushKey)) return this._checkinFlushing.get(flushKey);
     const run = async () => {
       for (const candidate of [...this._checkinState(userId)]) {
-        if (candidate.syncStatus === 'synced' || candidate.legacyScale) continue;
+        if (candidate.syncStatus === 'synced' || candidate.legacyScale || candidate.retryBlocked) continue;
         if (this._userId !== userId || this._generation !== generation || !Api.isAuthed()) break;
         try {
           const saved = await Api.saveCheckin({ createdAt: candidate.date, clientUpdatedAt: candidate.clientUpdatedAt,
@@ -531,9 +596,11 @@ const Storage = {
           if (row?.clientUpdatedAt === candidate.clientUpdatedAt) {
             row.syncError = error.code || (error.status ? 'HTTP_' + error.status : 'NETWORK');
             row.retryBlocked = [400,409,422].includes(error.status);
+            this._writeCheckins(this._checkinState(userId), userId);
             if (this._userId === userId && this._generation === generation) this._emit(row);
           }
-          if (![400,409,422].includes(error.status)) this._scheduleCheckinRetry(userId);
+          if ([400,409,422].includes(error.status)) continue;
+          if (![401,403].includes(error.status)) this._scheduleCheckinRetry(userId);
           break;
         }
       }
@@ -547,6 +614,7 @@ const Storage = {
   /** All five original answers are queued together; one editable observation per Moscow day. */
   saveCheckin(checkin) {
     if (!this._userId) throw new Error('USER_REQUIRED');
+    if ((checkin.note || '').length > 20000) throw new Error('NOTE_TOO_LONG');
     const date = checkin.date || new Date().toISOString(), dayKey = this.checkinDayKey(date);
     const previous = this._checkinState().find(row => row.dayKey === dayKey);
     const clientUpdatedAt = new Date(Math.max(Date.now(), new Date(previous?.clientUpdatedAt || 0).getTime() + 1)).toISOString();
@@ -598,26 +666,27 @@ const Storage = {
   // ─── Синхронизация с бэкендом ─────────────────────────────────────────────
 
   /** Восстановить доступные серверные данные после авторизации.
-   *  Ответы дневника/реакций ограничены страницей; локальную очередь сохраняем.
+   *  Истории загружаются страницами; локальную очередь сохраняем.
    *  Повтор отправки идёт в фоне и не задерживает переход с заставки. */
   async initFromApi() {
     if (typeof Api === 'undefined' || !Api.isAuthed()) return;
     const userId = this._userId;
     const generation = this._generation;
     if (!userId) return;
-    this._historyLoads.set(userId, { diary: 'loading', checkins: 'loading' });
+    this._historyLoads.set(userId, { diary: 'loading', checkins: 'loading', triggers: 'loading' });
     try {
       const [diary, diag, triggers, checkins, habitual] = await Promise.allSettled([
         Api.getDiary(),
         Api.getDiagResult(),
-        Api.getTriggers(),
+        this.loadTriggerHistory(),
         Api.getCheckins(),
         Api.getHabitualResult(),
       ]);
       if (this._userId !== userId || this._generation !== generation) return;
       this._historyLoads.set(userId, {
         diary: diary.status === 'fulfilled' && (Array.isArray(diary.value) || Array.isArray(diary.value?.entries)) ? 'loaded' : 'failed',
-        checkins: checkins.status === 'fulfilled' && Array.isArray(checkins.value) ? 'loaded' : 'failed'
+        checkins: checkins.status === 'fulfilled' && Array.isArray(checkins.value) ? 'loaded' : 'failed',
+        triggers: triggers.status === 'fulfilled' && Array.isArray(triggers.value) ? 'loaded' : 'failed'
       });
       if (diary.status === 'fulfilled') {
         const entries = Array.isArray(diary.value) ? diary.value : diary.value?.entries;
@@ -644,25 +713,6 @@ const Storage = {
         try { Habitual.calculate(habitual.value.answers); this._set('habitual_result_v2', JSON.stringify({ ...habitual.value, syncStatus: 'synced' })); } catch {}
       }
       if (localHabitual?.syncStatus === 'pending') this.flushHabitualResult();
-      if (triggers.status === 'fulfilled' && triggers.value?.length) {
-        const entries = triggers.value.map(t => ({
-          id: t.id, clientId: t.clientId, syncStatus: 'synced',
-          date: t.createdAt,
-          situation: t.situation,
-          reactionType: t.reactionType,
-          zone: t.zone,
-          sensations: t.sensations || [],
-          intensity: t.intensity,
-          note: t.note || ''
-        }));
-        const merged = new Map(entries.map(row => [row.clientId || String(row.id), row]));
-        for (const row of this.getTriggerEntries()) {
-          if (!row.clientId && entries.some(remote => remote.date === row.date && remote.situation === row.situation && remote.reactionType === row.reactionType && remote.intensity === row.intensity && (remote.note || '') === (row.note || ''))) continue;
-          const identity = row.clientId || String(row.id);
-          if (!merged.has(identity)) merged.set(identity, row);
-        }
-        this._set(KEYS.TRIGGERS, JSON.stringify([...merged.values()]));
-      }
       if (checkins.status === 'fulfilled' && Array.isArray(checkins.value)) {
         const identity = row => row.dayKey || String(row.id);
         const merged = new Map(checkins.value.map(row => {
@@ -681,7 +731,7 @@ const Storage = {
       }
     } catch {
       // Нет связи — работаем с локальным кэшем
-      if (this._userId === userId && this._generation === generation) this._historyLoads.set(userId, { diary: 'failed', checkins: 'failed' });
+      if (this._userId === userId && this._generation === generation) this._historyLoads.set(userId, { diary: 'failed', checkins: 'failed', triggers: this.getHistoryLoadStatus().triggers });
     }
     if (this._userId === userId && this._generation === generation) {
       void this.flushPending().catch(() => this._scheduleRetry(userId));

@@ -1,7 +1,7 @@
 const db = require('../db')
 const { requireDataRights } = require('../services/auth')
 const { createDiaryPdf } = require('../services/diary-pdf')
-const personalModels = ['diaryEntry','triggerEntry','checkin','diagnosticResult','questionnaire','aiChatSession','feedback','discussionNote','afterMeetingStepEvent','afterMeetingNote','diaryImportant']
+const personalModels = ['diaryEntry','triggerEntry','checkin','diagnosticResult','questionnaire','aiChatSession','feedback','discussionNote','afterMeetingStepEvent','afterMeetingNote','diaryImportant','aiChatOperation']
 const ownRows = rows => rows.map(({ userId, ...row }) => row)
 async function gdprRoutes(app) {
   app.get('/diary.pdf', { preHandler: requireDataRights }, async (request, reply) => {
@@ -33,7 +33,7 @@ async function gdprRoutes(app) {
   })
   app.get('/my-data', { preHandler: requireDataRights }, async request => {
     const userId = request.user.id
-    const [user, diary, triggers, checkins, diagnostic, questionnaires, aiSessions, feedback, enrollments, afterMeetingNotes, diaryImportant, afterMeetingStepEvents, discussionNotes] = await Promise.all([
+    const [user, diary, triggers, checkins, diagnostic, questionnaires, aiSessions, feedback, enrollments, afterMeetingNotes, diaryImportant, afterMeetingStepEvents, discussionNotes, aiOperations] = await Promise.all([
       db.user.findUnique({ where: { id: userId } }),
       ...personalModels.slice(0,5).map(model => db[model].findMany({ where: { userId } })),
       db.aiChatSession.findMany({ where: { userId } }), db.feedback.findMany({ where: { userId } }),
@@ -41,7 +41,8 @@ async function gdprRoutes(app) {
       db.afterMeetingNote.findMany({ where: { userId } }),
       db.diaryImportant.findMany({ where: { userId } }),
       db.afterMeetingStepEvent.findMany({ where: { userId } }),
-      db.discussionNote.findMany({ where: { userId } })
+      db.discussionNote.findMany({ where: { userId } }),
+      db.aiChatOperation.findMany({ where: { userId } })
     ])
     const paymentIds = [...new Set(enrollments.map(row => row.paymentId).filter(Boolean))]
     const paymentOrders = paymentIds.length ? await db.paymentOrder.findMany({ where: { paymentId: { in: paymentIds } },
@@ -56,7 +57,7 @@ async function gdprRoutes(app) {
         role: user.role, lastSeenAt: user.lastSeenAt, accessRequestedAt: user.accessRequestedAt, accessDecidedAt: user.accessDecidedAt, accessNotifiedAt: user.accessNotifiedAt,
         consentGivenAt: user.consentGivenAt, consentText: user.consentText, consentVersion: user.consentVersion, consentSource: user.consentSource },
       discussionNotes: ownRows(discussionNotes), afterMeetingStepEvents: ownRows(afterMeetingStepEvents), diaryImportant: ownRows(diaryImportant), afterMeetingNotes: ownRows(afterMeetingNotes), diary: ownRows(diary), triggers: ownRows(triggers), checkins: ownRows(checkins), diagnostic: ownRows(diagnostic),
-      questionnaires: ownRows(questionnaires), aiSessions: ownRows(aiSessions), feedback: ownRows(feedback), enrollments, paymentOrders,
+      questionnaires: ownRows(questionnaires), aiSessions: ownRows(aiSessions), aiOperations: ownRows(aiOperations), feedback: ownRows(feedback), enrollments, paymentOrders,
       scope: { database: 'owned-application-records', unlinkedFinancialRecords: 'not-attributed-by-username',
         unlinkedWaitlistRecords: 'not-linked-to-account-id',
         backups: 'retention-not-verified', externalProviderCopies: 'outside-this-export' }

@@ -100,6 +100,8 @@ const Api = {
   },
 
   logout() {
+    window.AiDelivery?.invalidate();
+    window.ObservationDrafts?.invalidate();
     if (typeof clearAccessManagementState === 'function') clearAccessManagementState();
     if (typeof clearStreamOverviewState === 'function') clearStreamOverviewState();
     window.AfterMeeting?.invalidate();
@@ -206,7 +208,7 @@ const Api = {
   // ─── Триггеры ─────────────────────────────────────────────────────────────
 
   async getTriggers() {
-    return this._request('GET', '/triggers?limit=90');
+    return this._getAll('/triggers', 90);
   },
 
   async saveTrigger(data) {
@@ -228,8 +230,8 @@ const Api = {
 
   // ─── AI чат ───────────────────────────────────────────────────────────────
 
-  async aiChat(message, sessionId, context = {}) {
-    const body = { message };
+  async aiChat(message, sessionId, context = {}, operationId) {
+    const body = { message, operationId };
     if (sessionId) body.sessionId = sessionId;
     else {
       body.contextMode = context.contextMode || 'none';
@@ -243,6 +245,7 @@ const Api = {
   },
 
   async getAiSessions() { return this._request('GET', '/ai/sessions'); },
+  async getAiOperation(operationId) { return this._request('GET', '/ai/operations/' + encodeURIComponent(operationId)); },
   async getAiSession(sessionId) { return this._request('GET', '/ai/sessions/' + encodeURIComponent(sessionId)); },
   async previewAiContext(ids) { return this._request('POST', '/ai/context-preview', { diaryEntryIds: ids }); },
 

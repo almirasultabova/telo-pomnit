@@ -39,6 +39,7 @@
 .hm-star svg{width:21px;height:21px;fill:transparent;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round}
 .hm-star[aria-pressed=true]{color:#2a4a38;background:#e6ebdf}
 .hm-star[aria-pressed=true] svg{fill:#2a4a38}
+.hm-star[aria-disabled=true]{opacity:.6;cursor:wait}
 .hm-card-text{color:#344a38;font:400 14px/1.65 var(--font-body);white-space:pre-wrap;overflow-wrap:anywhere;margin:12px 0 3px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .hm-open,.hm-more{display:flex;align-items:center;gap:10px;min-height:44px;border:0;background:transparent;color:#2a4a38;font:600 13px/1.4 var(--font-body);padding:9px 0;cursor:pointer}
 .hm-open svg{width:18px;height:18px}
