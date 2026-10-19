@@ -1,0 +1,19 @@
+{
+  "backup": "/root/telo-backups/selective-JAPP116-2026-10-19T103003047Z",
+  "publicFiles": 88,
+  "changedPublic": [
+    "js/app.js",
+    "js/storage.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}

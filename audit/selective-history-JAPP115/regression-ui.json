@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "baseline": {
+    "triggerRequests": 3,
+    "noteRequests": 2,
+    "triggerRows": 205,
+    "noteRows": 51
+  },
+  "runs": [
+    {
+      "passed": true,
+      "engine": "chromium",
+      "width": 320,
+      "cases": [
+        "Main starts without reaction or post-meeting history GETs",
+        "Main/Profile navigation does not load secondary histories",
+        "Diary loads all51 notes in two pages; disclosure and notes remain available",
+        "Reaction form opens without downloading its history",
+        "later-page failure is explicit and never presents partial history as complete",
+        "keyboard retry loads all205 reactions and complete distribution",
+        "reopening a loaded history uses confirmed cache without duplicate scans",
+        "failed refresh preserves cached records and signals incomplete refresh",
+        "logout during delayed history discards late private response"
+      ],
+      "pageErrors": [],
+      "startupTriggerRequests": 0,
+      "startupNoteRequests": 0
+    },
+    {
+      "passed": true,
+      "engine": "chromium",
+      "width": 390,
+      "cases": [
+        "Main starts without reaction or post-meeting history GETs",
+        "Main/Profile navigation does not load secondary histories",
+        "Diary loads all51 notes in two pages; disclosure and notes remain available",
+        "Reaction form opens without downloading its history",
+        "later-page failure is explicit and never presents partial history as complete",
+        "keyboard retry loads all205 reactions and complete distribution",
+        "reopening a loaded history uses confirmed cache without duplicate scans",
+        "failed refresh preserves cached records and signals incomplete refresh",
+        "logout during delayed history discards late private response"
+      ],
+      "pageErrors": [],
+      "startupTriggerRequests": 0,
+      "startupNoteRequests": 0
+    },
+    {
+      "passed": true,
+      "engine": "chromium",
+      "width": 1440,
+      "cases": [
+        "Main starts without reaction or post-meeting history GETs",
+        "Main/Profile navigation does not load secondary histories",
+        "Diary loads all51 notes in two pages; disclosure and notes remain available",
+        "Reaction form opens without downloading its history",
+        "later-page failure is explicit and never presents partial history as complete",
+        "keyboard retry loads all205 reactions and complete distribution",
+        "reopening a loaded history uses confirmed cache without duplicate scans",
+        "failed refresh preserves cached records and signals incomplete refresh",
+        "logout during delayed history discards late private response"
+      ],
+      "pageErrors": [],
+      "startupTriggerRequests": 0,
+      "startupNoteRequests": 0
+    },
+    {
+      "passed": true,
+      "engine": "webkit",
+      "width": 390,
+      "cases": [
+        "Main starts without reaction or post-meeting history GETs",
+        "Main/Profile navigation does not load secondary histories",
+        "Diary loads all51 notes in two pages; disclosure and notes remain available",
+        "Reaction form opens without downloading its history",
+        "later-page failure is explicit and never presents partial history as complete",
+        "keyboard retry loads all205 reactions and complete distribution",
+        "reopening a loaded history uses confirmed cache without duplicate scans",
+        "failed refresh preserves cached records and signals incomplete refresh",
+        "logout during delayed history discards late private response"
+      ],
+      "pageErrors": [],
+      "startupTriggerRequests": 0,
+      "startupNoteRequests": 0
+    }
+  ],
+  "sourceHashes": {
+    "app/js/app.js": "905536817635a3a1e4ffdf13b64c350cb32f677383fcdfebfa37c636c427b9f6",
+    "app/js/storage.js": "66d62b1d4f5d79ed7fb4dd53002676051d93e84e3c23a1dfbe50398037a98d25",
+    "app/js/observation-drafts.js": "2233c68e1fd2629e4d2a3b23a8abc4fbeaffb116d69782c8af79167bec8b786f"
+  }
+}

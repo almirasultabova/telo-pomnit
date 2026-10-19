@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "isolatedBuild": "C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP115-build-idst14jl",
+  "sourceHashes": {
+    "app/js/app.js": "905536817635a3a1e4ffdf13b64c350cb32f677383fcdfebfa37c636c427b9f6",
+    "app/js/storage.js": "66d62b1d4f5d79ed7fb4dd53002676051d93e84e3c23a1dfbe50398037a98d25"
+  },
+  "changedPublic": [
+    "index.html",
+    "screen-review.html",
+    "js/app.js",
+    "js/storage.js"
+  ],
+  "cashPanelPreserved": true,
+  "output": "site: 45 public files -> C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP115-build-idst14jl\\output\\site\napp: 88 public files -> C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP115-build-idst14jl\\output\\app\nBuilt public files only. Knowledge base, media/library, PDFs, .env and internal documents are excluded. Nothing was deployed.\n",
+  "structurePassed": true,
+  "published": false
+}
