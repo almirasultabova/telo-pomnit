@@ -36,6 +36,8 @@ const Storage = {
   _historyInitializing: new Map(),
   _historyRestoring: new Map(),
   _diaryDays: new Map(),
+  _diaryToday: new Map(),
+  _diaryTodayLoading: new Map(),
 
   // Only a server-confirmed identity may select a cache. Unowned legacy keys
   // stay untouched for explicit export; they are never attributed to this user.
@@ -45,6 +47,7 @@ const Storage = {
     this._userId = String(userId);
     this._generation++;
     this._diaryDays.clear();
+    this._diaryToday.clear();
     this._historyLoads.set(this._userId, { diary: 'idle', checkins: 'idle', triggers: 'idle' });
     clearTimeout(this._retryTimer);
     clearTimeout(this._checkinRetryTimer);
@@ -52,6 +55,7 @@ const Storage = {
   },
   clearUser() {
     this._diaryDays.clear();
+    this._diaryToday.clear();
     this._userId = null;
     this._generation++;
     clearTimeout(this._retryTimer);
@@ -316,6 +320,22 @@ const Storage = {
     return this.getDiaryEntries().filter(entry => Number.isFinite(Date.parse(entry.date)) && this.checkinDayKey(entry.date) === today);
   },
   getTodayEntry(now = new Date()) { return this.getTodayEntries(now)[0] || null; },
+
+  getDiaryTodayStatus(now = new Date()) {
+    const state = this._diaryToday.get(this._userId);
+    return state?.generation === this._generation && state.day === this.checkinDayKey(now) ? state.status : 'idle';
+  },
+  _mergeDiaryHistory(entries, userId) {
+    const remote = entries.map(entry => ({ ...entry, date: entry.date || entry.createdAt, sensations: entry.sensations || [], note: entry.note || '', syncStatus: 'synced' }));
+    const merged = new Map(remote.map(row => [row.clientId || String(row.id), row]));
+    // A partial/day GET never deletes cached rows or replaces an unconfirmed write.
+    for (const row of this._state(userId)) {
+      const identity = row.clientId || String(row.id);
+      if (!merged.has(identity) || row.syncStatus !== 'synced') merged.set(identity, row);
+    }
+    this._writeDiary([...merged.values()], userId);
+    return remote;
+  },
 
   /** Последние N записей (исключая сегодня, если нужна история) */
   getRecentEntries(n = 5) {
@@ -683,6 +703,7 @@ const Storage = {
     if (typeof Api === 'undefined' || !Api.isAuthed()) return;
     const userId = this._userId;
     const generation = this._generation;
+    const diaryDay = this.checkinDayKey(new Date());
     if (!userId) return;
     const kinds = ['diary', 'checkins', 'diagnostic', 'habitual'];
     if (fields !== undefined && (!Array.isArray(fields) || fields.some(kind => !kinds.includes(kind)))) throw new Error('INVALID_HISTORY_KIND');
@@ -725,18 +746,13 @@ const Storage = {
         restore('diary', () => diaryRecent ? Api.getRecentDiary() : Api.getDiary(), value => {
           const entries = Array.isArray(value) ? value : value?.entries;
           if (!Array.isArray(entries)) throw new Error('INVALID_DIARY_HISTORY');
-          const remote = entries.map(entry => ({
-            ...entry, date: entry.date || entry.createdAt,
-            sensations: entry.sensations || [], note: entry.note || '', syncStatus: 'synced'
-          }));
-          const byIdentity = new Map(remote.map(row => [row.clientId || String(row.id), row]));
+          const remote = this._mergeDiaryHistory(entries, userId);
           this._diaryDays.set(userId, { generation, days: value?.days || remote.map(row => Date.parse(row.date)).filter(Number.isFinite).map(time => this.checkinDayKey(time)) });
-          // Empty GET is never a deletion instruction; keep cache and pending rows.
-          for (const row of this._state(userId)) {
-            const identity = row.clientId || String(row.id);
-            if (!byIdentity.has(identity)) byIdentity.set(identity, row);
+          const start = Date.parse(diaryDay+'T00:00:00+03:00');
+          if (remote.every(row => Number.isFinite(Date.parse(row.date))) &&
+              (!diaryRecent || value?.complete === true || remote.some(row => Date.parse(row.date) < start))) {
+            this._diaryToday.set(userId, { generation, day: diaryDay, status: 'loaded' });
           }
-          this._writeDiary([...byIdentity.values()], userId);
         }),
         restore('diagnostic', () => Api.getDiagResult(), value => {
           if (value) this._set(KEYS.DIAG, JSON.stringify({ ...value, date: value.date || value.createdAt }));
@@ -775,6 +791,40 @@ const Storage = {
     const promise = run();
     this._historyInitializing.set(key, promise);
     try { await promise; } finally { this._historyInitializing.delete(key); }
+  },
+
+  async ensureDiaryToday({ retry = false } = {}) {
+    const userId = this._userId, generation = this._generation;
+    const current = () => this._userId === userId && this._generation === generation && !this._deletedUsers.has(userId);
+    if (!userId || typeof Api === 'undefined' || !Api.isAuthed()) return;
+    const restoring = this._historyRestoring.get(userId+':'+generation+':diary');
+    if (restoring) await restoring;
+    if (!current()) return;
+    if (this.getDiaryTodayStatus() === 'loaded') return;
+    if (this.getDiaryTodayStatus() === 'failed' && !retry) return;
+    if (this.getHistoryLoadStatus().diary === 'idle' || (retry && this.getHistoryLoadStatus().diary === 'failed')) {
+      await this.initFromApi({ fields: ['diary'], recentDiary: true });
+    }
+    if (!current()) return;
+    if (this.getDiaryTodayStatus() === 'loaded') return;
+    const day = this.checkinDayKey(new Date()), key = userId+':'+generation+':'+day;
+    if (this._diaryTodayLoading.has(key)) return this._diaryTodayLoading.get(key);
+    const status = value => {
+      if (!current() || this.checkinDayKey(new Date()) !== day) return;
+      this._diaryToday.set(userId, { generation, day, status: value }); this._emit();
+    };
+    if (this.getHistoryLoadStatus().diary === 'failed' && this._diaryDays.get(userId)?.generation !== generation) { status('failed'); return; }
+    const attempt = (async () => {
+      await Promise.resolve();
+      try {
+        const rows = await Api.getDiaryDay(day);
+        if (!current() || this.checkinDayKey(new Date()) !== day) return;
+        this._mergeDiaryHistory(rows, userId); status('loaded');
+      } catch { if (this.getDiaryTodayStatus() !== 'loaded') status('failed'); }
+    })();
+    this._diaryTodayLoading.set(key, attempt); status('loading');
+    try { await attempt; } finally { this._diaryTodayLoading.delete(key); }
+    if (current() && this.checkinDayKey(new Date()) !== day) return this.ensureDiaryToday();
   },
 
   async ensureDiaryHistory() {

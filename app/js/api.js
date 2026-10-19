@@ -148,6 +148,13 @@ const Api = {
   async getDiary() {
     return this._getAll('/diary', 90);
   },
+  async getDiaryDay(day) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || !Number.isFinite(Date.parse(day)) || new Date(day+'T00:00:00Z').toISOString().slice(0,10) !== day) throw Object.assign(new Error('Неверная дата наблюдений'), { code: 'INVALID_HISTORY' });
+    const from = Date.parse(day+'T00:00:00+03:00'), to = from + 86400000 - 1;
+    const rows = await this._getAll('/diary?from='+encodeURIComponent(new Date(from).toISOString())+'&to='+encodeURIComponent(new Date(to).toISOString()), 90);
+    if (rows.some(row => !Number.isFinite(Date.parse(row.date || row.createdAt)) || Date.parse(row.date || row.createdAt) < from || Date.parse(row.date || row.createdAt) > to)) throw Object.assign(new Error('Неверный ответ истории'), { code: 'INVALID_HISTORY' });
+    return rows;
+  },
   async getRecentDiary() {
     const generation = this._authGeneration;
     const [result, index] = await Promise.all([this._request('GET', '/diary?limit=91'), this._request('GET', '/diary/days')]);
@@ -162,7 +169,7 @@ const Api = {
     for (let page = 0; page < 100; page++) {
       if (generation !== this._authGeneration) throw Object.assign(new Error('Сессия изменилась'), { code: 'SESSION_CHANGED' });
       const offset = page * pageSize;
-      const result = await this._request('GET', path + '?limit=' + pageSize + (offset ? '&offset=' + offset : ''));
+      const result = await this._request('GET', path + (path.includes('?') ? '&' : '?') + 'limit=' + pageSize + (offset ? '&offset=' + offset : ''));
       if (generation !== this._authGeneration) throw Object.assign(new Error('Сессия изменилась'), { code: 'SESSION_CHANGED' });
       const entries = Array.isArray(result) ? result : result?.entries;
       if (!Array.isArray(entries)) throw Object.assign(new Error('Неверный ответ истории'), { code: 'INVALID_HISTORY' });

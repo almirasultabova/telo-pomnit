@@ -293,7 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   window.addEventListener('online', () => { Storage.flushPending(); Storage.flushCheckinsPending(); Storage.flushTriggersPending(); });
   document.addEventListener('visibilitychange', () => {
+    scheduleDiaryDayRefresh();
     if (!document.hidden) {
+      if (activeTab === 'diary' && Api.isAuthed() && !Api.clubBlocked) { void Storage.ensureDiaryToday(); renderDiaryTab(); }
       Storage.flushPending(); Storage.flushCheckinsPending(); Storage.flushTriggersPending();
       if (Api.isAuthed() && !Api.clubBlocked) {
         const owner = Api.userId, generation = Api._authGeneration;
@@ -429,9 +431,10 @@ function switchTab(tab) {
 
   // Обновляем содержимое при переключении
   if (tab === 'main')    renderMainTab();
-  if (tab === 'diary')   { void Storage.ensureDiaryHistory(); renderDiaryTab(); }
+  if (tab === 'diary')   { void Storage.ensureDiaryToday(); renderDiaryTab(); }
   if (tab === 'diag')    { void Storage.ensureDiaryHistory(); void Storage.ensureCheckinHistory(); renderMyPathTab(); }
   if (tab === 'profile') {renderProfileTab();refreshProgramAccess().then(renderProfileTab);}
+  scheduleDiaryDayRefresh();
   updateBackBtn();
 }
 
@@ -541,6 +544,17 @@ function renderMainTab() {
 // ─────────────────────────────────────────────────────────────────────────
 // ВКЛАДКА: ДНЕВНИК
 // ─────────────────────────────────────────────────────────────────────────
+let diaryDayTimer = null;
+function scheduleDiaryDayRefresh() {
+  clearTimeout(diaryDayTimer);
+  if (activeTab !== 'diary' || document.hidden || !Api.isAuthed() || Api.clubBlocked) return;
+  const midnight = Date.parse(Storage.checkinDayKey(new Date())+'T00:00:00+03:00')+86400000;
+  diaryDayTimer = setTimeout(() => {
+    if (activeTab === 'diary' && Api.isAuthed() && !Api.clubBlocked) { void Storage.ensureDiaryToday(); renderDiaryTab(); }
+    scheduleDiaryDayRefresh();
+  }, Math.max(250, midnight-Date.now()+50));
+}
+
 function renderDiaryTab() {
   if (activeTab === 'diary') window.AfterMeeting?.refresh();
   window.DiscussionNotes?.refresh();
@@ -550,8 +564,8 @@ function renderDiaryTab() {
   renderTodayCard();
   renderRecentEntries();
   document.getElementById('diary-history-loading')?.remove();
-  if (['idle', 'loading', 'partial'].includes(Storage.getHistoryLoadStatus().diary)) {
-    const notice = document.createElement('p'); notice.id = 'diary-history-loading'; notice.className = 'access-notice'; notice.setAttribute('role', 'status'); notice.textContent = 'Загружаем ваши наблюдения…';
+  if (['idle', 'loading'].includes(Storage.getDiaryTodayStatus())) {
+    const notice = document.createElement('p'); notice.id = 'diary-history-loading'; notice.className = 'access-notice'; notice.setAttribute('role', 'status'); notice.textContent = 'Загружаем записи за сегодня…';
     document.querySelector('#tab-diary .screen-scroll')?.prepend(notice);
   }
   renderHistoryLoadWarning(document.querySelector('#tab-diary .screen-scroll'), ['diary'], 'diary');
@@ -562,16 +576,21 @@ function renderHistoryLoadWarning(container, fields, scope) {
   const id = 'history-load-warning-' + scope;
   document.getElementById(id)?.remove();
   const status = Storage.getHistoryLoadStatus?.() || {};
-  if (!fields.some(field => status[field] === 'failed')) return;
+  if (!(scope === 'diary' ? Storage.getDiaryTodayStatus() === 'failed' : fields.some(field => status[field] === 'failed'))) return;
   const panel = document.createElement('div'); panel.id = id; panel.className = 'access-program'; panel.setAttribute('role', 'status');
   const text = document.createElement('p');
-  text.textContent = 'Не удалось обновить историю с сервера. Здесь показаны доступные записи с устройства; пустой список ещё не означает, что записей нет.';
+  text.textContent = scope === 'diary'
+    ? 'Не удалось загрузить все записи за сегодня. Здесь показаны доступные записи с устройства; пустой список ещё не означает, что записей нет.'
+    : 'Не удалось обновить историю с сервера. Здесь показаны доступные записи с устройства; пустой список ещё не означает, что записей нет.';
   panel.append(text);
   const retry = document.createElement('button'); retry.className = 'btn btn--outline btn--full'; retry.textContent = 'Повторить загрузку истории';
   retry.onclick = async () => {
     const owner = Storage.key('history_owner'), generation = Storage._generation;
     retry.disabled = true;
-    try { await Storage.initFromApi({ fields: fields.filter(kind => Storage.getHistoryLoadStatus()[kind] === 'failed') }); } catch {} finally {
+    try {
+      if (scope === 'diary') await Storage.ensureDiaryToday({ retry: true });
+      else await Storage.initFromApi({ fields: fields.filter(kind => Storage.getHistoryLoadStatus()[kind] === 'failed') });
+    } catch {} finally {
       if (!Api.clubBlocked && Api.isAuthed() && Storage.key('history_owner') === owner && Storage._generation === generation) {
         renderDiaryTab(); renderMyPathTab();
         if (currentScreen === 'checkin-history') renderCheckinHistory();
@@ -607,7 +626,7 @@ function renderTodayCard() {
     container.innerHTML = `
       <div class="today-empty">
         <div class="today-empty-title">Почувствовать тело</div>
-        <div class="today-empty-sub">Выберите область тела и ощущение</div>
+        <div class="today-empty-sub">${Storage.getDiaryTodayStatus() === 'loaded' ? 'Выберите область тела и ощущение' : 'Записи за сегодня ещё не загружены. Можно добавить новое наблюдение.'}</div>
         <button class="btn btn--primary mt-8" id="start-entry-btn" >
           Начать наблюдение
         </button>
