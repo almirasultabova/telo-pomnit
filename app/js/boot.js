@@ -3,14 +3,16 @@ const AppLocalStorage = (() => {
   const memory = new Map();
   const unsaved = new Set();
   let persistent = null;
+  let writable = false;
   try {
     persistent = window.localStorage;
     const probe = 'tp_storage_probe';
     persistent.setItem(probe, '1');
     persistent.removeItem(probe);
-  } catch { persistent = null; }
+    writable = true;
+  } catch { /* Quota/write denial must not prevent reading an acquired store. */ }
   return {
-    isPersistent() { return persistent !== null && unsaved.size === 0; },
+    isPersistent() { return persistent !== null && writable && unsaved.size === 0; },
     keys(prefix = '') {
       const names = new Set(memory.keys());
       try { for (let i = 0; i < persistent?.length; i++) names.add(persistent.key(i)); } catch {}
@@ -24,7 +26,7 @@ const AppLocalStorage = (() => {
     setItem(key, value) {
       memory.set(key, String(value));
       if (!persistent) return false;
-      try { persistent.setItem(key, String(value)); unsaved.delete(key); return true; }
+      try { persistent.setItem(key, String(value)); writable = true; unsaved.delete(key); return true; }
       catch { unsaved.add(key); return false; }
     },
     removeItem(key) {

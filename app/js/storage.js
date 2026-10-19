@@ -209,19 +209,55 @@ const Storage = {
     }
     return this._diaries.get(userId);
   },
+  _diaryCacheFields(row) {
+    if (!row || row.syncStatus !== 'synced' || typeof row.id !== 'string' || !row.id || !Number.isFinite(Date.parse(row.date)) || typeof row.zone !== 'string' || !Array.isArray(row.sensations) || !row.sensations.every(value => typeof value === 'string') || typeof row.note !== 'string') return null;
+    if (['clientId', 'userId', 'streamId', 'createdAt', 'date'].some(key => row[key] != null && typeof row[key] !== 'string')) return null;
+    const fields = ['id', 'userId', 'clientId', 'createdAt', 'date', 'zone', 'sensations', 'note', 'streamId', 'syncStatus'];
+    if (Object.keys(row).some(key => key !== '_tpDiaryCacheAck' && !fields.includes(key))) return null;
+    return Object.keys(row).filter(key => key !== '_tpDiaryCacheAck' && row[key] !== undefined).sort().map(key => [key, row[key]]);
+  },
+  _confirmDiaryCache(row, userId) {
+    const fields = this._diaryCacheFields(row);
+    if (!fields || !userId || userId !== this._userId || (row.userId && String(row.userId) !== userId)) return row;
+    // A versioned, exact snapshot records our server GET/ACK provenance, not just
+    // a legacy "synced" flag. Deep copy keeps later edits from changing the proof.
+    return { ...row, _tpDiaryCacheAck: { v: 1, owner: userId, fields: fields.map(([key, value]) => [key, Array.isArray(value) ? [...value] : value]) } };
+  },
+  _diaryCacheConfirmed(row, userId) {
+    const receipt = row?._tpDiaryCacheAck, fields = this._diaryCacheFields(row);
+    return !!fields && receipt?.v === 1 && receipt.owner === userId && (!row.userId || String(row.userId) === userId) && JSON.stringify(receipt.fields) === JSON.stringify(fields);
+  },
   _writeDiary(rows, userId = this._userId) {
     if (this._deletedUsers.has(userId)) return false;
     this._diaries.set(userId, rows);
     const name = this.key('diary_v2', userId);
-    const value = JSON.stringify(rows);
+    const protectedRows = [], confirmed = [];
+    for (const row of rows) {
+      if (userId === this._userId && this._diaryCacheConfirmed(row, userId)) confirmed.push(row);
+      else protectedRows.push(row);
+    }
+    confirmed.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+    const recent = []; let bytes = 2;
+    for (const row of confirmed) {
+      const size = JSON.stringify(row).length * 2 + (recent.length ? 2 : 0);
+      if (recent.length >= 90) break;
+      if (bytes + size > 512 * 1024) continue;
+      recent.push(row); bytes += size;
+    }
     // AppLocalStorage deliberately falls back to memory. Verify actual durable
     // storage here so the UI never promises survival after closing a WebView.
-    try {
-      window.localStorage.setItem(name, value);
-      if (window.localStorage.getItem(name) !== value) throw new Error('STORAGE_FAILED');
-      AppLocalStorage.setItem(name, value);
-      return true;
-    } catch { return false; }
+    // Atomic replacement only. Quota retries sacrifice confirmed copies, never
+    // a pending/error/unknown row, another key, or the previous durable snapshot.
+    let keep = recent.length;
+    for (;;) {
+      const value = JSON.stringify([...protectedRows, ...recent.slice(0, keep)]);
+      try {
+        window.localStorage.setItem(name, value);
+        if (window.localStorage.getItem(name) !== value) throw new Error('STORAGE_FAILED');
+        AppLocalStorage.setItem(name, value);
+        return true;
+      } catch { if (!keep) return false; keep = Math.floor(keep / 2); }
+    }
   },
   getDiarySyncStatus(clientId) {
     return this._state().find(row => row.clientId === clientId)?.syncStatus || null;
@@ -249,8 +285,9 @@ const Storage = {
           // Do not let a late response switch the visible account or schedule
           // another request using its token. Persist only its original owner.
           if (!saved?.id || saved.clientId !== candidate.clientId) throw new Error('INVALID_SAVE_ACK');
-          const row = { ...candidate, id: saved.id, date: saved.createdAt || candidate.date, syncStatus: 'synced' };
+          let row = { ...candidate, id: saved.id, date: saved.createdAt || candidate.date, syncStatus: 'synced' };
           delete row.syncError;
+          if ((!saved.userId || String(saved.userId) === userId) && saved.zone === candidate.zone && JSON.stringify(saved.sensations || []) === JSON.stringify(candidate.sensations || []) && (saved.note || '') === (candidate.note || '')) row = this._confirmDiaryCache(row, userId);
           const rows = this._state(userId).map(item => item.clientId === candidate.clientId ? row : item);
           this._writeDiary(rows, userId);
           if (this._userId === userId) this._emit(row);
@@ -331,7 +368,7 @@ const Storage = {
     return state?.generation === this._generation && state.day === this.checkinDayKey(now) ? state.status : 'idle';
   },
   _mergeDiaryHistory(entries, userId) {
-    const remote = entries.map(entry => ({ ...entry, date: entry.date || entry.createdAt, sensations: entry.sensations || [], note: entry.note || '', syncStatus: 'synced' }));
+    const remote = entries.map(entry => this._confirmDiaryCache({ ...entry, date: entry.date || entry.createdAt, sensations: entry.sensations || [], note: entry.note || '', syncStatus: 'synced' }, userId));
     const merged = new Map(remote.map(row => [row.clientId || String(row.id), row]));
     // A partial/day GET never deletes cached rows or replaces an unconfirmed write.
     for (const row of this._state(userId)) {

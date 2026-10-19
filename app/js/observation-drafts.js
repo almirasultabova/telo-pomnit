@@ -4,6 +4,7 @@
   const BODY = 'body-observation-v1', REACTION = 'reaction-observation-v1';
   const bodyScreens = ['body-map', 'sensations', 'note'];
   let body = null, reaction = null;
+  const bodyRecovery = new Map();
   const identity = () => Api.isAuthed() && !Api.clubBlocked && Api.userId && String(Api.userId) === Storage._userId
     ? { owner: Storage._userId, generation: Storage._generation } : null;
   const current = state => state && state.owner === Storage._userId && state.generation === Storage._generation && identity();
@@ -31,6 +32,7 @@
       note: document.getElementById('note-textarea').value, view: bodyMapView, date: body?.date || null };
   }
   const bodyHasInput = value => Boolean(value.zone || value.sensations.length || value.note);
+  const sameBody = (value, row) => value?.date === row.date && value.zone === row.zone && value.note === row.note && JSON.stringify(value.sensations) === JSON.stringify(row.sensations);
   function openBody(repairId) {
     const owner = identity(); if (!owner) return false;
     const rejected = repairId && Storage.getDiaryEntries().find(row => row.clientId === repairId);
@@ -42,7 +44,7 @@
     const cached = stored?.version === 1 && (stored.zone === null || zoneExists(stored.zone)) &&
       sensationsValid(stored.sensations) && typeof stored.note === 'string' ? stored : null;
     const value = cached || (rejected ? { ...rejected, view: DATA.zones.find(z => z.id === rejected.zone)?.view || 'front' } : null);
-    body = { ...owner, scope, repairId, date: value?.date && Number.isFinite(Date.parse(value.date)) ? value.date : null, durable: AppLocalStorage.isPersistent() };
+    body = { ...owner, scope, repairId, recovered: !!cached, date: value?.date && Number.isFinite(Date.parse(value.date)) ? value.date : null, durable: AppLocalStorage.isPersistent() };
     if (value) {
       draft.zone = zoneExists(value.zone) ? value.zone : null;
       draft.sensations = [...value.sensations]; draft.note = value.note;
@@ -80,9 +82,14 @@
   }
   function submitBody(entry) {
     if (!current(body)) throw new Error('SESSION_CHANGED');
+    const value = { ...entry, date: body.date || entry.date };
+    const queued = !body.repairId && body.recovered && body.date && Storage.getDiaryEntries().find(row => sameBody(value, row));
     const row = body.repairId ? Storage.repairDiaryEntry(body.repairId, entry)
-      : Storage.saveDiaryEntry({ ...entry, date: body.date || entry.date });
-    Storage.clearFormDraft(body.scope); body = null;
+      : queued || Storage.saveDiaryEntry(value);
+    if (row.syncStatus === 'memory-only') bodyRecovery.set(row.clientId, { ...body });
+    else Storage.clearFormDraft(body.scope);
+    if (queued && queued.syncStatus !== 'synced') Promise.resolve().then(() => Storage.flushPending());
+    body = null;
     document.querySelectorAll('[id^="body-draft-"]').forEach(node => node.hidden = true);
     return row;
   }
@@ -144,7 +151,7 @@
   }
   function invalidate() {
     document.getElementById('trigger-history-list')?.replaceChildren();
-    body = reaction = null;
+    body = reaction = null; bodyRecovery.clear();
     for (const id of ['note-textarea', 'trigger-situation', 'trigger-note']) {
       const field = document.getElementById(id); if (field) field.value = '';
     }
@@ -163,6 +170,12 @@
     document.querySelectorAll('[id^="body-draft-"],#reaction-draft-status,#saved-repair-btn').forEach(node => node.remove());
   }
   function install() {
+    Storage.subscribe(row => {
+      const recovery = row?.syncStatus === 'synced' && bodyRecovery.get(row.clientId);
+      if (!recovery) return;
+      bodyRecovery.delete(row.clientId);
+      if (current(recovery) && sameBody(Storage.getFormDraft(recovery.scope), row)) Storage.clearFormDraft(recovery.scope);
+    });
     const persist = () => { persistBody(); persistReaction(); };
     document.addEventListener('input', event => {
       if (event.target.closest('#screen-note,#screen-trigger')) persist();
