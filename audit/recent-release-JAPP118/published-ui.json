@@ -1,0 +1,50 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "initialRequests": 1,
+    "initialRows": 201,
+    "fullRows": 503,
+    "reopenRequests": 0,
+    "pageErrors": [],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "initialRequests": 1,
+    "initialRows": 201,
+    "fullRows": 503,
+    "reopenRequests": 0,
+    "pageErrors": [],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "initialRequests": 1,
+    "initialRows": 201,
+    "fullRows": 503,
+    "reopenRequests": 0,
+    "pageErrors": [],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://app.telo-pomnit.ru/",
+    "passed": true,
+    "initialRequests": 1,
+    "initialRows": 201,
+    "fullRows": 503,
+    "reopenRequests": 0,
+    "pageErrors": [],
+    "realWrites": 0
+  }
+]

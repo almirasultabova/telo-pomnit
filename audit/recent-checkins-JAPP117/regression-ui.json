@@ -1,0 +1,182 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "mode": "checkins",
+    "passed": true,
+    "cases": [
+      "Home retries only failed checkins;205 ready diary rows and three GETs remain intact",
+      "successful empty checkin history becomes loaded without stale failure",
+      "chart refresh requests checkins alone",
+      "reaction history stays deferred; no page errors or overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 320,
+    "mode": "diary",
+    "passed": true,
+    "cases": [
+      "Diary retry finishes all205 rows while unrelated initial checkins is still held",
+      "retry clears only diary failure and preserves its complete result",
+      "one original checkin request completes without a duplicate",
+      "reaction history stays deferred; no page errors or overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "passed": true,
+    "engine": "chromium",
+    "width": 320,
+    "cases": [
+      "Main starts without reaction or post-meeting history GETs",
+      "Main/Profile navigation does not load secondary histories",
+      "Diary loads all51 notes in two pages; disclosure and notes remain available",
+      "Reaction form opens without downloading its history",
+      "later-page failure is explicit and never presents partial history as complete",
+      "keyboard retry loads all205 reactions and complete distribution",
+      "reopening a loaded history uses confirmed cache without duplicate scans",
+      "failed refresh preserves cached records and signals incomplete refresh",
+      "logout during delayed history discards late private response"
+    ],
+    "pageErrors": [],
+    "startupTriggerRequests": 0,
+    "startupNoteRequests": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "checkins",
+    "passed": true,
+    "cases": [
+      "Home retries only failed checkins;205 ready diary rows and three GETs remain intact",
+      "successful empty checkin history becomes loaded without stale failure",
+      "chart refresh requests checkins alone",
+      "reaction history stays deferred; no page errors or overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "diary",
+    "passed": true,
+    "cases": [
+      "Diary retry finishes all205 rows while unrelated initial checkins is still held",
+      "retry clears only diary failure and preserves its complete result",
+      "one original checkin request completes without a duplicate",
+      "reaction history stays deferred; no page errors or overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "passed": true,
+    "engine": "chromium",
+    "width": 390,
+    "cases": [
+      "Main starts without reaction or post-meeting history GETs",
+      "Main/Profile navigation does not load secondary histories",
+      "Diary loads all51 notes in two pages; disclosure and notes remain available",
+      "Reaction form opens without downloading its history",
+      "later-page failure is explicit and never presents partial history as complete",
+      "keyboard retry loads all205 reactions and complete distribution",
+      "reopening a loaded history uses confirmed cache without duplicate scans",
+      "failed refresh preserves cached records and signals incomplete refresh",
+      "logout during delayed history discards late private response"
+    ],
+    "pageErrors": [],
+    "startupTriggerRequests": 0,
+    "startupNoteRequests": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "mode": "checkins",
+    "passed": true,
+    "cases": [
+      "Home retries only failed checkins;205 ready diary rows and three GETs remain intact",
+      "successful empty checkin history becomes loaded without stale failure",
+      "chart refresh requests checkins alone",
+      "reaction history stays deferred; no page errors or overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "mode": "diary",
+    "passed": true,
+    "cases": [
+      "Diary retry finishes all205 rows while unrelated initial checkins is still held",
+      "retry clears only diary failure and preserves its complete result",
+      "one original checkin request completes without a duplicate",
+      "reaction history stays deferred; no page errors or overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "passed": true,
+    "engine": "chromium",
+    "width": 1440,
+    "cases": [
+      "Main starts without reaction or post-meeting history GETs",
+      "Main/Profile navigation does not load secondary histories",
+      "Diary loads all51 notes in two pages; disclosure and notes remain available",
+      "Reaction form opens without downloading its history",
+      "later-page failure is explicit and never presents partial history as complete",
+      "keyboard retry loads all205 reactions and complete distribution",
+      "reopening a loaded history uses confirmed cache without duplicate scans",
+      "failed refresh preserves cached records and signals incomplete refresh",
+      "logout during delayed history discards late private response"
+    ],
+    "pageErrors": [],
+    "startupTriggerRequests": 0,
+    "startupNoteRequests": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "checkins",
+    "passed": true,
+    "cases": [
+      "Home retries only failed checkins;205 ready diary rows and three GETs remain intact",
+      "successful empty checkin history becomes loaded without stale failure",
+      "chart refresh requests checkins alone",
+      "reaction history stays deferred; no page errors or overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "diary",
+    "passed": true,
+    "cases": [
+      "Diary retry finishes all205 rows while unrelated initial checkins is still held",
+      "retry clears only diary failure and preserves its complete result",
+      "one original checkin request completes without a duplicate",
+      "reaction history stays deferred; no page errors or overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "passed": true,
+    "engine": "webkit",
+    "width": 390,
+    "cases": [
+      "Main starts without reaction or post-meeting history GETs",
+      "Main/Profile navigation does not load secondary histories",
+      "Diary loads all51 notes in two pages; disclosure and notes remain available",
+      "Reaction form opens without downloading its history",
+      "later-page failure is explicit and never presents partial history as complete",
+      "keyboard retry loads all205 reactions and complete distribution",
+      "reopening a loaded history uses confirmed cache without duplicate scans",
+      "failed refresh preserves cached records and signals incomplete refresh",
+      "logout during delayed history discards late private response"
+    ],
+    "pageErrors": [],
+    "startupTriggerRequests": 0,
+    "startupNoteRequests": 0
+  }
+]
