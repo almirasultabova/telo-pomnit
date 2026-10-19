@@ -200,6 +200,15 @@ const Api = {
     return this._getAll('/checkins', 200);
   },
 
+  async getRecentCheckins() {
+    const generation = this._authGeneration;
+    const result = await this._request('GET', '/checkins?limit=201');
+    if (generation !== this._authGeneration) throw Object.assign(new Error('Сессия изменилась'), { code: 'SESSION_CHANGED' });
+    const entries = Array.isArray(result) ? result : result?.entries;
+    if (!Array.isArray(entries) || entries.length > 201 || entries.some(row => !row?.id)) throw Object.assign(new Error('Неверный ответ истории'), { code: 'INVALID_HISTORY' });
+    return { entries, complete: entries.length < 201 };
+  },
+
   async saveCheckin(data) {
     // Send five original answers/date/edit version, never replace them with an average.
     return this._request('POST', '/checkins', data);

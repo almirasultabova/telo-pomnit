@@ -671,7 +671,7 @@ const Storage = {
   /** Восстановить доступные серверные данные после авторизации.
    *  Истории загружаются страницами; локальную очередь сохраняем.
    *  Повтор отправки идёт в фоне и не задерживает переход с заставки. */
-  async initFromApi({ fields } = {}) {
+  async initFromApi({ fields, recentCheckins = false } = {}) {
     if (typeof Api === 'undefined' || !Api.isAuthed()) return;
     const userId = this._userId;
     const generation = this._generation;
@@ -680,7 +680,8 @@ const Storage = {
     if (fields !== undefined && (!Array.isArray(fields) || fields.some(kind => !kinds.includes(kind)))) throw new Error('INVALID_HISTORY_KIND');
     const selected = new Set(fields || kinds);
     if (!selected.size) return;
-    const key = userId + ':' + generation + ':' + [...selected].sort().join(',');
+    const recent = recentCheckins === true && typeof Api.getRecentCheckins === 'function';
+    const key = userId + ':' + generation + ':' + [...selected].sort().join(',') + (recent ? ':recent' : '');
     if (this._historyInitializing.has(key)) return this._historyInitializing.get(key);
     const current = () => this._userId === userId && this._generation === generation && !this._deletedUsers.has(userId);
     const status = (kind, value) => {
@@ -690,6 +691,7 @@ const Storage = {
     };
     const restore = async (kind, load, apply) => {
       if (!selected.has(kind)) return;
+      if (kind === 'checkins' && recent && this.getHistoryLoadStatus().checkins === 'loaded') return;
       const resourceKey = userId + ':' + generation + ':' + kind;
       if (this._historyRestoring.has(resourceKey)) return this._historyRestoring.get(resourceKey);
       const tracked = kind === 'diary' || kind === 'checkins';
@@ -699,7 +701,7 @@ const Storage = {
           const value = await load();
           if (!current()) return;
           apply(value);
-          if (tracked) status(kind, 'loaded');
+          if (tracked) status(kind, kind === 'checkins' && value?.complete === false ? 'partial' : 'loaded');
           else this._emit();
         } catch {
           if (tracked) status(kind, 'failed');
@@ -728,10 +730,11 @@ const Storage = {
         restore('diagnostic', () => Api.getDiagResult(), value => {
           if (value) this._set(KEYS.DIAG, JSON.stringify({ ...value, date: value.date || value.createdAt }));
         }),
-        restore('checkins', () => Api.getCheckins(), value => {
-          if (!Array.isArray(value)) throw new Error('INVALID_CHECKIN_HISTORY');
+        restore('checkins', () => recent ? Api.getRecentCheckins() : Api.getCheckins(), value => {
+          const entries = Array.isArray(value) ? value : value?.entries;
+          if (!Array.isArray(entries) || (!Array.isArray(value) && typeof value?.complete !== 'boolean')) throw new Error('INVALID_CHECKIN_HISTORY');
           const identity = row => row.dayKey || String(row.id);
-          const merged = new Map(value.map(row => {
+          const merged = new Map(entries.map(row => {
             const normalized = { ...this._normalizeCheckin(row), syncStatus: 'synced' };
             return [identity(normalized), normalized];
           }));
@@ -761,6 +764,17 @@ const Storage = {
     const promise = run();
     this._historyInitializing.set(key, promise);
     try { await promise; } finally { this._historyInitializing.delete(key); }
+  },
+
+  async ensureCheckinHistory() {
+    const userId = this._userId, generation = this._generation;
+    if (!userId || typeof Api === 'undefined' || !Api.isAuthed()) return;
+    if (['loaded', 'failed'].includes(this.getHistoryLoadStatus().checkins)) return;
+    await this.initFromApi({ fields: ['checkins'] });
+    // A full read may have joined an initial recent read that was already in flight.
+    if (this._userId === userId && this._generation === generation && this.getHistoryLoadStatus().checkins === 'partial') {
+      await this.initFromApi({ fields: ['checkins'] });
+    }
   }
 };
 

@@ -1,0 +1,462 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "history",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "history labels partial cache and loading before completion",
+        "full list503 and all five original scale values are available after completion",
+        "reopening complete history uses verified cache",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "graph",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "old-stream chart shows loading rather than a comparison from partial cache",
+        "complete503-row history restores36 older stream days and original five scales",
+        "reopening the verified graph does not rescan history",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "failure",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "second-page error preserves201 cached rows without claiming complete history",
+        "full list503 and all five original scale values are available after completion",
+        "reopening complete history uses verified cache",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "history",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "history labels partial cache and loading before completion",
+        "full list503 and all five original scale values are available after completion",
+        "reopening complete history uses verified cache",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "graph",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "old-stream chart shows loading rather than a comparison from partial cache",
+        "complete503-row history restores36 older stream days and original five scales",
+        "reopening the verified graph does not rescan history",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "failure",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "second-page error preserves201 cached rows without claiming complete history",
+        "full list503 and all five original scale values are available after completion",
+        "reopening complete history uses verified cache",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "history",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "history labels partial cache and loading before completion",
+        "full list503 and all five original scale values are available after completion",
+        "reopening complete history uses verified cache",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "graph",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "old-stream chart shows loading rather than a comparison from partial cache",
+        "complete503-row history restores36 older stream days and original five scales",
+        "reopening the verified graph does not rescan history",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "failure",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "second-page error preserves201 cached rows without claiming complete history",
+        "full list503 and all five original scale values are available after completion",
+        "reopening complete history uses verified cache",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "history",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "history labels partial cache and loading before completion",
+        "full list503 and all five original scale values are available after completion",
+        "reopening complete history uses verified cache",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "graph",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "old-stream chart shows loading rather than a comparison from partial cache",
+        "complete503-row history restores36 older stream days and original five scales",
+        "reopening the verified graph does not rescan history",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "failure",
+      "passed": true,
+      "initialRows": 201,
+      "totalRows": 503,
+      "calls": [
+        [
+          201,
+          0
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          0
+        ],
+        [
+          200,
+          200
+        ],
+        [
+          200,
+          400
+        ]
+      ],
+      "cases": [
+        "Main reads one201-row page and shows newest observation without full scan",
+        "Main/Profile do not fetch old checkins",
+        "second-page error preserves201 cached rows without claiming complete history",
+        "full list503 and all five original scale values are available after completion",
+        "reopening complete history uses verified cache",
+        "no page errors or horizontal overflow"
+      ],
+      "realWrites": 0
+    }
+  ],
+  "sourceHashes": {
+    "app/js/app.js": "a6e918ddb5bfe4ee9effe2c6c62f04d92a0833b1e06c4dc4fad4da7464f9902f",
+    "app/js/storage.js": "3b321a1c499cad0515282635e3ce5e82779e9b1455e220ecbc59578a2fb0ab9a",
+    "app/js/api.js": "54c2fc4c34a45a5e9c0cec846d9db6c288fc3aa6e5939012356cdea20d1b33a6"
+  }
+}

@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (String(profile?.id) === String(owner)) homeUser = { id: String(owner), name: profile.name || user.name || '', photoUrl: authenticatedPhoto || profile.photoUrl || null };
         renderMainTab();
       }).catch(() => {});
-      void Storage.initFromApi().then(() => {
+      void Storage.initFromApi({ recentCheckins: true }).then(() => {
         if (Api.userId !== owner || Api._authGeneration !== generation || Api.clubBlocked) return;
         renderMainTab(); renderDiaryTab();
         if (activeTab === 'diag') renderMyPathTab();
@@ -430,7 +430,7 @@ function switchTab(tab) {
   // Обновляем содержимое при переключении
   if (tab === 'main')    renderMainTab();
   if (tab === 'diary')   renderDiaryTab();
-  if (tab === 'diag')    renderMyPathTab();
+  if (tab === 'diag')    { void Storage.ensureCheckinHistory(); renderMyPathTab(); }
   if (tab === 'profile') {renderProfileTab();refreshProgramAccess().then(renderProfileTab);}
   updateBackBtn();
 }
@@ -524,7 +524,7 @@ function renderMainTab() {
     if (row.syncStatus && row.syncStatus !== 'synced') paragraph(item, 'Запись на этом устройстве · ещё не подтверждена сервером');
     item.append(link('Открыть историю', () => {
       if (row.kind === 'diary') document.getElementById('diary-history-btn').click();
-      else { renderCheckinHistory(); goTo('checkin-history'); }
+      else { void Storage.ensureCheckinHistory(); renderCheckinHistory(); goTo('checkin-history'); }
     }));
   }
   if (!rows.length && !failed.length) paragraph(observations, history.diary === 'loaded' && history.checkins === 'loaded' ? 'Пока нет записей о теле и состоянии. Начните с наблюдения за телом или отметки состояния — эти записи появятся здесь.' : 'История наблюдений ещё загружается.', 'home-empty');
@@ -1391,7 +1391,7 @@ function pathDynamicsContext() {
   const allowed = !Api.clubBlocked && Api.isAuthed() && Api.userId === Storage._userId;
   return { allowed, scope: [Storage._userId, Storage._generation, selectedProgramId].join(':'),
     stream: currentProgram(), period: streamPeriod(), now: programNow(), scales: CHECKIN_SCALES,
-    rows: allowed ? selectedCheckins() : [], loadState: Storage.getHistoryLoadStatus?.().checkins };
+    rows: allowed ? selectedCheckins() : [], loadState: Storage.getHistoryLoadStatus?.().checkins === 'partial' ? 'loading' : Storage.getHistoryLoadStatus?.().checkins };
 }
 function renderCheckinChart() {
   return window.PathDynamics?.render(pathDynamicsContext()) || '';
@@ -2704,6 +2704,7 @@ function initCheckin() {
 
   // Кнопка «История» в шапке экрана чекина
   document.getElementById('checkin-history-btn')?.addEventListener('click', () => {
+    void Storage.ensureCheckinHistory();
     renderCheckinHistory();
     goTo('checkin-history');
     haptic('light');
@@ -2890,7 +2891,9 @@ function renderCheckinHistory() {
   if (!container) return;
   // History is personal and complete; only comparisons/weekly plots use a stream.
   const checkins = Storage.getCheckins();
-  const periodRows = selectedCheckins();
+  const loadState = Storage.getHistoryLoadStatus().checkins;
+  const loading = ['idle', 'loading', 'partial'].includes(loadState);
+  const periodRows = loadState === 'loaded' ? selectedCheckins() : [];
   const fmt = value => new Date(value).toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow', day: 'numeric', month: 'long', year: 'numeric' });
   const comparisons = CHECKIN_SCALES.map(scale => {
     const measured = periodRows.filter(row => scaleValue(row, scale.key) !== null);
@@ -2909,7 +2912,9 @@ function renderCheckinHistory() {
     }).join('');
     return `<div class="checkin-card"><div class="checkin-card-date">${fmt(row.date)} · МСК</div><div class="checkin-mini-bars">${bars}</div>${row.note ? `<div class="checkin-card-note">${escapeAccessText(row.note)}</div>` : ''}${!legacy ? `<p class="access-notice">${checkinStatusText(row)}</p>` : ''}</div>`;
   }).join('');
-  container.innerHTML = `<div style="padding:0 16px 24px">${comparison}<div class="section-label">Все личные наблюдения</div>${list || '<p class="access-notice">Оценок пока нет. Можно начать с того, что вы замечаете сейчас.</p>'}</div>`;
+  const label = loadState === 'loaded' ? 'Все личные наблюдения' : 'Наблюдения на этом устройстве';
+  const empty = loadState === 'loaded' ? 'Оценок пока нет. Можно начать с того, что вы замечаете сейчас.' : 'На этом устройстве пока нет сохранённых отметок.';
+  container.innerHTML = `<div style="padding:0 16px 24px">${loading ? '<p class="access-notice" role="status">Загружаем ваши отметки…</p>' : ''}${comparison}<div class="section-label">${label}</div>${list || (loading ? '' : `<p class="access-notice">${empty}</p>`)}</div>`;
   renderHistoryLoadWarning(container, ['checkins'], 'checkins');
 }
 
