@@ -13,7 +13,8 @@ async function meRoutes(app) {
     savedObservations: await db.diaryEntry.count({ where: { userId: request.user.id } })
   }))
   // GET /me — профиль + текущий поток + стрик
-  app.get('/me', { preHandler: requireAuth }, async (request) => {
+  app.get('/me', { preHandler: requireAuth }, async (request, reply) => {
+    reply.header('Cache-Control', 'private, no-store')
     const user = request.user
 
     const access = await getProgramAccess(user)
@@ -107,7 +108,8 @@ async function meRoutes(app) {
   }))
 
   // Free personal tools and paid AI/program rights are independent.
-  app.get('/me/enrollment/access', { preHandler: requireAuth }, async (request) => {
+  app.get('/me/enrollment/access', { preHandler: requireAuth }, async (request, reply) => {
+    reply.header('Cache-Control', 'private, no-store')
     return getProgramAccess(request.user)
   })
 }
@@ -169,7 +171,7 @@ async function getProgramAccess(user, now = Date.now()) {
       accessExpired: Boolean(revokedByExpiry),
       zoomLink: live ? e.stream.zoomLink : null,
       chatLink: recordings ? e.stream.chatLink : null,
-      meetings: e.stream.meetings.map(m => ({ id: m.id, number: m.number, date: m.date, topic: m.topic, description: m.description, prepare: m.prepare, zoomLink: live ? m.zoomLink : null }))
+      meetings: e.stream.meetings.map(m => ({ id: m.id, number: m.number, date: m.date, topic: m.topic, description: m.description, prepare: m.prepare, zoomLink: live ? m.zoomLink : null, recordingUrl: recordings ? m.recordingUrl : null, recordingPasscode: recordings && m.recordingUrl ? m.recordingPasscode : null }))
     }
   })
   const liveStreams = streams.filter(s => s.canUseAi)

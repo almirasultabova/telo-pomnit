@@ -58,6 +58,7 @@ function syncScreenAccessibility() {
   accessibleScreen = activeScreen;
 }
 function goTo(screenId, back = false) {
+  window.MeetingPanel?.invalidate();
   if (Api.clubBlocked) return;
   const prev = document.getElementById('screen-' + currentScreen);
   const next = document.getElementById('screen-' + screenId);
@@ -93,6 +94,7 @@ function goTo(screenId, back = false) {
 }
 
 function goBack() {
+  if (window.MeetingPanel?.isOpen()) { window.MeetingPanel.close(); return; }
   if (document.getElementById('q-invite-sheet')?.classList.contains('active')) { closeQInvite(); return; }
   if (currentScreen === 'stream-overview') { closeStreamOverview(); return; }
   if (currentScreen === 'access-admin') { closeAccessManagement(); return; }
@@ -111,7 +113,7 @@ function goBack() {
 
 function updateBackBtn() {
   if (!tg?.BackButton) return;
-  if (document.getElementById('q-invite-sheet')?.classList.contains('active') || ['data-rights','data-export-preview'].includes(currentScreen) || !Api.clubBlocked && (screenStack.length > 0 || habitualView !== 'summary' && currentScreen === 'home' && activeTab === 'diag')) {
+  if (window.MeetingPanel?.isOpen() || document.getElementById('q-invite-sheet')?.classList.contains('active') || ['data-rights','data-export-preview'].includes(currentScreen) || !Api.clubBlocked && (screenStack.length > 0 || habitualView !== 'summary' && currentScreen === 'home' && activeTab === 'diag')) {
     tg.BackButton.show();
   } else {
     tg.BackButton.hide();
@@ -418,6 +420,7 @@ function initNav() {
 }
 
 function switchTab(tab) {
+  window.MeetingPanel?.invalidate();
   if (Api.clubBlocked) return;
   if (!['main', 'diary', 'diag', 'profile'].includes(tab)) return;
   activeTab = tab;
@@ -1648,6 +1651,7 @@ function applyProgramAccess(access) {
   renderMainTab();
   if (activeTab === 'diag') { void Storage.ensurePathPeriod(pathPeriodScope()); renderMyPathTab(); }
   checkAndShowQuestionnaire(selectedProgramId);
+  window.MeetingPanel?.sync();
 }
 function renderAccessNotice() {
   const text=aiQuestionnaireSaved() ? 'Анкета отправлена. Обновите доступ к AI-ассистенту.' : programAccess?.ai?.message || 'Не удалось проверить доступ к AI. Дневник и реакции остаются доступны.';
@@ -1747,9 +1751,19 @@ function renderZoomBtn(){
   item('Чат группы',stream.chatLink,stream.canReadRecordings,stream.canReadRecordings&&!stream.chatLink?'Ссылка на чат ещё не добавлена':phase==='upcoming'?'Откроется с началом потока':phase==='completed'?'Доступ к чату этого потока закрыт':'Доступ к чату сейчас закрыт');
   item('Присоединиться в Zoom',stream.zoomLink,stream.canAttend,stream.canAttend&&!stream.zoomLink?'Ссылка на встречу ещё не добавлена':phase==='upcoming'?'Вход откроется с началом потока':phase==='completed'?'Встречи этого потока завершены':'Вход на встречу сейчас закрыт');
 }
+function renderProgramMeetingBody(body,stream,meeting){
+      const timeOnly=/^\d{1,2}:\d{2}[–—-]\d{1,2}:\d{2} МСК$/.test(meeting.description||'');
+      const description=meeting.description&&!timeOnly?meeting.description:meeting.topic==='Психосоматические разборы'?'Анастасия ведёт психосоматические разборы. Разбор каждой участницы проходит в группе по очереди.':meeting.topic==='Телесная практика'?'Практика проходит в прямом эфире. Анастасия объясняет последовательность и сопровождает процесс.':null;
+      if(timeOnly){const duration=document.createElement('p');duration.className='program-meeting-duration';duration.textContent=meeting.description;body.append(duration);}
+      const sections=[['О встрече',description||'Описание этой встречи ещё не добавлено.']];
+      if(typeof meeting.prepare==='string'&&meeting.prepare.trim())sections.push(['Подготовка',meeting.prepare.trim()]);
+      for(const [label,text] of sections){
+        const heading=document.createElement('h3');heading.textContent=label;const p=document.createElement('p');p.textContent=text;body.append(heading,p);
+      }
+      if(stream.canAttend)appendAccessLink(body,meeting.zoomLink||stream.zoomLink,'Присоединиться в Zoom');
+}
 function renderSchedule(){
   const container=document.getElementById('schedule-section');if(!container)return;
-  const expanded=new Set([...container.querySelectorAll('details[open]')].map(row=>row.dataset.meeting));
   const stream=currentProgram();container.replaceChildren();
   const calendar=document.getElementById('program-calendar');
   if(calendar){
@@ -1762,30 +1776,17 @@ function renderSchedule(){
     const heading=document.createElement('h2');heading.className='schedule-title';heading.textContent='Встречи потока';container.append(heading);
     (stream.meetings||[]).forEach(meeting=>{
       const row=document.createElement('div');row.className='program-meeting-row';
-      const details=document.createElement('details');details.className='access-meeting';details.dataset.meeting=String(meeting.id);details.open=expanded.has(String(meeting.id));
-      const summary=document.createElement('summary');
+      const button=document.createElement('button');button.type='button';button.className='program-meeting-link';button.dataset.programMeeting=String(meeting.id);button.setAttribute('aria-haspopup','dialog');
+      const copy=document.createElement('span');copy.className='program-meeting-copy';
       const date=document.createElement('time');date.className='meeting-summary-date';date.dateTime=meeting.date;date.textContent=accessDate(meeting.date)+' · МСК';
-      const topic=document.createElement('span');topic.className='meeting-summary-topic';topic.textContent=meeting.topic||'Встреча '+meeting.number;summary.append(date,topic);details.append(summary);
-      const body=document.createElement('div');body.className='program-meeting-body';
-      const timeOnly=/^\d{1,2}:\d{2}[–—-]\d{1,2}:\d{2} МСК$/.test(meeting.description||'');
-      const description=meeting.description&&!timeOnly?meeting.description:meeting.topic==='Психосоматические разборы'?'Анастасия ведёт психосоматические разборы. Разбор каждой участницы проходит в группе по очереди.':meeting.topic==='Телесная практика'?'Практика проходит в прямом эфире. Анастасия объясняет последовательность и сопровождает процесс.':null;
-      if(timeOnly){const duration=document.createElement('p');duration.className='program-meeting-duration';duration.textContent=meeting.description;body.append(duration);}
-      const sections=[['О встрече',description||'Описание этой встречи ещё не добавлено.']];
-      if(typeof meeting.prepare==='string'&&meeting.prepare.trim())sections.push(['Подготовка',meeting.prepare.trim()]);
-      for(const [label,text] of sections){
-        const heading=document.createElement('h3');heading.textContent=label;const p=document.createElement('p');p.textContent=text;body.append(heading,p);
-      }
-      if(stream.canAttend)appendAccessLink(body,meeting.zoomLink||stream.zoomLink,'Присоединиться в Zoom');
-      details.append(body);row.append(details);
-      const attended=Storage.isAttended(meeting.id);
-      const attendance=document.createElement('button');attendance.type='button';attendance.className='meeting-attendance';attendance.setAttribute('aria-pressed',String(attended));attendance.setAttribute('aria-label',(attended?'Снять отметку участия: ':'Отметить участие: ')+(meeting.topic||'Встреча '+meeting.number));attendance.title=attended?'Вы отметили участие':'Отметить участие';
-      attendance.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 12 4 4 8-8"/></svg>';
-      const attendanceWrap=document.createElement('div');attendanceWrap.className='meeting-attendance-control';
-      const attendanceLabel=document.createElement('span');attendanceLabel.className='meeting-attendance-label';attendanceLabel.textContent=attended?'Участвовала':'Отметить участие';
-      attendance.onclick=event=>toggleAttend(event,meeting.id);attendanceWrap.append(attendance,attendanceLabel);row.append(attendanceWrap);container.append(row);
+      const topic=document.createElement('span');topic.className='meeting-summary-topic';topic.textContent=meeting.topic||'Встреча '+meeting.number;copy.append(date,topic);
+      if(Storage.isAttended(meeting.id)){const status=document.createElement('span');status.className='program-meeting-status';status.textContent='Участвовала';copy.append(status);}
+      const arrow=document.createElementNS('http://www.w3.org/2000/svg','svg');arrow.setAttribute('viewBox','0 0 24 24');arrow.setAttribute('fill','none');arrow.setAttribute('stroke','currentColor');arrow.setAttribute('stroke-width','1.6');arrow.setAttribute('aria-hidden','true');arrow.innerHTML='<path d="m9 5 7 7-7 7"/>';
+      button.append(copy,arrow);button.onclick=()=>window.MeetingPanel.open(meeting.id);row.append(button);container.append(row);
     });
     if(!stream.meetings?.length){const p=document.createElement('p');p.className='program-status';p.textContent='Расписание вашего потока уточняется.';container.append(p);}
   }
+  window.MeetingPanel?.sync();
 }
 function toggleAttend(event, meetingId) {
   event.stopPropagation();
@@ -2247,6 +2248,7 @@ function renderAiDraftStatus() {
   window.AiDelivery?.render();
 }
 function clearPrivateConversationState() {
+  window.MeetingPanel?.invalidate();
   window.SaveStatus?.invalidate();
   window.PathDynamics?.reset();
   window.StreamStatePanel?.clear();
@@ -3067,7 +3069,7 @@ async function checkAndShowQuestionnaire(streamId) {
   if (!Storage.isQSheetShown()) {
     qInviteTimer = setTimeout(() => {
       qInviteTimer = null;
-      if (!current() || qStatusDone || currentScreen !== 'home') return;
+      if (!current() || qStatusDone || currentScreen !== 'home' || window.MeetingPanel?.isOpen()) return;
       Storage.setQSheetShown();
       showQInvite();
     }, 10000);

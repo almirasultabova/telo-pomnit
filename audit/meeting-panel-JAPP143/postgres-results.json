@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "groups": 16,
+  "nativePostgres": true,
+  "nativeAuth": true,
+  "additiveMigration": true,
+  "journalPreserved": true,
+  "syntheticOnly": true,
+  "productionTestWrites": 0,
+  "externalCalls": 0,
+  "installed": false
+}

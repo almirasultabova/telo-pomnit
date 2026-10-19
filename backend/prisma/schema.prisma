@@ -95,6 +95,8 @@ model Meeting {
   description String?
   prepare     String?
   zoomLink    String?  @map("zoom_link")
+  recordingUrl String? @map("recording_url")
+  recordingPasscode String? @map("recording_passcode")
 
   stream Stream @relation(fields: [streamId], references: [id])
 

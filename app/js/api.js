@@ -100,6 +100,7 @@ const Api = {
   },
 
   logout() {
+    window.MeetingPanel?.invalidate();
     window.SaveStatus?.invalidate();
     window.AiDelivery?.invalidate();
     window.ObservationDrafts?.invalidate();
