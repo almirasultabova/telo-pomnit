@@ -7,4 +7,3 @@ for url in ['https://api.telo-pomnit.ru/diary/days','https://tg-app-telo-pomnit.
 m=json.loads((H/'manifest.json').read_text(encoding='utf-8'));live=subprocess.check_output(['ssh','-i','c:/tmp/beget_key','-o','BatchMode=yes','root@45.11.93.236','sha256sum /var/www/telo-pomnit/backend/src/routes/diary.js'],text=True).split()[0]
 assert live==m['backend'][0]['after'];results.append({'installedBackendHashMatchesApprovedJ121':True})
 (H/'api.json').write_text(json.dumps(results,indent=2),encoding='utf-8');print('PASS new route direct/main/reserve401; installed source is approved J121, next candidate excluded')
-
