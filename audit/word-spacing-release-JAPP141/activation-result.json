@@ -1,0 +1,17 @@
+{
+  "backup": "/root/telo-backups/word-spacing-JAPP141-2026-10-19T181522111Z",
+  "publicFiles": 92,
+  "changedPublic": [
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}

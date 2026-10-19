@@ -1,0 +1,98 @@
+[
+  {
+    "engine": "chromium",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "width": 390,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 139,
+        "scrollWidth": 139,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 126,
+        "scrollWidth": 126,
+        "font": "14px"
+      }
+    ],
+    "buttonsPassed": true,
+    "overflow": false,
+    "pageErrors": [],
+    "apiMocked": true,
+    "realParticipantWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "width": 320,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 107,
+        "scrollWidth": 107,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 107,
+        "scrollWidth": 107,
+        "font": "14px"
+      }
+    ],
+    "buttonsPassed": true,
+    "overflow": false,
+    "pageErrors": [],
+    "apiMocked": true,
+    "realParticipantWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://app.telo-pomnit.ru/",
+    "width": 390,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 139,
+        "scrollWidth": 139,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 126,
+        "scrollWidth": 126,
+        "font": "14px"
+      }
+    ],
+    "buttonsPassed": true,
+    "overflow": false,
+    "pageErrors": [],
+    "apiMocked": true,
+    "realParticipantWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "width": 390,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 139,
+        "scrollWidth": 139,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 126,
+        "scrollWidth": 126,
+        "font": "14px"
+      }
+    ],
+    "buttonsPassed": true,
+    "overflow": false,
+    "pageErrors": [],
+    "apiMocked": true,
+    "realParticipantWrites": 0
+  }
+]

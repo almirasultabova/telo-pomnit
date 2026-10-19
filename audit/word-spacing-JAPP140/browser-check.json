@@ -1,0 +1,162 @@
+[
+  {
+    "engine": "chromium",
+    "viewport": 320,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 107,
+        "scrollWidth": 107,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 107,
+        "scrollWidth": 107,
+        "font": "14px"
+      }
+    ],
+    "overflow": false,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "viewport": 390,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 139,
+        "scrollWidth": 139,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 126,
+        "scrollWidth": 126,
+        "font": "14px"
+      }
+    ],
+    "overflow": false,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "viewport": 575,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 139,
+        "scrollWidth": 139,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 126,
+        "scrollWidth": 126,
+        "font": "14px"
+      }
+    ],
+    "overflow": false,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "viewport": 1440,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 139,
+        "scrollWidth": 139,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 126,
+        "scrollWidth": 126,
+        "font": "14px"
+      }
+    ],
+    "overflow": false,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "viewport": 320,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 107,
+        "scrollWidth": 107,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 107,
+        "scrollWidth": 107,
+        "font": "14px"
+      }
+    ],
+    "overflow": false,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "viewport": 390,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 139,
+        "scrollWidth": 139,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 126,
+        "scrollWidth": 126,
+        "font": "14px"
+      }
+    ],
+    "overflow": false,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "viewport": 575,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 139,
+        "scrollWidth": 139,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 126,
+        "scrollWidth": 126,
+        "font": "14px"
+      }
+    ],
+    "overflow": false,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "viewport": 1440,
+    "titles": [
+      {
+        "text": "Отметить состояние",
+        "width": 139,
+        "scrollWidth": 139,
+        "font": "14px"
+      },
+      {
+        "text": "Заметить реакцию",
+        "width": 126,
+        "scrollWidth": 126,
+        "font": "14px"
+      }
+    ],
+    "overflow": false,
+    "pageErrors": []
+  }
+]
