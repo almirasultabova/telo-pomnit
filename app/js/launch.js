@@ -80,7 +80,7 @@ window.LaunchSplash = (() => {
       poster.hidden = true;
       layer.dataset.media = 'video';
     });
-    video.addEventListener('error', imageFallback);
+    video.addEventListener('error', () => { if (started) imageFallback(); });
     video.addEventListener('ended', () => {
       if (!usingImage && !finished && !fading) {
         if (video.currentTime >= clipEnd) complete(); else imageFallback();
@@ -101,7 +101,6 @@ window.LaunchSplash = (() => {
       seenKey = Storage.key('launch_seen_v3');
       const returning = AppLocalStorage.getItem(seenKey) === '1';
       layer.dataset.mode = returning ? 'return' : 'first';
-      layer.dataset.aspect = layer.clientHeight / Math.max(1, layer.clientWidth) >= 1.95 ? 'tall' : 'standard';
       layer.dataset.media = 'video-loading';
       bloomMs = returning ? 2050 : 5250; fadeMs = returning ? 450 : 750;
       clipEnd = returning ? 3.6 : 4.1;
@@ -112,16 +111,19 @@ window.LaunchSplash = (() => {
         if (video.currentTime > lastTime + 0.01) { lastTime = video.currentTime; lastProgress = performance.now(); }
         else if (playing && performance.now() - lastProgress > 1500) imageFallback();
       }, 250);
-      video.src = layer.dataset.aspect === 'tall'
-        ? '/media/app/launch/flower-tall.mp4?v=silk-native-20261014'
-        : '/media/app/launch/flower-720.mp4?v=silk-native-20261014';
-      video.muted = true; video.defaultMuted = true; video.playsInline = true;
       video.defaultPlaybackRate = clipEnd / (bloomMs / 1000);
       video.playbackRate = video.defaultPlaybackRate;
       video.hidden = false;
       movieFrame();
-      video.play().catch(imageFallback);
+      if (video.error) imageFallback();
+      else video.play().catch(imageFallback);
     };
+    layer.dataset.aspect = layer.clientHeight / Math.max(1, layer.clientWidth) >= 1.95 ? 'tall' : 'standard';
+    video.muted = true; video.defaultMuted = true; video.playsInline = true;
+    video.src = layer.dataset.aspect === 'tall'
+      ? '/media/app/launch/flower-fast-tall.mp4?v=JAPP138'
+      : '/media/app/launch/flower-fast-standard.mp4?v=JAPP138';
+    video.load();
     document.getElementById('launch-status')?.removeAttribute('hidden');
     app.inert = true; app.classList.add('launch-underlay');
     if (error?.hidden === false) release();

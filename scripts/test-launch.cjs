@@ -67,7 +67,7 @@ function fixture({ seen = false, authed = true, play = 'success', height = 844 }
     f.video.playbackRate = 1; // Some clients reset rate while loading metadata.
     f.video.emit('playing');
     assert.equal(f.video.playbackRate, (seen ? 3.6 : 4.1) / (seen ? 2.05 : 5.25));
-    assert(f.video.src?.endsWith('.mp4?v=silk-native-20261014'));
+    assert(f.video.src?.endsWith('.mp4?v=JAPP138'));
     assert.equal(f.video.hidden,false); assert.equal(f.poster.hidden,true);
     f.advance(seconds*1000-100); assert.equal(f.layer.hidden,false);
     f.advance(200); assert.equal(f.layer.hidden,true); assert.equal(f.app.inert,false);
@@ -108,13 +108,26 @@ function fixture({ seen = false, authed = true, play = 'success', height = 844 }
   assert.equal(denied.layer.hidden,true); assert.equal(denied.video.src,undefined);
   const error=fixture(); error.error.hidden=false; error.observers[0].callback(); error.api.ready();
   assert.equal(error.layer.hidden,true); assert.equal(error.video.src,undefined);
-  results.push('unverified identity and startup errors cannot open home or start media');
+  results.push('unverified identity and startup errors cannot open home or play media');
 
   const standard=fixture({height:724}); standard.api.ready();
-  assert(standard.video.src.includes('flower-720.mp4')); standard.api.cancel();
+  assert(standard.video.src.includes('flower-fast-standard.mp4')); standard.api.cancel();
   const background=fixture(); background.api.ready(); background.document.hidden=true;
   background.document.emit('visibilitychange'); background.api.cancel(); background.motion.emit('load');
   assert.equal(background.layer.hidden,true); assert.equal(background.timers.size,0); assert.equal(background.writes.length,0);
   results.push('aspect selection, background exit and late image events preserve cleanup');
+  const early = fixture({play:'pending'});
+  assert(early.video.src.includes('flower-fast-tall.mp4'));
+  assert(!early.video.running && early.layer.hidden === false);
+  early.video.error = new Error('preload 404'); early.video.emit('error');
+  assert(!early.layer.dataset.media && !early.motion.src);
+  early.api.ready();
+  assert.equal(early.layer.dataset.media, 'image-loading');
+  early.motion.emit('load'); early.advance(6000);
+  assert(early.layer.hidden && !early.app.inert);
+  const cancelled = fixture(); cancelled.api.cancel(); cancelled.api.ready();
+  assert(!cancelled.video.src && cancelled.layer.hidden && cancelled.timers.size === 0);
+  results.push('preload before auth: no play or fallback; early media failure recovered after auth; cancel cleans preloaded source');
+  assert(css.includes('object-fit:cover'));
   console.log(JSON.stringify({passed:results.length,cases:results},null,2));
 })().catch(error => { console.error(error); process.exitCode=1; });
