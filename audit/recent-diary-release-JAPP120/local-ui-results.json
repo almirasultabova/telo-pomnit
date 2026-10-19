@@ -1,0 +1,950 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "diary",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "diary keeps exact streak while full texts are still loading",
+        "full503-note diary restores without deleting cache or pending data",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "path",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "map and summary wait instead of using truncated old-stream data",
+        "old-stream map and summary receive all35 matching observations",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "failure",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "page error preserves91 cached notes and independently correct streak",
+        "full503-note diary restores without deleting cache or pending data",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "index",
+      "passed": true,
+      "cases": [
+        "failed calendar index does not show a fabricated short streak",
+        "explicit retry restores all503 rows and exact503-day streak",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "today",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "full503-note diary restores without deleting cache or pending data",
+        "more than91 notes on the same day are all restored on Diary entry",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "diary",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "diary keeps exact streak while full texts are still loading",
+        "full503-note diary restores without deleting cache or pending data",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "path",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "map and summary wait instead of using truncated old-stream data",
+        "old-stream map and summary receive all35 matching observations",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "failure",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "page error preserves91 cached notes and independently correct streak",
+        "full503-note diary restores without deleting cache or pending data",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "index",
+      "passed": true,
+      "cases": [
+        "failed calendar index does not show a fabricated short streak",
+        "explicit retry restores all503 rows and exact503-day streak",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "today",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "full503-note diary restores without deleting cache or pending data",
+        "more than91 notes on the same day are all restored on Diary entry",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "diary",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "diary keeps exact streak while full texts are still loading",
+        "full503-note diary restores without deleting cache or pending data",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "path",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "map and summary wait instead of using truncated old-stream data",
+        "old-stream map and summary receive all35 matching observations",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "failure",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "page error preserves91 cached notes and independently correct streak",
+        "full503-note diary restores without deleting cache or pending data",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "index",
+      "passed": true,
+      "cases": [
+        "failed calendar index does not show a fabricated short streak",
+        "explicit retry restores all503 rows and exact503-day streak",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "today",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "full503-note diary restores without deleting cache or pending data",
+        "more than91 notes on the same day are all restored on Diary entry",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "diary",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "diary keeps exact streak while full texts are still loading",
+        "full503-note diary restores without deleting cache or pending data",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "path",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "map and summary wait instead of using truncated old-stream data",
+        "old-stream map and summary receive all35 matching observations",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "failure",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "page error preserves91 cached notes and independently correct streak",
+        "full503-note diary restores without deleting cache or pending data",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "index",
+      "passed": true,
+      "cases": [
+        "failed calendar index does not show a fabricated short streak",
+        "explicit retry restores all503 rows and exact503-day streak",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "today",
+      "passed": true,
+      "cases": [
+        "Main reads91 full rows plus compact dates and keeps exact long streak",
+        "Main/Profile do not trigger a full diary scan",
+        "full503-note diary restores without deleting cache or pending data",
+        "more than91 notes on the same day are all restored on Diary entry",
+        "reopening a verified diary does not rescan",
+        "no page errors or horizontal overflow"
+      ],
+      "dayRequests": 1,
+      "diaryRequests": [
+        [
+          91,
+          0
+        ],
+        [
+          90,
+          0
+        ],
+        [
+          90,
+          90
+        ],
+        [
+          90,
+          180
+        ],
+        [
+          90,
+          270
+        ],
+        [
+          90,
+          360
+        ],
+        [
+          90,
+          450
+        ]
+      ],
+      "realWrites": 0
+    }
+  ],
+  "sourceHashes": {
+    "app/js/app.js": "8d603506b09affc97a8a4e20b6cf219de1ddcb9d8d40e9638de59f69e3ce8cd4",
+    "app/js/storage.js": "8b1ee6e974233c3d68fbb21f70e1f9902508e33fa8a0e76c5e5a89da8926a220",
+    "app/js/api.js": "a92eba53a47f30918f9259cb48a293b794f9bbb5f08860fafb8cbed079570146"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "groups": 11,
+  "nativePostgres": true,
+  "nativeAuth": true,
+  "nativeClientAPI": true,
+  "ownerScoped": true,
+  "moscowHistoricalAndBoundary": true,
+  "generic503": true,
+  "readOnlyRoutes": true,
+  "syntheticRows": 1005,
+  "initialFullRows": 91,
+  "compactDays": 1000,
+  "initialRequests": 2,
+  "fullRows": 1000,
+  "fullRequests": 12,
+  "productionTestWrites": 0,
+  "externalCalls": 0,
+  "migrations": 0,
+  "installed": false
+}

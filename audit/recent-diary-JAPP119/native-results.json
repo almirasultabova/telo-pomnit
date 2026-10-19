@@ -1,0 +1,1 @@
+{"passed":true,"groups":6,"nativeFastify":true,"stubDatabase":true,"ownerScoped":true,"moscowBoundaryAndHistoricalTimezone":true,"privateNoStore":true,"onlyCreatedAtSelected":true,"realDatabase":0,"realWrites":0,"sourceHashes":{"backend/src/routes/diary.js":"cc64b1aa6a6211026fc94f06efab0ef645dbaaf4998c3887cd10603d25b3f3cc"}}

@@ -1,0 +1,1 @@
+{"passed":true,"groups":11,"fixtureRows":1000,"oldInitialRequests":12,"newInitialRequests":2,"oldFullRows":1000,"newFullRows":91,"compactDayKeys":1000,"oldBytes":6123792,"newBytes":570120,"streakBeforeAndAfter":1000,"pendingAndAckExtendStreak":true,"indexFailureNotFalseComplete":true,"lateOwnerIgnored":true,"realNetwork":0}

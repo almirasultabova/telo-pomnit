@@ -1,0 +1,16 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const Fastify=require('../../backend/node_modules/fastify');
+const source=fs.readFileSync('backend/src/routes/diary.js','utf8');let calls=[],first=0,fail=false;
+const rows=[{userId:'A',createdAt:new Date('2026-10-18T20:59:59Z'),note:'PRIVATE-A'},{userId:'A',createdAt:new Date('2026-10-18T21:00:00Z'),note:'PRIVATE-A2'},{userId:'A',createdAt:new Date('2026-10-18T23:00:00Z'),note:'PRIVATE-A3'},{userId:'B',createdAt:new Date('2001-08-31T20:30:00Z'),note:'PRIVATE-B'}];
+const db={diaryEntry:{findMany:async q=>{calls.push(q);if(fail)throw Error('synthetic database failure');assert.deepEqual(JSON.parse(JSON.stringify(q.select)),{createdAt:true});assert.deepEqual(Object.keys(q.where),['userId']);return rows.filter(r=>r.userId===q.where.userId).map(r=>({createdAt:r.createdAt}))},findFirst:async()=>{first++;return null}}};
+const requireAuth=async(req,reply)=>{const owner=req.headers.authorization?.replace('Bearer ','');if(!['A','B','empty'].includes(owner))return reply.code(401).send({error:'synthetic unauthorized'});req.user={id:owner}};
+const mod={exports:{}};vm.runInNewContext(source,{module:mod,exports:mod.exports,Intl,Date,Set,console,require:n=>n==='../db'?db:{requireAuth,withActiveUser:()=>{throw Error('unexpected mutation')}}});
+(async()=>{const app=Fastify();await app.register(mod.exports);let groups=0;
+ let r=await app.inject({method:'GET',url:'/diary/days'});assert.equal(r.statusCode,401);assert.equal(calls.length,0);groups++;
+ r=await app.inject({method:'GET',url:'/diary/days',headers:{authorization:'Bearer A'}});assert.equal(r.statusCode,200);assert.deepEqual(r.json(),{timeZone:'Europe/Moscow',days:['2026-10-18','2026-10-19']});assert.equal(r.headers['cache-control'],'private, no-store');assert.equal(first,0);assert(!r.body.includes('PRIVATE'));groups++;
+ r=await app.inject({method:'GET',url:'/diary/days?userId=B&from=1900-01-01',headers:{authorization:'Bearer A'}});assert.deepEqual(r.json().days,['2026-10-18','2026-10-19']);assert.equal(calls.at(-1).where.userId,'A');groups++;
+ r=await app.inject({method:'GET',url:'/diary/days',headers:{authorization:'Bearer B'}});assert.deepEqual(r.json().days,['2001-09-01']);groups++;
+ r=await app.inject({method:'GET',url:'/diary/days',headers:{authorization:'Bearer empty'}});assert.deepEqual(r.json().days,[]);groups++;
+ fail=true;r=await app.inject({method:'GET',url:'/diary/days',headers:{authorization:'Bearer A'}});assert.equal(r.statusCode,503);assert(!r.body.includes('PRIVATE'));assert(!r.body.includes('synthetic database'));groups++;
+ await app.close();console.log(JSON.stringify({passed:true,groups,nativeFastify:true,stubDatabase:true,ownerScoped:true,moscowBoundaryAndHistoricalTimezone:true,privateNoStore:true,onlyCreatedAtSelected:true,realDatabase:0,realWrites:0,sourceHashes:{'backend/src/routes/diary.js':require('node:crypto').createHash('sha256').update(source).digest('hex')}}));
+})().catch(e=>{console.error(e);process.exitCode=1});

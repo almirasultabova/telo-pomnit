@@ -1,0 +1,530 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "mode": "history",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "history labels partial cache and loading before completion",
+      "full list503 and all five original scale values are available after completion",
+      "reopening complete history uses verified cache",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 320,
+    "mode": "graph",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "old-stream chart shows loading rather than a comparison from partial cache",
+      "complete503-row history restores36 older stream days and original five scales",
+      "reopening the verified graph does not rescan history",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 320,
+    "mode": "failure",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "second-page error preserves201 cached rows without claiming complete history",
+      "full list503 and all five original scale values are available after completion",
+      "reopening complete history uses verified cache",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "passed": true,
+    "engine": "chromium",
+    "width": 320,
+    "cases": [
+      "Main starts without reaction or post-meeting history GETs",
+      "Main/Profile navigation does not load secondary histories",
+      "Diary loads all51 notes in two pages; disclosure and notes remain available",
+      "Reaction form opens without downloading its history",
+      "later-page failure is explicit and never presents partial history as complete",
+      "keyboard retry loads all205 reactions and complete distribution",
+      "reopening a loaded history uses confirmed cache without duplicate scans",
+      "failed refresh preserves cached records and signals incomplete refresh",
+      "logout during delayed history discards late private response"
+    ],
+    "pageErrors": [],
+    "startupTriggerRequests": 0,
+    "startupNoteRequests": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "history",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "history labels partial cache and loading before completion",
+      "full list503 and all five original scale values are available after completion",
+      "reopening complete history uses verified cache",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "graph",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "old-stream chart shows loading rather than a comparison from partial cache",
+      "complete503-row history restores36 older stream days and original five scales",
+      "reopening the verified graph does not rescan history",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "failure",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "second-page error preserves201 cached rows without claiming complete history",
+      "full list503 and all five original scale values are available after completion",
+      "reopening complete history uses verified cache",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "passed": true,
+    "engine": "chromium",
+    "width": 390,
+    "cases": [
+      "Main starts without reaction or post-meeting history GETs",
+      "Main/Profile navigation does not load secondary histories",
+      "Diary loads all51 notes in two pages; disclosure and notes remain available",
+      "Reaction form opens without downloading its history",
+      "later-page failure is explicit and never presents partial history as complete",
+      "keyboard retry loads all205 reactions and complete distribution",
+      "reopening a loaded history uses confirmed cache without duplicate scans",
+      "failed refresh preserves cached records and signals incomplete refresh",
+      "logout during delayed history discards late private response"
+    ],
+    "pageErrors": [],
+    "startupTriggerRequests": 0,
+    "startupNoteRequests": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "mode": "history",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "history labels partial cache and loading before completion",
+      "full list503 and all five original scale values are available after completion",
+      "reopening complete history uses verified cache",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "mode": "graph",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "old-stream chart shows loading rather than a comparison from partial cache",
+      "complete503-row history restores36 older stream days and original five scales",
+      "reopening the verified graph does not rescan history",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "mode": "failure",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "second-page error preserves201 cached rows without claiming complete history",
+      "full list503 and all five original scale values are available after completion",
+      "reopening complete history uses verified cache",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "passed": true,
+    "engine": "chromium",
+    "width": 1440,
+    "cases": [
+      "Main starts without reaction or post-meeting history GETs",
+      "Main/Profile navigation does not load secondary histories",
+      "Diary loads all51 notes in two pages; disclosure and notes remain available",
+      "Reaction form opens without downloading its history",
+      "later-page failure is explicit and never presents partial history as complete",
+      "keyboard retry loads all205 reactions and complete distribution",
+      "reopening a loaded history uses confirmed cache without duplicate scans",
+      "failed refresh preserves cached records and signals incomplete refresh",
+      "logout during delayed history discards late private response"
+    ],
+    "pageErrors": [],
+    "startupTriggerRequests": 0,
+    "startupNoteRequests": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "history",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "history labels partial cache and loading before completion",
+      "full list503 and all five original scale values are available after completion",
+      "reopening complete history uses verified cache",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "graph",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "old-stream chart shows loading rather than a comparison from partial cache",
+      "complete503-row history restores36 older stream days and original five scales",
+      "reopening the verified graph does not rescan history",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "failure",
+    "passed": true,
+    "initialRows": 201,
+    "totalRows": 503,
+    "calls": [
+      [
+        201,
+        0
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        200
+      ],
+      [
+        200,
+        400
+      ]
+    ],
+    "cases": [
+      "Main reads one201-row page and shows newest observation without full scan",
+      "Main/Profile do not fetch old checkins",
+      "second-page error preserves201 cached rows without claiming complete history",
+      "full list503 and all five original scale values are available after completion",
+      "reopening complete history uses verified cache",
+      "no page errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "passed": true,
+    "engine": "webkit",
+    "width": 390,
+    "cases": [
+      "Main starts without reaction or post-meeting history GETs",
+      "Main/Profile navigation does not load secondary histories",
+      "Diary loads all51 notes in two pages; disclosure and notes remain available",
+      "Reaction form opens without downloading its history",
+      "later-page failure is explicit and never presents partial history as complete",
+      "keyboard retry loads all205 reactions and complete distribution",
+      "reopening a loaded history uses confirmed cache without duplicate scans",
+      "failed refresh preserves cached records and signals incomplete refresh",
+      "logout during delayed history discards late private response"
+    ],
+    "pageErrors": [],
+    "startupTriggerRequests": 0,
+    "startupNoteRequests": 0
+  }
+]

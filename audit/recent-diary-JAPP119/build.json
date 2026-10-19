@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "isolatedBuild": "C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP119-build-ovwr8h2s",
+  "sourceHashes": {
+    "app/js/app.js": "8d603506b09affc97a8a4e20b6cf219de1ddcb9d8d40e9638de59f69e3ce8cd4",
+    "app/js/storage.js": "8b1ee6e974233c3d68fbb21f70e1f9902508e33fa8a0e76c5e5a89da8926a220",
+    "app/js/api.js": "a92eba53a47f30918f9259cb48a293b794f9bbb5f08860fafb8cbed079570146",
+    "backend/src/routes/diary.js": "cc64b1aa6a6211026fc94f06efab0ef645dbaaf4998c3887cd10603d25b3f3cc"
+  },
+  "changedPublic": [
+    "index.html",
+    "screen-review.html",
+    "js/api.js",
+    "js/app.js",
+    "js/storage.js"
+  ],
+  "backendChanged": [
+    "src/routes/diary.js"
+  ],
+  "migration": false,
+  "cashPanelPreserved": true,
+  "structurePassed": true,
+  "output": "site: 45 public files -> C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP119-build-ovwr8h2s\\output\\site\napp: 88 public files -> C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP119-build-ovwr8h2s\\output\\app\nBuilt public files only. Knowledge base, media/library, PDFs, .env and internal documents are excluded. Nothing was deployed.\n",
+  "published": false
+}

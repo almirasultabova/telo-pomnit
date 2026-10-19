@@ -1,0 +1,112 @@
+--- a/app/js/app.js
++++ b/app/js/app.js
+@@ -351 +351 @@
+-      void Storage.initFromApi({ recentCheckins: true }).then(() => {
++      void Storage.initFromApi({ recentCheckins: true, recentDiary: true }).then(() => {
+@@ -432,2 +432,2 @@
+-  if (tab === 'diary')   renderDiaryTab();
+-  if (tab === 'diag')    { void Storage.ensureCheckinHistory(); renderMyPathTab(); }
++  if (tab === 'diary')   { void Storage.ensureDiaryHistory(); renderDiaryTab(); }
++  if (tab === 'diag')    { void Storage.ensureDiaryHistory(); void Storage.ensureCheckinHistory(); renderMyPathTab(); }
+@@ -551,0 +552,5 @@
++  document.getElementById('diary-history-loading')?.remove();
++  if (['idle', 'loading', 'partial'].includes(Storage.getHistoryLoadStatus().diary)) {
++    const notice = document.createElement('p'); notice.id = 'diary-history-loading'; notice.className = 'access-notice'; notice.setAttribute('role', 'status'); notice.textContent = 'Загружаем ваши наблюдения…';
++    document.querySelector('#tab-diary .screen-scroll')?.prepend(notice);
++  }
+@@ -581 +586 @@
+-  const n = Storage.getStreak();
++  const n = Storage.diaryStreakReady() ? Storage.getStreak() : null;
+@@ -583 +588 @@
+-  if (el) el.textContent = n;
++  if (el) el.textContent = n === null ? '—' : n;
+@@ -585 +590 @@
+-  if (sub) sub.textContent = pluralStreakDays(n);
++  if (sub) sub.textContent = n === null ? 'История ещё не загружена' : pluralStreakDays(n);
+@@ -702,0 +708 @@
++    if (!window.DiaryHistory) void Storage.ensureDiaryHistory();
+@@ -1006 +1012 @@
+-  const streak = Storage.getStreak();
++  const streak = Storage.diaryStreakReady() ? Storage.getStreak() : null;
+@@ -1008 +1014 @@
+-  if (el) el.textContent = streak;
++  if (el) el.textContent = streak === null ? '—' : streak;
+@@ -1010 +1016 @@
+-  if (sub) sub.textContent = pluralDays(streak);
++  if (sub) sub.textContent = streak === null ? 'История ещё не загружена' : pluralDays(streak);
+@@ -1102,0 +1109,2 @@
++  const diaryReady = Storage.getHistoryLoadStatus().diary === 'loaded';
++  const shownAnalytics = !streamPeriod() || diaryReady ? analyticsHtml : '<section class="path-no-stream"><p role="status">' + (Storage.getHistoryLoadStatus().diary === 'failed' ? 'Не удалось обновить наблюдения. Сохранённые записи доступны в Дневнике.' : 'Загружаем наблюдения выбранного потока…') + '</p></section>';
+@@ -1106 +1114 @@
+-    '<section class="path-analysis" aria-label="Личные наблюдения">' + analyticsHtml + '</section>';
++    '<section class="path-analysis" aria-label="Личные наблюдения">' + shownAnalytics + '</section>';
+--- a/app/js/storage.js
++++ b/app/js/storage.js
+@@ -37,0 +38 @@
++  _diaryDays: new Map(),
+@@ -45,0 +47 @@
++    this._diaryDays.clear();
+@@ -51,0 +54 @@
++    this._diaryDays.clear();
+@@ -324,0 +328,3 @@
++  diaryStreakReady() {
++    return this.getHistoryLoadStatus().diary === 'loaded' || this._diaryDays.get(this._userId)?.generation === this._generation;
++  },
+@@ -332,0 +339,2 @@
++    const index = this._diaryDays.get(this._userId);
++    if (index?.generation === this._generation) for (const key of index.days) if (key <= todayKey) dates.add(key);
+@@ -674 +682 @@
+-  async initFromApi({ fields, recentCheckins = false } = {}) {
++  async initFromApi({ fields, recentCheckins = false, recentDiary = false } = {}) {
+@@ -684 +692,2 @@
+-    const key = userId + ':' + generation + ':' + [...selected].sort().join(',') + (recent ? ':recent' : '');
++    const diaryRecent = recentDiary === true && typeof Api.getRecentDiary === 'function';
++    const key = userId + ':' + generation + ':' + [...selected].sort().join(',') + (recent ? ':recent' : '') + (diaryRecent ? ':diary-recent' : '');
+@@ -694,0 +704 @@
++      if (kind === 'diary' && diaryRecent && this.getHistoryLoadStatus().diary === 'loaded') return;
+@@ -704 +714 @@
+-          if (tracked) status(kind, kind === 'checkins' && value?.complete === false ? 'partial' : 'loaded');
++          if (tracked) status(kind, value?.complete === false ? 'partial' : 'loaded');
+@@ -715 +725 @@
+-        restore('diary', () => Api.getDiary(), value => {
++        restore('diary', () => diaryRecent ? Api.getRecentDiary() : Api.getDiary(), value => {
+@@ -722,0 +733 @@
++          this._diaryDays.set(userId, { generation, days: value?.days || remote.map(row => Date.parse(row.date)).filter(Number.isFinite).map(time => this.checkinDayKey(time)) });
+@@ -768,0 +780,8 @@
++  async ensureDiaryHistory() {
++    const userId = this._userId, generation = this._generation;
++    if (!userId || typeof Api === 'undefined' || !Api.isAuthed()) return;
++    if (['loaded', 'failed'].includes(this.getHistoryLoadStatus().diary)) return;
++    await this.initFromApi({ fields: ['diary'] });
++    if (this._userId === userId && this._generation === generation && this.getHistoryLoadStatus().diary === 'partial') await this.initFromApi({ fields: ['diary'] });
++  },
++
+--- a/app/js/api.js
++++ b/app/js/api.js
+@@ -150,0 +151,9 @@
++  async getRecentDiary() {
++    const generation = this._authGeneration;
++    const [result, index] = await Promise.all([this._request('GET', '/diary?limit=91'), this._request('GET', '/diary/days')]);
++    if (generation !== this._authGeneration) throw Object.assign(new Error('Сессия изменилась'), { code: 'SESSION_CHANGED' });
++    const entries = Array.isArray(result) ? result : result?.entries;
++    const validDay = day => typeof day === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(day) && Number.isFinite(Date.parse(day)) && new Date(day+'T00:00:00Z').toISOString().slice(0,10) === day;
++    if (!Array.isArray(entries) || entries.length > 91 || entries.some(row => !row?.id) || index?.timeZone !== 'Europe/Moscow' || !Array.isArray(index.days) || !index.days.every(validDay)) throw Object.assign(new Error('Неверный ответ истории'), { code: 'INVALID_HISTORY' });
++    return { entries, days: index.days, complete: entries.length < 91 };
++  },
+--- a/backend/src/routes/diary.js
++++ b/backend/src/routes/diary.js
+@@ -122,0 +123,14 @@
++  // Compact owner-only calendar index; no diary text is returned.
++  app.get('/diary/days', { preHandler: requireAuth }, async (request, reply) => {
++    reply.header('Cache-Control', 'private, no-store')
++    const rows = await db.diaryEntry.findMany({ where: { userId: request.user.id }, select: { createdAt: true } }).catch(() => null)
++    if (!rows) return reply.code(503).send({ error: 'Не удалось загрузить даты наблюдений' })
++    const formatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Moscow', year: 'numeric', month: '2-digit', day: '2-digit' })
++    const days = [...new Set(rows.map(row => {
++      const parts = formatter.formatToParts(new Date(row.createdAt))
++      const part = name => parts.find(p => p.type === name).value
++      return `${part('year')}-${part('month')}-${part('day')}`
++    }))].sort()
++    return { timeZone: 'Europe/Moscow', days }
++  })
++
