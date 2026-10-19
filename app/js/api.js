@@ -100,6 +100,7 @@ const Api = {
   },
 
   logout() {
+    window.SaveStatus?.invalidate();
     window.AiDelivery?.invalidate();
     window.ObservationDrafts?.invalidate();
     if (typeof clearAccessManagementState === 'function') clearAccessManagementState();

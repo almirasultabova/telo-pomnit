@@ -446,6 +446,7 @@ function renderMainTab() {
   const observations = document.getElementById('home-observations');
   if (!greeting || !flow || !observations) return;
   const verified = !Api.clubBlocked && Api.isAuthed() && homeUser?.id === String(Api.userId);
+  window.SaveStatus?.renderHome();
   const personalName = verified ? homeUser.name.trim() : '';
   greeting.textContent = personalName.split(/\s+/)[0] || 'Здравствуйте';
   const welcome = document.getElementById('home-welcome');
@@ -2246,6 +2247,7 @@ function renderAiDraftStatus() {
   window.AiDelivery?.render();
 }
 function clearPrivateConversationState() {
+  window.SaveStatus?.invalidate();
   window.PathDynamics?.reset();
   window.StreamStatePanel?.clear();
   document.querySelector?.('.path-dynamics')?.remove();

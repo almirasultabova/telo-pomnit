@@ -1,0 +1,12 @@
+.ss-home{margin:0 0 20px;padding:16px;border:1px solid var(--color-control-line,#7b8273);border-radius:16px;background:var(--color-sage,#dde4d8);color:var(--color-text,#1a211a)}
+.ss-home-title{font:600 16px/1.5 var(--font-body);margin:0 0 6px}.ss-copy{font:400 14px/1.65 var(--font-body);color:var(--color-text,#1a211a);margin:0 0 12px}
+.ss-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 2px;border:0;background:transparent;color:var(--color-action,#2a4a38);font:600 14px/1.5 var(--font-body);cursor:pointer;text-align:left;white-space:normal}
+.ss-link:hover{text-decoration:underline;text-underline-offset:4px}.ss-link:focus-visible,.ss-copy-field:focus-visible{outline:2px solid var(--color-action,#2a4a38);outline-offset:3px}
+#screen-save-status .screen-title{font-size:28px}#screen-save-status .screen-header-btn{min-width:44px;min-height:44px}
+.ss-content{padding:20px 20px calc(28px + env(safe-area-inset-bottom,0px));color:var(--color-text,#1a211a)}
+.ss-summary{font:600 18px/1.5 var(--font-body);margin:0 0 8px}.ss-section-title{font:500 25px/1.3 var(--font-serif);margin:30px 0 12px}
+.ss-record{border-top:1px solid var(--color-control-line,#7b8273);padding:18px 0}.ss-record-title{font:600 16px/1.5 var(--font-body);margin:0 0 4px}.ss-date{font:400 13px/1.6 var(--font-body);color:var(--color-muted,#726a60);margin:0 0 10px}
+.ss-record-status,.ss-blocked,.ss-preview,.ss-copy-result{font:400 15px/1.65 var(--font-body);margin:0 0 10px;overflow-wrap:anywhere;white-space:pre-wrap}.ss-record-status{font-weight:500}.ss-blocked{padding:12px;border-radius:12px;background:var(--color-surface,#e9e1d6)}
+.ss-actions{display:flex;flex-wrap:wrap;gap:8px 22px}.ss-values{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;font:400 14px/1.6 var(--font-body);margin:12px 0}.ss-values dd{margin:0;font-variant-numeric:tabular-nums}
+.ss-copy-label{display:block;font:600 14px/1.5 var(--font-body);margin:12px 0 6px}.ss-copy-field{box-sizing:border-box;width:100%;min-height:180px;padding:12px;border:1px solid var(--color-control-line,#7b8273);border-radius:12px;background:var(--color-bg,#f7f4ef);color:var(--color-text,#1a211a);font:400 16px/1.65 var(--font-body);resize:vertical;overflow-wrap:anywhere;user-select:text}
+@media(min-width:700px){.ss-content{padding:24px 32px 32px}}
