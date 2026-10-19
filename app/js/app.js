@@ -507,7 +507,7 @@ function renderMainTab() {
     paragraph(observations, 'Не удалось загрузить ' + (failed.length === 2 ? 'историю тела и состояния' : failed[0] === 'diary' ? 'историю тела' : 'историю состояния') + '. Сохранённые на этом устройстве записи могут быть неполными.', 'home-error');
     observations.append(link('Повторить загрузку наблюдений', async button => {
       const owner = Api.userId; button.disabled = true;
-      await Storage.initFromApi(); if (String(Api.userId) === String(owner)) renderMainTab();
+      await Storage.initFromApi({ fields: failed.filter(kind => Storage.getHistoryLoadStatus()[kind] === 'failed') }); if (String(Api.userId) === String(owner)) renderMainTab();
     }));
   }
   // These two histories expose reliable load states. Reaction history has no
@@ -566,7 +566,7 @@ function renderHistoryLoadWarning(container, fields, scope) {
   retry.onclick = async () => {
     const owner = Storage.key('history_owner'), generation = Storage._generation;
     retry.disabled = true;
-    try { await Storage.initFromApi(); } catch {} finally {
+    try { await Storage.initFromApi({ fields: fields.filter(kind => Storage.getHistoryLoadStatus()[kind] === 'failed') }); } catch {} finally {
       if (!Api.clubBlocked && Api.isAuthed() && Storage.key('history_owner') === owner && Storage._generation === generation) {
         renderDiaryTab(); renderMyPathTab();
         if (currentScreen === 'checkin-history') renderCheckinHistory();
@@ -1402,7 +1402,7 @@ async function refreshPathDynamics(button, syncOnly) {
   if (button) button.disabled = true;
   try {
     if (syncOnly) await Storage.flushCheckinsPending();
-    else await Storage.initFromApi();
+    else await Storage.initFromApi({ fields: ['checkins'] });
   } catch {} finally {
     const current = owner === Storage._userId && generation === Storage._generation && scope === pathDynamicsContext().scope && !Api.clubBlocked && Api.isAuthed();
     if (current && button?.isConnected) button.disabled = false;

@@ -34,6 +34,7 @@ const Storage = {
   _triggerRetryTimer: null,
   _triggerHistoryLoading: new Map(),
   _historyInitializing: new Map(),
+  _historyRestoring: new Map(),
 
   // Only a server-confirmed identity may select a cache. Unowned legacy keys
   // stay untouched for explicit export; they are never attributed to this user.
@@ -670,12 +671,16 @@ const Storage = {
   /** Восстановить доступные серверные данные после авторизации.
    *  Истории загружаются страницами; локальную очередь сохраняем.
    *  Повтор отправки идёт в фоне и не задерживает переход с заставки. */
-  async initFromApi() {
+  async initFromApi({ fields } = {}) {
     if (typeof Api === 'undefined' || !Api.isAuthed()) return;
     const userId = this._userId;
     const generation = this._generation;
     if (!userId) return;
-    const key = userId + ':' + generation;
+    const kinds = ['diary', 'checkins', 'diagnostic', 'habitual'];
+    if (fields !== undefined && (!Array.isArray(fields) || fields.some(kind => !kinds.includes(kind)))) throw new Error('INVALID_HISTORY_KIND');
+    const selected = new Set(fields || kinds);
+    if (!selected.size) return;
+    const key = userId + ':' + generation + ':' + [...selected].sort().join(',');
     if (this._historyInitializing.has(key)) return this._historyInitializing.get(key);
     const current = () => this._userId === userId && this._generation === generation && !this._deletedUsers.has(userId);
     const status = (kind, value) => {
@@ -684,19 +689,26 @@ const Storage = {
       this._emit();
     };
     const restore = async (kind, load, apply) => {
-      try {
-        const value = await load();
-        if (!current()) return;
-        apply(value);
-        if (kind) status(kind, 'loaded');
-        else this._emit();
-      } catch {
-        if (kind) status(kind, 'failed');
-      }
+      if (!selected.has(kind)) return;
+      const resourceKey = userId + ':' + generation + ':' + kind;
+      if (this._historyRestoring.has(resourceKey)) return this._historyRestoring.get(resourceKey);
+      const tracked = kind === 'diary' || kind === 'checkins';
+      if (tracked) status(kind, 'loading');
+      const attempt = (async () => {
+        try {
+          const value = await load();
+          if (!current()) return;
+          apply(value);
+          if (tracked) status(kind, 'loaded');
+          else this._emit();
+        } catch {
+          if (tracked) status(kind, 'failed');
+        }
+      })();
+      this._historyRestoring.set(resourceKey, attempt);
+      try { await attempt; } finally { this._historyRestoring.delete(resourceKey); }
     };
     const run = async () => {
-      this._historyLoads.set(userId, { ...this.getHistoryLoadStatus(), diary: 'loading', checkins: 'loading' });
-      this._emit();
       await Promise.allSettled([
         restore('diary', () => Api.getDiary(), value => {
           const entries = Array.isArray(value) ? value : value?.entries;
@@ -713,7 +725,7 @@ const Storage = {
           }
           this._writeDiary([...byIdentity.values()], userId);
         }),
-        restore(null, () => Api.getDiagResult(), value => {
+        restore('diagnostic', () => Api.getDiagResult(), value => {
           if (value) this._set(KEYS.DIAG, JSON.stringify({ ...value, date: value.date || value.createdAt }));
         }),
         restore('checkins', () => Api.getCheckins(), value => {
@@ -732,7 +744,7 @@ const Storage = {
           }
           this._writeCheckins([...merged.values()], userId);
         }),
-        restore(null, () => Api.getHabitualResult(), value => {
+        restore('habitual', () => Api.getHabitualResult(), value => {
           const local = this.getHabitualResult();
           if (value && (!local || (local.syncStatus === 'synced' && Date.parse(value.date) > Date.parse(local.date)))) {
             try { Habitual.calculate(value.answers); this._set('habitual_result_v2', JSON.stringify({ ...value, syncStatus: 'synced' })); } catch {}
