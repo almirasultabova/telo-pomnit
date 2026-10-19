@@ -120,6 +120,20 @@ async function diaryRoutes(app) {
     }
   })
 
+  // Compact owner-only calendar index; no diary text is returned.
+  app.get('/diary/days', { preHandler: requireAuth }, async (request, reply) => {
+    reply.header('Cache-Control', 'private, no-store')
+    const rows = await db.diaryEntry.findMany({ where: { userId: request.user.id }, select: { createdAt: true } }).catch(() => null)
+    if (!rows) return reply.code(503).send({ error: 'Не удалось загрузить даты наблюдений' })
+    const formatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Moscow', year: 'numeric', month: '2-digit', day: '2-digit' })
+    const days = [...new Set(rows.map(row => {
+      const parts = formatter.formatToParts(new Date(row.createdAt))
+      const part = name => parts.find(p => p.type === name).value
+      return `${part('year')}-${part('month')}-${part('day')}`
+    }))].sort()
+    return { timeZone: 'Europe/Moscow', days }
+  })
+
   // GET /diary/:id — одна запись
   app.get('/diary/:id', { preHandler: requireAuth }, async (request, reply) => {
     const entry = await db.diaryEntry.findFirst({

@@ -4,7 +4,7 @@ import json
 import threading
 import uuid
 import hashlib
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import urlsplit, parse_qs, unquote
@@ -85,6 +85,9 @@ def serve(fixture):
                 return self.send_json({'error': 'Нет служебных прав'}, 403)
             if path in ['/api/diagnostic/result', '/api/habitual/result']:
                 return self.send_json(None)
+            if path == '/api/diary/days':
+                days = {datetime.fromisoformat((row.get('createdAt') or row.get('date')).replace('Z','+00:00')).astimezone(timezone(timedelta(hours=3))).date().isoformat() for row in fixture.diary.get(owner, {}).values()}
+                return self.send_json({'timeZone':'Europe/Moscow','days':sorted(days)})
             if path == '/api/diary':
                 rows = fixture.diary.setdefault(owner, {})
                 if method == 'POST':

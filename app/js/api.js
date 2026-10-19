@@ -148,6 +148,15 @@ const Api = {
   async getDiary() {
     return this._getAll('/diary', 90);
   },
+  async getRecentDiary() {
+    const generation = this._authGeneration;
+    const [result, index] = await Promise.all([this._request('GET', '/diary?limit=91'), this._request('GET', '/diary/days')]);
+    if (generation !== this._authGeneration) throw Object.assign(new Error('Сессия изменилась'), { code: 'SESSION_CHANGED' });
+    const entries = Array.isArray(result) ? result : result?.entries;
+    const validDay = day => typeof day === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(day) && Number.isFinite(Date.parse(day)) && new Date(day+'T00:00:00Z').toISOString().slice(0,10) === day;
+    if (!Array.isArray(entries) || entries.length > 91 || entries.some(row => !row?.id) || index?.timeZone !== 'Europe/Moscow' || !Array.isArray(index.days) || !index.days.every(validDay)) throw Object.assign(new Error('Неверный ответ истории'), { code: 'INVALID_HISTORY' });
+    return { entries, days: index.days, complete: entries.length < 91 };
+  },
   async _getAll(path, pageSize) {
     const generation = this._authGeneration, rows = [], seen = new Set();
     for (let page = 0; page < 100; page++) {

@@ -35,6 +35,7 @@ const Storage = {
   _triggerHistoryLoading: new Map(),
   _historyInitializing: new Map(),
   _historyRestoring: new Map(),
+  _diaryDays: new Map(),
 
   // Only a server-confirmed identity may select a cache. Unowned legacy keys
   // stay untouched for explicit export; they are never attributed to this user.
@@ -43,12 +44,14 @@ const Storage = {
     if (this._deletedUsers.has(String(userId))) throw new Error('ACCOUNT_DELETED');
     this._userId = String(userId);
     this._generation++;
+    this._diaryDays.clear();
     this._historyLoads.set(this._userId, { diary: 'idle', checkins: 'idle', triggers: 'idle' });
     clearTimeout(this._retryTimer);
     clearTimeout(this._checkinRetryTimer);
     clearTimeout(this._triggerRetryTimer);
   },
   clearUser() {
+    this._diaryDays.clear();
     this._userId = null;
     this._generation++;
     clearTimeout(this._retryTimer);
@@ -322,6 +325,9 @@ const Storage = {
   // ─── Стрик ────────────────────────────────────────────────────────────────
 
   /** Подсчёт серии дней подряд */
+  diaryStreakReady() {
+    return this.getHistoryLoadStatus().diary === 'loaded' || this._diaryDays.get(this._userId)?.generation === this._generation;
+  },
   getStreak(now = new Date()) {
     const dayKey = time => this.checkinDayKey(time);
     const time = new Date(now).getTime();
@@ -330,6 +336,8 @@ const Storage = {
     let day = Date.parse(todayKey+'T00:00:00+03:00');
     const dates = new Set(this.getDiaryEntries().map(e => Date.parse(e.date || e.createdAt))
       .filter(Number.isFinite).map(dayKey).filter(key => key <= todayKey));
+    const index = this._diaryDays.get(this._userId);
+    if (index?.generation === this._generation) for (const key of index.days) if (key <= todayKey) dates.add(key);
     if(!dates.has(todayKey))day-=86400000;
     let streak=0;
     while(dates.has(dayKey(day))){streak++;day-=86400000;}
@@ -671,7 +679,7 @@ const Storage = {
   /** Восстановить доступные серверные данные после авторизации.
    *  Истории загружаются страницами; локальную очередь сохраняем.
    *  Повтор отправки идёт в фоне и не задерживает переход с заставки. */
-  async initFromApi({ fields, recentCheckins = false } = {}) {
+  async initFromApi({ fields, recentCheckins = false, recentDiary = false } = {}) {
     if (typeof Api === 'undefined' || !Api.isAuthed()) return;
     const userId = this._userId;
     const generation = this._generation;
@@ -681,7 +689,8 @@ const Storage = {
     const selected = new Set(fields || kinds);
     if (!selected.size) return;
     const recent = recentCheckins === true && typeof Api.getRecentCheckins === 'function';
-    const key = userId + ':' + generation + ':' + [...selected].sort().join(',') + (recent ? ':recent' : '');
+    const diaryRecent = recentDiary === true && typeof Api.getRecentDiary === 'function';
+    const key = userId + ':' + generation + ':' + [...selected].sort().join(',') + (recent ? ':recent' : '') + (diaryRecent ? ':diary-recent' : '');
     if (this._historyInitializing.has(key)) return this._historyInitializing.get(key);
     const current = () => this._userId === userId && this._generation === generation && !this._deletedUsers.has(userId);
     const status = (kind, value) => {
@@ -692,6 +701,7 @@ const Storage = {
     const restore = async (kind, load, apply) => {
       if (!selected.has(kind)) return;
       if (kind === 'checkins' && recent && this.getHistoryLoadStatus().checkins === 'loaded') return;
+      if (kind === 'diary' && diaryRecent && this.getHistoryLoadStatus().diary === 'loaded') return;
       const resourceKey = userId + ':' + generation + ':' + kind;
       if (this._historyRestoring.has(resourceKey)) return this._historyRestoring.get(resourceKey);
       const tracked = kind === 'diary' || kind === 'checkins';
@@ -701,7 +711,7 @@ const Storage = {
           const value = await load();
           if (!current()) return;
           apply(value);
-          if (tracked) status(kind, kind === 'checkins' && value?.complete === false ? 'partial' : 'loaded');
+          if (tracked) status(kind, value?.complete === false ? 'partial' : 'loaded');
           else this._emit();
         } catch {
           if (tracked) status(kind, 'failed');
@@ -712,7 +722,7 @@ const Storage = {
     };
     const run = async () => {
       await Promise.allSettled([
-        restore('diary', () => Api.getDiary(), value => {
+        restore('diary', () => diaryRecent ? Api.getRecentDiary() : Api.getDiary(), value => {
           const entries = Array.isArray(value) ? value : value?.entries;
           if (!Array.isArray(entries)) throw new Error('INVALID_DIARY_HISTORY');
           const remote = entries.map(entry => ({
@@ -720,6 +730,7 @@ const Storage = {
             sensations: entry.sensations || [], note: entry.note || '', syncStatus: 'synced'
           }));
           const byIdentity = new Map(remote.map(row => [row.clientId || String(row.id), row]));
+          this._diaryDays.set(userId, { generation, days: value?.days || remote.map(row => Date.parse(row.date)).filter(Number.isFinite).map(time => this.checkinDayKey(time)) });
           // Empty GET is never a deletion instruction; keep cache and pending rows.
           for (const row of this._state(userId)) {
             const identity = row.clientId || String(row.id);
@@ -764,6 +775,14 @@ const Storage = {
     const promise = run();
     this._historyInitializing.set(key, promise);
     try { await promise; } finally { this._historyInitializing.delete(key); }
+  },
+
+  async ensureDiaryHistory() {
+    const userId = this._userId, generation = this._generation;
+    if (!userId || typeof Api === 'undefined' || !Api.isAuthed()) return;
+    if (['loaded', 'failed'].includes(this.getHistoryLoadStatus().diary)) return;
+    await this.initFromApi({ fields: ['diary'] });
+    if (this._userId === userId && this._generation === generation && this.getHistoryLoadStatus().diary === 'partial') await this.initFromApi({ fields: ['diary'] });
   },
 
   async ensureCheckinHistory() {

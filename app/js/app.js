@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (String(profile?.id) === String(owner)) homeUser = { id: String(owner), name: profile.name || user.name || '', photoUrl: authenticatedPhoto || profile.photoUrl || null };
         renderMainTab();
       }).catch(() => {});
-      void Storage.initFromApi({ recentCheckins: true }).then(() => {
+      void Storage.initFromApi({ recentCheckins: true, recentDiary: true }).then(() => {
         if (Api.userId !== owner || Api._authGeneration !== generation || Api.clubBlocked) return;
         renderMainTab(); renderDiaryTab();
         if (activeTab === 'diag') renderMyPathTab();
@@ -429,8 +429,8 @@ function switchTab(tab) {
 
   // Обновляем содержимое при переключении
   if (tab === 'main')    renderMainTab();
-  if (tab === 'diary')   renderDiaryTab();
-  if (tab === 'diag')    { void Storage.ensureCheckinHistory(); renderMyPathTab(); }
+  if (tab === 'diary')   { void Storage.ensureDiaryHistory(); renderDiaryTab(); }
+  if (tab === 'diag')    { void Storage.ensureDiaryHistory(); void Storage.ensureCheckinHistory(); renderMyPathTab(); }
   if (tab === 'profile') {renderProfileTab();refreshProgramAccess().then(renderProfileTab);}
   updateBackBtn();
 }
@@ -549,6 +549,11 @@ function renderDiaryTab() {
   renderStreak();
   renderTodayCard();
   renderRecentEntries();
+  document.getElementById('diary-history-loading')?.remove();
+  if (['idle', 'loading', 'partial'].includes(Storage.getHistoryLoadStatus().diary)) {
+    const notice = document.createElement('p'); notice.id = 'diary-history-loading'; notice.className = 'access-notice'; notice.setAttribute('role', 'status'); notice.textContent = 'Загружаем ваши наблюдения…';
+    document.querySelector('#tab-diary .screen-scroll')?.prepend(notice);
+  }
   renderHistoryLoadWarning(document.querySelector('#tab-diary .screen-scroll'), ['diary'], 'diary');
 }
 
@@ -578,11 +583,11 @@ function renderHistoryLoadWarning(container, fields, scope) {
 }
 
 function renderStreak() {
-  const n = Storage.getStreak();
+  const n = Storage.diaryStreakReady() ? Storage.getStreak() : null;
   const el = document.getElementById('streak-num');
-  if (el) el.textContent = n;
+  if (el) el.textContent = n === null ? '—' : n;
   const sub = document.getElementById('streak-days-sub');
-  if (sub) sub.textContent = pluralStreakDays(n);
+  if (sub) sub.textContent = n === null ? 'История ещё не загружена' : pluralStreakDays(n);
 }
 
 function pluralStreakDays(n) {
@@ -700,6 +705,7 @@ document.addEventListener('click', e => {
     return;
   }
   if (e.target.closest('#diary-history-btn')) {
+    if (!window.DiaryHistory) void Storage.ensureDiaryHistory();
     renderHistory();
     goTo('history');
     haptic();
@@ -1003,11 +1009,11 @@ function renderSavedScreen() {
       document.getElementById('saved-retry-btn').after(repair);
     }
   }
-  const streak = Storage.getStreak();
+  const streak = Storage.diaryStreakReady() ? Storage.getStreak() : null;
   const el = document.getElementById('saved-streak-num');
-  if (el) el.textContent = streak;
+  if (el) el.textContent = streak === null ? '—' : streak;
   const sub = document.getElementById('saved-streak-label');
-  if (sub) sub.textContent = pluralDays(streak);
+  if (sub) sub.textContent = streak === null ? 'История ещё не загружена' : pluralDays(streak);
 }
 
 function renderDiarySyncStatus() {
@@ -1100,10 +1106,12 @@ function renderMyPathTab() {
         <div class="mypath-empty-sub">Здесь появятся области тела и ощущения из ваших записей. Можно начать с того, что вы чувствуете сейчас.</div><button class="btn btn--accent" id="path-first-observation" type="button">Почувствовать тело</button>
       </div>`);
 
+  const diaryReady = Storage.getHistoryLoadStatus().diary === 'loaded';
+  const shownAnalytics = !streamPeriod() || diaryReady ? analyticsHtml : '<section class="path-no-stream"><p role="status">' + (Storage.getHistoryLoadStatus().diary === 'failed' ? 'Не удалось обновить наблюдения. Сохранённые записи доступны в Дневнике.' : 'Загружаем наблюдения выбранного потока…') + '</p></section>';
   container.innerHTML = renderCheckinChart() + programPickerHTML() + streamStatusHTML() +
     `<button type="button" class="path-program-link" id="path-program-btn"><span>Мой поток</span><small>${Api.userRole === 'HOST' || Api.isClubAdmin ? 'Расписание' : 'Анкета и расписание'} · в Профиле →</small></button>` +
     '<section class="path-questionnaire" aria-label="Опрос привычных реакций">' + renderDiagBlock(diagResult) + '</section>' +
-    '<section class="path-analysis" aria-label="Личные наблюдения">' + analyticsHtml + '</section>';
+    '<section class="path-analysis" aria-label="Личные наблюдения">' + shownAnalytics + '</section>';
   renderHistoryLoadWarning(container, ['diary'], 'path');
   window.PathDynamics?.bind(container, { context: pathDynamicsContext, checkin: () => document.getElementById('main-state-btn')?.click(), retry: button => refreshPathDynamics(button, false), sync: button => refreshPathDynamics(button, true) });
   container.querySelector('#path-first-observation')?.addEventListener('click',()=>document.getElementById('main-body-btn')?.click());
