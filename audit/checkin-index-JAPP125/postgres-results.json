@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "groups": 13,
+  "nativePostgres": true,
+  "nativePrisma": true,
+  "nativeFiveScaleAPI": true,
+  "fixtureOwnerRows": 10120,
+  "initialRows": 201,
+  "beforePlan": [
+    {
+      "type": "Limit",
+      "index": null,
+      "actualRows": 201
+    },
+    {
+      "type": "Sort",
+      "index": null,
+      "actualRows": 201
+    },
+    {
+      "type": "Seq Scan",
+      "index": null,
+      "actualRows": 10120
+    }
+  ],
+  "afterPlan": [
+    {
+      "type": "Limit",
+      "index": null,
+      "actualRows": 201
+    },
+    {
+      "type": "Index Scan",
+      "index": "checkins_user_created_id_idx",
+      "actualRows": 201
+    }
+  ],
+  "indexBytes": 1171456,
+  "sortRemoved": true,
+  "responseBodyUnchanged": true,
+  "fiveScalesPreserved": true,
+  "dailyUpsertAndRetry": true,
+  "staleEditProtected": true,
+  "conflict409": true,
+  "todayPreserved": true,
+  "pagesWithoutDuplicates": true,
+  "ledgerResolveAndOldRowsPreserved": true,
+  "rollbackAndReapply": true,
+  "productionTestWrites": 0,
+  "productionSchemaChanged": false,
+  "externalCalls": 0,
+  "published": false,
+  "sourceHashes": {
+    "backend/prisma/schema.prisma": "da6fb80a56afb3af6930ba8509e09d78941bba2928a83d58a7a9b47232cb20fb",
+    "backend/prisma/migrations/20261019173000_checkin_owner_date_index/migration.sql": "e68abb6c72f33759b06021286fdf0e1bba4f01e38713b5d2f3049b4a1a90ef56"
+  }
+}

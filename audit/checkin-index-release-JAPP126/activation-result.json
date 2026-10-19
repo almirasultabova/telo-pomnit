@@ -1,0 +1,18 @@
+{
+  "activated": true,
+  "backup": "/root/telo-backups/checkin-index-JAPP126-2026-10-19T140710998Z",
+  "concurrentIndexValid": true,
+  "migrationRecorded": true,
+  "legacyLedgerRowsPreserved": 3,
+  "publicFiles": 88,
+  "changedPublic": 0,
+  "backendFiles": 2,
+  "backendRestarted": false,
+  "health": true,
+  "unauthorizedStatus": 401,
+  "protectedFilesUnchanged": true,
+  "participantDML": 0,
+  "testWritesToProduction": 0,
+  "openai": 0,
+  "notifications": 0
+}

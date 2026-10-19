@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "checkinIndexValidAndReady": true,
+  "diaryIndexPreserved": true,
+  "checkinMigrationRecorded": true,
+  "legacyLedgerRowsPreserved": 3,
+  "publishedSchemaAndMigrationHashesMatch": true,
+  "participantRowsRead": 0,
+  "productionTestWrites": 0
+}

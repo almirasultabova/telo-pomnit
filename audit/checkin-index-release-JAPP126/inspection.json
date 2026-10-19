@@ -1,0 +1,49 @@
+{
+  "migrationRows": [
+    {
+      "name": "20261015220000_stream_overview",
+      "checksum": "261d1b7813aa5c27052f50d07a124083f2a3da346b1e76c47328627d97988679",
+      "finished": true,
+      "rolledBack": false
+    },
+    {
+      "name": "20261017143000_app_visit_streak",
+      "checksum": "09cddca415f0dad11e0cd3a065465d73d2129aadcb4c72c6d1e875d33240c1f0",
+      "finished": true,
+      "rolledBack": false
+    },
+    {
+      "name": "20261019170000_diary_owner_date_index",
+      "checksum": "322f124acfba80364d1b431507e3230ca13b42e07f836928d10549ac185c4d36",
+      "finished": true,
+      "rolledBack": false
+    }
+  ],
+  "migrationFiles": [
+    "20261013120000_reliable_reactions_feedback",
+    "20261015120000_welcome_email_claim",
+    "20261015130000_reminder_attempt_days",
+    "20261015220000_stream_overview",
+    "20261017143000_app_visit_streak",
+    "20261018163000_after_meeting_notes",
+    "20261018172000_diary_important",
+    "20261018194000_after_meeting_steps",
+    "20261018202000_discussion_notes",
+    "20261018214000_ai_chat_operations",
+    "20261019170000_diary_owner_date_index"
+  ],
+  "indexes": [
+    {
+      "indexname": "checkins_pkey",
+      "indexdef": "CREATE UNIQUE INDEX checkins_pkey ON public.checkins USING btree (id)"
+    },
+    {
+      "indexname": "checkins_user_id_day_key_key",
+      "indexdef": "CREATE UNIQUE INDEX checkins_user_id_day_key_key ON public.checkins USING btree (user_id, day_key)"
+    }
+  ],
+  "checkinRelationBytes": 49152,
+  "availableKiB": 21515948,
+  "schemaHash": "9c21fa99ca4ada00c2cd920f60981ee2ed61b38fd0d168fa957f234515b1133f",
+  "prismaVersion": "5.22.0"
+}

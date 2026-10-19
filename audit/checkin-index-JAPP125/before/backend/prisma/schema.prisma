@@ -1,0 +1,488 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                   String    @id @default(uuid())
+  telegramId           BigInt    @unique @map("telegram_id")
+  telegramUsername     String?   @map("telegram_username")
+  firstName            String?   @map("first_name")
+  lastName             String?   @map("last_name")
+  username             String?
+  role                 String    @default("PARTICIPANT")
+  name                 String?
+  photoUrl             String?   @map("photo_url")
+  phone                String?
+  notificationsEnabled Boolean   @default(true) @map("notifications_enabled")
+  notificationsTime    String    @default("20:00") @map("notifications_time")
+  dailyReminderAttemptDay String? @map("daily_reminder_attempt_day")
+  questionnaireReminderAttemptDay String? @map("questionnaire_reminder_attempt_day")
+  tokenVersion         Int       @default(0) @map("token_version")
+  consentGivenAt       DateTime? @map("consent_given_at")
+  consentText          String?   @map("consent_text")
+  consentVersion       String?   @map("consent_version")
+  consentSource        String?   @map("consent_source")
+  deletedAt            DateTime? @map("deleted_at")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  accessStatus         String    @default("pending") @map("access_status")
+  accessRequestedAt    DateTime? @map("access_requested_at")
+  accessDecidedAt      DateTime? @map("access_decided_at")
+  accessDecidedBy      String?   @map("access_decided_by")
+  accessNotifiedAt     DateTime? @map("access_notified_at")
+  accessRevision       Int       @default(0) @map("access_revision")
+  lastSeenAt           DateTime? @map("last_seen_at")
+  appVisitDay          String?   @map("app_visit_day")
+  appVisitStreak       Int       @default(0) @map("app_visit_streak")
+  preferredAppUrl      String?   @map("preferred_app_url")
+  admissionLeaseUntil DateTime? @map("admission_lease_until")
+  admissionDeliveredIds String[] @default([]) @map("admission_delivered_ids")
+
+  analyticsExcluded Boolean @default(false) @map("analytics_excluded")
+  overviewGrants StreamOverviewGrant[]
+  overviewMemberships OverviewMembership[]
+  feedbackActions FeedbackAction[]
+
+  enrollments        Enrollment[]
+  discussionNotes    DiscussionNote[]
+  diaryImportant     DiaryImportant[]
+  afterMeetingStepEvents AfterMeetingStepEvent[]
+  afterMeetingNotes  AfterMeetingNote[]
+  diaryEntries       DiaryEntry[]
+  triggerEntries     TriggerEntry[]
+  checkins           Checkin[]
+  diagnosticResults  DiagnosticResult[]
+  questionnaires     Questionnaire[]
+  aiChatSessions     AiChatSession[]
+  aiChatOperations   AiChatOperation[]
+  feedback           Feedback[]
+
+  @@map("users")
+}
+
+model Stream {
+  id        String   @id @default(uuid())
+  name      String
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+  isActive  Boolean  @default(true) @map("is_active")
+  zoomLink  String?  @map("zoom_link")
+  chatLink  String?  @map("chat_link")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  overviewGrants StreamOverviewGrant[]
+  overviewMemberships OverviewMembership[]
+  feedback Feedback[]
+  enrollments    Enrollment[]
+  meetings       Meeting[]
+  diaryEntries   DiaryEntry[]
+  questionnaires Questionnaire[]
+
+  @@map("streams")
+}
+
+model Meeting {
+  id          String   @id @default(uuid())
+  streamId    String   @map("stream_id")
+  number      Int
+  date        DateTime
+  topic       String?
+  description String?
+  prepare     String?
+  zoomLink    String?  @map("zoom_link")
+
+  stream Stream @relation(fields: [streamId], references: [id])
+
+  @@map("meetings")
+}
+
+model Enrollment {
+  id            String           @id @default(uuid())
+  userId        String           @map("user_id")
+  streamId      String           @map("stream_id")
+  status        EnrollmentStatus @default(pending)
+  paymentId     String?          @map("payment_id")
+  paidAt        DateTime?        @map("paid_at")
+  accessExpires DateTime?        @map("access_expires")
+  accessBasis   String?          @map("access_basis")
+  createdAt     DateTime         @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  stream Stream @relation(fields: [streamId], references: [id])
+
+  @@map("enrollments")
+}
+
+model DiaryEntry {
+  savedAt    DateTime? @default(now()) @map("saved_at")
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  streamId   String?  @map("stream_id")
+  zone       String
+  sensations String[]
+  note       String?
+  clientId   String?  @map("client_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user   User    @relation(fields: [userId], references: [id])
+  stream Stream? @relation(fields: [streamId], references: [id])
+
+  @@unique([userId, clientId])
+  @@index([userId, createdAt(sort: Desc), id(sort: Desc)], map: "diary_entries_user_created_id_idx")
+  @@map("diary_entries")
+}
+
+model DiaryImportant {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  source    String
+  entryId   String   @map("entry_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  user User @relation(fields: [userId], references: [id])
+  @@unique([userId, source, entryId])
+  @@map("diary_important")
+}
+
+model AfterMeetingStepEvent {
+  id String @id @default(uuid())
+  userId String @map("user_id")
+  noteId String @map("note_id")
+  clientId String? @map("client_id")
+  type String
+  text String
+  stepText String @map("step_text")
+  previousStep String @default("") @map("previous_step")
+  createdAt DateTime @default(now()) @map("created_at")
+  user User @relation(fields: [userId], references: [id])
+  note AfterMeetingNote @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  @@unique([userId, clientId])
+  @@index([noteId, createdAt])
+  @@map("after_meeting_step_events")
+}
+
+model AfterMeetingNote {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  stepText String @default("") @map("step_text")
+  stepPaused Boolean @default(false) @map("step_paused")
+  stepEvents AfterMeetingStepEvent[]
+  kind        String
+  meetingDate DateTime @db.Date @map("meeting_date")
+  text        String
+  clientId    String   @map("client_id")
+  revision    Int      @default(1)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  user User @relation(fields: [userId], references: [id])
+  @@unique([userId, clientId])
+  @@index([userId, meetingDate])
+  @@map("after_meeting_notes")
+}
+
+model TriggerEntry {
+  id           String       @id @default(uuid())
+  userId       String       @map("user_id")
+  situation    String
+  reactionType ReactionType @map("reaction_type")
+  zone         String?
+  sensations   String[]
+  intensity    Int
+  note         String?
+  clientId     String?      @map("client_id")
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, clientId])
+  @@map("trigger_entries")
+}
+
+model Checkin {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  bodyScore   Int      @map("body_score")
+  tensionZone String?  @map("tension_zone")
+  mood        String?
+  note        String?
+  tension     Int?
+  anxiety     Int?
+  energy      Int?
+  safety      Int?
+  bodyContact Int?     @map("body_contact")
+  dayKey      String?  @map("day_key")
+  clientUpdatedAt DateTime? @map("client_updated_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, dayKey])
+  @@map("checkins")
+}
+
+model DiagnosticResult {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  patternId String   @map("pattern_id")
+  scores    Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("diagnostic_results")
+}
+
+model Questionnaire {
+  id          String            @id @default(uuid())
+  userId      String            @map("user_id")
+  streamId    String            @map("stream_id")
+  type        QuestionnaireType
+  answers     Json
+  formVersion Int @default(1) @map("form_version")
+  submittedAt DateTime          @default(now()) @map("submitted_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  stream Stream @relation(fields: [streamId], references: [id])
+
+  @@map("questionnaires")
+}
+
+model AiChatSession {
+  id        String   @id @default(uuid())
+  sessionId String   @unique @map("session_id")
+  userId    String?  @map("user_id")
+  messages  Json
+  contextMode String?  @map("context_mode")
+  contextSnapshot Json? @map("context_snapshot")
+  contextVersion String? @map("context_version")
+  contextPreviewHash String? @map("context_preview_hash")
+  contextSelectedAt DateTime? @map("context_selected_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@map("ai_chat_sessions")
+}
+
+model AiChatOperation {
+  userId String @map("user_id")
+  operationId String @map("operation_id")
+  requestHash String @map("request_hash")
+  sessionId String @map("session_id")
+  status String
+  result Json?
+  createdAt DateTime @default(now()) @map("created_at")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, operationId])
+  @@index([userId, sessionId, status])
+  @@map("ai_chat_operations")
+}
+
+model StreamOverviewGrant {
+  userId String @map("user_id")
+  streamId String @map("stream_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  stream Stream @relation(fields:[streamId],references:[id],onDelete:Cascade)
+  @@id([userId,streamId])
+  @@map("stream_overview_grants")
+}
+model OverviewHistory {
+  id String @id
+  startedAt DateTime @default(now()) @map("started_at")
+  @@map("overview_history")
+}
+model OverviewMembership {
+  id String @id @default(uuid())
+  userId String @map("user_id")
+  streamId String @map("stream_id")
+  startedAt DateTime @default(now()) @map("started_at")
+  endedAt DateTime? @map("ended_at")
+  eligibleUntil DateTime @map("eligible_until")
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  stream Stream @relation(fields:[streamId],references:[id],onDelete:Cascade)
+  @@index([streamId,startedAt])
+  @@map("overview_memberships")
+}
+model FeedbackAction {
+  id String @id @default(uuid())
+  feedbackId String @map("feedback_id")
+  actorId String? @map("actor_id")
+  action String
+  revision Int
+  details Json
+  createdAt DateTime @default(now()) @map("created_at")
+  feedback Feedback @relation(fields:[feedbackId],references:[id],onDelete:Cascade)
+  actor User? @relation(fields:[actorId],references:[id],onDelete:SetNull)
+  @@unique([feedbackId,revision])
+  @@map("feedback_actions")
+}
+model Feedback {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  rating    Int?
+  text      String
+  operationId String? @map("operation_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  streamId String? @map("stream_id")
+  needsReply Boolean? @map("needs_reply")
+  submittedScope Json? @map("submitted_scope")
+  kind String @default("unknown")
+  status String @default("unclassified")
+  revision Int @default(0)
+  assigneeId String? @map("assignee_id")
+  takenAt DateTime? @map("taken_at")
+  answeredById String? @map("answered_by_id")
+  answeredAt DateTime? @map("answered_at")
+  actions FeedbackAction[]
+  stream Stream? @relation(fields:[streamId],references:[id],onDelete:SetNull)
+  user      User     @relation(fields: [userId], references: [id])
+  @@index([streamId,status,createdAt])
+
+  @@index([createdAt])
+  @@unique([userId, operationId])
+  @@map("feedback")
+}
+
+model WaitlistEntry {
+  id               String   @id @default(uuid())
+  email            String
+  telegramUsername String   @map("telegram_username")
+  createdAt        DateTime @default(now()) @map("created_at")
+  // Legacy entries stay outside the queue; only new applications opt in.
+  notificationPending  Boolean  @default(false) @map("notification_pending")
+  notificationRetryAt  DateTime? @map("notification_retry_at")
+  notificationAttempts Int      @default(0) @map("notification_attempts")
+  notifiedAdminIds      String[] @default([]) @map("notified_admin_ids")
+
+  @@index([notificationPending, notificationRetryAt])
+  @@map("waitlist_entries")
+}
+
+model PendingEnrollment {
+  id               String   @id @default(uuid())
+  telegramUsername String   @map("telegram_username")
+  email            String
+  name             String?
+  paymentId        String   @unique @map("payment_id")
+  streamId         String?  @map("stream_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@map("pending_enrollments")
+}
+
+// Ожидаемые условия сохраняются до выдачи платёжной ссылки.
+model PaymentOrder {
+  id               String    @id @default(uuid())
+  paymentId        String?   @unique @map("payment_id")
+  amount           String
+  currency         String    @default("RUB")
+  shopId           String    @map("shop_id")
+  streamId         String    @map("stream_id")
+  email            String
+  name             String?
+  telegramUsername String    @map("telegram_username")
+  processedAt      DateTime? @map("processed_at")
+  welcomeEmailStatus String  @default("pending") @map("welcome_email_status")
+  welcomeEmailSentAt DateTime? @map("welcome_email_sent_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  @@map("payment_orders")
+}
+
+enum EnrollmentStatus {
+  pending
+  active
+  completed
+  cancelled
+}
+
+model AccessAction {
+  id               String    @id @default(uuid())
+  actorId          String    @map("actor_id")
+  targetId         String    @map("target_id")
+  expectedRevision Int       @map("expected_revision")
+  status           String    @default("approved")
+  role             String    @default("PARTICIPANT")
+  streamId         String?   @map("stream_id")
+  basis            String    @default("none")
+  streamChoices    Json      @default("[]") @map("stream_choices")
+  expiresAt        DateTime  @map("expires_at")
+  usedAt           DateTime? @map("used_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  @@index([expiresAt])
+  @@map("access_actions")
+}
+
+model AccessAudit {
+  id        String   @id @default(uuid())
+  actorId   String   @map("actor_id")
+  targetId  String   @map("target_id")
+  actionId  String   @unique @map("action_id")
+  before    Json
+  after     Json
+  createdAt DateTime @default(now()) @map("created_at")
+  @@index([targetId, createdAt])
+  @@map("access_audit")
+}
+
+model OperationalMetric {
+  day   String
+  kind  String
+  count Int @default(0)
+  @@id([day, kind])
+  @@map("operational_metrics")
+}
+
+model AccessNotice {
+  id            String    @id @default(uuid())
+  actionId      String    @unique @map("action_id")
+  targetId      String    @map("target_id")
+  status        String
+  delivery      String    @default("pending")
+  attempts      Int       @default(0)
+  nextAttemptAt DateTime  @default(now()) @map("next_attempt_at")
+  leaseUntil    DateTime? @map("lease_until")
+  sentAt        DateTime? @map("sent_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  @@index([delivery, nextAttemptAt])
+  @@map("access_notices")
+}
+
+enum ReactionType {
+  freeze
+  fight
+  flight
+  fawn
+}
+
+enum QuestionnaireType {
+  pre
+  post
+}
+
+model DiscussionNote {
+  id String @id @default(uuid())
+  userId String @map("user_id")
+  clientId String @map("client_id")
+  text String @default("")
+  done Boolean @default(false)
+  revision Int @default(1)
+  sourceType String? @map("source_type")
+  sourceId String? @map("source_id")
+  sourceLabel String @default("") @map("source_label")
+  sourceDay String @default("") @map("source_day")
+  excerpt String @default("")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, clientId])
+  @@index([userId, createdAt])
+  @@map("discussion_notes")
+}

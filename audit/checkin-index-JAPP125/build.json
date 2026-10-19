@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "isolatedBuild": "C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP125-build-kxrv_dme",
+  "sourceHashes": {
+    "backend/prisma/schema.prisma": "da6fb80a56afb3af6930ba8509e09d78941bba2928a83d58a7a9b47232cb20fb",
+    "backend/prisma/migrations/20261019173000_checkin_owner_date_index/migration.sql": "e68abb6c72f33759b06021286fdf0e1bba4f01e38713b5d2f3049b4a1a90ef56"
+  },
+  "publishedBase": "0b486abb991207b9e68ee86e3fe63262095cfb6e",
+  "changedPublic": [],
+  "publicFiles": 88,
+  "migrationCandidate": true,
+  "productionMigrationApplied": false,
+  "published": false
+}

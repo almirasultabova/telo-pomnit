@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "initialRows": 91,
+  "streak": 503,
+  "fullRows": 503,
+  "oldStreamRows": 35,
+  "pageErrors": [],
+  "realWrites": 0,
+  "apiFixture": true,
+  "sqlTestSeparate": true
+}

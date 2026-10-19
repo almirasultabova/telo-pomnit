@@ -1,0 +1,10 @@
+--- a/backend/prisma/schema.prisma
++++ b/backend/prisma/schema.prisma
+@@ -223,0 +224 @@
++  @@index([userId, createdAt(sort: Desc), id(sort: Desc)], map: "checkins_user_created_id_idx")
+--- /dev/null
++++ b/backend/prisma/migrations/20261019173000_checkin_owner_date_index/migration.sql
+@@ -0,0 +1,3 @@
++-- Run outside a transaction. Existing daily uniqueness and five scales are unchanged.
++CREATE INDEX CONCURRENTLY "checkins_user_created_id_idx"
++ON "checkins" ("user_id", "created_at" DESC, "id" DESC);

@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "initialRows": 201,
+  "fullRows": 503,
+  "fiveScalesPreserved": true,
+  "reopenRequests": 0,
+  "pageErrors": [],
+  "realWrites": 0,
+  "apiFixture": true,
+  "indexTestSeparate": true
+}
