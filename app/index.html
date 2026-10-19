@@ -37,6 +37,7 @@
 <link rel="stylesheet" href="css/discussion-notes.css?v=JAPP100">
 <link rel="stylesheet" href="css/save-status.css?v=JAPP135">
 <link rel="stylesheet" href="css/meeting-panel.css?v=JAPP143">
+<link rel="stylesheet" href="css/form-consistency.css?v=JAPP147">
 </head>
 <body>
 <div id="startup-error" role="alert" hidden>
@@ -494,22 +495,22 @@
   ══════════════════════════════════════════════════════════════════════ -->
   <div class="screen" id="screen-trigger">
     <div class="screen-header">
-      <div class="screen-title">Стоп-реакция</div>
+      <div class="screen-title">Моя реакция</div>
       <div class="screen-sub">Запишите момент, пока он свежий</div>
       <button class="screen-header-btn" id="trigger-history-btn">История</button>
     </div>
     <div class="screen-scroll" style="padding-bottom: calc(var(--bottom-h) + 16px)">
 
-      <label class="section-label" for="trigger-situation">Что случилось</label>
+      <label class="section-label" for="trigger-situation">Что произошло?</label>
       <textarea class="note-textarea" id="trigger-situation"
-        placeholder="Опиши ситуацию или момент, который тебя зацепил..." rows="3"></textarea>
+        placeholder="Опишите ситуацию так, как вам удобно." rows="3"></textarea>
 
-      <div class="section-label mt-16">Как отреагировало тело</div>
-      <div class="reaction-grid" id="reaction-grid">
+      <div class="section-label mt-16" id="trigger-reaction-label">Как вы отреагировали?</div>
+      <div class="reaction-grid" id="reaction-grid" role="group" aria-labelledby="trigger-reaction-label">
         <!-- Рендерится в app.js -->
       </div>
 
-      <label class="section-label mt-16" for="trigger-intensity">Интенсивность реакции</label>
+      <label class="section-label mt-16" for="trigger-intensity">Насколько сильной была реакция?</label>
       <div class="intensity-wrap">
         <input type="range" class="intensity-slider" id="trigger-intensity" aria-describedby="intensity-value" min="1" max="10" value="5">
         <div class="intensity-labels">
@@ -531,7 +532,7 @@
 
       <label class="section-label mt-16" for="trigger-note">Заметка <span class="optional-hint">необязательно</span></label>
       <textarea class="note-textarea" id="trigger-note"
-        placeholder="Что заметила, что сделала, что помогло..." rows="3"></textarea>
+        placeholder="Что вы заметили, сделали или хотите запомнить?" rows="3"></textarea>
 
     </div>
     <div class="screen-bottom">
@@ -667,14 +668,14 @@
 ══════════════════════════════════════════════════════════════════════ -->
 <div class="screen" id="screen-feedback">
   <div class="screen-header">
-    <button class="screen-back" onclick="goBack()">‹</button>
-    <h2>Обратная связь</h2>
+    <button class="screen-back" onclick="goBack()" aria-label="Вернуться в приложение"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+    <h2 class="screen-title">Обратная связь</h2>
   </div>
   <div class="screen-scroll">
     <div id="feedback-form-wrap">
       <p class="fb-hint">Поделитесь впечатлением — что работает, что неудобно, чего не хватает. Сообщение прочитает команда. Укажите, нужен ли вам личный ответ в Telegram.</p>
 
-      <div class="fb-section-label">Оценка</div>
+      <div class="fb-rating-heading"><div class="fb-section-label">Оценка <span class="optional-hint">необязательно</span></div><button type="button" id="fb-clear-rating" hidden>Убрать оценку</button></div>
       <div class="fb-stars" id="fb-stars" role="group" aria-label="Оценка приложения от 1 до 5">
         <button type="button" class="fb-star" data-star="1" aria-label="1 звезда">★</button>
         <button type="button" class="fb-star" data-star="2" aria-label="2 звезды">★</button>
@@ -683,6 +684,7 @@
         <button type="button" class="fb-star" data-star="5" aria-label="5 звёзд">★</button>
       </div>
 
+      <p id="fb-rating-status" class="fb-rating-status" role="status">Сообщение можно отправить без оценки.</p>
       <label class="fb-section-label" for="fb-stream">К какому потоку относится</label>
       <select id="fb-stream" class="fb-routing"><option value="">Общие вопросы</option></select>
       <label class="fb-section-label" for="fb-kind">Тема</label>
@@ -693,7 +695,7 @@
       <textarea id="fb-text" class="fb-textarea" placeholder="Напишите, что хотите сказать…" maxlength="2000" rows="6"></textarea>
       <div class="fb-counter"><span id="fb-counter">0</span> / 2000</div>
 
-      <button id="fb-submit" class="btn btn--primary btn--full mt-16" disabled>Отправить</button>
+      <button id="fb-submit" class="btn btn--primary btn--full mt-16" disabled>Отправить сообщение</button>
     </div>
 
     <div id="feedback-thanks" class="fb-thanks" style="display:none">
@@ -736,6 +738,7 @@
 <script src="js/meeting-panel.js?v=JAPP143"></script>
 <script src="js/stream-state.js?v=JAPP060"></script>
 <script src="js/ai-delivery.js?v=JAPP103"></script>
+<script src="js/form-messages.js?v=JAPP147"></script>
 <script src="js/app.js?v=access-20260922"></script>
 <script src="js/observation-drafts.js?v=JAPP102"></script>
 <script src="js/path-dynamics-model.js?v=JAPP050"></script>

@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "localOnly": true,
+  "rootAndCandidateMatchManifest": true,
+  "uiGroups": 66,
+  "errorContrast": 6.16,
+  "humanPreviewFailureRetry": true,
+  "published": false,
+  "productionWrites": 0,
+  "openaiCalls": 0,
+  "notifications": 0
+}

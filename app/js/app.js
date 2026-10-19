@@ -58,6 +58,7 @@ function syncScreenAccessibility() {
   accessibleScreen = activeScreen;
 }
 function goTo(screenId, back = false) {
+  window.FormMessages?.clearAll();
   window.MeetingPanel?.invalidate();
   if (Api.clubBlocked) return;
   const prev = document.getElementById('screen-' + currentScreen);
@@ -1481,7 +1482,7 @@ function renderStreamSummary(entries) {
         <div class="stream-summary-label">дней<br>в самой длинной серии</div>
       </div>
     </div>
-    ${topZone ? `<div class="stream-summary-insight">Главная зона потока — <em>${escapeAccessText(topZone.label)}</em>${topSens ? `, ощущение — <em>${escapeAccessText(topSens.label.toLowerCase())}</em>` : ''}</div>` : ''}
+    ${topZone ? `<div class="stream-summary-insight">Чаще всего вы отмечали область: <em>${escapeAccessText(topZone.label)}</em>${topSens ? `, ощущение — <em>${escapeAccessText(topSens.label.toLowerCase())}</em>` : ''}</div>` : ''}
   </div>`;
 }
 
@@ -2248,6 +2249,7 @@ function renderAiDraftStatus() {
   window.AiDelivery?.render();
 }
 function clearPrivateConversationState() {
+  window.FormMessages?.clearAll();
   window.MeetingPanel?.invalidate();
   window.SaveStatus?.invalidate();
   window.PathDynamics?.reset();
@@ -3158,6 +3160,7 @@ function closeQuestionnaire() {
 // ─── Рендер блока ────────────────────────────────────────────────────────
 
 function renderQBlock() {
+  window.FormMessages?.clear('q-send-error');
   const block = Q_BLOCKS[qStep];
   const total = Q_BLOCKS.length;
 
@@ -3390,8 +3393,9 @@ async function submitQuestionnaire() {
     }
   }
   qSubmitting = true;
+  window.FormMessages?.clear('q-send-error');
   const nextBtn = document.getElementById('q-next-btn');
-  if (nextBtn) { nextBtn.disabled = true; nextBtn.textContent = 'Отправляем…'; }
+  if (nextBtn) { nextBtn.disabled = true; nextBtn.textContent = 'Отправляем…'; nextBtn.setAttribute('aria-busy', 'true'); }
 
   try {
     const savedPre = await Api.saveQuestionnairePre(identity.streamId, { ...qAnswers });
@@ -3426,9 +3430,11 @@ async function submitQuestionnaire() {
     renderProfileTab();
   } catch {
     if (!current()) return;
-    if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = 'Отправить'; }
-    alert('Не удалось отправить анкету. Проверьте соединение и попробуйте ещё раз.');
-  } finally { qSubmitting = false; }
+    if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = qStep === Q_BLOCKS.length - 1 ? 'Повторить отправку' : 'Далее'; }
+    if (currentScreen === 'questionnaire' && qFormIdentity === identity) {
+      window.FormMessages?.show('q-send-error', document.querySelector('#screen-questionnaire .questionnaire-footer'), 'Отправка анкеты не подтверждена. Ответы остались в форме. Попробуйте ещё раз.');
+    }
+  } finally { qSubmitting = false; nextBtn?.removeAttribute('aria-busy'); }
 }
 
 // ─── Баннер согласия на обработку данных ─────────────────────────────────
@@ -3527,11 +3533,12 @@ function persistFeedbackDraft(changed = false) {
   if (changed || !feedbackOperation) feedbackOperation = crypto.randomUUID();
   const durable = Storage.saveFormDraft('feedback', { text: document.getElementById('fb-text')?.value || '', rating: feedbackRating, operationId: feedbackOperation, streamId: document.getElementById('fb-stream')?.value || null, kind: document.getElementById('fb-kind')?.value || 'feedback', needsReply: document.getElementById('fb-reply')?.value === 'yes' });
   let status = document.getElementById('fb-draft-status');
-  if (!status) { status = document.createElement('p'); status.id = 'fb-draft-status'; status.setAttribute('role','status'); document.getElementById('feedback-form-wrap')?.append(status); }
+  if (!status) { status = document.createElement('p'); status.id = 'fb-draft-status'; status.setAttribute('role','status'); document.getElementById('feedback-form-wrap')?.insertBefore(status, document.getElementById('fb-submit')); }
   status.textContent = durable ? 'Черновик сохранён.' : 'Черновик пока только в этом окне. Не закрывайте его до отправки.';
 }
 
 function openFeedback() {
+  window.FormMessages?.clear('fb-send-error');
   feedbackIdentity = { owner: Api.userId, generation: Api._authGeneration };
   const draft = Storage.getFormDraft('feedback');
   feedbackRating = draft?.rating || 0;
@@ -3545,8 +3552,9 @@ function openFeedback() {
     s.setAttribute('aria-pressed', String(Number(s.dataset.star) === feedbackRating));
     s.setAttribute('aria-label', 'Оценка ' + s.dataset.star + ' из 5');
   });
+  syncFeedbackRating();
   const submit = document.getElementById('fb-submit');
-  if (submit) { submit.disabled = true; submit.textContent = 'Отправить'; }
+  if (submit) { submit.disabled = true; submit.textContent = 'Отправить сообщение'; }
   const formWrap = document.getElementById('feedback-form-wrap');
   const thanks   = document.getElementById('feedback-thanks');
   if (formWrap) formWrap.style.display = '';
@@ -3562,6 +3570,13 @@ function openFeedback() {
   goTo('feedback');
 }
 
+function syncFeedbackRating() {
+  const clear = document.getElementById('fb-clear-rating');
+  if (clear) clear.hidden = !feedbackRating;
+  const status = document.getElementById('fb-rating-status');
+  if (status) status.textContent = feedbackRating ? 'Ваша оценка: ' + feedbackRating + ' из 5.' : 'Сообщение можно отправить без оценки.';
+}
+
 function initFeedback() {
   document.getElementById('open-feedback-btn')?.addEventListener('click', openFeedback);
 
@@ -3569,6 +3584,7 @@ function initFeedback() {
   stars.forEach(star => {
     star.addEventListener('click', () => {
       feedbackRating = Number(star.dataset.star);
+      syncFeedbackRating();
       stars.forEach(s => s.setAttribute('aria-pressed', String(Number(s.dataset.star) === feedbackRating)));
       persistFeedbackDraft(true);
       stars.forEach(s => {
@@ -3579,8 +3595,15 @@ function initFeedback() {
     });
   });
 
+  document.getElementById('fb-clear-rating')?.addEventListener('click', () => {
+    feedbackRating = 0;
+    stars.forEach(star => { star.classList.remove('fb-star--active'); star.setAttribute('aria-pressed', 'false'); });
+    syncFeedbackRating(); persistFeedbackDraft(true);
+    stars[0]?.focus({ preventScroll: true });
+  });
   const text = document.getElementById('fb-text');
   text?.addEventListener('input', () => {
+    window.FormMessages?.clear('fb-send-error');
     const counter = document.getElementById('fb-counter');
     if (counter) counter.textContent = String(text.value.length);
     persistFeedbackDraft(true);
@@ -3597,6 +3620,7 @@ function updateFeedbackSubmitState() {
   if (!submit) return;
   const hasText = (text?.value || '').trim().length > 0;
   submit.disabled = feedbackPending || !hasText;
+  if (!feedbackPending) submit.textContent = document.getElementById('fb-send-error') ? 'Повторить отправку' : 'Отправить сообщение';
 }
 
 async function submitFeedback() {
@@ -3605,9 +3629,12 @@ async function submitFeedback() {
   const value = (text?.value || '').trim();
   if (!value || feedbackPending || !feedbackIdentity || feedbackIdentity.owner !== Api.userId || feedbackIdentity.generation !== Api._authGeneration) return;
   persistFeedbackDraft();
+  const formIdentity = feedbackIdentity;
   const identity = { ...feedbackIdentity }, operationId = feedbackOperation, rating = feedbackRating;
   const current = () => Api.userId === identity.owner && Api._authGeneration === identity.generation && !Api.clubBlocked;
   feedbackPending = true;
+  window.FormMessages?.clear('fb-send-error');
+  submit.setAttribute('aria-busy', 'true');
 
   submit.disabled = true;
   submit.textContent = 'Отправляем…';
@@ -3625,11 +3652,12 @@ async function submitFeedback() {
     document.getElementById('feedback-thanks').style.display = '';
   } catch (e) {
     if (!current()) return;
-    submit.disabled = false;
-    submit.textContent = 'Отправить';
-    alert('Не удалось отправить отзыв. Попробуйте ещё раз.');
+    if (feedbackIdentity === formIdentity && feedbackOperation === operationId && currentScreen === 'feedback') {
+      window.FormMessages?.show('fb-send-error', document.getElementById('feedback-form-wrap'), 'Отправка сообщения не подтверждена. Текст остался в форме. Попробуйте ещё раз.', submit);
+    }
   } finally {
     feedbackPending = false;
-    if (current()) { submit.textContent = 'Отправить'; updateFeedbackSubmitState(); }
+    submit.removeAttribute('aria-busy');
+    if (current()) updateFeedbackSubmitState();
   }
 }

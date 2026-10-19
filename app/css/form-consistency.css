@@ -1,0 +1,29 @@
+/* J-APP-147: shared recovery and compact form details in the accepted visual system. */
+.form-message {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+  color: var(--color-error);
+  font: 500 13px/1.5 var(--font-body);
+  text-align: left;
+  overflow-wrap: anywhere;
+  scroll-margin-block: var(--space-3);
+}
+.form-message:focus-visible { outline: 2px solid var(--color-action); outline-offset: 3px; }
+#screen-questionnaire .questionnaire-footer { flex-wrap: wrap; }
+#screen-questionnaire .questionnaire-footer .form-message { flex: 0 0 100%; box-sizing: border-box; }
+#screen-feedback #fb-send-error { margin-top: var(--space-4); }
+:is(#q-draft-status, #fb-draft-status) { margin: var(--space-4) 0 0; color: var(--color-muted); font: 400 12px/1.5 var(--font-body); }
+#screen-feedback > .screen-header { display: flex; align-items: center; gap: var(--space-3); }
+#screen-feedback .screen-header .screen-title { margin: 0; min-width: 0; }
+#screen-feedback .screen-back { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; padding: 10px; border: 1px solid var(--color-line); border-radius: 50%; background: var(--color-paper); color: var(--color-action); }
+#screen-feedback .screen-back svg { width: 20px; height: 20px; }
+#screen-feedback .screen-scroll { scroll-padding-bottom: calc(var(--bottom-h) + var(--space-4)); }
+#screen-feedback .fb-rating-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2); min-height: 44px; }
+#screen-feedback .fb-rating-heading .fb-section-label { margin: 0; }
+#fb-clear-rating { min-height: 44px; padding: var(--space-2) 0; border: 0; background: transparent; color: var(--color-action); font: 500 12px/1.5 var(--font-body); text-decoration: underline; text-underline-offset: 3px; }
+#fb-clear-rating:focus-visible { outline: 2px solid var(--color-action); outline-offset: 3px; border-radius: var(--radius-sm); }
+#screen-feedback .fb-rating-status { min-height: 18px; margin: var(--space-2) 0 var(--space-4); color: var(--color-muted); font: 400 12px/1.5 var(--font-body); }
+#screen-feedback .fb-stars { margin-bottom: 0; }
