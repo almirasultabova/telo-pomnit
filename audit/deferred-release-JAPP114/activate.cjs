@@ -41,4 +41,3 @@ function main(){
  }
 }
 try{main()}catch(e){console.error(e.message);process.exitCode=1}
-
