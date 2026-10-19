@@ -1,0 +1,12 @@
+{
+  "attached": true,
+  "meetingDate": "2026-10-15",
+  "confirmedFirstDiscussion": true,
+  "onlyRecordingFieldsChanged": true,
+  "idempotent": false,
+  "passcodePreservedExactly": true,
+  "privateBeforeSaved": true,
+  "apiMappingVerified": true,
+  "notifications": 0,
+  "openai": 0
+}

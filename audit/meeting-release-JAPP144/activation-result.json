@@ -1,0 +1,16 @@
+{
+  "activated": true,
+  "backup": "/root/telo-backups/meeting-JAPP144-2026-10-19T195533292Z",
+  "publicFiles": 94,
+  "backendFiles": 3,
+  "additiveMigration": "20261019193000_meeting_recordings",
+  "journalBefore": 4,
+  "journalAfter": 5,
+  "oldJournalPreserved": true,
+  "health": true,
+  "unauthorizedStatus": 401,
+  "protectedFilesUnchanged": 4,
+  "notifications": 0,
+  "openai": 0,
+  "testWritesToProduction": 0
+}
