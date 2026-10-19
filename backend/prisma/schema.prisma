@@ -133,6 +133,7 @@ model DiaryEntry {
   stream Stream? @relation(fields: [streamId], references: [id])
 
   @@unique([userId, clientId])
+  @@index([userId, createdAt(sort: Desc), id(sort: Desc)], map: "diary_entries_user_created_id_idx")
   @@map("diary_entries")
 }
 
