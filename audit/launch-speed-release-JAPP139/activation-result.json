@@ -1,0 +1,21 @@
+{
+  "backup": "/root/telo-backups/launch-speed-JAPP139-2026-10-19T175812479Z",
+  "publicFiles": 92,
+  "changedPublic": [
+    "css/launch.css",
+    "js/launch.js",
+    "media/app/launch/flower-fast-standard.mp4",
+    "media/app/launch/flower-fast-tall.mp4",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}

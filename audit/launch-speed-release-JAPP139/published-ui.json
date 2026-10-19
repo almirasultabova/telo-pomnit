@@ -1,0 +1,144 @@
+[
+  {
+    "engine": "chromium",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "return",
+    "variant": "native",
+    "passed": true,
+    "source": "https://tg-app-telo-pomnit.vercel.app/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+    "video": {
+      "time": 0.648861,
+      "width": 540,
+      "height": 1169,
+      "muted": true,
+      "inline": true,
+      "src": "https://tg-app-telo-pomnit.vercel.app/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+      "ready": 4,
+      "error": null
+    },
+    "realParticipantWrites": 0,
+    "apiMocked": true
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "first",
+    "variant": "native",
+    "passed": true,
+    "source": "https://tg-app-telo-pomnit.vercel.app/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+    "video": {
+      "time": 0.285779,
+      "width": 540,
+      "height": 1169,
+      "muted": true,
+      "inline": true,
+      "src": "https://tg-app-telo-pomnit.vercel.app/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+      "ready": 4,
+      "error": null
+    },
+    "realParticipantWrites": 0,
+    "apiMocked": true
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "first",
+    "variant": "denied",
+    "passed": true,
+    "source": null,
+    "video": null,
+    "realParticipantWrites": 0,
+    "apiMocked": true
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "return",
+    "variant": "blocked",
+    "passed": true,
+    "source": null,
+    "video": null,
+    "realParticipantWrites": 0,
+    "apiMocked": true
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://app.telo-pomnit.ru/",
+    "mode": "return",
+    "variant": "native",
+    "passed": true,
+    "source": "https://app.telo-pomnit.ru/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+    "video": {
+      "time": 0.640248,
+      "width": 540,
+      "height": 1169,
+      "muted": true,
+      "inline": true,
+      "src": "https://app.telo-pomnit.ru/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+      "ready": 4,
+      "error": null
+    },
+    "realParticipantWrites": 0,
+    "apiMocked": true
+  },
+  {
+    "engine": "chromium",
+    "origin": "https://app.telo-pomnit.ru/",
+    "mode": "first",
+    "variant": "native",
+    "passed": true,
+    "source": "https://app.telo-pomnit.ru/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+    "video": {
+      "time": 0.295072,
+      "width": 540,
+      "height": 1169,
+      "muted": true,
+      "inline": true,
+      "src": "https://app.telo-pomnit.ru/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+      "ready": 4,
+      "error": null
+    },
+    "realParticipantWrites": 0,
+    "apiMocked": true
+  },
+  {
+    "engine": "webkit",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "return",
+    "variant": "native",
+    "passed": true,
+    "source": "https://tg-app-telo-pomnit.vercel.app/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+    "video": {
+      "time": 0.4989187,
+      "width": 438,
+      "height": 950,
+      "muted": true,
+      "inline": true,
+      "src": "https://tg-app-telo-pomnit.vercel.app/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+      "ready": 4,
+      "error": null
+    },
+    "realParticipantWrites": 0,
+    "apiMocked": true
+  },
+  {
+    "engine": "webkit",
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "first",
+    "variant": "native",
+    "passed": true,
+    "source": "https://tg-app-telo-pomnit.vercel.app/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+    "video": {
+      "time": 0.222623,
+      "width": 438,
+      "height": 950,
+      "muted": true,
+      "inline": true,
+      "src": "https://tg-app-telo-pomnit.vercel.app/media/app/launch/flower-fast-tall.mp4?v=JAPP138",
+      "ready": 4,
+      "error": null
+    },
+    "realParticipantWrites": 0,
+    "apiMocked": true
+  }
+]

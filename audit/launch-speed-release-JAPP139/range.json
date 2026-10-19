@@ -1,0 +1,44 @@
+[
+  {
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "file": "flower-fast-standard.mp4",
+    "status": 206,
+    "contentRange": "bytes 0-63/561592",
+    "matches": true
+  },
+  {
+    "origin": "https://tg-app-telo-pomnit.vercel.app/",
+    "file": "flower-fast-tall.mp4",
+    "status": 206,
+    "contentRange": "bytes 0-63/606111",
+    "matches": true
+  },
+  {
+    "origin": "https://app.telo-pomnit.ru/",
+    "file": "flower-fast-standard.mp4",
+    "status": 206,
+    "contentRange": "bytes 0-63/561592",
+    "matches": true
+  },
+  {
+    "origin": "https://app.telo-pomnit.ru/",
+    "file": "flower-fast-tall.mp4",
+    "status": 206,
+    "contentRange": "bytes 0-63/606111",
+    "matches": true
+  },
+  {
+    "origin": "https://app.telo-pomnit.ru/recovery/j293/",
+    "file": "flower-fast-standard.mp4",
+    "status": 206,
+    "contentRange": "bytes 0-63/561592",
+    "matches": true
+  },
+  {
+    "origin": "https://app.telo-pomnit.ru/recovery/j293/",
+    "file": "flower-fast-tall.mp4",
+    "status": 206,
+    "contentRange": "bytes 0-63/606111",
+    "matches": true
+  }
+]

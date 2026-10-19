@@ -1,0 +1,92 @@
+[
+  {
+    "engine": "chromium",
+    "scenario": "success",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "parallel-load",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "blocked-storage",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "returning-user",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "fresh-user",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "network-failure",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "body-timeout",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "runtime-error",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "scenario": "access-denied",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "success",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "parallel-load",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "blocked-storage",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "returning-user",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "fresh-user",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "network-failure",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "body-timeout",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "runtime-error",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "scenario": "access-denied",
+    "passed": true
+  }
+]

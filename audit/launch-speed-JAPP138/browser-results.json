@@ -1,0 +1,402 @@
+[
+  {
+    "engine": "chromium",
+    "variant": "before",
+    "scenario": "slow",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": "3348",
+    "release": null,
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "contain",
+    "overflow": false,
+    "videoRequestMs": 2391,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "chromium",
+    "variant": "after",
+    "scenario": "slow",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": "2068",
+    "release": "8104",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": 329,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "chromium",
+    "variant": "after",
+    "scenario": "return",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": "457",
+    "release": "3010",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": 515,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "chromium",
+    "variant": "after",
+    "scenario": "blocked-return",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": null,
+    "release": "3653",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": 515,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "chromium",
+    "variant": "after",
+    "scenario": "missing",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": null,
+    "release": "7158",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": 500,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "chromium",
+    "variant": "after",
+    "scenario": "offline",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": null,
+    "release": "601",
+    "home": false,
+    "onboarding": false,
+    "error": true,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": 547,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "chromium",
+    "variant": "after",
+    "scenario": "denied",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": null,
+    "release": "652",
+    "home": false,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": 532,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "chromium",
+    "variant": "after",
+    "scenario": "nomemory",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": "673",
+    "release": "6706",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": 563,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "chromium",
+    "variant": "after",
+    "scenario": "onboarding",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": "296",
+    "release": "6314",
+    "home": false,
+    "onboarding": true,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": 343,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "chromium",
+    "variant": "before",
+    "scenario": "first",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": "522",
+    "release": "3208",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "contain",
+    "overflow": false,
+    "videoRequestMs": 766,
+    "h264": "probably",
+    "seekedForCapture": true
+  },
+  {
+    "engine": "chromium",
+    "variant": "before",
+    "scenario": "first",
+    "viewport": [
+      390,
+      724
+    ],
+    "playing": "727",
+    "release": "3501",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "contain",
+    "overflow": false,
+    "videoRequestMs": 1297,
+    "h264": "probably",
+    "seekedForCapture": true
+  },
+  {
+    "engine": "chromium",
+    "variant": "after",
+    "scenario": "first",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": "760",
+    "release": "3501",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": 656,
+    "h264": "probably",
+    "seekedForCapture": true
+  },
+  {
+    "engine": "chromium",
+    "variant": "after",
+    "scenario": "first",
+    "viewport": [
+      390,
+      724
+    ],
+    "playing": "691",
+    "release": "3407",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": 781,
+    "h264": "probably",
+    "seekedForCapture": true
+  },
+  {
+    "engine": "webkit",
+    "variant": "after",
+    "scenario": "blocked-return",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": null,
+    "release": "3467",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": null,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "webkit",
+    "variant": "after",
+    "scenario": "return",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": "1059",
+    "release": "3778",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": null,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "webkit",
+    "variant": "after",
+    "scenario": "missing",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": "1548",
+    "release": "7777",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": null,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "webkit",
+    "variant": "after",
+    "scenario": "denied",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": null,
+    "release": "588",
+    "home": false,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": null,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "webkit",
+    "variant": "after",
+    "scenario": "offline",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": null,
+    "release": "655",
+    "home": false,
+    "onboarding": false,
+    "error": true,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": null,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "webkit",
+    "variant": "after",
+    "scenario": "nomemory",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": "808",
+    "release": "6983",
+    "home": true,
+    "onboarding": false,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": null,
+    "h264": "probably",
+    "seekedForCapture": false
+  },
+  {
+    "engine": "webkit",
+    "variant": "after",
+    "scenario": "onboarding",
+    "viewport": [
+      390,
+      950
+    ],
+    "playing": "478",
+    "release": "6640",
+    "home": false,
+    "onboarding": true,
+    "error": false,
+    "inert": false,
+    "fit": "cover",
+    "overflow": false,
+    "videoRequestMs": null,
+    "h264": "probably",
+    "seekedForCapture": false
+  }
+]
