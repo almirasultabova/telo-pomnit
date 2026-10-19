@@ -1,0 +1,17 @@
+[
+  {
+    "url": "https://api.telo-pomnit.ru/diary/days",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/api/diary/days",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/api/diary/days",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "installedBackendHashMatchesApprovedJ121": true
+  }
+]

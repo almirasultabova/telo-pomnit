@@ -1,0 +1,10 @@
+--- a/backend/prisma/schema.prisma
++++ b/backend/prisma/schema.prisma
+@@ -135,0 +136 @@
++  @@index([userId, createdAt(sort: Desc), id(sort: Desc)], map: "diary_entries_user_created_id_idx")
+--- /dev/null
++++ b/backend/prisma/migrations/20261019170000_diary_owner_date_index/migration.sql
+@@ -0,0 +1,3 @@
++-- Run outside a transaction. No data rewrite or new uniqueness constraint.
++CREATE INDEX CONCURRENTLY "diary_entries_user_created_id_idx"
++ON "diary_entries" ("user_id", "created_at" DESC, "id" DESC);

@@ -1,0 +1,18 @@
+{
+  "activated": true,
+  "backup": "/root/telo-backups/diary-index-JAPP124-2026-10-19T135613147Z",
+  "concurrentIndexValid": true,
+  "migrationRecorded": true,
+  "legacyLedgerRowsPreserved": 2,
+  "publicFiles": 88,
+  "changedPublic": 0,
+  "backendFiles": 2,
+  "backendRestarted": false,
+  "health": true,
+  "unauthorizedStatus": 401,
+  "protectedFilesUnchanged": true,
+  "participantDML": 0,
+  "testWritesToProduction": 0,
+  "openai": 0,
+  "notifications": 0
+}

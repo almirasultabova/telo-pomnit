@@ -1,0 +1,42 @@
+{
+  "migrationRows": [
+    {
+      "name": "20261015220000_stream_overview",
+      "checksum": "261d1b7813aa5c27052f50d07a124083f2a3da346b1e76c47328627d97988679",
+      "finished": true,
+      "rolledBack": false
+    },
+    {
+      "name": "20261017143000_app_visit_streak",
+      "checksum": "09cddca415f0dad11e0cd3a065465d73d2129aadcb4c72c6d1e875d33240c1f0",
+      "finished": true,
+      "rolledBack": false
+    }
+  ],
+  "migrationFiles": [
+    "20261013120000_reliable_reactions_feedback",
+    "20261015120000_welcome_email_claim",
+    "20261015130000_reminder_attempt_days",
+    "20261015220000_stream_overview",
+    "20261017143000_app_visit_streak",
+    "20261018163000_after_meeting_notes",
+    "20261018172000_diary_important",
+    "20261018194000_after_meeting_steps",
+    "20261018202000_discussion_notes",
+    "20261018214000_ai_chat_operations"
+  ],
+  "indexes": [
+    {
+      "indexname": "diary_entries_pkey",
+      "indexdef": "CREATE UNIQUE INDEX diary_entries_pkey ON public.diary_entries USING btree (id)"
+    },
+    {
+      "indexname": "diary_entries_user_id_client_id_key",
+      "indexdef": "CREATE UNIQUE INDEX diary_entries_user_id_client_id_key ON public.diary_entries USING btree (user_id, client_id)"
+    }
+  ],
+  "diaryRelationBytes": 49152,
+  "availableKiB": 21618396,
+  "schemaHash": "a388572905762b7be701c585fe305ea0822a2936b2a2f1fe78bc0ba4bb1216f0",
+  "prismaVersion": "5.22.0"
+}

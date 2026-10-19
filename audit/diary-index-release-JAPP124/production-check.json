@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "diaryIndexValidAndReady": true,
+  "diaryMigrationRecorded": true,
+  "publishedSchemaAndMigrationHashesMatch": true,
+  "nextCheckinIndexNotInstalled": true,
+  "participantRowsRead": 0,
+  "productionTestWrites": 0
+}

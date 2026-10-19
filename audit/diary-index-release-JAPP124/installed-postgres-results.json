@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "groups": 14,
+  "nativePostgres": true,
+  "nativePrisma": true,
+  "fixtureOwnerRowsBefore": 10120,
+  "beforePlan": [
+    {
+      "type": "Limit",
+      "index": null,
+      "actualRows": 91,
+      "removedByFilter": 0
+    },
+    {
+      "type": "Sort",
+      "index": null,
+      "actualRows": 91,
+      "removedByFilter": 0
+    },
+    {
+      "type": "Seq Scan",
+      "index": null,
+      "actualRows": 10120,
+      "removedByFilter": 19
+    }
+  ],
+  "afterPlan": [
+    {
+      "type": "Limit",
+      "index": null,
+      "actualRows": 91,
+      "removedByFilter": 0
+    },
+    {
+      "type": "Index Scan",
+      "index": "diary_entries_user_created_id_idx",
+      "actualRows": 91,
+      "removedByFilter": 0
+    }
+  ],
+  "sortRemoved": true,
+  "indexScanRows": 91,
+  "responseBodiesUnchanged": true,
+  "writeAndIdempotencyPreserved": true,
+  "validConcurrentIndex": true,
+  "rollbackAndReapply": true,
+  "prismaValidateAndDiff": true,
+  "indexBytes": 1179648,
+  "migrationResolveVerified": true,
+  "legacyLedgerPreserved": true,
+  "installed": true,
+  "productionSchemaChanged": false,
+  "productionTestWrites": 0,
+  "externalCalls": 0,
+  "published": false,
+  "sourceHashes": {
+    "backend/prisma/schema.prisma": "9c21fa99ca4ada00c2cd920f60981ee2ed61b38fd0d168fa957f234515b1133f",
+    "backend/prisma/migrations/20261019170000_diary_owner_date_index/migration.sql": "322f124acfba80364d1b431507e3230ca13b42e07f836928d10549ac185c4d36"
+  }
+}

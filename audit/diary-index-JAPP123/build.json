@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "isolatedBuild": "C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP123-build-mu7vy19j",
+  "sourceHashes": {
+    "backend/prisma/schema.prisma": "9c21fa99ca4ada00c2cd920f60981ee2ed61b38fd0d168fa957f234515b1133f",
+    "backend/prisma/migrations/20261019170000_diary_owner_date_index/migration.sql": "322f124acfba80364d1b431507e3230ca13b42e07f836928d10549ac185c4d36"
+  },
+  "publishedBase": "be9d3dd429cbc2848e6c86fc0af4c2fff9a0f69a",
+  "changedPublic": [],
+  "publicFiles": 88,
+  "migrationCandidate": true,
+  "productionMigrationApplied": false,
+  "published": false
+}
