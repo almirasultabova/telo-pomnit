@@ -1,0 +1,139 @@
+--- a/app/js/app.js
++++ b/app/js/app.js
+@@ -295,0 +296 @@
++    scheduleDiaryDayRefresh();
+@@ -296,0 +298 @@
++      if (activeTab === 'diary' && Api.isAuthed() && !Api.clubBlocked) { void Storage.ensureDiaryToday(); renderDiaryTab(); }
+@@ -432 +434 @@
+-  if (tab === 'diary')   { void Storage.ensureDiaryHistory(); renderDiaryTab(); }
++  if (tab === 'diary')   { void Storage.ensureDiaryToday(); renderDiaryTab(); }
+@@ -434,0 +437 @@
++  scheduleDiaryDayRefresh();
+@@ -543,0 +547,11 @@
++let diaryDayTimer = null;
++function scheduleDiaryDayRefresh() {
++  clearTimeout(diaryDayTimer);
++  if (activeTab !== 'diary' || document.hidden || !Api.isAuthed() || Api.clubBlocked) return;
++  const midnight = Date.parse(Storage.checkinDayKey(new Date())+'T00:00:00+03:00')+86400000;
++  diaryDayTimer = setTimeout(() => {
++    if (activeTab === 'diary' && Api.isAuthed() && !Api.clubBlocked) { void Storage.ensureDiaryToday(); renderDiaryTab(); }
++    scheduleDiaryDayRefresh();
++  }, Math.max(250, midnight-Date.now()+50));
++}
++
+@@ -553,2 +567,2 @@
+-  if (['idle', 'loading', 'partial'].includes(Storage.getHistoryLoadStatus().diary)) {
+-    const notice = document.createElement('p'); notice.id = 'diary-history-loading'; notice.className = 'access-notice'; notice.setAttribute('role', 'status'); notice.textContent = 'Загружаем ваши наблюдения…';
++  if (['idle', 'loading'].includes(Storage.getDiaryTodayStatus())) {
++    const notice = document.createElement('p'); notice.id = 'diary-history-loading'; notice.className = 'access-notice'; notice.setAttribute('role', 'status'); notice.textContent = 'Загружаем записи за сегодня…';
+@@ -565 +579 @@
+-  if (!fields.some(field => status[field] === 'failed')) return;
++  if (!(scope === 'diary' ? Storage.getDiaryTodayStatus() === 'failed' : fields.some(field => status[field] === 'failed'))) return;
+@@ -568 +582,3 @@
+-  text.textContent = 'Не удалось обновить историю с сервера. Здесь показаны доступные записи с устройства; пустой список ещё не означает, что записей нет.';
++  text.textContent = scope === 'diary'
++    ? 'Не удалось загрузить все записи за сегодня. Здесь показаны доступные записи с устройства; пустой список ещё не означает, что записей нет.'
++    : 'Не удалось обновить историю с сервера. Здесь показаны доступные записи с устройства; пустой список ещё не означает, что записей нет.';
+@@ -574 +590,4 @@
+-    try { await Storage.initFromApi({ fields: fields.filter(kind => Storage.getHistoryLoadStatus()[kind] === 'failed') }); } catch {} finally {
++    try {
++      if (scope === 'diary') await Storage.ensureDiaryToday({ retry: true });
++      else await Storage.initFromApi({ fields: fields.filter(kind => Storage.getHistoryLoadStatus()[kind] === 'failed') });
++    } catch {} finally {
+@@ -610 +629 @@
+-        <div class="today-empty-sub">Выберите область тела и ощущение</div>
++        <div class="today-empty-sub">${Storage.getDiaryTodayStatus() === 'loaded' ? 'Выберите область тела и ощущение' : 'Записи за сегодня ещё не загружены. Можно добавить новое наблюдение.'}</div>
+--- a/app/js/api.js
++++ b/app/js/api.js
+@@ -150,0 +151,7 @@
++  async getDiaryDay(day) {
++    if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || !Number.isFinite(Date.parse(day)) || new Date(day+'T00:00:00Z').toISOString().slice(0,10) !== day) throw Object.assign(new Error('Неверная дата наблюдений'), { code: 'INVALID_HISTORY' });
++    const from = Date.parse(day+'T00:00:00+03:00'), to = from + 86400000 - 1;
++    const rows = await this._getAll('/diary?from='+encodeURIComponent(new Date(from).toISOString())+'&to='+encodeURIComponent(new Date(to).toISOString()), 90);
++    if (rows.some(row => !Number.isFinite(Date.parse(row.date || row.createdAt)) || Date.parse(row.date || row.createdAt) < from || Date.parse(row.date || row.createdAt) > to)) throw Object.assign(new Error('Неверный ответ истории'), { code: 'INVALID_HISTORY' });
++    return rows;
++  },
+@@ -165 +172 @@
+-      const result = await this._request('GET', path + '?limit=' + pageSize + (offset ? '&offset=' + offset : ''));
++      const result = await this._request('GET', path + (path.includes('?') ? '&' : '?') + 'limit=' + pageSize + (offset ? '&offset=' + offset : ''));
+--- a/app/js/storage.js
++++ b/app/js/storage.js
+@@ -38,0 +39,2 @@
++  _diaryToday: new Map(),
++  _diaryTodayLoading: new Map(),
+@@ -47,0 +50 @@
++    this._diaryToday.clear();
+@@ -54,0 +58 @@
++    this._diaryToday.clear();
+@@ -319,0 +324,16 @@
++  getDiaryTodayStatus(now = new Date()) {
++    const state = this._diaryToday.get(this._userId);
++    return state?.generation === this._generation && state.day === this.checkinDayKey(now) ? state.status : 'idle';
++  },
++  _mergeDiaryHistory(entries, userId) {
++    const remote = entries.map(entry => ({ ...entry, date: entry.date || entry.createdAt, sensations: entry.sensations || [], note: entry.note || '', syncStatus: 'synced' }));
++    const merged = new Map(remote.map(row => [row.clientId || String(row.id), row]));
++    // A partial/day GET never deletes cached rows or replaces an unconfirmed write.
++    for (const row of this._state(userId)) {
++      const identity = row.clientId || String(row.id);
++      if (!merged.has(identity) || row.syncStatus !== 'synced') merged.set(identity, row);
++    }
++    this._writeDiary([...merged.values()], userId);
++    return remote;
++  },
++
+@@ -685,0 +706 @@
++    const diaryDay = this.checkinDayKey(new Date());
+@@ -728,5 +749 @@
+-          const remote = entries.map(entry => ({
+-            ...entry, date: entry.date || entry.createdAt,
+-            sensations: entry.sensations || [], note: entry.note || '', syncStatus: 'synced'
+-          }));
+-          const byIdentity = new Map(remote.map(row => [row.clientId || String(row.id), row]));
++          const remote = this._mergeDiaryHistory(entries, userId);
+@@ -734,4 +751,4 @@
+-          // Empty GET is never a deletion instruction; keep cache and pending rows.
+-          for (const row of this._state(userId)) {
+-            const identity = row.clientId || String(row.id);
+-            if (!byIdentity.has(identity)) byIdentity.set(identity, row);
++          const start = Date.parse(diaryDay+'T00:00:00+03:00');
++          if (remote.every(row => Number.isFinite(Date.parse(row.date))) &&
++              (!diaryRecent || value?.complete === true || remote.some(row => Date.parse(row.date) < start))) {
++            this._diaryToday.set(userId, { generation, day: diaryDay, status: 'loaded' });
+@@ -739 +755,0 @@
+-          this._writeDiary([...byIdentity.values()], userId);
+@@ -779,0 +796,34 @@
++  async ensureDiaryToday({ retry = false } = {}) {
++    const userId = this._userId, generation = this._generation;
++    const current = () => this._userId === userId && this._generation === generation && !this._deletedUsers.has(userId);
++    if (!userId || typeof Api === 'undefined' || !Api.isAuthed()) return;
++    const restoring = this._historyRestoring.get(userId+':'+generation+':diary');
++    if (restoring) await restoring;
++    if (!current()) return;
++    if (this.getDiaryTodayStatus() === 'loaded') return;
++    if (this.getDiaryTodayStatus() === 'failed' && !retry) return;
++    if (this.getHistoryLoadStatus().diary === 'idle' || (retry && this.getHistoryLoadStatus().diary === 'failed')) {
++      await this.initFromApi({ fields: ['diary'], recentDiary: true });
++    }
++    if (!current()) return;
++    if (this.getDiaryTodayStatus() === 'loaded') return;
++    const day = this.checkinDayKey(new Date()), key = userId+':'+generation+':'+day;
++    if (this._diaryTodayLoading.has(key)) return this._diaryTodayLoading.get(key);
++    const status = value => {
++      if (!current() || this.checkinDayKey(new Date()) !== day) return;
++      this._diaryToday.set(userId, { generation, day, status: value }); this._emit();
++    };
++    if (this.getHistoryLoadStatus().diary === 'failed' && this._diaryDays.get(userId)?.generation !== generation) { status('failed'); return; }
++    const attempt = (async () => {
++      await Promise.resolve();
++      try {
++        const rows = await Api.getDiaryDay(day);
++        if (!current() || this.checkinDayKey(new Date()) !== day) return;
++        this._mergeDiaryHistory(rows, userId); status('loaded');
++      } catch { if (this.getDiaryTodayStatus() !== 'loaded') status('failed'); }
++    })();
++    this._diaryTodayLoading.set(key, attempt); status('loading');
++    try { await attempt; } finally { this._diaryTodayLoading.delete(key); }
++    if (current() && this.checkinDayKey(new Date()) !== day) return this.ensureDiaryToday();
++  },
++

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "groups": 18,
+  "oldArchiveRows": 1000,
+  "newInitialRows": 91,
+  "additionalArchiveGETsOnDiary": 0,
+  "allToday95": true,
+  "globalPartialPreserved": true,
+  "queueAndACKPreserved": true,
+  "lateOwnerIgnored": true,
+  "midnightAndLateRead": true,
+  "pageFailureAndExplicitRetry": true,
+  "dayLimitNotFalseComplete": true,
+  "realNetwork": 0,
+  "sourceHashes": {
+    "app/js/api.js": "a2d5eea1b285b27ea0633864eff6b822faca3b454cb3f5cbb79823cb67865c58",
+    "app/js/storage.js": "de8223061a416737a615a71e71c538e2b6957fb962ef07f22b1ff0682c8d5789"
+  }
+}

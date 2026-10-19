@@ -1,0 +1,598 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "normal",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "today",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "search",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "path",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 180,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 270,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 360,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 450,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 540,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 630,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 720,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 810,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 900,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 990,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "normal",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "today",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "search",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "path",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 180,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 270,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 360,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 450,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 540,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 630,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 720,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 810,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 900,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 990,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "normal",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "today",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "search",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "path",
+    "passed": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 180,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 270,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 360,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 450,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 540,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 630,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 720,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 810,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 900,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 990,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://app.telo-pomnit.ru/",
+    "mode": "normal",
+    "passed": true,
+    "http2Disabled": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://app.telo-pomnit.ru/",
+    "mode": "today",
+    "passed": true,
+    "http2Disabled": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://app.telo-pomnit.ru/",
+    "mode": "search",
+    "passed": true,
+    "http2Disabled": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://app.telo-pomnit.ru/",
+    "mode": "path",
+    "passed": true,
+    "http2Disabled": true,
+    "dayReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 180,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 270,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 360,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 450,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 540,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 630,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 720,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 810,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 900,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 990,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  }
+]

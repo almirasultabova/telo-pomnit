@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "sourceHashes": {
+    "app/js/app.js": "910a1e664c4cb13f7dcc9b6b0e142183cf21dcba10b3a69549cfbe0ed546f6b6",
+    "app/js/api.js": "a2d5eea1b285b27ea0633864eff6b822faca3b454cb3f5cbb79823cb67865c58",
+    "app/js/storage.js": "de8223061a416737a615a71e71c538e2b6957fb962ef07f22b1ff0682c8d5789"
+  },
+  "publicFiles": 88,
+  "changed": [
+    "index.html",
+    "screen-review.html",
+    "js/api.js",
+    "js/app.js",
+    "js/storage.js"
+  ],
+  "backendChanges": 0,
+  "cashPanelUnchanged": true
+}
