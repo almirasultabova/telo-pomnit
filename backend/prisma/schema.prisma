@@ -221,6 +221,7 @@ model Checkin {
   user User @relation(fields: [userId], references: [id])
 
   @@unique([userId, dayKey])
+  @@index([userId, createdAt(sort: Desc), id(sort: Desc)], map: "checkins_user_created_id_idx")
   @@map("checkins")
 }
 
