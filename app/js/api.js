@@ -164,6 +164,12 @@ const Api = {
     if (!Array.isArray(entries) || entries.length > 91 || entries.some(row => !row?.id) || index?.timeZone !== 'Europe/Moscow' || !Array.isArray(index.days) || !index.days.every(validDay)) throw Object.assign(new Error('Неверный ответ истории'), { code: 'INVALID_HISTORY' });
     return { entries, days: index.days, complete: entries.length < 91 };
   },
+  async getPeriodHistory(kind, start, end) {
+    if (!['diary', 'checkins'].includes(kind) || !Number.isFinite(start) || !Number.isFinite(end) || end <= start || !Number.isFinite(new Date(start).getTime()) || !Number.isFinite(new Date(end).getTime())) throw Object.assign(new Error('Неверный период наблюдений'), { code: 'INVALID_HISTORY' });
+    const rows = await this._getAll('/'+kind+'?from='+encodeURIComponent(new Date(start).toISOString())+'&to='+encodeURIComponent(new Date(end-1).toISOString()), kind === 'diary' ? 90 : 200);
+    if (rows.some(row => !Number.isFinite(Date.parse(row.date || row.createdAt)) || Date.parse(row.date || row.createdAt) < start || Date.parse(row.date || row.createdAt) >= end)) throw Object.assign(new Error('Неверный ответ истории'), { code: 'INVALID_HISTORY' });
+    return rows;
+  },
   async _getAll(path, pageSize) {
     const generation = this._authGeneration, rows = [], seen = new Set();
     for (let page = 0; page < 100; page++) {

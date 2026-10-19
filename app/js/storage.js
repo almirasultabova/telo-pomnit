@@ -38,6 +38,9 @@ const Storage = {
   _diaryDays: new Map(),
   _diaryToday: new Map(),
   _diaryTodayLoading: new Map(),
+  _pathPeriods: new Map(),
+  _pathPeriodLoading: new Map(),
+  _activePathPeriod: null,
 
   // Only a server-confirmed identity may select a cache. Unowned legacy keys
   // stay untouched for explicit export; they are never attributed to this user.
@@ -48,6 +51,7 @@ const Storage = {
     this._generation++;
     this._diaryDays.clear();
     this._diaryToday.clear();
+    this._pathPeriods.clear(); this._activePathPeriod = null;
     this._historyLoads.set(this._userId, { diary: 'idle', checkins: 'idle', triggers: 'idle' });
     clearTimeout(this._retryTimer);
     clearTimeout(this._checkinRetryTimer);
@@ -56,6 +60,7 @@ const Storage = {
   clearUser() {
     this._diaryDays.clear();
     this._diaryToday.clear();
+    this._pathPeriods.clear(); this._activePathPeriod = null;
     this._userId = null;
     this._generation++;
     clearTimeout(this._retryTimer);
@@ -560,6 +565,21 @@ const Storage = {
   getCheckins() {
     return [...this._checkinState()].sort((a, b) => new Date(a.date) - new Date(b.date));
   },
+  _mergeCheckinHistory(entries, userId) {
+    const identity = row => row.dayKey || String(row.id);
+    const merged = new Map(entries.map(row => {
+      const normalized = { ...this._normalizeCheckin(row), syncStatus: 'synced' };
+      return [identity(normalized), normalized];
+    }));
+    const remoteDates = new Set([...merged.values()].map(row => new Date(row.date).getTime()));
+    for (const row of this._checkinState(userId)) {
+      if (row.legacyCache && remoteDates.has(new Date(row.date).getTime())) continue;
+      const remote = merged.get(identity(row));
+      // A read started before an edit must not replace its newer pending or ACK.
+      if (!remote || new Date(row.clientUpdatedAt).getTime() > new Date(remote.clientUpdatedAt || 0).getTime()) merged.set(identity(row), row);
+    }
+    this._writeCheckins([...merged.values()], userId);
+  },
   checkinDayKey(date) { return new Date(new Date(date).getTime() + 10800000).toISOString().slice(0, 10); },
   _checkinState(userId = this._userId) {
     if (this._deletedUsers.has(userId)) return [];
@@ -760,19 +780,7 @@ const Storage = {
         restore('checkins', () => recent ? Api.getRecentCheckins() : Api.getCheckins(), value => {
           const entries = Array.isArray(value) ? value : value?.entries;
           if (!Array.isArray(entries) || (!Array.isArray(value) && typeof value?.complete !== 'boolean')) throw new Error('INVALID_CHECKIN_HISTORY');
-          const identity = row => row.dayKey || String(row.id);
-          const merged = new Map(entries.map(row => {
-            const normalized = { ...this._normalizeCheckin(row), syncStatus: 'synced' };
-            return [identity(normalized), normalized];
-          }));
-          const remoteDates = new Set([...merged.values()].map(row => new Date(row.date).getTime()));
-          for (const row of this._checkinState(userId)) {
-            // Old timestamp cache identifies its original date, never fake scales.
-            if (row.legacyCache && remoteDates.has(new Date(row.date).getTime())) continue;
-            const remote = merged.get(identity(row));
-            if (!remote || (row.syncStatus !== 'synced' && new Date(row.clientUpdatedAt).getTime() > new Date(remote.clientUpdatedAt || 0).getTime())) merged.set(identity(row), row);
-          }
-          this._writeCheckins([...merged.values()], userId);
+          this._mergeCheckinHistory(entries, userId);
         }),
         restore('habitual', () => Api.getHabitualResult(), value => {
           const local = this.getHabitualResult();
@@ -825,6 +833,52 @@ const Storage = {
     this._diaryTodayLoading.set(key, attempt); status('loading');
     try { await attempt; } finally { this._diaryTodayLoading.delete(key); }
     if (current() && this.checkinDayKey(new Date()) !== day) return this.ensureDiaryToday();
+  },
+
+  _pathPeriodKey(scope) {
+    return scope?.id && Number.isFinite(scope.start) && Number.isFinite(scope.end) && scope.end > scope.start
+      ? JSON.stringify([this._userId, this._generation, scope.id, scope.start, scope.end]) : null;
+  },
+  getPathPeriodStatus(scope) {
+    return { diary: 'idle', checkins: 'idle', ...this._pathPeriods.get(this._pathPeriodKey(scope)) };
+  },
+  async ensurePathPeriod(scope, { fields = ['diary', 'checkins'], retry = false, refresh = false } = {}) {
+    const key = this._pathPeriodKey(scope), userId = this._userId, generation = this._generation;
+    this._activePathPeriod = key;
+    if (!key || !userId || typeof Api === 'undefined' || !Api.isAuthed()) return;
+    if (!Array.isArray(fields) || fields.some(kind => !['diary', 'checkins'].includes(kind))) throw new Error('INVALID_HISTORY_KIND');
+    const current = () => this._userId === userId && this._generation === generation && this._activePathPeriod === key && !this._deletedUsers.has(userId);
+    const status = (kind, value) => {
+      if (!current()) return;
+      this._pathPeriods.set(key, { ...this.getPathPeriodStatus(scope), [kind]: value }); this._emit();
+    };
+    await Promise.all(fields.map(async kind => {
+      const resource = key+':'+kind;
+      if (this._pathPeriodLoading.has(resource)) return this._pathPeriodLoading.get(resource);
+      const before = this.getPathPeriodStatus(scope)[kind];
+      if (!refresh && (before === 'loaded' || (before === 'failed' && !retry))) return;
+      const attempt = (async () => {
+        await Promise.resolve();
+        const restoring = this._historyRestoring.get(userId+':'+generation+':'+kind);
+        if (restoring) await restoring;
+        if (!current()) return;
+        try {
+          const rows = await Api.getPeriodHistory(kind, scope.start, scope.end);
+          if (!current()) return;
+          if (kind === 'diary') this._mergeDiaryHistory(rows, userId);
+          else this._mergeCheckinHistory(rows, userId);
+          status(kind, 'loaded');
+        } catch { status(kind, 'failed'); }
+      })();
+      this._pathPeriodLoading.set(resource, attempt); status(kind, 'loading');
+      try { await attempt; } finally {
+        this._pathPeriodLoading.delete(resource);
+        // An abandoned period is not complete; revisiting it must start a read.
+        if (this._userId === userId && this._generation === generation && this._activePathPeriod !== key) {
+          this._pathPeriods.set(key, { ...this.getPathPeriodStatus(scope), [kind]: 'idle' });
+        }
+      }
+    }));
   },
 
   async ensureDiaryHistory() {

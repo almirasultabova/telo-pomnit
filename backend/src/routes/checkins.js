@@ -13,8 +13,15 @@ async function checkinRoutes(app) {
     return db.checkin.findFirst({ where: { userId: request.user.id, createdAt: { gte: start, lt: new Date(start.getTime() + 86400000) } }, orderBy: { createdAt: 'desc' } })
   })
   app.get('/checkins', { preHandler: requireAuth, schema: { querystring: { type: 'object', properties: {
-    limit: { type: 'integer', minimum: 1, maximum: 1000, default: 30 }, offset: { type: 'integer', minimum: 0, default: 0 }
-  } } } }, request => db.checkin.findMany({ where: { userId: request.user.id }, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], take: request.query.limit, skip: request.query.offset }))
+    limit: { type: 'integer', minimum: 1, maximum: 1000, default: 30 }, offset: { type: 'integer', minimum: 0, default: 0 },
+    from: { type: 'string', format: 'date-time' }, to: { type: 'string', format: 'date-time' }
+  } } } }, (request, reply) => {
+    const { from, to, limit, offset } = request.query
+    if (from && to && Date.parse(from) > Date.parse(to)) return reply.code(400).send({ error: 'Проверьте даты периода.' })
+    return db.checkin.findMany({ where: { userId: request.user.id,
+      ...(from || to ? { createdAt: { ...(from && { gte: new Date(from) }), ...(to && { lte: new Date(to) }) } } : {})
+    }, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], take: limit, skip: offset })
+  })
   app.post('/checkins', { preHandler: requireAuth, schema: { body: {
     type: 'object', properties: {
       ...Object.fromEntries(SCALE_KEYS.map(key => [key, { type: 'integer', minimum: 1, maximum: 10 }])),

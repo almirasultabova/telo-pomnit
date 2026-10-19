@@ -217,6 +217,7 @@ function selectProgram(id) {
   if (!programAccess?.streams?.some(stream => stream.id === id)) return;
   if (id === selectedProgramId) return;
   selectedProgramId = id; heatmapWeek = 0;
+  if (activeTab === 'diag') void Storage.ensurePathPeriod(pathPeriodScope());
   checkAndShowQuestionnaire(id);
   renderMyPathTab(); renderNextMeeting(); renderZoomBtn(); renderSchedule(); renderMainTab();
 }
@@ -432,7 +433,7 @@ function switchTab(tab) {
   // Обновляем содержимое при переключении
   if (tab === 'main')    renderMainTab();
   if (tab === 'diary')   { void Storage.ensureDiaryToday(); renderDiaryTab(); }
-  if (tab === 'diag')    { void Storage.ensureDiaryHistory(); void Storage.ensureCheckinHistory(); renderMyPathTab(); }
+  if (tab === 'diag')    { void Storage.ensurePathPeriod(pathPeriodScope()); renderMyPathTab(); }
   if (tab === 'profile') {renderProfileTab();refreshProgramAccess().then(renderProfileTab);}
   scheduleDiaryDayRefresh();
   updateBackBtn();
@@ -575,7 +576,7 @@ function renderHistoryLoadWarning(container, fields, scope) {
   if (!container) return;
   const id = 'history-load-warning-' + scope;
   document.getElementById(id)?.remove();
-  const status = Storage.getHistoryLoadStatus?.() || {};
+  const status = scope === 'path' ? Storage.getPathPeriodStatus(pathPeriodScope()) : Storage.getHistoryLoadStatus?.() || {};
   if (!(scope === 'diary' ? Storage.getDiaryTodayStatus() === 'failed' : fields.some(field => status[field] === 'failed'))) return;
   const panel = document.createElement('div'); panel.id = id; panel.className = 'access-program'; panel.setAttribute('role', 'status');
   const text = document.createElement('p');
@@ -589,6 +590,7 @@ function renderHistoryLoadWarning(container, fields, scope) {
     retry.disabled = true;
     try {
       if (scope === 'diary') await Storage.ensureDiaryToday({ retry: true });
+      else if (scope === 'path') await Storage.ensurePathPeriod(pathPeriodScope(), { fields: fields.filter(kind => status[kind] === 'failed'), retry: true });
       else await Storage.initFromApi({ fields: fields.filter(kind => Storage.getHistoryLoadStatus()[kind] === 'failed') });
     } catch {} finally {
       if (!Api.clubBlocked && Api.isAuthed() && Storage.key('history_owner') === owner && Storage._generation === generation) {
@@ -1125,8 +1127,8 @@ function renderMyPathTab() {
         <div class="mypath-empty-sub">Здесь появятся области тела и ощущения из ваших записей. Можно начать с того, что вы чувствуете сейчас.</div><button class="btn btn--accent" id="path-first-observation" type="button">Почувствовать тело</button>
       </div>`);
 
-  const diaryReady = Storage.getHistoryLoadStatus().diary === 'loaded';
-  const shownAnalytics = !streamPeriod() || diaryReady ? analyticsHtml : '<section class="path-no-stream"><p role="status">' + (Storage.getHistoryLoadStatus().diary === 'failed' ? 'Не удалось обновить наблюдения. Сохранённые записи доступны в Дневнике.' : 'Загружаем наблюдения выбранного потока…') + '</p></section>';
+  const diaryStatus = Storage.getPathPeriodStatus(pathPeriodScope()).diary;
+  const shownAnalytics = !streamPeriod() || diaryStatus === 'loaded' ? analyticsHtml : '<section class="path-no-stream"><p role="status">' + (diaryStatus === 'failed' ? 'Не удалось обновить наблюдения. Сохранённые записи доступны в Дневнике.' : 'Загружаем наблюдения выбранного потока…') + '</p></section>';
   container.innerHTML = renderCheckinChart() + programPickerHTML() + streamStatusHTML() +
     `<button type="button" class="path-program-link" id="path-program-btn"><span>Мой поток</span><small>${Api.userRole === 'HOST' || Api.isClubAdmin ? 'Расписание' : 'Анкета и расписание'} · в Профиле →</small></button>` +
     '<section class="path-questionnaire" aria-label="Опрос привычных реакций">' + renderDiagBlock(diagResult) + '</section>' +
@@ -1414,11 +1416,15 @@ function scaleValue(row, key) {
   const value = row[key];
   return !row.legacyScale && Number.isInteger(value) && value >= 1 && value <= 10 ? value : null;
 }
+function pathPeriodScope() {
+  const period = streamPeriod();
+  return period ? { id: selectedProgramId, start: period.start, end: period.end } : null;
+}
 function pathDynamicsContext() {
   const allowed = !Api.clubBlocked && Api.isAuthed() && Api.userId === Storage._userId;
   return { allowed, scope: [Storage._userId, Storage._generation, selectedProgramId].join(':'),
     stream: currentProgram(), period: streamPeriod(), now: programNow(), scales: CHECKIN_SCALES,
-    rows: allowed ? selectedCheckins() : [], loadState: Storage.getHistoryLoadStatus?.().checkins === 'partial' ? 'loading' : Storage.getHistoryLoadStatus?.().checkins };
+    rows: allowed ? selectedCheckins() : [], loadState: Storage.getPathPeriodStatus(pathPeriodScope()).checkins };
 }
 function renderCheckinChart() {
   return window.PathDynamics?.render(pathDynamicsContext()) || '';
@@ -1429,7 +1435,7 @@ async function refreshPathDynamics(button, syncOnly) {
   if (button) button.disabled = true;
   try {
     if (syncOnly) await Storage.flushCheckinsPending();
-    else await Storage.initFromApi({ fields: ['checkins'] });
+    else await Storage.ensurePathPeriod(pathPeriodScope(), { fields: ['checkins'], retry: true, refresh: true });
   } catch {} finally {
     const current = owner === Storage._userId && generation === Storage._generation && scope === pathDynamicsContext().scope && !Api.clubBlocked && Api.isAuthed();
     if (current && button?.isConnected) button.disabled = false;
@@ -1639,7 +1645,7 @@ function applyProgramAccess(access) {
   heatmapWeek = 0;
   renderAccessNotice();
   renderMainTab();
-  if (activeTab === 'diag') renderMyPathTab();
+  if (activeTab === 'diag') { void Storage.ensurePathPeriod(pathPeriodScope()); renderMyPathTab(); }
   checkAndShowQuestionnaire(selectedProgramId);
 }
 function renderAccessNotice() {
