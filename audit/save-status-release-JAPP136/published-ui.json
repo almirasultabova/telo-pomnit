@@ -1,0 +1,326 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "queue",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "old diary item beyond two latest cards and latest checkin are both visible",
+      "device copies and two unsubmitted drafts are separate; text cannot execute HTML",
+      "copy contains all five original values and note without modifying data",
+      "failed send remains pending instead of claiming success",
+      "only server ACK removes queued entries; drafts remain byte-identical",
+      "retry uses existing two queues and makes no full-history reads",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "drafts",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "draft-only state offers Continue and no send button",
+      "both original forms restore drafts without POST",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "copy-denied",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "clipboard denial offers complete read-only text and never claims copy success",
+      "manual selection works and multiple copy fields have unique labels",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "temporary",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "actual full storage clearly separates memory-only text from durable copies",
+      "queue and draft old durable snapshots remain byte-identical on write failure",
+      "memory-only text can be copied before closing without server access",
+      "full-store reload restores original durable draft and queue without pretending lost memory survived",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "blocked",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "blocked localStorage getter does not crash list or falsely claim device saving",
+      "memory-only copy and explicit retry remain available while drafts stay unsubmitted",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "mode": "queue",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "old diary item beyond two latest cards and latest checkin are both visible",
+      "device copies and two unsubmitted drafts are separate; text cannot execute HTML",
+      "copy contains all five original values and note without modifying data",
+      "failed send remains pending instead of claiming success",
+      "only server ACK removes queued entries; drafts remain byte-identical",
+      "retry uses existing two queues and makes no full-history reads",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "mode": "drafts",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "draft-only state offers Continue and no send button",
+      "both original forms restore drafts without POST",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "mode": "copy-denied",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "clipboard denial offers complete read-only text and never claims copy success",
+      "manual selection works and multiple copy fields have unique labels",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "mode": "temporary",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "actual full storage clearly separates memory-only text from durable copies",
+      "queue and draft old durable snapshots remain byte-identical on write failure",
+      "memory-only text can be copied before closing without server access",
+      "full-store reload restores original durable draft and queue without pretending lost memory survived",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "mode": "blocked",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "blocked localStorage getter does not crash list or falsely claim device saving",
+      "memory-only copy and explicit retry remain available while drafts stay unsubmitted",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "queue",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "old diary item beyond two latest cards and latest checkin are both visible",
+      "device copies and two unsubmitted drafts are separate; text cannot execute HTML",
+      "copy contains all five original values and note without modifying data",
+      "failed send remains pending instead of claiming success",
+      "only server ACK removes queued entries; drafts remain byte-identical",
+      "retry uses existing two queues and makes no full-history reads",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "drafts",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "draft-only state offers Continue and no send button",
+      "both original forms restore drafts without POST",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "copy-denied",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "clipboard denial offers complete read-only text and never claims copy success",
+      "manual selection works and multiple copy fields have unique labels",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "temporary",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "actual full storage clearly separates memory-only text from durable copies",
+      "queue and draft old durable snapshots remain byte-identical on write failure",
+      "memory-only text can be copied before closing without server access",
+      "full-store reload restores original durable draft and queue without pretending lost memory survived",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "blocked",
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "blocked localStorage getter does not crash list or falsely claim device saving",
+      "memory-only copy and explicit retry remain available while drafts stay unsubmitted",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "queue",
+    "base": "https://app.telo-pomnit.ru/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "old diary item beyond two latest cards and latest checkin are both visible",
+      "device copies and two unsubmitted drafts are separate; text cannot execute HTML",
+      "copy contains all five original values and note without modifying data",
+      "failed send remains pending instead of claiming success",
+      "only server ACK removes queued entries; drafts remain byte-identical",
+      "retry uses existing two queues and makes no full-history reads",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "drafts",
+    "base": "https://app.telo-pomnit.ru/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "draft-only state offers Continue and no send button",
+      "both original forms restore drafts without POST",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "copy-denied",
+    "base": "https://app.telo-pomnit.ru/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "clipboard denial offers complete read-only text and never claims copy success",
+      "manual selection works and multiple copy fields have unique labels",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "temporary",
+    "base": "https://app.telo-pomnit.ru/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "actual full storage clearly separates memory-only text from durable copies",
+      "queue and draft old durable snapshots remain byte-identical on write failure",
+      "memory-only text can be copied before closing without server access",
+      "full-store reload restores original durable draft and queue without pretending lost memory survived",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "blocked",
+    "base": "https://app.telo-pomnit.ru/",
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "blocked localStorage getter does not crash list or falsely claim device saving",
+      "memory-only copy and explicit retry remain available while drafts stay unsubmitted",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  }
+]

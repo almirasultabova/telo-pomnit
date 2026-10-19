@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "publicFiles": 90,
+  "changed": [
+    "index.html",
+    "screen-review.html",
+    "css/save-status.css",
+    "js/api.js",
+    "js/app.js",
+    "js/save-status.js"
+  ],
+  "added": [
+    "css/save-status.css",
+    "js/save-status.js"
+  ],
+  "rootHTMLUnrelatedChangeExcluded": true,
+  "storageUnchanged": true,
+  "backendChanges": 0,
+  "cashPanelUnchanged": true,
+  "sourceHashes": {
+    "app/js/save-status.js": "3f483438dcd580e6b5cffd5d41c4c1be60b7155d2ad503fc8d3dc201c8b35644",
+    "app/css/save-status.css": "9e22f7971723c07eca3a1156b9c6f11cd942854e64282448d5cb19a8790fa41f",
+    "app/js/app.js": "15d4905cdbfb23df4bc7a57040d6f333b00adb58dbd3389c2b80d03b122e8d5a",
+    "app/js/api.js": "19ce6486dd9d310a0454db5bd9ce00a2a3a075d843dc088f3c16cdcf557e5f58",
+    "app/index.html": "e2e4b7dafc84c31d601756ef74cd2545405c9a2a403ae0e00b071c03a27217e9"
+  }
+}

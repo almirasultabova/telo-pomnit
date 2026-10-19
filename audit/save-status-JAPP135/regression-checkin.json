@@ -1,0 +1,102 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "quota",
+    "base": null,
+    "passed": true,
+    "cases": [
+      "full1000 rows retained in memory while confirmed disk history is bounded",
+      "today remains outside history budget with five original scale values",
+      "actual QuotaExceeded evicts only confirmed older copies to preserve today edit",
+      "full-store reload reads pending latest today and separate unsent form draft",
+      "write-probe failure cannot hide previously saved marks or drafts",
+      "other owner, legacy original, body draft and AI draft remain byte-identical",
+      "no page errors or horizontal overflow"
+    ],
+    "metrics": {
+      "retainedHistorical": 20,
+      "quota": {
+        "filledCodeUnits": 4712451,
+        "lastError": "QuotaExceededError",
+        "utf16Bytes": 10485760
+      }
+    },
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "late-ack",
+    "base": null,
+    "passed": true,
+    "cases": [
+      "full1000 rows retained in memory while confirmed disk history is bounded",
+      "today remains outside history budget with five original scale values",
+      "unwritable protected history preserves prior durable snapshot and existing draft",
+      "memory-only save never displays a durable success",
+      "late previous ACK cannot clear a newer checkin draft",
+      "other owner, legacy original, body draft and AI draft remain byte-identical",
+      "no page errors or horizontal overflow"
+    ],
+    "metrics": {
+      "retainedHistorical": 20,
+      "quota": {
+        "filledCodeUnits": 4696442,
+        "lastError": "QuotaExceededError",
+        "utf16Bytes": 10485760
+      }
+    },
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "quota",
+    "base": null,
+    "passed": true,
+    "cases": [
+      "full1000 rows retained in memory while confirmed disk history is bounded",
+      "today remains outside history budget with five original scale values",
+      "actual QuotaExceeded evicts only confirmed older copies to preserve today edit",
+      "full-store reload reads pending latest today and separate unsent form draft",
+      "write-probe failure cannot hide previously saved marks or drafts",
+      "other owner, legacy original, body draft and AI draft remain byte-identical",
+      "no page errors or horizontal overflow"
+    ],
+    "metrics": {
+      "retainedHistorical": 20,
+      "quota": {
+        "filledCodeUnits": 4182355,
+        "lastError": "QuotaExceededError",
+        "utf16Bytes": 9425568
+      }
+    },
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "late-ack",
+    "base": null,
+    "passed": true,
+    "cases": [
+      "full1000 rows retained in memory while confirmed disk history is bounded",
+      "today remains outside history budget with five original scale values",
+      "unwritable protected history preserves prior durable snapshot and existing draft",
+      "memory-only save never displays a durable success",
+      "late previous ACK cannot clear a newer checkin draft",
+      "other owner, legacy original, body draft and AI draft remain byte-identical",
+      "no page errors or horizontal overflow"
+    ],
+    "metrics": {
+      "retainedHistorical": 20,
+      "quota": {
+        "filledCodeUnits": 4150337,
+        "lastError": "QuotaExceededError",
+        "utf16Bytes": 9393550
+      }
+    },
+    "realWrites": 0
+  }
+]

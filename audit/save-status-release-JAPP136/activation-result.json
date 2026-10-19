@@ -1,0 +1,21 @@
+{
+  "backup": "/root/telo-backups/save-status-JAPP136-2026-10-19T172455920Z",
+  "publicFiles": 90,
+  "changedPublic": [
+    "css/save-status.css",
+    "js/api.js",
+    "js/app.js",
+    "js/save-status.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}

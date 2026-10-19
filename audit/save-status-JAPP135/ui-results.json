@@ -1,0 +1,396 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "queue",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "old diary item beyond two latest cards and latest checkin are both visible",
+        "device copies and two unsubmitted drafts are separate; text cannot execute HTML",
+        "copy contains all five original values and note without modifying data",
+        "failed send remains pending instead of claiming success",
+        "only server ACK removes queued entries; drafts remain byte-identical",
+        "retry uses existing two queues and makes no full-history reads",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "drafts",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "draft-only state offers Continue and no send button",
+        "both original forms restore drafts without POST",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "copy-denied",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "clipboard denial offers complete read-only text and never claims copy success",
+        "manual selection works and multiple copy fields have unique labels",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "temporary",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "actual full storage clearly separates memory-only text from durable copies",
+        "queue and draft old durable snapshots remain byte-identical on write failure",
+        "memory-only text can be copied before closing without server access",
+        "full-store reload restores original durable draft and queue without pretending lost memory survived",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "rejected",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "blocked400 and409 are never retried blindly",
+        "existing diary repair opens original text without sending it",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "owner",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "logout clears all private list and fallback DOM immediately",
+        "late clipboard result cannot repaint or expose previous owner data",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "queue",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "old diary item beyond two latest cards and latest checkin are both visible",
+        "device copies and two unsubmitted drafts are separate; text cannot execute HTML",
+        "copy contains all five original values and note without modifying data",
+        "failed send remains pending instead of claiming success",
+        "only server ACK removes queued entries; drafts remain byte-identical",
+        "retry uses existing two queues and makes no full-history reads",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "drafts",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "draft-only state offers Continue and no send button",
+        "both original forms restore drafts without POST",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "copy-denied",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "clipboard denial offers complete read-only text and never claims copy success",
+        "manual selection works and multiple copy fields have unique labels",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "temporary",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "actual full storage clearly separates memory-only text from durable copies",
+        "queue and draft old durable snapshots remain byte-identical on write failure",
+        "memory-only text can be copied before closing without server access",
+        "full-store reload restores original durable draft and queue without pretending lost memory survived",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "rejected",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "blocked400 and409 are never retried blindly",
+        "existing diary repair opens original text without sending it",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "owner",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "logout clears all private list and fallback DOM immediately",
+        "late clipboard result cannot repaint or expose previous owner data",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "queue",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "old diary item beyond two latest cards and latest checkin are both visible",
+        "device copies and two unsubmitted drafts are separate; text cannot execute HTML",
+        "copy contains all five original values and note without modifying data",
+        "failed send remains pending instead of claiming success",
+        "only server ACK removes queued entries; drafts remain byte-identical",
+        "retry uses existing two queues and makes no full-history reads",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "drafts",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "draft-only state offers Continue and no send button",
+        "both original forms restore drafts without POST",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "copy-denied",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "clipboard denial offers complete read-only text and never claims copy success",
+        "manual selection works and multiple copy fields have unique labels",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "temporary",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "actual full storage clearly separates memory-only text from durable copies",
+        "queue and draft old durable snapshots remain byte-identical on write failure",
+        "memory-only text can be copied before closing without server access",
+        "full-store reload restores original durable draft and queue without pretending lost memory survived",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "rejected",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "blocked400 and409 are never retried blindly",
+        "existing diary repair opens original text without sending it",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "owner",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "logout clears all private list and fallback DOM immediately",
+        "late clipboard result cannot repaint or expose previous owner data",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "queue",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "old diary item beyond two latest cards and latest checkin are both visible",
+        "device copies and two unsubmitted drafts are separate; text cannot execute HTML",
+        "copy contains all five original values and note without modifying data",
+        "failed send remains pending instead of claiming success",
+        "only server ACK removes queued entries; drafts remain byte-identical",
+        "retry uses existing two queues and makes no full-history reads",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "drafts",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "draft-only state offers Continue and no send button",
+        "both original forms restore drafts without POST",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "copy-denied",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "clipboard denial offers complete read-only text and never claims copy success",
+        "manual selection works and multiple copy fields have unique labels",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "temporary",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "actual full storage clearly separates memory-only text from durable copies",
+        "queue and draft old durable snapshots remain byte-identical on write failure",
+        "memory-only text can be copied before closing without server access",
+        "full-store reload restores original durable draft and queue without pretending lost memory survived",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "rejected",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "blocked400 and409 are never retried blindly",
+        "existing diary repair opens original text without sending it",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "owner",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "opening list makes no archive GET or POST and never submits drafts",
+        "logout clears all private list and fallback DOM immediately",
+        "late clipboard result cannot repaint or expose previous owner data",
+        "no JS errors or horizontal page overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    }
+  ],
+  "sourceHashes": {
+    "app/js/save-status.js": "3f483438dcd580e6b5cffd5d41c4c1be60b7155d2ad503fc8d3dc201c8b35644",
+    "app/css/save-status.css": "9e22f7971723c07eca3a1156b9c6f11cd942854e64282448d5cb19a8790fa41f",
+    "app/js/app.js": "cc91306c2063621b4d9e768c3be55a23f365cc58e3f8a83391b352239ecc199b",
+    "app/js/api.js": "b7f4c0723fcd895220492a8da1b6c0a7e81ae18f92e9c9ce26bce4ccd66c3373",
+    "app/index.html": "f00251c31e8261843d1b2982c1243bb822eb99a886ce4448e0d60c053fec3ea7"
+  }
+}

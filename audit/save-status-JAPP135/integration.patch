@@ -1,0 +1,26 @@
+--- a/app/index.html
++++ b/app/index.html
+@@ -37,2 +37,3 @@
+ <link rel="stylesheet" href="css/discussion-notes.css?v=JAPP100">
++<link rel="stylesheet" href="css/save-status.css?v=JAPP135">
+ </head>
+@@ -747,2 +748,3 @@
+ <script src="js/discussion-notes.js?v=JAPP100"></script>
++<script src="js/save-status.js?v=JAPP135"></script>
+ </body>
+--- a/app/js/app.js
++++ b/app/js/app.js
+@@ -448,2 +448,3 @@
+   const verified = !Api.clubBlocked && Api.isAuthed() && homeUser?.id === String(Api.userId);
++  window.SaveStatus?.renderHome();
+   const personalName = verified ? homeUser.name.trim() : '';
+@@ -2248,2 +2249,3 @@
+ function clearPrivateConversationState() {
++  window.SaveStatus?.invalidate();
+   window.PathDynamics?.reset();
+--- a/app/js/api.js
++++ b/app/js/api.js
+@@ -102,2 +102,3 @@
+   logout() {
++    window.SaveStatus?.invalidate();
+     window.AiDelivery?.invalidate();

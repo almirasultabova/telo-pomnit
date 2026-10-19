@@ -1,0 +1,62 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "late-retry",
+    "base": null,
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "held retry cannot repaint previous owner after logout",
+      "new owner draft survives both late queue responses and is never submitted",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "blocked",
+    "base": null,
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "blocked localStorage getter does not crash list or falsely claim device saving",
+      "memory-only copy and explicit retry remain available while drafts stay unsubmitted",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "late-retry",
+    "base": null,
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "held retry cannot repaint previous owner after logout",
+      "new owner draft survives both late queue responses and is never submitted",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "blocked",
+    "base": null,
+    "passed": true,
+    "cases": [
+      "opening list makes no archive GET or POST and never submits drafts",
+      "blocked localStorage getter does not crash list or falsely claim device saving",
+      "memory-only copy and explicit retry remain available while drafts stay unsubmitted",
+      "no JS errors or horizontal page overflow"
+    ],
+    "metrics": {},
+    "realWrites": 0
+  }
+]

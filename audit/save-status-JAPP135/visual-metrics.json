@@ -1,0 +1,228 @@
+[
+  {
+    "width": 390,
+    "styles": [
+      {
+        "class": "ss-summary",
+        "color": "rgb(26, 33, 26)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "height": 27,
+        "width": 350
+      },
+      {
+        "class": "ss-copy",
+        "color": "rgb(26, 33, 26)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "23.1px",
+        "height": 46.1875,
+        "width": 350
+      },
+      {
+        "class": "ss-date",
+        "color": "rgb(114, 106, 96)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "height": 20.796875,
+        "width": 350
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 94.5
+      },
+      {
+        "class": "ss-date",
+        "color": "rgb(114, 106, 96)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "height": 20.796875,
+        "width": 350
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 94.5
+      },
+      {
+        "class": "ss-date",
+        "color": "rgb(114, 106, 96)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "height": 20.796875,
+        "width": 350
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 90.46875
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 94.5
+      },
+      {
+        "class": "ss-date",
+        "color": "rgb(114, 106, 96)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "height": 20.796875,
+        "width": 350
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 90.46875
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 94.5
+      }
+    ]
+  },
+  {
+    "width": 1440,
+    "styles": [
+      {
+        "class": "ss-summary",
+        "color": "rgb(26, 33, 26)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "height": 27,
+        "width": 534
+      },
+      {
+        "class": "ss-copy",
+        "color": "rgb(26, 33, 26)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "23.1px",
+        "height": 46.1875,
+        "width": 534
+      },
+      {
+        "class": "ss-date",
+        "color": "rgb(114, 106, 96)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "height": 20.796875,
+        "width": 534
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 94.5
+      },
+      {
+        "class": "ss-date",
+        "color": "rgb(114, 106, 96)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "height": 20.796875,
+        "width": 534
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 94.5
+      },
+      {
+        "class": "ss-date",
+        "color": "rgb(114, 106, 96)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "height": 20.796875,
+        "width": 534
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 90.46875
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 94.5
+      },
+      {
+        "class": "ss-date",
+        "color": "rgb(114, 106, 96)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "height": 20.796875,
+        "width": 534
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 90.46875
+      },
+      {
+        "class": "ss-link",
+        "color": "rgb(42, 74, 56)",
+        "background": "rgba(0, 0, 0, 0)",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "height": 44,
+        "width": 94.5
+      }
+    ]
+  }
+]
