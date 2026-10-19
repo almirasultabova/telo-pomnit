@@ -1,0 +1,44 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": [
+      "body draft survives reload and backward/forward navigation",
+      "successful save clears draft; new entry has no previous text",
+      "late ACK cannot clear the next body draft",
+      "account isolation and explicit draft deletion",
+      "reaction draft restores text/type/intensity/zone and clears after queueing",
+      "400 does not block next save; correction retains clientId/date",
+      "over-limit legacy draft is preserved and cannot be submitted",
+      "over-limit check-in note stays in the form and is not queued",
+      "logout clears private form DOM",
+      "blocked storage is explicitly memory-only"
+    ],
+    "pageErrors": []
+  },
+  {
+    "passed": true,
+    "engine": "chromium",
+    "width": 390,
+    "deviceTimeZone": "America/Los_Angeles",
+    "cases": [
+      "205 reactions loaded over three pages; distribution uses every record",
+      "before Moscow midnight today/time/check-in day and streak agree across device zone",
+      "at Moscow midnight today switches with streak and check-in day",
+      "reaction card dates remain Moscow dates across device zone",
+      "later-page failure without cache shows error rather than empty history or partial pages",
+      "explicit keyboard retry loads all pages without reload",
+      "failed scan keeps cached history and pending local operation with explicit partial-status notice",
+      "successful repeated scan deduplicates cache and preserves local queue",
+      "late paginated response cannot populate another owner or its load state",
+      "confirmed empty, loading and failed are distinct states"
+    ],
+    "providerRequests": 0,
+    "sourceHashes": {
+      "app/js/app.js": "be821436dde38fafd9433ac810f22c0363d569310a287d86f2fac09559545053",
+      "app/js/api.js": "f77fab54a59f9ffd3ef165ac5b3c25d38730bf917235f6ce24b9a805d5be048d",
+      "app/js/storage.js": "c6a9da9fe2ff45f8187be2efd35bb38d799df0e943fd61ddd10a18344e13c22f",
+      "backend/src/routes/triggers.js": "8c8ee054e7114d0d1218b6d1dbf288cac0bacd1f6f811682e477f0269943f344"
+    }
+  }
+]

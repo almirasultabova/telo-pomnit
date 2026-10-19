@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "isolatedBuild": "C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP112-build-ckn_zn2i",
+  "sourceHashes": {
+    "app/js/app.js": "be821436dde38fafd9433ac810f22c0363d569310a287d86f2fac09559545053",
+    "app/js/storage.js": "c6a9da9fe2ff45f8187be2efd35bb38d799df0e943fd61ddd10a18344e13c22f",
+    "app/js/observation-drafts.js": "2233c68e1fd2629e4d2a3b23a8abc4fbeaffb116d69782c8af79167bec8b786f"
+  },
+  "output": "site: 45 public files -> C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP112-build-ckn_zn2i\\output\\site\napp: 88 public files -> C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP112-build-ckn_zn2i\\output\\app\nBuilt public files only. Knowledge base, media/library, PDFs, .env and internal documents are excluded. Nothing was deployed.\n"
+}

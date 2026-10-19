@@ -1,0 +1,20 @@
+{
+  "backup": "/root/telo-backups/deferred-JAPP114-2026-10-19T090105772Z",
+  "publicFiles": 88,
+  "changedPublic": [
+    "js/app.js",
+    "js/observation-drafts.js",
+    "js/storage.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}
