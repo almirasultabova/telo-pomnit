@@ -1,0 +1,22 @@
+[
+  {
+    "script": "audit/path-period-JAPP129/test-storage.cjs",
+    "passed": true,
+    "output": "{\"passed\":true,\"groups\":17,\"oldRowsPerKind\":1000,\"periodRowsPerKind\":205,\"periodGETs\":5,\"archiveGETsOnPath\":0,\"globalCompletenessSeparate\":true,\"latePeriodAndOwnerIgnored\":true,\"newPendingAndACKPreserved\":true,\"fiveScaleVersionsPreserved\":true,\"errorsAndSelectiveRetry\":true,\"fullHistoryPreserved\":true,\"productionWrites\":0,\"sourceHashes\":{\"app/js/api.js\":\"8e929d116887259ce3c37b042871b087bb8ae8a638c3766d753f4d835b1082f9\",\"app/js/storage.js\":\"3ad57883c442feeafc01de0359ca7308ff54cbed8c9a35b1b328d523759c24fc\"}}"
+  },
+  {
+    "script": "audit/diary-entry-JAPP127/test-storage.cjs",
+    "passed": true,
+    "output": "{\"passed\":true,\"groups\":18,\"oldArchiveRows\":1000,\"newInitialRows\":91,\"additionalArchiveGETsOnDiary\":0,\"allToday95\":true,\"globalPartialPreserved\":true,\"queueAndACKPreserved\":true,\"lateOwnerIgnored\":true,\"midnightAndLateRead\":true,\"pageFailureAndExplicitRetry\":true,\"dayLimitNotFalseComplete\":true,\"realNetwork\":0,\"sourceHashes\":{\"app/js/api.js\":\"8e929d116887259ce3c37b042871b087bb8ae8a638c3766d753f4d835b1082f9\",\"app/js/storage.js\":\"3ad57883c442feeafc01de0359ca7308ff54cbed8c9a35b1b328d523759c24fc\"}}"
+  },
+  {
+    "script": "audit/recent-checkins-JAPP117/test-storage.cjs",
+    "passed": true,
+    "output": "{\"passed\":true,\"groups\":12,\"largeFixtureRows\":1000,\"oldInitialRequests\":6,\"newInitialRequests\":1,\"oldInitialRows\":1000,\"newInitialRows\":201,\"fullHistoryOnDemand\":true,\"partialNeverComplete\":true,\"overlapDeduplicated\":true,\"lateOwnerIgnored\":true,\"pendingEditsPreserved\":true,\"realNetwork\":0}"
+  },
+  {
+    "script": "scripts/test-observation-queue.cjs",
+    "passed": true,
+    "output": "PASS validation limit; queue continues after 400/409; rejection survives reload; repair preserves clientId/date; no repair after timeout/conflict; no duplicate; check-in queue; owner isolation"
+  }
+]

@@ -1,0 +1,408 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "normal",
+    "passed": true,
+    "cases": [
+      "Path uses bounded period reads and zero full-archive GETs",
+      "period completeness leaves global archives partial",
+      "map/summary and all five chart models equal full-archive calculation",
+      "reopening completed selected period makes no GET",
+      "no page errors or horizontal overflow"
+    ],
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "current",
+    "passed": true,
+    "cases": [
+      "Path uses bounded period reads and zero full-archive GETs",
+      "period completeness leaves global archives partial",
+      "map/summary and all five chart models equal full-archive calculation",
+      "reopening completed selected period makes no GET",
+      "no page errors or horizontal overflow"
+    ],
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "switch",
+    "passed": true,
+    "cases": [
+      "incomplete period never appears as complete summary",
+      "late old-stream read ignored; revisiting loads it correctly",
+      "Path uses bounded period reads and zero full-archive GETs",
+      "period completeness leaves global archives partial",
+      "reopening completed selected period makes no GET",
+      "no page errors or horizontal overflow"
+    ],
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "normal",
+    "passed": true,
+    "cases": [
+      "Path uses bounded period reads and zero full-archive GETs",
+      "period completeness leaves global archives partial",
+      "map/summary and all five chart models equal full-archive calculation",
+      "reopening completed selected period makes no GET",
+      "no page errors or horizontal overflow"
+    ],
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "current",
+    "passed": true,
+    "cases": [
+      "Path uses bounded period reads and zero full-archive GETs",
+      "period completeness leaves global archives partial",
+      "map/summary and all five chart models equal full-archive calculation",
+      "reopening completed selected period makes no GET",
+      "no page errors or horizontal overflow"
+    ],
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "switch",
+    "passed": true,
+    "cases": [
+      "incomplete period never appears as complete summary",
+      "late old-stream read ignored; revisiting loads it correctly",
+      "Path uses bounded period reads and zero full-archive GETs",
+      "period completeness leaves global archives partial",
+      "reopening completed selected period makes no GET",
+      "no page errors or horizontal overflow"
+    ],
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  }
+]

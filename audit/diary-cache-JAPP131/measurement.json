@@ -1,0 +1,36 @@
+{
+  "cases": [
+    {
+      "kind": "short",
+      "rows": 1000,
+      "noteCodeUnits": 80,
+      "beforeUtf16Bytes": 485562,
+      "confirmedBudgetBytes": 524288,
+      "maxConfirmedRows": 90,
+      "afterUtf16Bytes": 98202,
+      "retainedConfirmed": 90
+    },
+    {
+      "kind": "long",
+      "rows": 1000,
+      "noteCodeUnits": 20000,
+      "beforeUtf16Bytes": 40325562,
+      "confirmedBudgetBytes": 524288,
+      "maxConfirmedRows": 90,
+      "afterUtf16Bytes": 484586,
+      "retainedConfirmed": 6
+    },
+    {
+      "kind": "escaped",
+      "rows": 1000,
+      "noteCodeUnits": 20000,
+      "beforeUtf16Bytes": 80325562,
+      "confirmedBudgetBytes": 524288,
+      "maxConfirmedRows": 90,
+      "afterUtf16Bytes": 482294,
+      "retainedConfirmed": 3
+    }
+  ],
+  "protectedRowsNeverBudgeted": true,
+  "estimate": "UTF-16 code units times2; actual quota tested separately in browser"
+}

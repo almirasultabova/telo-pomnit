@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "groups": 16,
+  "measurement": {
+    "beforeUtf16Bytes": 12291562,
+    "afterUtf16Bytes": 523494,
+    "retainedConfirmed": 21,
+    "memoryRows": 1000
+  },
+  "budgetBytes": 524288,
+  "maxConfirmedRows": 90,
+  "pendingUnknownAndDraftsPreserved": true,
+  "quotaRetryAndAtomicOldSnapshot": true,
+  "receiptSurvivesReload": true,
+  "otherOwnerAndLegacyUntouched": true,
+  "memoryHistoryUnchanged": true,
+  "memoryOnlyWarningPreserved": true,
+  "productionWrites": 0,
+  "sourceHashes": {
+    "app/js/storage.js": "3ad57883c442feeafc01de0359ca7308ff54cbed8c9a35b1b328d523759c24fc"
+  }
+}

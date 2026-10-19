@@ -1,0 +1,391 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "bounded",
+      "passed": true,
+      "cases": [
+        "full1000 rows remain in memory while durable confirmed cache is bounded",
+        "valid server receipts survive JSON roundtrip",
+        "offline reads restored bounded cache without claiming complete history",
+        "local history caption explains full history needs connection",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedConfirmed": 21
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "quota",
+      "passed": true,
+      "cases": [
+        "actual browser QuotaExceeded triggers confirmed-only shrink",
+        "pending row and body draft remain durable; other owner/legacy untouched",
+        "full-store startup still reads old pending row and restores draft",
+        "reload and server-history outage do not turn partial cache into full history",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 4981447,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "recovery",
+      "passed": true,
+      "cases": [
+        "unwritable protected queue keeps existing durable body draft",
+        "memory-only save is visibly not a durable success",
+        "resubmitting same retained draft reuses in-memory clientId",
+        "confirmed ACK clears only the matching recovery draft",
+        "offline attempts preserve one clientId and payload",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 5112726,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "late-ack",
+      "passed": true,
+      "cases": [
+        "unwritable protected queue keeps existing durable body draft",
+        "memory-only save is visibly not a durable success",
+        "resubmitting same retained draft reuses in-memory clientId",
+        "old ACK cannot clear a newer draft",
+        "offline attempts preserve one clientId and payload",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 5112726,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "blocked",
+      "passed": true,
+      "cases": [
+        "blocked localStorage does not crash startup",
+        "memory-only warning and eventual server ACK remain correct",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "bounded",
+      "passed": true,
+      "cases": [
+        "full1000 rows remain in memory while durable confirmed cache is bounded",
+        "valid server receipts survive JSON roundtrip",
+        "offline reads restored bounded cache without claiming complete history",
+        "local history caption explains full history needs connection",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedConfirmed": 21
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "quota",
+      "passed": true,
+      "cases": [
+        "actual browser QuotaExceeded triggers confirmed-only shrink",
+        "pending row and body draft remain durable; other owner/legacy untouched",
+        "full-store startup still reads old pending row and restores draft",
+        "reload and server-history outage do not turn partial cache into full history",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 4981447,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "recovery",
+      "passed": true,
+      "cases": [
+        "unwritable protected queue keeps existing durable body draft",
+        "memory-only save is visibly not a durable success",
+        "resubmitting same retained draft reuses in-memory clientId",
+        "confirmed ACK clears only the matching recovery draft",
+        "offline attempts preserve one clientId and payload",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 5112726,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "late-ack",
+      "passed": true,
+      "cases": [
+        "unwritable protected queue keeps existing durable body draft",
+        "memory-only save is visibly not a durable success",
+        "resubmitting same retained draft reuses in-memory clientId",
+        "old ACK cannot clear a newer draft",
+        "offline attempts preserve one clientId and payload",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 5112726,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "blocked",
+      "passed": true,
+      "cases": [
+        "blocked localStorage does not crash startup",
+        "memory-only warning and eventual server ACK remain correct",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "bounded",
+      "passed": true,
+      "cases": [
+        "full1000 rows remain in memory while durable confirmed cache is bounded",
+        "valid server receipts survive JSON roundtrip",
+        "offline reads restored bounded cache without claiming complete history",
+        "local history caption explains full history needs connection",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedConfirmed": 21
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "quota",
+      "passed": true,
+      "cases": [
+        "actual browser QuotaExceeded triggers confirmed-only shrink",
+        "pending row and body draft remain durable; other owner/legacy untouched",
+        "full-store startup still reads old pending row and restores draft",
+        "reload and server-history outage do not turn partial cache into full history",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 4981447,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "recovery",
+      "passed": true,
+      "cases": [
+        "unwritable protected queue keeps existing durable body draft",
+        "memory-only save is visibly not a durable success",
+        "resubmitting same retained draft reuses in-memory clientId",
+        "confirmed ACK clears only the matching recovery draft",
+        "offline attempts preserve one clientId and payload",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 5112726,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "late-ack",
+      "passed": true,
+      "cases": [
+        "unwritable protected queue keeps existing durable body draft",
+        "memory-only save is visibly not a durable success",
+        "resubmitting same retained draft reuses in-memory clientId",
+        "old ACK cannot clear a newer draft",
+        "offline attempts preserve one clientId and payload",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 5112726,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "blocked",
+      "passed": true,
+      "cases": [
+        "blocked localStorage does not crash startup",
+        "memory-only warning and eventual server ACK remain correct",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "bounded",
+      "passed": true,
+      "cases": [
+        "full1000 rows remain in memory while durable confirmed cache is bounded",
+        "valid server receipts survive JSON roundtrip",
+        "offline reads restored bounded cache without claiming complete history",
+        "local history caption explains full history needs connection",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedConfirmed": 21
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "quota",
+      "passed": true,
+      "cases": [
+        "actual browser QuotaExceeded triggers confirmed-only shrink",
+        "pending row and body draft remain durable; other owner/legacy untouched",
+        "full-store startup still reads old pending row and restores draft",
+        "reload and server-history outage do not turn partial cache into full history",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 4720315,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 9963496
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "recovery",
+      "passed": true,
+      "cases": [
+        "unwritable protected queue keeps existing durable body draft",
+        "memory-only save is visibly not a durable success",
+        "resubmitting same retained draft reuses in-memory clientId",
+        "confirmed ACK clears only the matching recovery draft",
+        "offline attempts preserve one clientId and payload",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 4982815,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10225938
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "late-ack",
+      "passed": true,
+      "cases": [
+        "unwritable protected queue keeps existing durable body draft",
+        "memory-only save is visibly not a durable success",
+        "resubmitting same retained draft reuses in-memory clientId",
+        "old ACK cannot clear a newer draft",
+        "offline attempts preserve one clientId and payload",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "quota": {
+          "filledCodeUnits": 4982815,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10225938
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "blocked",
+      "passed": true,
+      "cases": [
+        "blocked localStorage does not crash startup",
+        "memory-only warning and eventual server ACK remain correct",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    }
+  ],
+  "sourceHashes": {
+    "app/js/storage.js": "3ad57883c442feeafc01de0359ca7308ff54cbed8c9a35b1b328d523759c24fc",
+    "app/js/boot.js": "b0597004b048b6da259bb5c2259ed3f88ad53835ca60c1c2f5a02966ca4d5bc9",
+    "app/js/diary-history.js": "61b87a4bab1d28b425c2a9cb740da12c10782b58b0c473c0c3dfb8ddbfb6c8f5",
+    "app/js/observation-drafts.js": "359b762aae272f1a23f60c931f9f6004cdbef1ec690adc83ebdb32a8b0f4d79b"
+  }
+}

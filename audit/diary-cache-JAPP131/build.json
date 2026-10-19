@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "sourceHashes": {
+    "app/js/storage.js": "3ad57883c442feeafc01de0359ca7308ff54cbed8c9a35b1b328d523759c24fc",
+    "app/js/boot.js": "b0597004b048b6da259bb5c2259ed3f88ad53835ca60c1c2f5a02966ca4d5bc9",
+    "app/js/diary-history.js": "61b87a4bab1d28b425c2a9cb740da12c10782b58b0c473c0c3dfb8ddbfb6c8f5",
+    "app/js/observation-drafts.js": "359b762aae272f1a23f60c931f9f6004cdbef1ec690adc83ebdb32a8b0f4d79b"
+  },
+  "publicFiles": 88,
+  "changed": [
+    "index.html",
+    "screen-review.html",
+    "js/boot.js",
+    "js/diary-history.js",
+    "js/observation-drafts.js",
+    "js/storage.js"
+  ],
+  "backendChanges": 0,
+  "schemaChanges": 0,
+  "cashPanelUnchanged": true
+}

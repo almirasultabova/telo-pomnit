@@ -1,0 +1,21 @@
+{
+  "backup": "/root/telo-backups/diary-cache-JAPP132-2026-10-19T160416463Z",
+  "publicFiles": 88,
+  "changedPublic": [
+    "js/boot.js",
+    "js/diary-history.js",
+    "js/observation-drafts.js",
+    "js/storage.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}
