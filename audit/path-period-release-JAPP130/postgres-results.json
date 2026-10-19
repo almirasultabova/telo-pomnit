@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "groups": 11,
+  "nativePostgres": true,
+  "nativePrisma": true,
+  "nativeFastifyAuth": true,
+  "installed": false,
+  "oldRowsPerKind": 1000,
+  "periodRowsPerKind": 206,
+  "periodRequests": 5,
+  "archiveGETsOnPath": 0,
+  "moscowBoundaries": true,
+  "pagesWithoutDuplicates": true,
+  "ownerIsolation": true,
+  "queryValidation": true,
+  "unfilteredResponseCompatible": true,
+  "fiveScalesAndDailyUpsert": true,
+  "staleEditAnd409": true,
+  "fullHistoryPreserved": true,
+  "productionTestWrites": 0,
+  "externalCalls": 0,
+  "sourceHashes": {
+    "app/js/api.js": "8e929d116887259ce3c37b042871b087bb8ae8a638c3766d753f4d835b1082f9",
+    "app/js/storage.js": "65952a1ecc195b427306ce51b45bcb07ebaa47b142959dd6ad6cd6b61120b65b",
+    "app/js/app.js": "a1f9e2024b876c9faa209d794d8292e636464e034e09274e1ab5208213084e3a",
+    "backend/src/routes/checkins.js": "7ce5c0205c67da30651d15e5cf20604a06be2570c6acc48bd7293ef2de78ee59"
+  }
+}

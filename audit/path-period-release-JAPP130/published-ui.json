@@ -1,0 +1,810 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "normal",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "current",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "none",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": false,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "checkin-failure",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "normal",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "current",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "none",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": false,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "checkin-failure",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "normal",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "current",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "none",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": false,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "base": "https://tg-app-telo-pomnit.vercel.app/",
+    "mode": "checkin-failure",
+    "passed": true,
+    "http2Disabled": false,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://app.telo-pomnit.ru/",
+    "mode": "normal",
+    "passed": true,
+    "http2Disabled": true,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://app.telo-pomnit.ru/",
+    "mode": "current",
+    "passed": true,
+    "http2Disabled": true,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2026-09-30T21:00:00.000Z",
+        "to": "2026-11-04T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://app.telo-pomnit.ru/",
+    "mode": "none",
+    "passed": true,
+    "http2Disabled": true,
+    "periodAndFullModelsEqual": false,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "base": "https://app.telo-pomnit.ru/",
+    "mode": "checkin-failure",
+    "passed": true,
+    "http2Disabled": true,
+    "periodAndFullModelsEqual": true,
+    "reads": [
+      {
+        "kind": "diary",
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "checkins",
+        "limit": 201,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 90,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "diary",
+        "limit": 90,
+        "offset": 180,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 0,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      },
+      {
+        "kind": "checkins",
+        "limit": 200,
+        "offset": 200,
+        "from": "2025-06-09T21:00:00.000Z",
+        "to": "2025-07-14T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  }
+]

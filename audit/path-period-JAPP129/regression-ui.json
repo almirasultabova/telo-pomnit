@@ -1,0 +1,182 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "today",
+    "passed": true,
+    "cases": [
+      "partial today has visible loading and91 cached rows",
+      "all today rows loaded with only day-filtered requests",
+      "global history remains partial",
+      "reopening verified Diary does not refetch",
+      "no page errors or horizontal overflow"
+    ],
+    "diaryReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "save",
+    "passed": true,
+    "cases": [
+      "partial today has visible loading and91 cached rows",
+      "new note ACK remains during in-flight day read",
+      "all today rows loaded with only day-filtered requests",
+      "global history remains partial",
+      "reopening verified Diary does not refetch",
+      "no page errors or horizontal overflow"
+    ],
+    "diaryReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "mode": "search",
+    "passed": true,
+    "cases": [
+      "Diary entry avoids full archive and has no endless partial notice",
+      "server search finds record900 outside91 cached rows",
+      "Important toggle and record detail work without full archive",
+      "no page errors or horizontal overflow"
+    ],
+    "diaryReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "today",
+    "passed": true,
+    "cases": [
+      "partial today has visible loading and91 cached rows",
+      "all today rows loaded with only day-filtered requests",
+      "global history remains partial",
+      "reopening verified Diary does not refetch",
+      "no page errors or horizontal overflow"
+    ],
+    "diaryReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "save",
+    "passed": true,
+    "cases": [
+      "partial today has visible loading and91 cached rows",
+      "new note ACK remains during in-flight day read",
+      "all today rows loaded with only day-filtered requests",
+      "global history remains partial",
+      "reopening verified Diary does not refetch",
+      "no page errors or horizontal overflow"
+    ],
+    "diaryReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      },
+      {
+        "limit": 90,
+        "offset": 0,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      },
+      {
+        "limit": 90,
+        "offset": 90,
+        "from": "2026-10-18T21:00:00.000Z",
+        "to": "2026-10-19T20:59:59.999Z"
+      }
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "mode": "search",
+    "passed": true,
+    "cases": [
+      "Diary entry avoids full archive and has no endless partial notice",
+      "server search finds record900 outside91 cached rows",
+      "Important toggle and record detail work without full archive",
+      "no page errors or horizontal overflow"
+    ],
+    "diaryReads": [
+      {
+        "limit": 91,
+        "offset": 0,
+        "from": null,
+        "to": null
+      }
+    ],
+    "realWrites": 0
+  }
+]

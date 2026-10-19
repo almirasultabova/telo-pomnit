@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "groups": 17,
+  "oldRowsPerKind": 1000,
+  "periodRowsPerKind": 205,
+  "periodGETs": 5,
+  "archiveGETsOnPath": 0,
+  "globalCompletenessSeparate": true,
+  "latePeriodAndOwnerIgnored": true,
+  "newPendingAndACKPreserved": true,
+  "fiveScaleVersionsPreserved": true,
+  "errorsAndSelectiveRetry": true,
+  "fullHistoryPreserved": true,
+  "productionWrites": 0,
+  "sourceHashes": {
+    "app/js/api.js": "8e929d116887259ce3c37b042871b087bb8ae8a638c3766d753f4d835b1082f9",
+    "app/js/storage.js": "65952a1ecc195b427306ce51b45bcb07ebaa47b142959dd6ad6cd6b61120b65b"
+  }
+}

@@ -1,0 +1,142 @@
+--- a/app/js/app.js
++++ b/app/js/app.js
+@@ -219,0 +220 @@
++  if (activeTab === 'diag') void Storage.ensurePathPeriod(pathPeriodScope());
+@@ -435 +436 @@
+-  if (tab === 'diag')    { void Storage.ensureDiaryHistory(); void Storage.ensureCheckinHistory(); renderMyPathTab(); }
++  if (tab === 'diag')    { void Storage.ensurePathPeriod(pathPeriodScope()); renderMyPathTab(); }
+@@ -578 +579 @@
+-  const status = Storage.getHistoryLoadStatus?.() || {};
++  const status = scope === 'path' ? Storage.getPathPeriodStatus(pathPeriodScope()) : Storage.getHistoryLoadStatus?.() || {};
+@@ -591,0 +593 @@
++      else if (scope === 'path') await Storage.ensurePathPeriod(pathPeriodScope(), { fields: fields.filter(kind => status[kind] === 'failed'), retry: true });
+@@ -1128,2 +1130,2 @@
+-  const diaryReady = Storage.getHistoryLoadStatus().diary === 'loaded';
+-  const shownAnalytics = !streamPeriod() || diaryReady ? analyticsHtml : '<section class="path-no-stream"><p role="status">' + (Storage.getHistoryLoadStatus().diary === 'failed' ? 'Не удалось обновить наблюдения. Сохранённые записи доступны в Дневнике.' : 'Загружаем наблюдения выбранного потока…') + '</p></section>';
++  const diaryStatus = Storage.getPathPeriodStatus(pathPeriodScope()).diary;
++  const shownAnalytics = !streamPeriod() || diaryStatus === 'loaded' ? analyticsHtml : '<section class="path-no-stream"><p role="status">' + (diaryStatus === 'failed' ? 'Не удалось обновить наблюдения. Сохранённые записи доступны в Дневнике.' : 'Загружаем наблюдения выбранного потока…') + '</p></section>';
+@@ -1416,0 +1419,4 @@
++function pathPeriodScope() {
++  const period = streamPeriod();
++  return period ? { id: selectedProgramId, start: period.start, end: period.end } : null;
++}
+@@ -1421 +1427 @@
+-    rows: allowed ? selectedCheckins() : [], loadState: Storage.getHistoryLoadStatus?.().checkins === 'partial' ? 'loading' : Storage.getHistoryLoadStatus?.().checkins };
++    rows: allowed ? selectedCheckins() : [], loadState: Storage.getPathPeriodStatus(pathPeriodScope()).checkins };
+@@ -1432 +1438 @@
+-    else await Storage.initFromApi({ fields: ['checkins'] });
++    else await Storage.ensurePathPeriod(pathPeriodScope(), { fields: ['checkins'], retry: true, refresh: true });
+@@ -1642 +1648 @@
+-  if (activeTab === 'diag') renderMyPathTab();
++  if (activeTab === 'diag') { void Storage.ensurePathPeriod(pathPeriodScope()); renderMyPathTab(); }
+--- a/app/js/api.js
++++ b/app/js/api.js
+@@ -166,0 +167,6 @@
++  async getPeriodHistory(kind, start, end) {
++    if (!['diary', 'checkins'].includes(kind) || !Number.isFinite(start) || !Number.isFinite(end) || end <= start || !Number.isFinite(new Date(start).getTime()) || !Number.isFinite(new Date(end).getTime())) throw Object.assign(new Error('Неверный период наблюдений'), { code: 'INVALID_HISTORY' });
++    const rows = await this._getAll('/'+kind+'?from='+encodeURIComponent(new Date(start).toISOString())+'&to='+encodeURIComponent(new Date(end-1).toISOString()), kind === 'diary' ? 90 : 200);
++    if (rows.some(row => !Number.isFinite(Date.parse(row.date || row.createdAt)) || Date.parse(row.date || row.createdAt) < start || Date.parse(row.date || row.createdAt) >= end)) throw Object.assign(new Error('Неверный ответ истории'), { code: 'INVALID_HISTORY' });
++    return rows;
++  },
+--- a/app/js/storage.js
++++ b/app/js/storage.js
+@@ -40,0 +41,3 @@
++  _pathPeriods: new Map(),
++  _pathPeriodLoading: new Map(),
++  _activePathPeriod: null,
+@@ -50,0 +54 @@
++    this._pathPeriods.clear(); this._activePathPeriod = null;
+@@ -58,0 +63 @@
++    this._pathPeriods.clear(); this._activePathPeriod = null;
+@@ -561,0 +567,15 @@
++  },
++  _mergeCheckinHistory(entries, userId) {
++    const identity = row => row.dayKey || String(row.id);
++    const merged = new Map(entries.map(row => {
++      const normalized = { ...this._normalizeCheckin(row), syncStatus: 'synced' };
++      return [identity(normalized), normalized];
++    }));
++    const remoteDates = new Set([...merged.values()].map(row => new Date(row.date).getTime()));
++    for (const row of this._checkinState(userId)) {
++      if (row.legacyCache && remoteDates.has(new Date(row.date).getTime())) continue;
++      const remote = merged.get(identity(row));
++      // A read started before an edit must not replace its newer pending or ACK.
++      if (!remote || new Date(row.clientUpdatedAt).getTime() > new Date(remote.clientUpdatedAt || 0).getTime()) merged.set(identity(row), row);
++    }
++    this._writeCheckins([...merged.values()], userId);
+@@ -763,13 +783 @@
+-          const identity = row => row.dayKey || String(row.id);
+-          const merged = new Map(entries.map(row => {
+-            const normalized = { ...this._normalizeCheckin(row), syncStatus: 'synced' };
+-            return [identity(normalized), normalized];
+-          }));
+-          const remoteDates = new Set([...merged.values()].map(row => new Date(row.date).getTime()));
+-          for (const row of this._checkinState(userId)) {
+-            // Old timestamp cache identifies its original date, never fake scales.
+-            if (row.legacyCache && remoteDates.has(new Date(row.date).getTime())) continue;
+-            const remote = merged.get(identity(row));
+-            if (!remote || (row.syncStatus !== 'synced' && new Date(row.clientUpdatedAt).getTime() > new Date(remote.clientUpdatedAt || 0).getTime())) merged.set(identity(row), row);
+-          }
+-          this._writeCheckins([...merged.values()], userId);
++          this._mergeCheckinHistory(entries, userId);
+@@ -829,0 +838,46 @@
++  _pathPeriodKey(scope) {
++    return scope?.id && Number.isFinite(scope.start) && Number.isFinite(scope.end) && scope.end > scope.start
++      ? JSON.stringify([this._userId, this._generation, scope.id, scope.start, scope.end]) : null;
++  },
++  getPathPeriodStatus(scope) {
++    return { diary: 'idle', checkins: 'idle', ...this._pathPeriods.get(this._pathPeriodKey(scope)) };
++  },
++  async ensurePathPeriod(scope, { fields = ['diary', 'checkins'], retry = false, refresh = false } = {}) {
++    const key = this._pathPeriodKey(scope), userId = this._userId, generation = this._generation;
++    this._activePathPeriod = key;
++    if (!key || !userId || typeof Api === 'undefined' || !Api.isAuthed()) return;
++    if (!Array.isArray(fields) || fields.some(kind => !['diary', 'checkins'].includes(kind))) throw new Error('INVALID_HISTORY_KIND');
++    const current = () => this._userId === userId && this._generation === generation && this._activePathPeriod === key && !this._deletedUsers.has(userId);
++    const status = (kind, value) => {
++      if (!current()) return;
++      this._pathPeriods.set(key, { ...this.getPathPeriodStatus(scope), [kind]: value }); this._emit();
++    };
++    await Promise.all(fields.map(async kind => {
++      const resource = key+':'+kind;
++      if (this._pathPeriodLoading.has(resource)) return this._pathPeriodLoading.get(resource);
++      const before = this.getPathPeriodStatus(scope)[kind];
++      if (!refresh && (before === 'loaded' || (before === 'failed' && !retry))) return;
++      const attempt = (async () => {
++        await Promise.resolve();
++        const restoring = this._historyRestoring.get(userId+':'+generation+':'+kind);
++        if (restoring) await restoring;
++        if (!current()) return;
++        try {
++          const rows = await Api.getPeriodHistory(kind, scope.start, scope.end);
++          if (!current()) return;
++          if (kind === 'diary') this._mergeDiaryHistory(rows, userId);
++          else this._mergeCheckinHistory(rows, userId);
++          status(kind, 'loaded');
++        } catch { status(kind, 'failed'); }
++      })();
++      this._pathPeriodLoading.set(resource, attempt); status(kind, 'loading');
++      try { await attempt; } finally {
++        this._pathPeriodLoading.delete(resource);
++        // An abandoned period is not complete; revisiting it must start a read.
++        if (this._userId === userId && this._generation === generation && this._activePathPeriod !== key) {
++          this._pathPeriods.set(key, { ...this.getPathPeriodStatus(scope), [kind]: 'idle' });
++        }
++      }
++    }));
++  },
++
+--- a/backend/src/routes/checkins.js
++++ b/backend/src/routes/checkins.js
+@@ -16,2 +16,9 @@
+-    limit: { type: 'integer', minimum: 1, maximum: 1000, default: 30 }, offset: { type: 'integer', minimum: 0, default: 0 }
+-  } } } }, request => db.checkin.findMany({ where: { userId: request.user.id }, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], take: request.query.limit, skip: request.query.offset }))
++    limit: { type: 'integer', minimum: 1, maximum: 1000, default: 30 }, offset: { type: 'integer', minimum: 0, default: 0 },
++    from: { type: 'string', format: 'date-time' }, to: { type: 'string', format: 'date-time' }
++  } } } }, (request, reply) => {
++    const { from, to, limit, offset } = request.query
++    if (from && to && Date.parse(from) > Date.parse(to)) return reply.code(400).send({ error: 'Проверьте даты периода.' })
++    return db.checkin.findMany({ where: { userId: request.user.id,
++      ...(from || to ? { createdAt: { ...(from && { gte: new Date(from) }), ...(to && { lte: new Date(to) }) } } : {})
++    }, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], take: limit, skip: offset })
++  })
