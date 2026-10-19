@@ -2922,7 +2922,7 @@ function showToast(msg, ok = true) {
 function renderCheckinHistory() {
   const container = document.getElementById('checkin-history-list');
   if (!container) return;
-  // History is personal and complete; only comparisons/weekly plots use a stream.
+  // Personal history may start from a bounded local copy; comparisons need loaded.
   const checkins = Storage.getCheckins();
   const loadState = Storage.getHistoryLoadStatus().checkins;
   const loading = ['idle', 'loading', 'partial'].includes(loadState);
@@ -2947,7 +2947,8 @@ function renderCheckinHistory() {
   }).join('');
   const label = loadState === 'loaded' ? 'Все личные наблюдения' : 'Наблюдения на этом устройстве';
   const empty = loadState === 'loaded' ? 'Оценок пока нет. Можно начать с того, что вы замечаете сейчас.' : 'На этом устройстве пока нет сохранённых отметок.';
-  container.innerHTML = `<div style="padding:0 16px 24px">${loading ? '<p class="access-notice" role="status">Загружаем ваши отметки…</p>' : ''}${comparison}<div class="section-label">${label}</div>${list || (loading ? '' : `<p class="access-notice">${empty}</p>`)}</div>`;
+  const localNotice = loadState !== 'loaded' ? '<p class="access-notice">История на этом устройстве может быть неполной. Полная история отметок доступна после подключения.</p>' : '';
+  container.innerHTML = `<div style="padding:0 16px 24px">${loading ? '<p class="access-notice" role="status">Загружаем ваши отметки…</p>' : ''}${localNotice}${comparison}<div class="section-label">${label}</div>${list || (loading ? '' : `<p class="access-notice">${empty}</p>`)}</div>`;
   renderHistoryLoadWarning(container, ['checkins'], 'checkins');
 }
 

@@ -605,7 +605,7 @@ const Storage = {
   _mergeCheckinHistory(entries, userId) {
     const identity = row => row.dayKey || String(row.id);
     const merged = new Map(entries.map(row => {
-      const normalized = { ...this._normalizeCheckin(row), syncStatus: 'synced' };
+      const normalized = this._confirmCheckinCache({ ...this._normalizeCheckin(row), syncStatus: 'synced' }, userId);
       return [identity(normalized), normalized];
     }));
     const remoteDates = new Set([...merged.values()].map(row => new Date(row.date).getTime()));
@@ -613,7 +613,7 @@ const Storage = {
       if (row.legacyCache && remoteDates.has(new Date(row.date).getTime())) continue;
       const remote = merged.get(identity(row));
       // A read started before an edit must not replace its newer pending or ACK.
-      if (!remote || new Date(row.clientUpdatedAt).getTime() > new Date(remote.clientUpdatedAt || 0).getTime()) merged.set(identity(row), row);
+      if (!remote || row.syncStatus !== 'synced' || new Date(row.clientUpdatedAt).getTime() > new Date(remote.clientUpdatedAt || 0).getTime()) merged.set(identity(row), row);
     }
     this._writeCheckins([...merged.values()], userId);
   },
@@ -636,16 +636,56 @@ const Storage = {
     }
     return this._checkins.get(userId);
   },
+  _checkinCacheFields(row) {
+    const scales = ['tension', 'anxiety', 'energy', 'safety', 'bodyContact'];
+    if (!row || row.syncStatus !== 'synced' || row.legacyScale !== false || typeof row.id !== 'string' || !row.id ||
+        !Number.isFinite(Date.parse(row.date)) || !Number.isFinite(Date.parse(row.clientUpdatedAt)) ||
+        Date.parse(row.clientUpdatedAt) < Date.parse(row.date) || row.dayKey !== this.checkinDayKey(row.date) ||
+        typeof row.note !== 'string' || !scales.every(key => Number.isInteger(row[key]) && row[key] >= 1 && row[key] <= 10)) return null;
+    if (['userId', 'createdAt', 'date', 'clientUpdatedAt', 'dayKey', 'mood', 'tensionZone'].some(key => row[key] != null && typeof row[key] !== 'string')) return null;
+    if ((row.bodyScore != null && (!Number.isInteger(row.bodyScore) || row.bodyScore < 1 || row.bodyScore > 10)) || row.kind !== 'checkin') return null;
+    const fields = ['id', 'userId', 'bodyScore', 'mood', 'tensionZone', 'note', ...scales, 'dayKey', 'clientUpdatedAt', 'createdAt', 'date', 'kind', 'legacyScale', 'syncStatus'];
+    if (Object.keys(row).some(key => key !== '_tpCheckinCacheAck' && !fields.includes(key))) return null;
+    return Object.keys(row).filter(key => key !== '_tpCheckinCacheAck' && row[key] !== undefined).sort().map(key => [key, row[key]]);
+  },
+  _confirmCheckinCache(row, userId) {
+    const fields = this._checkinCacheFields(row);
+    if (!fields || !userId || userId !== this._userId || (row.userId && String(row.userId) !== userId)) return row;
+    return { ...row, _tpCheckinCacheAck: { v: 1, owner: userId, fields } };
+  },
+  _checkinCacheConfirmed(row, userId) {
+    const receipt = row?._tpCheckinCacheAck, fields = this._checkinCacheFields(row);
+    return !!fields && receipt?.v === 1 && receipt.owner === userId && (!row.userId || String(row.userId) === userId) && JSON.stringify(receipt.fields) === JSON.stringify(fields);
+  },
   _writeCheckins(rows, userId = this._userId) {
     if (this._deletedUsers.has(userId)) return false;
     this._checkins.set(userId, rows);
-    const key = this.key('checkins_v2', userId), value = JSON.stringify(rows);
-    try {
-      window.localStorage.setItem(key, value);
-      if (window.localStorage.getItem(key) !== value) throw new Error('STORAGE_FAILED');
-      AppLocalStorage.setItem(key, value);
-      return true;
-    } catch { return false; }
+    const key = this.key('checkins_v2', userId), today = this.checkinDayKey(new Date());
+    const protectedRows = [], confirmed = [];
+    for (const row of rows) {
+      // Today's mark, every local edit/error and unknown legacy data are outside
+      // the historical-copy budget. Never trim another owner's late write.
+      if (userId === this._userId && row.dayKey !== today && this._checkinCacheConfirmed(row, userId)) confirmed.push(row);
+      else protectedRows.push(row);
+    }
+    confirmed.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+    const recent = []; let bytes = 2;
+    for (const row of confirmed) {
+      const size = JSON.stringify(row).length * 2 + (recent.length ? 2 : 0);
+      if (recent.length >= 201) break;
+      if (bytes + size > 512 * 1024) continue;
+      recent.push(row); bytes += size;
+    }
+    let keep = recent.length;
+    for (;;) {
+      const value = JSON.stringify([...protectedRows, ...recent.slice(0, keep)]);
+      try {
+        window.localStorage.setItem(key, value);
+        if (window.localStorage.getItem(key) !== value) throw new Error('STORAGE_FAILED');
+        AppLocalStorage.setItem(key, value);
+        return true;
+      } catch { if (!keep) return false; keep = Math.floor(keep / 2); }
+    }
   },
   _normalizeCheckin(row) {
     const keys = ['tension','anxiety','energy','safety','bodyContact'];
@@ -676,7 +716,7 @@ const Storage = {
           const current = this._checkinState(userId).find(row => row.dayKey === candidate.dayKey);
           // A response to the previous edit cannot replace a newer local draft.
           if (current?.clientUpdatedAt !== candidate.clientUpdatedAt) continue;
-          const row = { ...this._normalizeCheckin(saved), syncStatus: 'synced' };
+          const row = this._confirmCheckinCache({ ...this._normalizeCheckin(saved), syncStatus: 'synced' }, userId);
           this._writeCheckins(this._checkinState(userId).map(item => item.dayKey === candidate.dayKey ? row : item), userId);
           if (this._userId === userId && this._generation === generation) this._emit(row);
         } catch (error) {
