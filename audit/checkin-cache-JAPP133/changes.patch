@@ -1,0 +1,90 @@
+--- a/app/js/storage.js
++++ b/app/js/storage.js
+@@ -607,3 +607,3 @@
+     const merged = new Map(entries.map(row => {
+-      const normalized = { ...this._normalizeCheckin(row), syncStatus: 'synced' };
++      const normalized = this._confirmCheckinCache({ ...this._normalizeCheckin(row), syncStatus: 'synced' }, userId);
+       return [identity(normalized), normalized];
+@@ -615,3 +615,3 @@
+       // A read started before an edit must not replace its newer pending or ACK.
+-      if (!remote || new Date(row.clientUpdatedAt).getTime() > new Date(remote.clientUpdatedAt || 0).getTime()) merged.set(identity(row), row);
++      if (!remote || row.syncStatus !== 'synced' || new Date(row.clientUpdatedAt).getTime() > new Date(remote.clientUpdatedAt || 0).getTime()) merged.set(identity(row), row);
+     }
+@@ -638,2 +638,23 @@
+   },
++  _checkinCacheFields(row) {
++    const scales = ['tension', 'anxiety', 'energy', 'safety', 'bodyContact'];
++    if (!row || row.syncStatus !== 'synced' || row.legacyScale !== false || typeof row.id !== 'string' || !row.id ||
++        !Number.isFinite(Date.parse(row.date)) || !Number.isFinite(Date.parse(row.clientUpdatedAt)) ||
++        Date.parse(row.clientUpdatedAt) < Date.parse(row.date) || row.dayKey !== this.checkinDayKey(row.date) ||
++        typeof row.note !== 'string' || !scales.every(key => Number.isInteger(row[key]) && row[key] >= 1 && row[key] <= 10)) return null;
++    if (['userId', 'createdAt', 'date', 'clientUpdatedAt', 'dayKey', 'mood', 'tensionZone'].some(key => row[key] != null && typeof row[key] !== 'string')) return null;
++    if ((row.bodyScore != null && (!Number.isInteger(row.bodyScore) || row.bodyScore < 1 || row.bodyScore > 10)) || row.kind !== 'checkin') return null;
++    const fields = ['id', 'userId', 'bodyScore', 'mood', 'tensionZone', 'note', ...scales, 'dayKey', 'clientUpdatedAt', 'createdAt', 'date', 'kind', 'legacyScale', 'syncStatus'];
++    if (Object.keys(row).some(key => key !== '_tpCheckinCacheAck' && !fields.includes(key))) return null;
++    return Object.keys(row).filter(key => key !== '_tpCheckinCacheAck' && row[key] !== undefined).sort().map(key => [key, row[key]]);
++  },
++  _confirmCheckinCache(row, userId) {
++    const fields = this._checkinCacheFields(row);
++    if (!fields || !userId || userId !== this._userId || (row.userId && String(row.userId) !== userId)) return row;
++    return { ...row, _tpCheckinCacheAck: { v: 1, owner: userId, fields } };
++  },
++  _checkinCacheConfirmed(row, userId) {
++    const receipt = row?._tpCheckinCacheAck, fields = this._checkinCacheFields(row);
++    return !!fields && receipt?.v === 1 && receipt.owner === userId && (!row.userId || String(row.userId) === userId) && JSON.stringify(receipt.fields) === JSON.stringify(fields);
++  },
+   _writeCheckins(rows, userId = this._userId) {
+@@ -641,9 +662,28 @@
+     this._checkins.set(userId, rows);
+-    const key = this.key('checkins_v2', userId), value = JSON.stringify(rows);
+-    try {
+-      window.localStorage.setItem(key, value);
+-      if (window.localStorage.getItem(key) !== value) throw new Error('STORAGE_FAILED');
+-      AppLocalStorage.setItem(key, value);
+-      return true;
+-    } catch { return false; }
++    const key = this.key('checkins_v2', userId), today = this.checkinDayKey(new Date());
++    const protectedRows = [], confirmed = [];
++    for (const row of rows) {
++      // Today's mark, every local edit/error and unknown legacy data are outside
++      // the historical-copy budget. Never trim another owner's late write.
++      if (userId === this._userId && row.dayKey !== today && this._checkinCacheConfirmed(row, userId)) confirmed.push(row);
++      else protectedRows.push(row);
++    }
++    confirmed.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
++    const recent = []; let bytes = 2;
++    for (const row of confirmed) {
++      const size = JSON.stringify(row).length * 2 + (recent.length ? 2 : 0);
++      if (recent.length >= 201) break;
++      if (bytes + size > 512 * 1024) continue;
++      recent.push(row); bytes += size;
++    }
++    let keep = recent.length;
++    for (;;) {
++      const value = JSON.stringify([...protectedRows, ...recent.slice(0, keep)]);
++      try {
++        window.localStorage.setItem(key, value);
++        if (window.localStorage.getItem(key) !== value) throw new Error('STORAGE_FAILED');
++        AppLocalStorage.setItem(key, value);
++        return true;
++      } catch { if (!keep) return false; keep = Math.floor(keep / 2); }
++    }
+   },
+@@ -678,3 +718,3 @@
+           if (current?.clientUpdatedAt !== candidate.clientUpdatedAt) continue;
+-          const row = { ...this._normalizeCheckin(saved), syncStatus: 'synced' };
++          const row = this._confirmCheckinCache({ ...this._normalizeCheckin(saved), syncStatus: 'synced' }, userId);
+           this._writeCheckins(this._checkinState(userId).map(item => item.dayKey === candidate.dayKey ? row : item), userId);
+--- a/app/js/app.js
++++ b/app/js/app.js
+@@ -2924,3 +2924,3 @@
+   if (!container) return;
+-  // History is personal and complete; only comparisons/weekly plots use a stream.
++  // Personal history may start from a bounded local copy; comparisons need loaded.
+   const checkins = Storage.getCheckins();
+@@ -2949,3 +2949,4 @@
+   const empty = loadState === 'loaded' ? 'Оценок пока нет. Можно начать с того, что вы замечаете сейчас.' : 'На этом устройстве пока нет сохранённых отметок.';
+-  container.innerHTML = `<div style="padding:0 16px 24px">${loading ? '<p class="access-notice" role="status">Загружаем ваши отметки…</p>' : ''}${comparison}<div class="section-label">${label}</div>${list || (loading ? '' : `<p class="access-notice">${empty}</p>`)}</div>`;
++  const localNotice = loadState !== 'loaded' ? '<p class="access-notice">История на этом устройстве может быть неполной. Полная история отметок доступна после подключения.</p>' : '';
++  container.innerHTML = `<div style="padding:0 16px 24px">${loading ? '<p class="access-notice" role="status">Загружаем ваши отметки…</p>' : ''}${localNotice}${comparison}<div class="section-label">${label}</div>${list || (loading ? '' : `<p class="access-notice">${empty}</p>`)}</div>`;
+   renderHistoryLoadWarning(container, ['checkins'], 'checkins');

@@ -1,0 +1,19 @@
+{
+  "backup": "/root/telo-backups/checkin-cache-JAPP134-2026-10-19T165158847Z",
+  "publicFiles": 88,
+  "changedPublic": [
+    "js/app.js",
+    "js/storage.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}

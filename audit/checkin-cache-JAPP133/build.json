@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "sourceHashes": {
+    "app/js/storage.js": "49da6d9670ffc75ed8c5a682c45b8593754e851d45e022e7aed0c7e847a65ed4",
+    "app/js/app.js": "6d3ea2db9256954f42825e99547a6a15eb8d833922b3cc4b947881ba08a1d55e"
+  },
+  "publicFiles": 88,
+  "changed": [
+    "index.html",
+    "screen-review.html",
+    "js/app.js",
+    "js/storage.js"
+  ],
+  "backendChanges": 0,
+  "schemaChanges": 0,
+  "cashPanelUnchanged": true
+}

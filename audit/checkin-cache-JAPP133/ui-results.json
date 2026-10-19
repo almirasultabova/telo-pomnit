@@ -1,0 +1,437 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "bounded",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "real document reload and unavailable history restore today and bounded copies",
+        "partial local history is labelled and cannot produce a full comparison",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "quota",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "actual QuotaExceeded evicts only confirmed older copies to preserve today edit",
+        "full-store reload reads pending latest today and separate unsent form draft",
+        "write-probe failure cannot hide previously saved marks or drafts",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4712451,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "recovery",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "unwritable protected history preserves prior durable snapshot and existing draft",
+        "memory-only save never displays a durable success",
+        "matching confirmed ACK clears only its submitted recovery draft",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4696442,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "late-ack",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "unwritable protected history preserves prior durable snapshot and existing draft",
+        "memory-only save never displays a durable success",
+        "late previous ACK cannot clear a newer checkin draft",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4696442,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 320,
+      "mode": "blocked",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "blocked store still opens form with explicit memory-only warning",
+        "server ACK preserves all five answers without local durability claim",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "bounded",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "real document reload and unavailable history restore today and bounded copies",
+        "partial local history is labelled and cannot produce a full comparison",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "quota",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "actual QuotaExceeded evicts only confirmed older copies to preserve today edit",
+        "full-store reload reads pending latest today and separate unsent form draft",
+        "write-probe failure cannot hide previously saved marks or drafts",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4712451,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "recovery",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "unwritable protected history preserves prior durable snapshot and existing draft",
+        "memory-only save never displays a durable success",
+        "matching confirmed ACK clears only its submitted recovery draft",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4696442,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "late-ack",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "unwritable protected history preserves prior durable snapshot and existing draft",
+        "memory-only save never displays a durable success",
+        "late previous ACK cannot clear a newer checkin draft",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4696442,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "mode": "blocked",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "blocked store still opens form with explicit memory-only warning",
+        "server ACK preserves all five answers without local durability claim",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "bounded",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "real document reload and unavailable history restore today and bounded copies",
+        "partial local history is labelled and cannot produce a full comparison",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "quota",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "actual QuotaExceeded evicts only confirmed older copies to preserve today edit",
+        "full-store reload reads pending latest today and separate unsent form draft",
+        "write-probe failure cannot hide previously saved marks or drafts",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4712451,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "recovery",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "unwritable protected history preserves prior durable snapshot and existing draft",
+        "memory-only save never displays a durable success",
+        "matching confirmed ACK clears only its submitted recovery draft",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4696442,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "late-ack",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "unwritable protected history preserves prior durable snapshot and existing draft",
+        "memory-only save never displays a durable success",
+        "late previous ACK cannot clear a newer checkin draft",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4696442,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 10485760
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "chromium",
+      "width": 1440,
+      "mode": "blocked",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "blocked store still opens form with explicit memory-only warning",
+        "server ACK preserves all five answers without local durability claim",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "bounded",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "real document reload and unavailable history restore today and bounded copies",
+        "partial local history is labelled and cannot produce a full comparison",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "quota",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "actual QuotaExceeded evicts only confirmed older copies to preserve today edit",
+        "full-store reload reads pending latest today and separate unsent form draft",
+        "write-probe failure cannot hide previously saved marks or drafts",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4182355,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 9425568
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "recovery",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "unwritable protected history preserves prior durable snapshot and existing draft",
+        "memory-only save never displays a durable success",
+        "matching confirmed ACK clears only its submitted recovery draft",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4150337,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 9393550
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "late-ack",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "full1000 rows retained in memory while confirmed disk history is bounded",
+        "today remains outside history budget with five original scale values",
+        "unwritable protected history preserves prior durable snapshot and existing draft",
+        "memory-only save never displays a durable success",
+        "late previous ACK cannot clear a newer checkin draft",
+        "other owner, legacy original, body draft and AI draft remain byte-identical",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {
+        "retainedHistorical": 20,
+        "quota": {
+          "filledCodeUnits": 4150337,
+          "lastError": "QuotaExceededError",
+          "utf16Bytes": 9393550
+        }
+      },
+      "realWrites": 0
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "mode": "blocked",
+      "base": null,
+      "passed": true,
+      "cases": [
+        "blocked store still opens form with explicit memory-only warning",
+        "server ACK preserves all five answers without local durability claim",
+        "no page errors or horizontal overflow"
+      ],
+      "metrics": {},
+      "realWrites": 0
+    }
+  ],
+  "sourceHashes": {
+    "app/js/storage.js": "49da6d9670ffc75ed8c5a682c45b8593754e851d45e022e7aed0c7e847a65ed4",
+    "app/js/app.js": "6d3ea2db9256954f42825e99547a6a15eb8d833922b3cc4b947881ba08a1d55e"
+  }
+}

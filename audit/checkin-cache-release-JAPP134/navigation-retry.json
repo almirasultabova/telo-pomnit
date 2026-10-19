@@ -1,0 +1,10 @@
+{
+  "origin": "https://tg-app-telo-pomnit.vercel.app/",
+  "engine": "webkit",
+  "width": 390,
+  "mode": "recovery",
+  "stage": "initial navigation waiting for domcontentloaded",
+  "timeoutMs": 30000,
+  "productChanges": 0,
+  "retry": "resume remaining published scenarios with --retry"
+}

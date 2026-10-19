@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "groups": 20,
+  "measurements": [
+    {
+      "kind": "short",
+      "rows": 1000,
+      "beforeUtf16Bytes": 707782,
+      "afterUtf16Bytes": 320338,
+      "confirmedHistoryBytes": 318758,
+      "retainedHistorical": 201,
+      "todayProtected": true,
+      "memoryRows": 1000
+    },
+    {
+      "kind": "long",
+      "rows": 1000,
+      "beforeUtf16Bytes": 12697782,
+      "afterUtf16Bytes": 536806,
+      "confirmedHistoryBytes": 511246,
+      "retainedHistorical": 20,
+      "todayProtected": true,
+      "memoryRows": 1000
+    },
+    {
+      "kind": "limit",
+      "rows": 1000,
+      "beforeUtf16Bytes": 40697782,
+      "afterUtf16Bytes": 570922,
+      "confirmedHistoryBytes": 489362,
+      "retainedHistorical": 6,
+      "todayProtected": true,
+      "memoryRows": 1000
+    },
+    {
+      "kind": "escaped",
+      "rows": 1000,
+      "beforeUtf16Bytes": 80697782,
+      "afterUtf16Bytes": 646242,
+      "confirmedHistoryBytes": 484682,
+      "retainedHistorical": 3,
+      "todayProtected": true,
+      "memoryRows": 1000
+    }
+  ],
+  "budgetBytes": 524288,
+  "maxHistoricalRows": 201,
+  "todayOutsideBudget": true,
+  "pendingDraftsAndLegacyProtected": true,
+  "productionWrites": 0,
+  "sourceHashes": {
+    "app/js/storage.js": "49da6d9670ffc75ed8c5a682c45b8593754e851d45e022e7aed0c7e847a65ed4"
+  }
+}

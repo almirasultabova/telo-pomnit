@@ -1,0 +1,36 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": [
+      "body draft survives reload and backward/forward navigation",
+      "successful save clears draft; new entry has no previous text",
+      "late ACK cannot clear the next body draft",
+      "account isolation and explicit draft deletion",
+      "reaction draft restores text/type/intensity/zone and clears after queueing",
+      "400 does not block next save; correction retains clientId/date",
+      "over-limit legacy draft is preserved and cannot be submitted",
+      "over-limit check-in note stays in the form and is not queued",
+      "logout clears private form DOM",
+      "blocked storage is explicitly memory-only"
+    ],
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "passed": [
+      "body draft survives reload and backward/forward navigation",
+      "successful save clears draft; new entry has no previous text",
+      "late ACK cannot clear the next body draft",
+      "account isolation and explicit draft deletion",
+      "reaction draft restores text/type/intensity/zone and clears after queueing",
+      "400 does not block next save; correction retains clientId/date",
+      "over-limit legacy draft is preserved and cannot be submitted",
+      "over-limit check-in note stays in the form and is not queued",
+      "logout clears private form DOM",
+      "blocked storage is explicitly memory-only"
+    ],
+    "pageErrors": []
+  }
+]
