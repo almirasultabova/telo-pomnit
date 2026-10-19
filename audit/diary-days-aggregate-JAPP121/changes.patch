@@ -1,0 +1,26 @@
+--- a/backend/src/routes/diary.js
++++ b/backend/src/routes/diary.js
+@@ -123,14 +123,16 @@
+   // Compact owner-only calendar index; no diary text is returned.
+   app.get('/diary/days', { preHandler: requireAuth }, async (request, reply) => {
+     reply.header('Cache-Control', 'private, no-store')
+-    const rows = await db.diaryEntry.findMany({ where: { userId: request.user.id }, select: { createdAt: true } }).catch(() => null)
++    // Prisma DateTime is UTC stored as timestamp without time zone.
++    // Aggregate in PostgreSQL; parameters keep the owner outside SQL text.
++    const rows = await db.$queryRaw`
++      SELECT DISTINCT to_char((created_at AT TIME ZONE 'UTC') AT TIME ZONE 'Europe/Moscow', 'YYYY-MM-DD') AS day
++      FROM diary_entries
++      WHERE user_id = ${request.user.id}
++      ORDER BY day
++    `.catch(() => null)
+     if (!rows) return reply.code(503).send({ error: 'Не удалось загрузить даты наблюдений' })
+-    const formatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Moscow', year: 'numeric', month: '2-digit', day: '2-digit' })
+-    const days = [...new Set(rows.map(row => {
+-      const parts = formatter.formatToParts(new Date(row.createdAt))
+-      const part = name => parts.find(p => p.type === name).value
+-      return `${part('year')}-${part('month')}-${part('day')}`
+-    }))].sort()
++    const days = rows.map(row => row.day)
+     return { timeZone: 'Europe/Moscow', days }
+   })
+ 

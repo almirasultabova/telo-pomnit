@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "groups": 11,
+  "nativePostgres": true,
+  "nativeAuth": true,
+  "oldAndNewBodyIdentical": true,
+  "historicalMoscowOffsets": true,
+  "ownerBoundParameters": true,
+  "privateNoStore": true,
+  "generic503AndRecovery": true,
+  "fixtureRows": 10000,
+  "oldDatabaseResultRows": 10000,
+  "newDatabaseResultRows": 5,
+  "oldSerializedResultBytes": 410001,
+  "newSerializedResultBytes": 106,
+  "productionSourceUnchanged": true,
+  "productionTestWrites": 0,
+  "externalCalls": 0,
+  "migrations": 0,
+  "installed": true,
+  "sourceHash": "c463e2c489180d80868c1d6e306d833ade1383e2a576fe00c23f89e259faa5ba"
+}

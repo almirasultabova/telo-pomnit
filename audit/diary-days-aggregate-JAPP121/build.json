@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "isolatedBuild": "C:\\Users\\almsu\\AppData\\Local\\Temp\\telo-JAPP121-build-dbao29zm",
+  "sourceHash": "c463e2c489180d80868c1d6e306d833ade1383e2a576fe00c23f89e259faa5ba",
+  "publishedBase": "de5b16d0965be1107ea623c306cb5635a644ff2e",
+  "sourceFiles": 1,
+  "changedPublic": [],
+  "publicFiles": 88,
+  "migration": false,
+  "published": false
+}
