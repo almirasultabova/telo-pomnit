@@ -143,6 +143,7 @@
     document.getElementById('reaction-draft-status')?.setAttribute('hidden', '');
   }
   function invalidate() {
+    document.getElementById('trigger-history-list')?.replaceChildren();
     body = reaction = null;
     for (const id of ['note-textarea', 'trigger-situation', 'trigger-note']) {
       const field = document.getElementById(id); if (field) field.value = '';

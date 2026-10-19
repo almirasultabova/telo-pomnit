@@ -542,7 +542,7 @@ function renderMainTab() {
 // ВКЛАДКА: ДНЕВНИК
 // ─────────────────────────────────────────────────────────────────────────
 function renderDiaryTab() {
-  window.AfterMeeting?.refresh();
+  if (activeTab === 'diary') window.AfterMeeting?.refresh();
   window.DiscussionNotes?.refresh();
   renderDiarySyncStatus();
   renderAccessNotice();
@@ -2419,6 +2419,7 @@ function initTrigger() {
   document.getElementById('trigger-history-btn')?.addEventListener('click', () => {
     renderTriggerHistory();
     goTo('trigger-history');
+    if (Storage.getHistoryLoadStatus().triggers === 'idle') void Storage.loadTriggerHistory().catch(() => {});
     haptic('light');
   });
 

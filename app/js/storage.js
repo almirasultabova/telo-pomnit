@@ -42,6 +42,7 @@ const Storage = {
     if (this._deletedUsers.has(String(userId))) throw new Error('ACCOUNT_DELETED');
     this._userId = String(userId);
     this._generation++;
+    this._historyLoads.set(this._userId, { diary: 'idle', checkins: 'idle', triggers: 'idle' });
     clearTimeout(this._retryTimer);
     clearTimeout(this._checkinRetryTimer);
     clearTimeout(this._triggerRetryTimer);
@@ -694,7 +695,7 @@ const Storage = {
       }
     };
     const run = async () => {
-      this._historyLoads.set(userId, { diary: 'loading', checkins: 'loading', triggers: 'loading' });
+      this._historyLoads.set(userId, { ...this.getHistoryLoadStatus(), diary: 'loading', checkins: 'loading' });
       this._emit();
       await Promise.allSettled([
         restore('diary', () => Api.getDiary(), value => {
@@ -715,7 +716,6 @@ const Storage = {
         restore(null, () => Api.getDiagResult(), value => {
           if (value) this._set(KEYS.DIAG, JSON.stringify({ ...value, date: value.date || value.createdAt }));
         }),
-        this.loadTriggerHistory(),
         restore('checkins', () => Api.getCheckins(), value => {
           if (!Array.isArray(value)) throw new Error('INVALID_CHECKIN_HISTORY');
           const identity = row => row.dayKey || String(row.id);
