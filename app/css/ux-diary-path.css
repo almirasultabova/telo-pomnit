@@ -73,3 +73,13 @@
 #tab-diag .mypath-empty-sub{max-width:78%;font:400 15px/1.6 var(--font-body);color:var(--color-action);margin-bottom:24px}
 #tab-diag .mypath-empty .btn,#path-first-checkin{min-height:48px;width:auto;max-width:100%;font:500 15px/1.4 var(--font-body)}
 .profile-streak-note{grid-column:1/-1;margin:12px 0 0;font:400 12px/1.6 var(--font-body);color:var(--color-action)}
+
+/* J-APP-163: preserve survey reading and keyboard position. */
+#tab-diag .diag-quiz-q{margin:0 0 20px}
+#tab-diag .habitual-return-top{display:flex;align-items:center;min-height:48px;margin:0 0 12px;padding:0;background:transparent;color:var(--color-action);border:0}
+#tab-diag .habitual-answers{padding-left:24px;margin:20px 0}
+#tab-diag .habitual-answers li{padding:0 0 16px;margin:0 0 16px;border-bottom:1px solid var(--color-line)}
+#tab-diag .habitual-answers li p{margin:0 0 7px;font:400 14px/1.6 var(--font-body)}
+#tab-diag .habitual-answers li strong{font:600 14px/1.6 var(--font-body);color:var(--color-action)}
+#tab-diag .habitual-return-top:focus-visible,#tab-diag #habitual-show-answers:focus-visible{outline:2px solid var(--color-action);outline-offset:3px}
+#tab-diag #habitual-question:focus,#tab-diag #habitual-answers-title:focus{outline:none}
