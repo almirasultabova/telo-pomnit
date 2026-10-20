@@ -67,7 +67,7 @@ body{background:#f7f4ef}::selection{background:#dde4d8;color:#1a211a}
 #tab-main .home-observation p{font-size:13px;line-height:1.65;color:#53624f}
 /* One consistent title layer; working content stays quiet and legible. */
 #tab-diary>.screen-header,#tab-diag>.screen-header,#tab-profile>.screen-header{padding:26px 20px 18px}
-#tab-diary .screen-title,#tab-diag .screen-title,#tab-profile>.screen-header .screen-title{font:500 36px/1.05 var(--font-serif);color:#2a4a38}
+#tab-diary .screen-title,#tab-diag .screen-title,#tab-profile>.screen-header .screen-title{font:500 var(--title-page-size)/1.1 var(--font-serif);color:var(--color-action)}
 #tab-diary .screen-sub,#tab-diag .screen-sub{font:400 13px/1.5 var(--font-body);margin-top:7px;max-width:34ch}
 #tab-diary .diary-group-title{font:500 24px/1.1 var(--font-serif);margin:0 0 12px}
 #tab-diary .diary-observation-section{margin-top:22px}

@@ -1,6 +1,5 @@
 /* J-APP-021: compact answering surfaces and keyboard space. Keep native zoom available. */
-/* J-APP-070: restore the keyboard ring after the feedback field's legacy focus reset. */
-#screen-feedback .fb-textarea:focus-visible{outline:2px solid var(--color-action);outline-offset:3px}
+
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .screen.form-viewport{inset:auto 0 auto;top:var(--form-visible-top,0px);height:var(--form-visible-height,100dvh)}
 #app:has(>.screen--active.form-viewport){overflow:clip}
@@ -30,7 +29,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 #screen-post-questionnaire .cycle-original blockquote{font-size:20px;line-height:1.35}
 .form-editing .screen-header{padding-block:10px}
 /* Smaller task headings and choices, preserving the Main composition. */
-:is(#screen-sensations,#screen-note,#screen-trigger,#screen-trigger-note,#screen-checkin,#screen-diag-quiz,#screen-feedback) .screen-title{font-size:28px;line-height:1.15}
+
 :is(#screen-sensations,#screen-trigger) :is(.sens-chip,.emotion-chip){font-size:14px;min-height:44px;padding:10px 12px}
 .diag-quiz-option{font-size:14px;line-height:1.5;min-height:44px;padding:12px 14px}
 #screen-checkin .checkin-scale-label{font-size:14px}

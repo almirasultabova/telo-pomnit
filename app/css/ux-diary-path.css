@@ -1,6 +1,6 @@
 /* Product hierarchy: Diary and My Path. Scoped, existing data and actions. */
 #tab-diag .hmap-description{font:400 13px/1.55 var(--font-body);color:var(--color-text);margin:0 0 12px;}
-#tab-diary .screen-title,#tab-diag .screen-title{font-size:36px;line-height:1.05}
+
 #tab-diary .screen-sub,#tab-diag .screen-sub{font-size:13px;line-height:1.5;color:#726A60;margin-top:7px}
 #tab-diary .screen-scroll{padding-inline:20px}
 #tab-diary .diary-group-title{font:600 14px/1.4 var(--font-body,Manrope,sans-serif);color:#2A4A38;margin:0 0 10px}

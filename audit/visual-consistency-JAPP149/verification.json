@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "sourceChanged": [
+    "app/css/form-consistency.css",
+    "app/css/form-layout.css",
+    "app/css/light-sections.css",
+    "app/css/styles.css",
+    "app/css/ux-diary-path.css",
+    "app/css/ux-personal.css"
+  ],
+  "rootDocumentationChanged": [
+    "app/CLAUDE.md",
+    "app/DESIGN.md",
+    "app/PRODUCT.md"
+  ],
+  "otherRootFilesUnchanged": 499,
+  "publicChanged": [
+    "css/form-consistency.css",
+    "css/form-layout.css",
+    "css/light-sections.css",
+    "css/styles.css",
+    "css/ux-diary-path.css",
+    "css/ux-personal.css",
+    "index.html",
+    "screen-review.html"
+  ],
+  "publicUnchanged": 88,
+  "newGroups": 39,
+  "regressionGroups": 66,
+  "published": false
+}

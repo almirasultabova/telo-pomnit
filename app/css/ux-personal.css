@@ -1,6 +1,6 @@
 /* Personal surfaces: compact task hierarchy; approved fonts, palette and Main glass retained. */
 #tab-profile > .screen-header { padding:22px 20px 12px; }
-#tab-profile > .screen-header .screen-title { font:500 40px/1.05 var(--font-serif); }
+
 #tab-profile .profile-identity { padding:8px 0 20px; }
 #tab-profile .profile-identity::after { display:none; }
 #tab-profile .profile-user { display:flex; align-items:center; gap:12px; padding:0; margin:0; }
@@ -57,7 +57,7 @@
 #screen-splash .splash-loader-fill { background:var(--color-action); }
 #tab-profile button:focus-visible,#tab-profile a:focus-visible { outline:2px solid var(--color-action); outline-offset:3px; }
 @media(max-width:350px) {
-  #tab-profile > .screen-header .screen-title { font-size:36px; }
+
   #tab-profile .profile-name { font-size:17px; }
   #tab-profile .host-card-mini { grid-template-columns:36px minmax(0,1fr) 44px; gap:8px; }
   #tab-profile .host-avatar-mini { width:36px; height:36px; flex-basis:36px; }
@@ -65,7 +65,7 @@
   #tab-profile .host-role-mini { font-size:11px; }
 }
 
-#screen-ai-chat .screen-title {font-size:32px;line-height:1.1;}
+
 #screen-ai-chat .screen-sub,#screen-ai-chat .access-notice {font:400 13px/1.5 var(--font-body);}
 #screen-ai-chat .ai-history-disclosure summary {font:500 13px/1.4 var(--font-body);min-height:44px;display:flex;align-items:center;}
 #screen-ai-chat .ai-history-purpose {font:400 12px/1.5 var(--font-body);color:var(--color-muted);margin:0 0 12px;}

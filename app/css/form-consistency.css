@@ -1,4 +1,69 @@
-/* J-APP-147: shared recovery and compact form details in the accepted visual system. */
+/* J-APP-149: single shared rule set, replacing the scattered legacy definitions.
+   Ordinary controls share geometry and states; photo actions, rows, choices,
+   questionnaire footers and other feature compositions retain their own rules. */
+.screen-title {
+  min-width: 0;
+  font: 500 var(--title-task-size)/1.15 var(--font-serif);
+  font-style: normal;
+  color: var(--color-action);
+  letter-spacing: -.025em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  max-width: 100%;
+  padding: 14px 18px;
+  border-radius: var(--control-radius);
+  font: 500 15px/1.4 var(--font-body);
+  letter-spacing: -.01em;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--duration-fast), opacity var(--duration-fast), transform var(--duration-fast);
+}
+.btn--primary, .btn--accent { background: var(--color-action); color: var(--color-bg); box-shadow: none; }
+.btn--outline { background: transparent; color: var(--color-action); border: 1px solid var(--color-action); }
+.btn--ghost { background: var(--color-surface); color: var(--color-text); }
+.btn--sm { min-height: var(--control-height-compact); padding: 10px 18px; font-size: 14px; }
+.btn:active:not(:disabled) { transform: scale(.985); }
+.btn:disabled { background: var(--color-sage); color: var(--color-action); opacity: 1; cursor: default; transform: none; box-shadow: none; }
+.btn[aria-busy="true"] { cursor: wait; }
+:is(.note-textarea, .fb-textarea) {
+  display: block;
+  width: 100%;
+  min-height: 160px;
+  padding: var(--space-4);
+  border: 1px solid var(--color-control-line);
+  border-radius: var(--control-radius);
+  background: var(--color-field);
+  color: var(--color-text);
+  font: 400 16px/1.6 var(--font-body);
+  caret-color: var(--color-action);
+  resize: none;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.fb-textarea { resize: vertical; }
+:is(.note-textarea, .fb-textarea)::placeholder { color: var(--color-muted); opacity: 1; }
+:is(.note-textarea, .fb-textarea):focus { border-color: var(--color-action); outline: 2px solid var(--color-action); outline-offset: 3px; box-shadow: none; }
+:is(#screen-trigger, #screen-checkin) .section-label, .fb-section-label {
+  display: block;
+  margin: 0 0 var(--space-2);
+  font: 500 15px/1.45 var(--font-body);
+  color: var(--color-gold);
+  text-transform: none;
+  letter-spacing: 0;
+}
+:is(#screen-trigger, #screen-checkin) .section-label.mt-16 { margin-top: var(--space-6); }
+:is(#screen-trigger, #screen-checkin, #screen-feedback) .optional-hint { display: inline-block; margin-left: 6px; color: var(--color-muted); font: 400 12px/1.5 var(--font-body); }
+.fb-routing { display: block; width: 100%; min-height: 48px; padding: 11px 13px; margin: 0 0 var(--space-6); border: 1px solid var(--color-control-line); border-radius: var(--control-radius); background: var(--color-field); color: var(--color-text); font: 400 16px/1.5 var(--font-body); }
+
+/* J-APP-147: shared recovery and compact form details. */
 .form-message {
   margin: 0;
   padding: var(--space-3) var(--space-4);

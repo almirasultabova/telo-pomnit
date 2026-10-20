@@ -1,0 +1,187 @@
+[
+  {
+    "file": "styles.css",
+    "selector": ".screen-title",
+    "rules": 3
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn",
+    "rules": 2
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn:active",
+    "rules": 2
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn--primary",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn--primary:active",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn--primary:disabled",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn--accent",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn--outline",
+    "rules": 2
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn--ghost",
+    "rules": 2
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn--sm",
+    "rules": 2
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn--primary, .btn--accent",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn--primary:active, .btn--accent:active",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".btn:disabled",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".note-textarea",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".note-textarea:focus",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".note-textarea::placeholder",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".fb-textarea",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".fb-textarea:focus",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".fb-textarea::placeholder",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".fb-section-label",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".tab-pane:not(#tab-main) > .screen-header .screen-title",
+    "rules": 2
+  },
+  {
+    "file": "styles.css",
+    "selector": "#screen-body-map .screen-title",
+    "rules": 2
+  },
+  {
+    "file": "styles.css",
+    "selector": "#screen-ai-chat .screen-title",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": "#tab-profile > .screen-header .screen-title",
+    "rules": 2
+  },
+  {
+    "file": "styles.css",
+    "selector": ".note-textarea,#screen-trigger textarea,#screen-checkin textarea",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".note-textarea::placeholder,#screen-trigger textarea::placeholder,#screen-checkin textarea::placeholder",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": "#screen-trigger .section-label,#screen-checkin .section-label",
+    "rules": 2
+  },
+  {
+    "file": "styles.css",
+    "selector": "#screen-trigger .section-label.mt-16,#screen-checkin .section-label.mt-16",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": "#screen-trigger .optional-hint,#screen-checkin .optional-hint",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": "#screen-trigger .screen-bottom .btn,#screen-checkin .screen-bottom .btn",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": "#screen-trigger .screen-bottom .btn:disabled",
+    "rules": 1
+  },
+  {
+    "file": "styles.css",
+    "selector": ".fb-routing",
+    "rules": 1
+  },
+  {
+    "file": "form-layout.css",
+    "selector": "#screen-feedback .fb-textarea:focus-visible",
+    "rules": 1
+  },
+  {
+    "file": "form-layout.css",
+    "selector": ":is(#screen-sensations,#screen-note,#screen-trigger,#screen-trigger-note,#screen-checkin,#screen-diag-quiz,#screen-feedback) .screen-title",
+    "rules": 1
+  },
+  {
+    "file": "ux-diary-path.css",
+    "selector": "#tab-diary .screen-title,#tab-diag .screen-title",
+    "rules": 1
+  },
+  {
+    "file": "ux-personal.css",
+    "selector": "#tab-profile > .screen-header .screen-title",
+    "rules": 2
+  },
+  {
+    "file": "ux-personal.css",
+    "selector": "#screen-ai-chat .screen-title",
+    "rules": 1
+  }
+]

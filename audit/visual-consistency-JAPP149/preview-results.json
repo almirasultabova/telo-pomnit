@@ -1,0 +1,27 @@
+{
+  "views": [
+    {
+      "view": "home",
+      "passed": true
+    },
+    {
+      "view": "profile",
+      "passed": true
+    },
+    {
+      "view": "body",
+      "passed": true
+    },
+    {
+      "view": "feedback",
+      "passed": true
+    },
+    {
+      "view": "questionnaire",
+      "passed": true
+    }
+  ],
+  "pageErrors": [],
+  "failedAssets": [],
+  "externalRequests": []
+}
