@@ -97,6 +97,7 @@ function goBack() {
   if (currentScreen === 'data-export-preview') { closePrivatePreview(); return; }
   if (currentScreen === 'data-rights') { closeDataRights(); return; }
   if (Api.clubBlocked) { screenStack.length = 0; updateBackBtn(); return; }
+  if (currentScreen === 'discuss' && window.DiscussionNotes?.back()) return;
   if (currentScreen === 'home' && activeTab === 'diag' && habitualView !== 'summary') {
     if (habitualView === 'answers') returnHabitualResult();
     else if (habitualView === 'quiz' && diag.current > 0) habitualPrevious();

@@ -45,3 +45,9 @@ body:has(#screen-discuss.screen--active) #q-invite-sheet:not(.active){visibility
 .dq-fragment-actions {display:grid;gap:8px}
 .dq-fragment-actions .dq-all-text {margin:0}
 .dq-fragment-actions .dq-button {min-height:52px;border-radius:var(--control-radius,16px);font-size:15px}
+
+/* JAPP169: readable save/load feedback; existing palette and type scale. */
+#screen-discuss .dq-status{padding:12px 14px;border-radius:12px;background:#e7ebdf;overflow-wrap:anywhere}
+#screen-discuss .dq-status.dq-error{background:#f2e8e2;color:#783c30}
+#screen-discuss .dq-detail-source+.dq-status{margin-bottom:16px}
+#screen-discuss .dq-header h1:focus{outline:none}
