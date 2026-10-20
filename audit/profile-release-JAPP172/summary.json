@@ -1,0 +1,11 @@
+{
+  "status": "published and verified",
+  "functionalCommit": "a3d91338975657770e7df6b60b4cced5e3d30251",
+  "localGroups": 32,
+  "appearanceChecks": 3,
+  "httpsChecks": 300,
+  "reserveGroups": 3,
+  "backendChanged": false,
+  "realParticipantWrites": 0,
+  "mainPublishedGroups": 32
+}

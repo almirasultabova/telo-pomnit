@@ -1,0 +1,19 @@
+{
+  "backup": "/root/telo-backups/ui-JAPP172-2026-10-20T171014233Z",
+  "publicFiles": 100,
+  "changedPublic": [
+    "css/profile-layout.css",
+    "js/profile-layout.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}
