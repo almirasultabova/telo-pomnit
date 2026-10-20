@@ -70,17 +70,11 @@ function goTo(screenId, back = false) {
   if (currentScreen === 'questionnaire' && !qStatusDone) collectQBlock();
   if (prev?.contains(document.activeElement)) screenFocus.set(currentScreen, document.activeElement);
 
-  // Убираем предыдущий
-  if (prev) {
-    prev.classList.remove('screen--active');
-    prev.classList.add(back ? 'screen--exit-back' : 'screen--exit');
-    setTimeout(() => prev.classList.remove('screen--exit', 'screen--exit-back'), 300);
+  if (window.ScreenMotion) window.ScreenMotion.transition(prev, next, back);
+  else {
+    prev?.classList.remove('screen--active');
+    next.classList.add('screen--active');
   }
-
-  // Показываем следующий
-  next.classList.remove('screen--exit', 'screen--exit-back');
-  next.classList.add('screen--active', back ? 'screen--enter-back' : 'screen--enter');
-  setTimeout(() => next.classList.remove('screen--enter', 'screen--enter-back'), 300);
 
   if (screenId === 'home') screenStack.length = 0;
   else if (!back && !['splash', 'onboarding'].includes(currentScreen)) screenStack.push(currentScreen);
