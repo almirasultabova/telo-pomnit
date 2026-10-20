@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "buttonMeasurements": [
+    {
+      "x": 215.1875,
+      "y": 358.78125,
+      "width": 25.703125,
+      "height": 40
+    },
+    {
+      "x": 447.390625,
+      "y": 639.78125,
+      "width": 50.40625,
+      "height": 48
+    }
+  ],
+  "pageErrors": [],
+  "realWrites": 0
+}

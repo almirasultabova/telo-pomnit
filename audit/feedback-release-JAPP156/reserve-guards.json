@@ -1,0 +1,16 @@
+[
+  {
+    "engine": "chromium",
+    "passed": true,
+    "groups": [
+      "return-keeps-text-routing-rating-without-send",
+      "reload-restores-complete-draft",
+      "failure-keeps-complete-payload-and-focus",
+      "retry-reuses-exact-operation",
+      "late-success-keeps-newer-draft",
+      "explicit-new-send-clears-only-current-draft",
+      "late-success-keeps-both-owners-drafts"
+    ],
+    "origin": "https://app.telo-pomnit.ru/"
+  }
+]

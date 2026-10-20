@@ -1,0 +1,226 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "passed": true,
+    "groups": [
+      "pre-ten-values-touch-geometry",
+      "pre-keyboard-select-and-remove",
+      "pre-return-keeps-own-answer",
+      "pre-reload-keeps-own-answer",
+      "pre-short-window-selection-and-footer",
+      "post-ten-values-touch-geometry",
+      "post-selection-remove-and-unknown",
+      "post-block-return-keeps-own-answer",
+      "larger-text-no-overflow-no-auto-send"
+    ],
+    "pre": {
+      "minWidth": 50.390625,
+      "height": 48,
+      "rows": 2
+    },
+    "post": {
+      "minWidth": 50.390625,
+      "height": 48,
+      "rows": 2
+    },
+    "pageErrors": [],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "pre-ten-values-touch-geometry",
+      "pre-keyboard-select-and-remove",
+      "pre-return-keeps-own-answer",
+      "pre-reload-keeps-own-answer",
+      "pre-short-window-selection-and-footer",
+      "post-ten-values-touch-geometry",
+      "post-selection-remove-and-unknown",
+      "post-block-return-keeps-own-answer",
+      "larger-text-no-overflow-no-auto-send"
+    ],
+    "pre": {
+      "minWidth": 64.390625,
+      "height": 48,
+      "rows": 2
+    },
+    "post": {
+      "minWidth": 64.390625,
+      "height": 48,
+      "rows": 2
+    },
+    "pageErrors": [],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 599,
+    "passed": true,
+    "groups": [
+      "pre-ten-values-touch-geometry",
+      "pre-keyboard-select-and-remove",
+      "pre-return-keeps-own-answer",
+      "pre-reload-keeps-own-answer",
+      "pre-short-window-selection-and-footer",
+      "post-ten-values-touch-geometry",
+      "post-selection-remove-and-unknown",
+      "post-block-return-keeps-own-answer",
+      "larger-text-no-overflow-no-auto-send"
+    ],
+    "pre": {
+      "minWidth": 106.1875,
+      "height": 48,
+      "rows": 2
+    },
+    "post": {
+      "minWidth": 106.1875,
+      "height": 48,
+      "rows": 2
+    },
+    "pageErrors": [],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 600,
+    "passed": true,
+    "groups": [
+      "pre-ten-values-touch-geometry",
+      "pre-keyboard-select-and-remove",
+      "pre-return-keeps-own-answer",
+      "pre-reload-keeps-own-answer",
+      "pre-short-window-selection-and-footer",
+      "post-ten-values-touch-geometry",
+      "post-selection-remove-and-unknown",
+      "post-block-return-keeps-own-answer",
+      "larger-text-no-overflow-no-auto-send"
+    ],
+    "pre": {
+      "minWidth": 49.1875,
+      "height": 48,
+      "rows": 1
+    },
+    "post": {
+      "minWidth": 49,
+      "height": 48,
+      "rows": 1
+    },
+    "pageErrors": [],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 768,
+    "passed": true,
+    "groups": [
+      "pre-ten-values-touch-geometry",
+      "pre-keyboard-select-and-remove",
+      "pre-return-keeps-own-answer",
+      "pre-reload-keeps-own-answer",
+      "pre-short-window-selection-and-footer",
+      "post-ten-values-touch-geometry",
+      "post-selection-remove-and-unknown",
+      "post-block-return-keeps-own-answer",
+      "larger-text-no-overflow-no-auto-send"
+    ],
+    "pre": {
+      "minWidth": 66,
+      "height": 48,
+      "rows": 1
+    },
+    "post": {
+      "minWidth": 49,
+      "height": 48,
+      "rows": 1
+    },
+    "pageErrors": [],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "passed": true,
+    "groups": [
+      "pre-ten-values-touch-geometry",
+      "pre-keyboard-select-and-remove",
+      "pre-return-keeps-own-answer",
+      "pre-reload-keeps-own-answer",
+      "pre-short-window-selection-and-footer",
+      "post-ten-values-touch-geometry",
+      "post-selection-remove-and-unknown",
+      "post-block-return-keeps-own-answer",
+      "larger-text-no-overflow-no-auto-send"
+    ],
+    "pre": {
+      "minWidth": 133.1875,
+      "height": 48,
+      "rows": 1
+    },
+    "post": {
+      "minWidth": 49,
+      "height": 48,
+      "rows": 1
+    },
+    "pageErrors": [],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "passed": true,
+    "groups": [
+      "pre-ten-values-touch-geometry",
+      "pre-keyboard-select-and-remove",
+      "pre-return-keeps-own-answer",
+      "pre-reload-keeps-own-answer",
+      "pre-short-window-selection-and-footer",
+      "post-ten-values-touch-geometry",
+      "post-selection-remove-and-unknown",
+      "post-block-return-keeps-own-answer",
+      "larger-text-no-overflow-no-auto-send"
+    ],
+    "pre": {
+      "minWidth": 50.390625,
+      "height": 48,
+      "rows": 2
+    },
+    "post": {
+      "minWidth": 50.39060974121094,
+      "height": 48,
+      "rows": 2
+    },
+    "pageErrors": [],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "pre-ten-values-touch-geometry",
+      "pre-keyboard-select-and-remove",
+      "pre-return-keeps-own-answer",
+      "pre-reload-keeps-own-answer",
+      "pre-short-window-selection-and-footer",
+      "post-ten-values-touch-geometry",
+      "post-selection-remove-and-unknown",
+      "post-block-return-keeps-own-answer",
+      "larger-text-no-overflow-no-auto-send"
+    ],
+    "pre": {
+      "minWidth": 64.390625,
+      "height": 48,
+      "rows": 2
+    },
+    "post": {
+      "minWidth": 64.390625,
+      "height": 48,
+      "rows": 2
+    },
+    "pageErrors": [],
+    "realWrites": 0
+  }
+]
