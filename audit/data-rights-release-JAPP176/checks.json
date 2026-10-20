@@ -1,0 +1,92 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "groups": [
+      "opening and incomplete phrase cannot delete",
+      "cancel clears confirmation and restores the visible start action",
+      "pending is visible and blocks duplicate action and leaving",
+      "error is visible and focused; saved draft remains intact",
+      "retry re-verifies identity without repeating deletion",
+      "local copy and back retain previous behavior",
+      "server copy and back retain previous behavior",
+      "PDF preparation remains available",
+      "no JS errors or horizontal overflow"
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "opening and incomplete phrase cannot delete",
+      "cancel clears confirmation and restores the visible start action",
+      "pending is visible and blocks duplicate action and leaving",
+      "error is visible and focused; saved draft remains intact",
+      "retry re-verifies identity without repeating deletion",
+      "local copy and back retain previous behavior",
+      "server copy and back retain previous behavior",
+      "PDF preparation remains available",
+      "no JS errors or horizontal overflow"
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "groups": [
+      "opening and incomplete phrase cannot delete",
+      "cancel clears confirmation and restores the visible start action",
+      "pending is visible and blocks duplicate action and leaving",
+      "error is visible and focused; saved draft remains intact",
+      "retry re-verifies identity without repeating deletion",
+      "local copy and back retain previous behavior",
+      "server copy and back retain previous behavior",
+      "PDF preparation remains available",
+      "no JS errors or horizontal overflow"
+    ]
+  },
+  {
+    "engine": "chromium",
+    "edge": "synthetic success closes account and hides destructive entry",
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "edge": "failed identity verification never sends DELETE",
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "edge": "cancel requires a new confirmation; short window input visible",
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "groups": [
+      "opening and incomplete phrase cannot delete",
+      "cancel clears confirmation and restores the visible start action",
+      "pending is visible and blocks duplicate action and leaving",
+      "error is visible and focused; saved draft remains intact",
+      "retry re-verifies identity without repeating deletion",
+      "local copy and back retain previous behavior",
+      "server copy and back retain previous behavior",
+      "PDF preparation remains available",
+      "no JS errors or horizontal overflow"
+    ]
+  },
+  {
+    "engine": "webkit",
+    "edge": "synthetic success closes account and hides destructive entry",
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "edge": "failed identity verification never sends DELETE",
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "edge": "cancel requires a new confirmation; short window input visible",
+    "ok": true
+  }
+]

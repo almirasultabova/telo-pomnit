@@ -1,0 +1,62 @@
+[
+  {
+    "engine": "reserve-chromium-http1",
+    "width": 320,
+    "groups": [
+      "opening and incomplete phrase cannot delete",
+      "cancel clears confirmation and restores the visible start action",
+      "pending is visible and blocks duplicate action and leaving",
+      "error is visible and focused; saved draft remains intact",
+      "retry re-verifies identity without repeating deletion",
+      "local copy and back retain previous behavior",
+      "server copy and back retain previous behavior",
+      "PDF preparation remains available",
+      "no JS errors or horizontal overflow"
+    ]
+  },
+  {
+    "engine": "reserve-chromium-http1",
+    "width": 390,
+    "groups": [
+      "opening and incomplete phrase cannot delete",
+      "cancel clears confirmation and restores the visible start action",
+      "pending is visible and blocks duplicate action and leaving",
+      "error is visible and focused; saved draft remains intact",
+      "retry re-verifies identity without repeating deletion",
+      "local copy and back retain previous behavior",
+      "server copy and back retain previous behavior",
+      "PDF preparation remains available",
+      "no JS errors or horizontal overflow"
+    ]
+  },
+  {
+    "engine": "reserve-chromium-http1",
+    "width": 1440,
+    "groups": [
+      "opening and incomplete phrase cannot delete",
+      "cancel clears confirmation and restores the visible start action",
+      "pending is visible and blocks duplicate action and leaving",
+      "error is visible and focused; saved draft remains intact",
+      "retry re-verifies identity without repeating deletion",
+      "local copy and back retain previous behavior",
+      "server copy and back retain previous behavior",
+      "PDF preparation remains available",
+      "no JS errors or horizontal overflow"
+    ]
+  },
+  {
+    "engine": "reserve-chromium-http1",
+    "edge": "synthetic success closes account and hides destructive entry",
+    "ok": true
+  },
+  {
+    "engine": "reserve-chromium-http1",
+    "edge": "failed identity verification never sends DELETE",
+    "ok": true
+  },
+  {
+    "engine": "reserve-chromium-http1",
+    "edge": "cancel requires a new confirmation; short window input visible",
+    "ok": true
+  }
+]
