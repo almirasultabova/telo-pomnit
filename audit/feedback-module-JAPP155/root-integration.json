@@ -1,0 +1,12 @@
+{
+  "changed": [
+    "app/index.html",
+    "app/js/app.js"
+  ],
+  "added": [
+    "app/js/feedback-form.js"
+  ],
+  "otherRootSourcesUnchanged": 343,
+  "preservedUnrelatedIndexWording": true,
+  "published": false
+}

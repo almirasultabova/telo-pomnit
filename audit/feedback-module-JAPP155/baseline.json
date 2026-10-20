@@ -1,0 +1,14 @@
+{
+  "baseCommit": "ee3b6db87d074f3c95d9cab7c6ccfbdadf812f1a",
+  "changed": [
+    "app/index.html",
+    "app/js/app.js"
+  ],
+  "added": [
+    "app/js/feedback-form.js"
+  ],
+  "movedLines": 137,
+  "logicExact": true,
+  "cssChanged": false,
+  "backendChanged": false
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "passed": true,
+    "groups": [
+      "return-keeps-text-routing-rating-without-send",
+      "reload-restores-complete-draft",
+      "failure-keeps-complete-payload-and-focus",
+      "retry-reuses-exact-operation",
+      "late-success-keeps-newer-draft",
+      "explicit-new-send-clears-only-current-draft",
+      "late-success-keeps-both-owners-drafts"
+    ],
+    "sameDOMStylesPayloads": true,
+    "differentPixels": 14,
+    "maxChannelDifference": 1,
+    "visualTolerance": "<=0.05% pixels, <=3/255 per channel"
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "return-keeps-text-routing-rating-without-send",
+      "reload-restores-complete-draft",
+      "failure-keeps-complete-payload-and-focus",
+      "retry-reuses-exact-operation",
+      "late-success-keeps-newer-draft",
+      "explicit-new-send-clears-only-current-draft",
+      "late-success-keeps-both-owners-drafts"
+    ],
+    "sameDOMStylesPayloads": true,
+    "differentPixels": 0,
+    "maxChannelDifference": 0,
+    "visualTolerance": "<=0.05% pixels, <=3/255 per channel"
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "passed": true,
+    "groups": [
+      "return-keeps-text-routing-rating-without-send",
+      "reload-restores-complete-draft",
+      "failure-keeps-complete-payload-and-focus",
+      "retry-reuses-exact-operation",
+      "late-success-keeps-newer-draft",
+      "explicit-new-send-clears-only-current-draft",
+      "late-success-keeps-both-owners-drafts"
+    ],
+    "sameDOMStylesPayloads": true,
+    "differentPixels": 0,
+    "maxChannelDifference": 0,
+    "visualTolerance": "<=0.05% pixels, <=3/255 per channel"
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "return-keeps-text-routing-rating-without-send",
+      "reload-restores-complete-draft",
+      "failure-keeps-complete-payload-and-focus",
+      "retry-reuses-exact-operation",
+      "late-success-keeps-newer-draft",
+      "explicit-new-send-clears-only-current-draft",
+      "late-success-keeps-both-owners-drafts"
+    ],
+    "sameDOMStylesPayloads": true,
+    "differentPixels": 0,
+    "maxChannelDifference": 0,
+    "visualTolerance": "<=0.05% pixels, <=3/255 per channel"
+  }
+]
