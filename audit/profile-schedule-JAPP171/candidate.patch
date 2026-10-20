@@ -1,0 +1,92 @@
+--- a/app/js/app.js
++++ b/app/js/app.js
+@@ -1595,6 +1595,37 @@
+ }
+ 
+ let programRefreshError = false;
++let profileScheduleRequest = null, profileScheduleMessage = null;
++function profileScheduleOwned(state) {
++  return state && Api.isAuthed() && !Api.clubBlocked && state.owner === Api.userId && state.generation === Api._authGeneration;
++}
++function syncProfileScheduleFeedback() {
++  const button=document.getElementById('profile-schedule-refresh'),status=document.getElementById('profile-schedule-status');
++  if(!button||!status)return;
++  const loading=!!profileScheduleOwned(profileScheduleRequest),message=profileScheduleOwned(profileScheduleMessage)?profileScheduleMessage:null;
++  button.disabled=loading;button.textContent=loading?'Обновляем…':programRefreshError?'Попробовать ещё раз':'Обновить расписание';button.setAttribute('aria-busy',String(loading));
++  status.textContent=loading?'':programRefreshError?(programAccess?'Не удалось обновить расписание. Показаны последние загруженные данные.':'Не удалось загрузить расписание. Попробуйте ещё раз.'):message?.state==='success'?'Расписание обновлено.':'';
++  status.hidden=!status.textContent;status.classList.toggle('program-refresh-feedback--error',programRefreshError);
++  if(status.hidden)button.removeAttribute('aria-describedby');else button.setAttribute('aria-describedby',status.id);
++}
++async function refreshProfileSchedule() {
++  if(profileScheduleOwned(profileScheduleRequest)||!Api.isAuthed()||Api.clubBlocked)return;
++  const request={owner:Api.userId,generation:Api._authGeneration};profileScheduleRequest=request;profileScheduleMessage=null;syncProfileScheduleFeedback();
++  try {await refreshProgramAccess();}
++  finally {
++    if(profileScheduleRequest!==request)return;
++    profileScheduleRequest=null;
++    if(!profileScheduleOwned(request))return;
++    profileScheduleMessage={...request,state:programRefreshError?'error':'success'};
++    if(currentScreen==='home'&&activeTab==='profile') {
++      const active=document.activeElement,focusId=active?.id;
++      const restore=active===document.body||active===document.getElementById('screen-home')||active===document.getElementById('tab-profile')||active?.classList.contains('program-refresh');
++      renderProfileTab();
++      const previous=focusId&&document.getElementById(focusId);
++      if(previous?.isConnected&&previous.matches('button,select,input,textarea,a[href]'))previous.focus({preventScroll:true});else if(restore)document.getElementById('profile-schedule-refresh')?.focus({preventScroll:true});
++    }
++  }
++}
+ let admissionRefreshTimer = null;
+ let admissionLoading = false;
+ async function renderAdmissions() {
+@@ -1705,7 +1736,6 @@
+   const streams=programAccess?.streams||[];
+   el.replaceChildren();
+   window.StreamStatePanel?.clear();
+-  if(programRefreshError && programAccess){const notice=document.createElement('p');notice.className='program-status';notice.setAttribute('role','status');notice.textContent='Не удалось обновить расписание. Показаны последние загруженные данные.';el.append(notice);}
+   if(!programAccess){
+     const p=document.createElement('p');p.className='program-status';p.textContent='Не удалось загрузить поток и расписание.';el.append(p);
+   }else if(!streams.length){
+@@ -1739,11 +1769,21 @@
+       const label=document.createElement('label');label.textContent='Ваши потоки';label.htmlFor='owned-stream-select';el.append(label);
+       const select=document.createElement('select');select.id='owned-stream-select';select.className='access-select';
+       streams.forEach(stream=>{const option=document.createElement('option');option.value=stream.id;option.textContent=stream.name+(streamState(stream)==='completed'?' · завершён':'');select.append(option);});
+-      select.value=selectedProgramId;select.addEventListener('change',()=>selectProgram(select.value));el.prepend(label,select);
++      select.value=selectedProgramId;select.addEventListener('change',()=>{
++        const owner=Api.userId,generation=Api._authGeneration;selectProgram(select.value);const chosen=selectedProgramId;
++        requestAnimationFrame(()=>{
++          if(currentScreen!=='home'||activeTab!=='profile'||owner!==Api.userId||generation!==Api._authGeneration||chosen!==selectedProgramId||Api.clubBlocked)return;
++          const next=document.getElementById('owned-stream-select'),active=document.activeElement;
++          if(active?.matches('button,a[href],input,textarea,select')&&active!==select&&active!==next)return;
++          next?.focus({preventScroll:true});
++        });
++      });el.prepend(label,select);
+     }
+   }
+-  const refresh=document.createElement('button');refresh.className='btn btn--ghost btn--sm program-refresh';refresh.textContent='Обновить расписание';
+-  refresh.addEventListener('click',async()=>{refresh.disabled=true;await refreshProgramAccess();renderProfileTab();});el.append(refresh);
++  const refresh=document.createElement('button');refresh.id='profile-schedule-refresh';refresh.type='button';refresh.className='btn btn--ghost btn--sm program-refresh';
++  refresh.addEventListener('click',refreshProfileSchedule);
++  const feedback=document.createElement('p');feedback.id='profile-schedule-status';feedback.className='program-refresh-feedback';feedback.setAttribute('role','status');feedback.setAttribute('aria-live','polite');feedback.setAttribute('aria-atomic','true');
++  el.append(refresh,feedback);syncProfileScheduleFeedback();
+ }
+ function appendAccessLink(container,url,label){
+   if(!url)return;
+@@ -2277,6 +2317,7 @@
+   window.AiDelivery?.render();
+ }
+ function clearPrivateConversationState() {
++  profileScheduleRequest=null;profileScheduleMessage=null;
+   privatePreviewReturn = null;
+   habitualAnswersReturn = null; habitualView = 'summary';
+   window.FormMessages?.clearAll();
+--- a/app/css/ux-personal.css
++++ b/app/css/ux-personal.css
+@@ -100,3 +100,8 @@
+ *::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+ #screen-ai-chat .ai-msg--assistant{margin-inline:0}
+ #screen-ai-chat .ai-msg--assistant .ai-msg-text{box-sizing:border-box;width:100%;max-width:100%}
++
++/* JAPP171: schedule feedback beside its refresh action. */
++#tab-profile .program-refresh-feedback{margin:10px 0 0;padding:12px 14px;border-radius:12px;background:#e7ebdf;color:#2a4a38;font:400 13px/1.6 var(--font-body);overflow-wrap:anywhere}
++#tab-profile .program-refresh-feedback--error{background:#f2e8e2;color:#783c30}
++#tab-profile .program-refresh[aria-busy=true]{cursor:progress}

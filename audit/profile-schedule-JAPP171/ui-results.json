@@ -1,0 +1,67 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "groups": [
+      "stream choice and keyboard focus retained",
+      "loading label and disabled state survive redraw without duplicate request",
+      "single nearby error and explicit retry preserve prior stream",
+      "success visibly confirmed with restored action focus",
+      "changing stream during refresh retains chosen stream and focus",
+      "no page errors horizontal overflow or participant writes"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "stream choice and keyboard focus retained",
+      "loading label and disabled state survive redraw without duplicate request",
+      "single nearby error and explicit retry preserve prior stream",
+      "success visibly confirmed with restored action focus",
+      "changing stream during refresh retains chosen stream and focus",
+      "no page errors horizontal overflow or participant writes"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "groups": [
+      "stream choice and keyboard focus retained",
+      "loading label and disabled state survive redraw without duplicate request",
+      "single nearby error and explicit retry preserve prior stream",
+      "success visibly confirmed with restored action focus",
+      "changing stream during refresh retains chosen stream and focus",
+      "no page errors horizontal overflow or participant writes"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "groups": [
+      "stream choice and keyboard focus retained",
+      "loading label and disabled state survive redraw without duplicate request",
+      "single nearby error and explicit retry preserve prior stream",
+      "success visibly confirmed with restored action focus",
+      "changing stream during refresh retains chosen stream and focus",
+      "no page errors horizontal overflow or participant writes"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "groups": [
+      "stream choice and keyboard focus retained",
+      "loading label and disabled state survive redraw without duplicate request",
+      "single nearby error and explicit retry preserve prior stream",
+      "success visibly confirmed with restored action focus",
+      "changing stream during refresh retains chosen stream and focus",
+      "no page errors horizontal overflow or participant writes"
+    ],
+    "realWrites": 0
+  }
+]

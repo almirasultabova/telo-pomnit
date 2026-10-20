@@ -1,0 +1,17 @@
+{
+  "sourceChanges": [
+    "app/js/app.js",
+    "app/css/ux-personal.css"
+  ],
+  "preservedOtherRuntimeSources": 279,
+  "backendChanged": false,
+  "apiChanged": false,
+  "publicChanges": [
+    "index.html",
+    "screen-review.html",
+    "css/ux-personal.css",
+    "js/app.js"
+  ],
+  "published": false,
+  "rootIntegrated": true
+}

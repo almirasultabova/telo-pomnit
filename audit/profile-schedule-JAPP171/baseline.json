@@ -1,0 +1,20 @@
+[
+  {
+    "engine": "chromium",
+    "focusAfterSelect": "DIV",
+    "loadingButtonText": "Обновить расписание",
+    "focusAfterRefresh": "BODY",
+    "successVisible": false,
+    "selectedStreamRetained": "17100000-0000-4000-8000-000000000002",
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "focusAfterSelect": "DIV",
+    "loadingButtonText": "Обновить расписание",
+    "focusAfterRefresh": "DIV",
+    "successVisible": false,
+    "selectedStreamRetained": "17100000-0000-4000-8000-000000000002",
+    "pageErrors": []
+  }
+]

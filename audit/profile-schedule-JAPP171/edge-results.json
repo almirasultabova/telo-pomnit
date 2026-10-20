@@ -1,0 +1,22 @@
+[
+  {
+    "engine": "chromium",
+    "groups": [
+      "late response neither changes tab nor steals focus and return is usable",
+      "old identity response cannot restore schedule or feedback",
+      "empty access is distinct from refresh failure",
+      "failed refresh preserves empty access without granting links"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "groups": [
+      "late response neither changes tab nor steals focus and return is usable",
+      "old identity response cannot restore schedule or feedback",
+      "empty access is distinct from refresh failure",
+      "failed refresh preserves empty access without granting links"
+    ],
+    "realWrites": 0
+  }
+]

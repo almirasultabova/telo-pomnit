@@ -1,0 +1,33 @@
+from pathlib import Path
+import re,json,subprocess,shutil
+R=Path(__file__).resolve().parents[2];C=R/'output/silk-launch-release'
+DOCS=['project.md','База знаний/План.md','База знаний/Журнал обсуждений.md','База знаний/07 Приложение и экосистема.md','База знаний/08 Решения.md','База знаний/Идеи и развитие.md','app/PRODUCT.md','app/DESIGN.md','app/CLAUDE.md']
+for base in [R,C]:
+ for f in DOCS:
+  p=base/f;s=p.read_text(encoding='utf-8');prefix=''if f=='project.md'else'../'
+  released=f'**J-APP-169 → J-APP-170 / T-APP-052 / I-079 — принят и опубликован.**20октября2026 по прямому поручению Альмиры. Возврат/чтение/черновики и состояния «К разбору» опубликованы точным кандидатом; backup/294HTTPS-хеша/50опубликованных групп проверены. Backend/API/данные прежние. [Выпуск]({prefix}audit/discuss-release-JAPP170/RELEASE.md).'
+  local=f'**J-APP-171 / T-APP-053 / I-080 — обновление расписания в профиле, только локально.** Показаны ожидание/успех/ошибка рядом с действием; фокус выбора потока сохранён.30UI/8краевых и76прежних групп встречи прошли. [Результат]({prefix}audit/profile-schedule-JAPP171/REPORT.md). Следующий шаг — оценка отмеченного сравнения Альмирой; публикация не согласована.'
+  if f=='База знаний/План.md':released+=' T-APP-052: реализация/публикация выполнены; физическая приёмка телефона отдельно.';local+=' T-APP-053: локальная подготовка/проверка и сравнение с рамками выполнены.'
+  elif f=='База знаний/Журнал обсуждений.md':released+=' Источник: «Да, теперь понятно, так и показывай дальше. Перенеси J-APP-169 в приложение и продолжим со следующим пакетом по дизайну и удобству». Формат с рамками/номерами/короткими подписями явно принят для следующих пакетов.';local+=' Браузером подтверждены неизменённая надпись при ожидании и отсутствие подтверждения успеха. Выбрана адресная доработка состояния и управления; структура профиля прежняя.'
+  elif f=='База знаний/Идеи и развитие.md':local+=' Автор находки/предложения — ассистент20октября2026 в рамках поручения продолжить исходный аудит. Польза — видно, проверено ли расписание; условие возврата — оценка локального сравнения.'
+  elif f=='База знаний/08 Решения.md':released+=' Прежний статус «только локально» заменён прямым согласием владельца; наглядный формат показа принят. J171 остаётся локальной реализацией по аудиту, а не утверждённым публичным дизайном.'
+  elif f=='База знаний/07 Приложение и экосистема.md':released+=' В опубликованном разделе Back возвращает к прежней строке/вкладке, правка остаётся черновиком, подтверждение стоит перед длинным текстом, поздний ответ не возвращает с другого экрана.';local+=' В кандидатe кнопка показывает «Обновляем…», затем «Расписание обновлено» либо ошибку под «Попробовать ещё раз». При сбое остаются прежние данные; права/Zoom/код/оплата не меняются.'
+  elif f=='app/CLAUDE.md':local+=' Runtime J171 находится в отдельном кандидате и корневой рабочей копии. В опубликованный checkout output/silk-launch-release он не включён.'
+  elif f=='app/DESIGN.md':local+=' Текущие шрифты/палитра/карточки сохранены. Материал согласования обязан показывать одинаковые состояния до/после, рамки/номера и короткие подписи конкретного отличия; рамки в приложение не переносить.'
+  elif f=='app/PRODUCT.md':local+=' Последнее расписание при ошибке остаётся доступно; другой поток во время ожидания можно выбрать без потери выбора.'
+  m=re.search(r'^\*\*J-APP-169[^\n]*',s,re.M);assert m,(base,f);s=s[:m.start()]+local+'\n\n'+released+s[m.end():];p.write_text(s,encoding='utf-8')
+ # Primary remainder stays the queue; do not create a second audit.
+ p=base/'audit/audit-reconciliation-JAPP146/CURRENT-REMAINDER.md';s=p.read_text(encoding='utf-8').replace('после J-APP-168','после J-APP-170');a=s.index('**Остальные чтение/редактирование «К разбору», раздел6/14.**');b=s.index('\n\n',a)
+ s=s[:a]+'**Остальные чтение/редактирование «К разбору», раздел6/14.** J169 опубликован J170: возврат к строке/вкладке/фокусу, чтение после редактирования и состояния сохранения; поздний ответ не возвращает с другого экрана.294HTTPS-хеша и50опубликованных групп прошли. [Выпуск](../discuss-release-JAPP170/RELEASE.md).\n\n**Профиль: обновление расписания/выбор потока, раздел6/14.** J171 только локально: явные ожидание/успех/ошибка у действия, фокус выбора/возврата и изоляция позднего ответа.30UI/8краевых/76прежних групп встречи прошли; отмеченное сравнение ждёт оценки владельца. Это адресный путь, не закрытие всего профиля/ролей. [Результат](../profile-schedule-JAPP171/REPORT.md).'+s[b:]
+ s=s.replace('чтение/редактирование локально пройдены J169','чтение/редактирование опубликованы J170').replace('всего профиля и служебных ролей','остального профиля (обновление расписания/выбор локально проверены J171) и служебных ролей').replace('Текущий локальный пакет дизайна — J169','Текущий локальный пакет дизайна — J171');p.write_text(s,encoding='utf-8')
+ p=base/'audit/audit-reconciliation-JAPP146/STATUS.md';s=p.read_text(encoding='utf-8');pos=s.index('\n\n')+2;s=s[:pos]+'**После J-APP-170:** J169 опубликован; J171 «обновление расписания/выбор потока в профиле» реализован только локально. Формат одинаковых состояний с рамками/номерами принят владельцем. [Остаток](CURRENT-REMAINDER.md), [выпуск](../discuss-release-JAPP170/RELEASE.md), [кандидат](../profile-schedule-JAPP171/REPORT.md). Полный аудит не закрыт; ниже история этапов.\n\n'+s[pos:];p.write_text(s,encoding='utf-8')
+ p=base/'audit/discuss-reading-JAPP169/REPORT.md';s=p.read_text(encoding='utf-8');pos=s.index('\n\n')+2;s=s[:pos]+'**Текущий статус20октября2026: согласован и опубликован выпуском J170.** Формат показа с рамками принят владельцем. [Выпуск](../discuss-release-JAPP170/RELEASE.md). Ниже история локальной подготовки до согласования.\n\n'+s[pos:];p.write_text(s,encoding='utf-8')
+for folder in ['discuss-release-JAPP170','discuss-reading-JAPP169','profile-schedule-JAPP171']:
+ for p in (R/'audit'/folder).rglob('*'):
+  rel=p.relative_to(R/'audit'/folder)
+  if not p.is_file()or any(x in rel.parts for x in ['__pycache__','public','backend']):continue
+  if p.name=='debug-focus.py':continue
+  if p.suffix not in ['.py','.cjs','.json','.md','.html','.patch']and p.name not in ['explained-error.png','explained-loading.png','explained-return.png']:continue
+  target=C/'audit'/folder/rel;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,target)
+assert not subprocess.check_output(['git','-C',str(C),'diff','576e1a0255f57ddbbbbbd55fbeb4f99efddded3b','--','app/index.html','app/js','app/css','backend','scripts'],text=True),'J171 runtime leaked'
+print('PASS release/candidate/owner presentation preference recorded; next runtime unpublished')

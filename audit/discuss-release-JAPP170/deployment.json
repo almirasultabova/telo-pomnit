@@ -1,0 +1,12 @@
+{
+  "id": "dpl_52HfaYWyPPtC2er8bUtfYpBdvYe1",
+  "state": "READY",
+  "sha": "576e1a0255f57ddbbbbbd55fbeb4f99efddded3b",
+  "target": "production",
+  "alias": [
+    "tg-app-telo-pomnit.vercel.app",
+    "telo-pomnit-t6my.vercel.app",
+    "telo-pomnit-t6my-almirasultabovas-projects.vercel.app",
+    "telo-pomnit-t6my-git-main-almirasultabovas-projects.vercel.app"
+  ]
+}

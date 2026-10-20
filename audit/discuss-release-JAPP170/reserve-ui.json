@@ -1,0 +1,17 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "long record back restores exact list position and action",
+      "editor back restores reading and unsent local draft",
+      "save failure visible focused with whole draft retained",
+      "explicit same-body retry saves and confirms before long text",
+      "native back retains discussed tab and chosen action",
+      "new draft survives return with focus on original action",
+      "no horizontal overflow or JS errors"
+    ],
+    "syntheticWrites": 2,
+    "realWrites": 0
+  }
+]
