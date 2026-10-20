@@ -2325,7 +2325,7 @@ function renderAiChat() {
   renderAiMessages();
 }
 function appendAiContextPreview(panel, snapshot, exactText) {
-  const readable = document.createElement('div'); readable.id = 'ai-context-readable';
+  const readable = document.createElement('div'); readable.id = 'ai-context-readable'; readable.tabIndex = -1; readable.setAttribute('role', 'region'); readable.setAttribute('aria-label', 'Выбранные записи');
   for (const row of snapshot || []) {
     const card = document.createElement('article'); card.className = 'privacy-context-text';
     const heading = document.createElement('strong'); heading.textContent = accessDate(row.createdAt) + ' · ' + (DATA.zones.find(zone => zone.id === row.zone)?.label || row.zone); card.append(heading);
@@ -2375,7 +2375,9 @@ function renderAiContext(container) {
     panel.append(mode);
     if (aiContext.mode === 'none') { const status = document.createElement('p'); status.id = 'ai-context-status'; status.textContent = 'Дневник не добавлен. AI увидит сообщения этого разговора.'; panel.append(status); }
     else {
-      const choices = document.createElement('div'); choices.id = 'ai-context-choices';
+      const count = document.createElement('p'); count.id = 'ai-context-count'; count.className = 'ai-selection-count'; count.setAttribute('role', 'status'); count.textContent = 'Выбрано: ' + aiContext.ids.length + ' из 5'; panel.append(count);
+      const hint = document.createElement('p'); hint.id = 'ai-context-limit'; hint.className = 'ai-selection-hint'; hint.textContent = aiContext.ids.length >= 5 ? 'Чтобы выбрать другую запись, снимите одну отметку.' : 'Отметьте записи, которые хотите добавить в разговор.'; panel.append(hint);
+      const choices = document.createElement('div'); choices.id = 'ai-context-choices'; choices.setAttribute('role', 'group'); choices.setAttribute('aria-label', 'Записи дневника');
       if (aiContextLoading) choices.textContent = 'Загружаем записи, сохранённые в аккаунте…';
       else if (aiContextLoadState === 'failed') {
         choices.textContent = 'Не удалось загрузить записи. Повторите загрузку или выберите «Без дневника».';
@@ -2383,10 +2385,13 @@ function renderAiContext(container) {
       } else if (!aiContextCandidates.length) choices.textContent = 'В аккаунте пока нет записей для выбора. Можно начать без дневника.';
       aiContextCandidates.forEach(entry => {
         const row = document.createElement('label'); row.className = 'privacy-context-choice';
-        const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.value = entry.id; checkbox.checked = aiContext.ids.includes(entry.id); checkbox.disabled = aiPending;
+        const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.value = entry.id; checkbox.checked = aiContext.ids.includes(entry.id); checkbox.disabled = aiPending || (!checkbox.checked && aiContext.ids.length >= 5); checkbox.setAttribute('aria-describedby', 'ai-context-count ai-context-limit');
         checkbox.onchange = () => {
           if (checkbox.checked && aiContext.ids.length >= 5) { checkbox.checked = false; showToast('Можно выбрать не более пяти записей.', false); return; }
+          const scroll = choices.scrollTop;
           aiContext.ids = checkbox.checked ? [...aiContext.ids, entry.id] : aiContext.ids.filter(id => id !== entry.id); aiContext.preview = null; aiContext.reviewed = false; renderAiChat();
+          const updated = document.getElementById('ai-context-choices');
+          if (updated) { updated.scrollTop = scroll; [...updated.querySelectorAll('input')].find(input => input.value === entry.id)?.focus({ preventScroll: true }); }
         };
         const text = document.createElement('span'); text.textContent = accessDate(entry.createdAt || entry.date) + ' · ' + (entry.note || 'Без заметки').slice(0, 100); row.append(checkbox, text); choices.append(row);
       });
@@ -2398,6 +2403,7 @@ function renderAiContext(container) {
           const preview = await Api.previewAiContext(ids);
           if (generation !== Storage._generation || aiSessionId || Api.clubBlocked || JSON.stringify(aiContext.ids) !== JSON.stringify(ids)) return;
           aiContext.preview = preview; aiContext.reviewed = false; renderAiChat();
+          if (currentScreen === 'ai-chat') { const readable = document.getElementById('ai-context-readable'); readable?.focus({ preventScroll: true }); readable?.scrollIntoView({ block: 'start' }); }
         } catch (error) { document.getElementById('ai-access-notice').textContent = error.message || 'Не удалось подготовить выбранные записи. Можно повторить.'; previewButton.disabled = false; }
       };
       panel.append(previewButton);

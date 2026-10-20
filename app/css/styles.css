@@ -2989,6 +2989,18 @@ textarea:focus,input:focus,select:focus {outline:2px solid var(--color-action);o
 #ai-context-panel label {font:500 14px/1.5 var(--font-body);}
 #ai-context-panel #ai-context-status {font:400 12px/1.5 var(--font-body);color:var(--color-muted);}
 #ai-context-panel .ai-information {margin:0 0 8px;}
+/* J-APP-159: clear, stable selection of the existing five diary records. */
+#ai-context-panel .ai-selection-count {margin:12px 0 4px;color:var(--color-action);font:600 14px/1.5 var(--font-body);font-variant-numeric:tabular-nums}
+#ai-context-panel .ai-selection-hint {margin:0 0 12px;color:var(--color-muted);font:400 13px/1.5 var(--font-body)}
+#ai-context-choices .privacy-context-choice {min-height:48px;box-sizing:border-box;margin:8px 0;padding:10px;gap:10px;border:1px solid var(--color-line);border-radius:12px;background:var(--color-paper);color:var(--color-text);cursor:pointer}
+#ai-context-choices .privacy-context-choice:first-child {margin-top:0}
+#ai-context-choices .privacy-context-choice:last-child {margin-bottom:0}
+#ai-context-choices .privacy-context-choice:has(input:checked) {background:var(--color-sage);border-color:var(--color-action)}
+#ai-context-choices .privacy-context-choice:has(input:disabled:not(:checked)) {background:var(--color-bg);color:var(--color-muted);cursor:default}
+#ai-context-choices .privacy-context-choice:has(input:focus-visible),#ai-context-readable:focus-visible {outline:2px solid var(--color-action);outline-offset:2px}
+#ai-context-choices input {margin-top:1px;accent-color:var(--color-action)}
+#ai-context-choices .privacy-context-choice span {min-width:0;overflow-wrap:anywhere}
+
 #ai-input-bar {position:relative;inset:auto;flex-shrink:0;display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:10px;align-items:end;padding:12px 16px max(14px,env(safe-area-inset-bottom));background:var(--color-bg);border-top:1px solid var(--color-line);}
 #ai-input {min-height:48px;width:100%;padding:12px;border-radius:16px;background:#fffdfa;font-size:16px;}
 #ai-send-btn {width:48px;height:48px;border-radius:50%;flex-shrink:0;background:var(--color-action);color:var(--color-paper);margin:0;}
