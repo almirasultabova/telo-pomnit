@@ -6,7 +6,7 @@ changed=[f for f in runtime if(S/f).read_bytes()!=(C/f).read_bytes()];assert sor
 patch=[]
 for f in FILES:
  before=(C/f).read_text(encoding='utf-8');after=(S/f).read_text(encoding='utf-8');root=(R/f).read_text(encoding='utf-8');assert root==before,'Unrelated root change in '+f
- patch.extend(difflib.unified_diff(before.splitlines(keepends=True),after.splitlines(keepends=True),fromfile='a/'+f,tofile='b/'+f));shutil.copy2(S/f,R/f)
+ patch.extend(difflib.unified_diff(before.splitlines(keepends=True),after.splitlines(keepends=True),fromfile='a/'+f,tofile='b/'+f,n=0));shutil.copy2(S/f,R/f)
 (H/'candidate.patch').write_text(''.join(patch),encoding='utf-8')
 subprocess.run(['node','--check',str(S/'app/js/app.js')],check=True)
 def hashes(base):return {p.relative_to(base).as_posix():hashlib.sha256(p.read_bytes().replace(b'\r\n',b'\n')if p.suffix in['.html','.js','.css','.txt','.json','.svg']else p.read_bytes()).hexdigest()for p in base.rglob('*')if p.is_file()}

@@ -1,9 +1,6 @@
 --- a/app/js/app.js
 +++ b/app/js/app.js
-@@ -1595,6 +1595,37 @@
- }
- 
- let programRefreshError = false;
+@@ -1597,0 +1598,31 @@
 +let profileScheduleRequest = null, profileScheduleMessage = null;
 +function profileScheduleOwned(state) {
 +  return state && Api.isAuthed() && !Api.clubBlocked && state.owner === Api.userId && state.generation === Api._authGeneration;
@@ -35,21 +32,9 @@
 +    }
 +  }
 +}
- let admissionRefreshTimer = null;
- let admissionLoading = false;
- async function renderAdmissions() {
-@@ -1705,7 +1736,6 @@
-   const streams=programAccess?.streams||[];
-   el.replaceChildren();
-   window.StreamStatePanel?.clear();
+@@ -1708 +1738,0 @@
 -  if(programRefreshError && programAccess){const notice=document.createElement('p');notice.className='program-status';notice.setAttribute('role','status');notice.textContent='Не удалось обновить расписание. Показаны последние загруженные данные.';el.append(notice);}
-   if(!programAccess){
-     const p=document.createElement('p');p.className='program-status';p.textContent='Не удалось загрузить поток и расписание.';el.append(p);
-   }else if(!streams.length){
-@@ -1739,11 +1769,21 @@
-       const label=document.createElement('label');label.textContent='Ваши потоки';label.htmlFor='owned-stream-select';el.append(label);
-       const select=document.createElement('select');select.id='owned-stream-select';select.className='access-select';
-       streams.forEach(stream=>{const option=document.createElement('option');option.value=stream.id;option.textContent=stream.name+(streamState(stream)==='completed'?' · завершён':'');select.append(option);});
+@@ -1742 +1772,9 @@
 -      select.value=selectedProgramId;select.addEventListener('change',()=>selectProgram(select.value));el.prepend(label,select);
 +      select.value=selectedProgramId;select.addEventListener('change',()=>{
 +        const owner=Api.userId,generation=Api._authGeneration;selectProgram(select.value);const chosen=selectedProgramId;
@@ -60,31 +45,18 @@
 +          next?.focus({preventScroll:true});
 +        });
 +      });el.prepend(label,select);
-     }
-   }
+@@ -1745,2 +1783,4 @@
 -  const refresh=document.createElement('button');refresh.className='btn btn--ghost btn--sm program-refresh';refresh.textContent='Обновить расписание';
 -  refresh.addEventListener('click',async()=>{refresh.disabled=true;await refreshProgramAccess();renderProfileTab();});el.append(refresh);
 +  const refresh=document.createElement('button');refresh.id='profile-schedule-refresh';refresh.type='button';refresh.className='btn btn--ghost btn--sm program-refresh';
 +  refresh.addEventListener('click',refreshProfileSchedule);
 +  const feedback=document.createElement('p');feedback.id='profile-schedule-status';feedback.className='program-refresh-feedback';feedback.setAttribute('role','status');feedback.setAttribute('aria-live','polite');feedback.setAttribute('aria-atomic','true');
 +  el.append(refresh,feedback);syncProfileScheduleFeedback();
- }
- function appendAccessLink(container,url,label){
-   if(!url)return;
-@@ -2277,6 +2317,7 @@
-   window.AiDelivery?.render();
- }
- function clearPrivateConversationState() {
+@@ -2279,0 +2320 @@
 +  profileScheduleRequest=null;profileScheduleMessage=null;
-   privatePreviewReturn = null;
-   habitualAnswersReturn = null; habitualView = 'summary';
-   window.FormMessages?.clearAll();
 --- a/app/css/ux-personal.css
 +++ b/app/css/ux-personal.css
-@@ -100,3 +100,8 @@
- *::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
- #screen-ai-chat .ai-msg--assistant{margin-inline:0}
- #screen-ai-chat .ai-msg--assistant .ai-msg-text{box-sizing:border-box;width:100%;max-width:100%}
+@@ -102,0 +103,5 @@
 +
 +/* JAPP171: schedule feedback beside its refresh action. */
 +#tab-profile .program-refresh-feedback{margin:10px 0 0;padding:12px 14px;border-radius:12px;background:#e7ebdf;color:#2a4a38;font:400 13px/1.6 var(--font-body);overflow-wrap:anywhere}
