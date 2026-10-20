@@ -1,0 +1,26 @@
+[
+  {
+    "engine": "chromium",
+    "groups": [
+      "native save only after explicit click",
+      "expired prepared PDF cannot be saved",
+      "stale owner cannot save private copy",
+      "late export does not open old private content",
+      "restricted account export return preserves club boundary",
+      "short window keeps prepared save visible",
+      "history PDF route still prepares explicit save"
+    ]
+  },
+  {
+    "engine": "webkit",
+    "groups": [
+      "native save only after explicit click",
+      "expired prepared PDF cannot be saved",
+      "stale owner cannot save private copy",
+      "late export does not open old private content",
+      "restricted account export return preserves club boundary",
+      "short window keeps prepared save visible",
+      "history PDF route still prepares explicit save"
+    ]
+  }
+]

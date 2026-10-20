@@ -1,0 +1,41 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "visible busy state and no automatic file",
+      "prepared PDF visible beside source action",
+      "explicit PDF saves exact bytes",
+      "local copy named and exact explicit save",
+      "local return restores opener and place",
+      "full copy text intact and keyboard scrollable",
+      "native return restores full-copy action",
+      "failure visible and original action retries",
+      "deletion confirmation stays explicit and cancelled",
+      "layout and no page errors"
+    ],
+    "syntheticCalls": [
+      [
+        "POST",
+        "/auth/data-rights"
+      ],
+      [
+        "GET",
+        "/gdpr/diary.pdf"
+      ],
+      [
+        "GET",
+        "/gdpr/my-data"
+      ],
+      [
+        "GET",
+        "/gdpr/diary.pdf"
+      ],
+      [
+        "GET",
+        "/gdpr/diary.pdf"
+      ]
+    ],
+    "errors": []
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "engine": "chromium",
+    "pending": {
+      "select": "history-b",
+      "shown": "history-a",
+      "sendDisabled": false
+    },
+    "afterError": {
+      "select": "history-b",
+      "shown": "history-a"
+    },
+    "providerCalls": 0
+  },
+  {
+    "engine": "webkit",
+    "pending": {
+      "select": "history-b",
+      "shown": "history-a",
+      "sendDisabled": false
+    },
+    "afterError": {
+      "select": "history-b",
+      "shown": "history-a"
+    },
+    "providerCalls": 0
+  }
+]

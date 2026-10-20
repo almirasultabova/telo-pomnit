@@ -1,0 +1,28 @@
+[
+  {
+    "engine": "chromium",
+    "groups": [
+      "empty history truthful and new dialog retained",
+      "list missing current conversation does not relabel it new",
+      "read-only history preserves access boundary",
+      "late conversation cannot restore previous owner",
+      "late same-owner response does not steal focus from other screen",
+      "failed switch preserves old reading position",
+      "unconfirmed operation retained and controls pause during history load"
+    ],
+    "providerCalls": 0
+  },
+  {
+    "engine": "webkit",
+    "groups": [
+      "empty history truthful and new dialog retained",
+      "list missing current conversation does not relabel it new",
+      "read-only history preserves access boundary",
+      "late conversation cannot restore previous owner",
+      "late same-owner response does not steal focus from other screen",
+      "failed switch preserves old reading position",
+      "unconfirmed operation retained and controls pause during history load"
+    ],
+    "providerCalls": 0
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "baseCommit": "3593e4903ad0c2cdf11c275c9cc04f4ae2d045e0",
+  "sourceChanges": [
+    "app/css/ux-personal.css",
+    "app/js/app.js"
+  ],
+  "backendChanged": false,
+  "providerChanged": false
+}
