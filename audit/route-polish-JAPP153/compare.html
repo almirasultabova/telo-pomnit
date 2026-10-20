@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>J-APP-153 · Правка личного шага</title>
+<link rel="stylesheet" href="/css/fonts.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f4ef;color:#2a4a38;font:15px/1.55 Manrope,sans-serif}main{max-width:1060px;margin:28px auto;padding:0 20px}h1{font:500 36px/1.1 'Cormorant Garamond',serif;margin:0 0 12px}p{max-width:70ch;margin:8px 0 18px}.controls{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}button,a{font:inherit}button{border:1px solid #2a4a38;border-radius:14px;background:transparent;color:#2a4a38;min-height:44px;padding:10px 16px;cursor:pointer}button:first-child{background:#2a4a38;color:#fcfaf6}button:disabled{opacity:.55;cursor:default}button:focus-visible,a:focus-visible{outline:2px solid #2a4a38;outline-offset:3px}.phones{display:grid;grid-template-columns:repeat(2,minmax(0,390px));gap:28px;align-items:start}h2{font-size:16px;font-weight:600;margin:0 0 6px}.caption{color:#675f56;font-size:13px;min-height:40px;margin-bottom:10px}iframe{width:100%;height:740px;border:1px solid #d6cfc3;border-radius:22px;background:#f7f4ef;display:block}a{color:inherit;text-underline-offset:4px}.status{font-size:13px;min-height:22px}small{display:block;color:#675f56;margin-top:20px}@media(max-width:650px){main{padding:0 14px}.phones{gap:12px}iframe{height:620px;border-radius:14px}.caption{font-size:12px}h1{font-size:30px}button{font-size:13px;padding:10px 12px}}
+</style>
+<main>
+<h1>Правка личного шага</h1>
+<p>В обеих версиях откроется личный шаг. Нажми «Изменить», напиши другой текст, затем уйди назад и открой шаг снова.</p>
+<div class="controls"><button id="open" disabled>Открыть шаг</button><button id="back" disabled>Вернуться</button><button id="quick" disabled>Написать учебную правку</button></div>
+<p class="status" role="status" id="status">Готовим два учебных просмотра…</p>
+<div class="phones">
+<section><h2>До · опубликованный J-APP-151</h2><p class="caption">При повторном открытии несохранённая правка пропадает.</p><iframe title="До изменений" id="before" src="/before/index.html?view=step"></iframe></section>
+<section><h2>После · локальный J-APP-153</h2><p class="caption">Правка остаётся черновиком; сохранённый шаг изменится только по нажатию.</p><iframe title="После изменений" id="after" src="/index.html?view=step"></iframe></section>
+</div>
+<p><a href="/index.html?view=step">Открыть новый вариант отдельно на всю ширину</a></p>
+<small>Учебные данные. J-APP-153 ещё не опубликован. Заставка с цветком и её длительность сохранены.</small>
+</main>
+<script>
+const frames=[document.getElementById('before'),document.getElementById('after')];
+const buttons=[...document.querySelectorAll('button')];const row='15300000-0000-4000-8000-000000000001';
+function each(fn){frames.forEach(f=>fn(f.contentWindow))}
+const timer=setInterval(()=>{try{if(!frames.every(f=>f.contentWindow.eval('typeof currentScreen!=="undefined" && currentScreen==="after-step"')))return;clearInterval(timer);buttons.forEach(b=>b.disabled=false);document.getElementById('status').textContent='Готово. Впиши правку, вернись и открой шаг снова.'}catch{}},100);
+document.getElementById('open').onclick=()=>each(w=>w.AfterMeeting.openStepById(row));
+document.getElementById('back').onclick=()=>each(w=>w.document.getElementById('ps-back').click());
+document.getElementById('quick').onclick=()=>each(w=>{const d=w.document;const change=[...d.querySelectorAll('.ps-step-actions button')].find(e=>e.textContent==='Изменить');if(change)change.click();const input=d.getElementById('ps-edit-text');if(input){input.value='Учебная правка: перед ответом сделаю спокойный выдох.';input.dispatchEvent(new w.Event('input',{bubbles:true}));}});
+</script></html>

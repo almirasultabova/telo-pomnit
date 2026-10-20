@@ -1,0 +1,103 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "passed": true,
+    "groups": [
+      "return-restores-edit-without-server-write",
+      "reload-restores-own-durable-edit",
+      "failure-retains-edit-and-matching-ack-clears-only-edit",
+      "explicit-discard-preserves-server-step-and-restores-focus",
+      "new-server-revision-needs-explicit-review-before-send",
+      "long-safe-text-and-short-window-controls",
+      "blocked-storage-restores-memory-and-warns",
+      "account-switch-does-not-restore-another-users-edit"
+    ],
+    "syntheticWrites": 3,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "return-restores-edit-without-server-write",
+      "reload-restores-own-durable-edit",
+      "failure-retains-edit-and-matching-ack-clears-only-edit",
+      "explicit-discard-preserves-server-step-and-restores-focus",
+      "new-server-revision-needs-explicit-review-before-send",
+      "long-safe-text-and-short-window-controls",
+      "blocked-storage-restores-memory-and-warns",
+      "account-switch-does-not-restore-another-users-edit"
+    ],
+    "syntheticWrites": 3,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "passed": true,
+    "groups": [
+      "return-restores-edit-without-server-write",
+      "reload-restores-own-durable-edit",
+      "failure-retains-edit-and-matching-ack-clears-only-edit",
+      "explicit-discard-preserves-server-step-and-restores-focus",
+      "new-server-revision-needs-explicit-review-before-send",
+      "long-safe-text-and-short-window-controls",
+      "blocked-storage-restores-memory-and-warns",
+      "account-switch-does-not-restore-another-users-edit"
+    ],
+    "syntheticWrites": 3,
+    "pageErrors": []
+  },
+  {
+    "oldUnsavedEditLossReproduced": true
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "return-restores-edit-without-server-write",
+      "reload-restores-own-durable-edit",
+      "failure-retains-edit-and-matching-ack-clears-only-edit",
+      "explicit-discard-preserves-server-step-and-restores-focus",
+      "new-server-revision-needs-explicit-review-before-send",
+      "long-safe-text-and-short-window-controls",
+      "blocked-storage-restores-memory-and-warns",
+      "account-switch-does-not-restore-another-users-edit"
+    ],
+    "syntheticWrites": 3,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "edge": "409-refresh-preserves-edit-and-requires-review",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "edge": "mismatched-ack-does-not-clear-edit",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "edge": "late-ack-does-not-clear-either-owners-edit",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "edge": "409-refresh-preserves-edit-and-requires-review",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "edge": "mismatched-ack-does-not-clear-edit",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "edge": "late-ack-does-not-clear-either-owners-edit",
+    "passed": true
+  }
+]

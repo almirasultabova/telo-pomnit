@@ -1,0 +1,54 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "reduced": false,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0.22s",
+      "name": "slideInRight",
+      "transform": "matrix(1, 0, 0, 1, 24, 0)",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 171.40000000037253,
+      "active": true,
+      "enter": true,
+      "transform": "matrix(1, 0, 0, 1, 0.126817, 0)"
+    }
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "reduced": true,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0s",
+      "name": "none",
+      "transform": "none",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 179.09999999962747,
+      "active": true,
+      "enter": false,
+      "transform": "none"
+    }
+  }
+]

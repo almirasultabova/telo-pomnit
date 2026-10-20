@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "sourceChanges": [
+    "app/js/after-meeting.js",
+    "app/css/after-meeting.css"
+  ],
+  "sourceAdds": [],
+  "otherRootFilesUnchanged": 504,
+  "rootDocumentationChanges": [
+    "app/PRODUCT.md",
+    "app/DESIGN.md",
+    "app/CLAUDE.md"
+  ],
+  "draftGroups": 38,
+  "routeGroups": 12,
+  "oldStepRegressionCombinations": 4,
+  "publicFiles": 97,
+  "backendChanged": false,
+  "storageModuleChanged": false,
+  "apiChanged": false,
+  "published": false
+}

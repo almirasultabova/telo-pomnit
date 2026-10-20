@@ -1,0 +1,158 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "reduced": false,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0.22s",
+      "name": "slideInRight",
+      "transform": "matrix(1, 0, 0, 1, 24, 0)",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 179.5,
+      "active": true,
+      "enter": true,
+      "transform": "matrix(1, 0, 0, 1, 0.0500227, 0)"
+    }
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "reduced": false,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0.22s",
+      "name": "slideInRight",
+      "transform": "matrix(1, 0, 0, 1, 24, 0)",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 177.7999999988824,
+      "active": true,
+      "enter": true,
+      "transform": "matrix(1, 0, 0, 1, 0.0500542, 0)"
+    }
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "reduced": false,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0.22s",
+      "name": "slideInRight",
+      "transform": "matrix(1, 0, 0, 1, 24, 0)",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 171.30000000074506,
+      "active": true,
+      "enter": true,
+      "transform": "matrix(1, 0, 0, 1, 0.126773, 0)"
+    }
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "reduced": true,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0s",
+      "name": "none",
+      "transform": "none",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 180.89999999850988,
+      "active": true,
+      "enter": false,
+      "transform": "none"
+    }
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "reduced": false,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0.22s",
+      "name": "slideInRight",
+      "transform": "matrix(1, 0, 0, 1, 16.721544, 0)",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 179,
+      "active": true,
+      "enter": true,
+      "transform": "matrix(1, 0, 0, 1, 0.098404, 0)"
+    }
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "reduced": true,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0s",
+      "name": "none",
+      "transform": "none",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 174.99999999999955,
+      "active": true,
+      "enter": false,
+      "transform": "none"
+    }
+  }
+]
