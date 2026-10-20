@@ -1,0 +1,28 @@
+[
+  {
+    "engine": "chromium",
+    "passed": true,
+    "groups": [
+      "long-literal-fragment-and-larger-text-safe",
+      "over-limit-copy-never-truncated-original-unchanged",
+      "cleared-range-disables-selection-action",
+      "source-read-error-keeps-list-and-retry",
+      "cached-return-cannot-show-previous-owners-notes",
+      "late-source-read-after-logout-does-not-reopen-note"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "passed": true,
+    "groups": [
+      "long-literal-fragment-and-larger-text-safe",
+      "over-limit-copy-never-truncated-original-unchanged",
+      "cleared-range-disables-selection-action",
+      "source-read-error-keeps-list-and-retry",
+      "cached-return-cannot-show-previous-owners-notes",
+      "late-source-read-after-logout-does-not-reopen-note"
+    ],
+    "realWrites": 0
+  }
+]

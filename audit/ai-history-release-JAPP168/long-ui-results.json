@@ -1,0 +1,24 @@
+[
+  {
+    "engine": "chromium",
+    "longTextLength": 14016,
+    "fullRequest": true,
+    "draftSurvivesFailureAndReload": true,
+    "recoveryReadsOnly": true,
+    "postCount": 1,
+    "historyContainsWholeText": true,
+    "draftClearedOnlyAfterConfirmation": true,
+    "newDraftIndependent": true
+  },
+  {
+    "engine": "webkit",
+    "longTextLength": 14016,
+    "fullRequest": true,
+    "draftSurvivesFailureAndReload": true,
+    "recoveryReadsOnly": true,
+    "postCount": 1,
+    "historyContainsWholeText": true,
+    "draftClearedOnlyAfterConfirmation": true,
+    "newDraftIndependent": true
+  }
+]

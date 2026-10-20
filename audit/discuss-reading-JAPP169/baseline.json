@@ -1,0 +1,22 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "listScrollBefore": 2164,
+    "listScrollAfterBack": 0,
+    "detailFocus": "BODY",
+    "saveErrorFocus": "BODY",
+    "draftRetained": "Учебный текст, который нужно сохранить",
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "listScrollBefore": 3403,
+    "listScrollAfterBack": 0,
+    "detailFocus": "SECTION",
+    "saveErrorFocus": "SECTION",
+    "draftRetained": "Учебный текст, который нужно сохранить",
+    "pageErrors": []
+  }
+]

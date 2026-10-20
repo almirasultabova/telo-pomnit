@@ -5,7 +5,7 @@
 @@ -2290 +2291 @@
 -  aiScreenRequest++; aiSessionId = null; aiMessages = []; aiPending = false; aiSendError = '';
 +  aiScreenRequest++; aiHistoryLoading = false; setAiHistoryStatus(''); document.getElementById('ai-history-select')?.replaceChildren(new Option('Новый диалог','')); aiSessionId = null; aiMessages = []; aiPending = false; aiSendError = '';
-@@ -2312,6 +2313,24 @@
+@@ -2312,6 +2313,23 @@
 -async function refreshAiScreen() {
 -  if (aiPending) return;
 -  const request = ++aiScreenRequest, generation = Storage._generation;
@@ -18,7 +18,7 @@
 +  if (!status) { status = document.createElement('p'); status.id = 'ai-history-status'; status.className = 'ai-history-status'; status.setAttribute('role','status'); details.insertBefore(status,document.getElementById('ai-access-refresh')); }
 +  status.textContent = text; status.hidden = !text;
 +  let button = document.getElementById('ai-history-retry');
-+  if (!button) { button = document.createElement('button'); button.id = 'ai-history-retry'; button.type = 'button'; button.className = 'btn btn--outline btn--sm'; button.textContent = 'Повторить загрузку'; status.after(button); }
++  if (!button) { button = document.createElement('button'); button.id = 'ai-history-retry'; button.type = 'button'; button.className = 'btn btn--sm'; button.textContent = 'Попробовать ещё раз'; status.after(button); }
 +  button.hidden = !retry; button.onclick = retry;
 +  if (text && details.open && currentScreen === 'ai-chat') (retry ? button : status).scrollIntoView({block:'nearest'});
 +}
@@ -26,7 +26,6 @@
 +  const select = document.getElementById('ai-history-select'), input = document.getElementById('ai-input');
 +  select.disabled = aiPending || aiHistoryLoading; input.disabled = aiHistoryLoading;
 +  select.setAttribute('aria-busy',String(aiHistoryLoading));
-+  document.getElementById('ai-access-refresh').disabled = aiPending || aiHistoryLoading;
 +  if (aiHistoryLoading) document.getElementById('ai-send-btn').disabled = true;
 +  if (aiHistoryLoading) document.querySelectorAll('#ai-delivery-actions button').forEach(button => { button.disabled = true; });
 +}
@@ -36,20 +35,21 @@
 +  const current = () => request === aiScreenRequest && generation === Storage._generation && owner === Storage._userId && !Api.clubBlocked;
 +  const restoreFocus = !!event?.currentTarget || ['ai-access-refresh','ai-history-retry'].includes(document.activeElement.id);
 +  aiHistoryLoading = true; setAiHistoryStatus('Загружаем историю…'); syncAiHistoryControls();
-@@ -2319,2 +2338,3 @@
+@@ -2319,2 +2337,3 @@
 -    const sessions = await Api.getAiSessions();
 -    if (request !== aiScreenRequest || generation !== Storage._generation || Api.clubBlocked) return;
 +    await refreshProgramAccess(); if (!current()) return;
 +    renderAiChat();
 +    const sessions = await Api.getAiSessions(); if (!current()) return;
-@@ -2322,0 +2343 @@
+@@ -2322,0 +2342 @@
 +    if (aiSessionId && !sessions.some(session => session.sessionId === aiSessionId)) select.add(new Option('Открытый разговор',aiSessionId));
-@@ -2324,2 +2345,22 @@
+@@ -2324,3 +2344,22 @@
 -  } catch { document.getElementById('ai-access-notice').textContent += ' Историю не удалось загрузить — можно повторить.'; }
 -}
+-document.getElementById('ai-access-refresh')?.addEventListener('click', refreshAiScreen);
 +    setAiHistoryStatus(sessions.length ? 'Выберите разговор из списка.' : 'Сохранённых разговоров пока нет.');
 +  } catch { if (current()) setAiHistoryStatus('Не удалось загрузить историю. Открытый разговор и текст в поле остались на месте.',refreshAiScreen); }
-+  finally { if (current()) { aiHistoryLoading = false; renderAiChat(); if (restoreFocus && currentScreen === 'ai-chat') document.getElementById('ai-access-refresh').focus({preventScroll:true}); } }
++  finally { if (current()) { aiHistoryLoading = false; renderAiChat(); if (restoreFocus && currentScreen === 'ai-chat') document.getElementById('ai-history-select').focus({preventScroll:true}); } }
 +}
 +async function loadAiConversation(id) {
 +  if (aiPending || aiHistoryLoading || Api.clubBlocked) return;
@@ -69,7 +69,7 @@
 +  finally { if (current()) { aiHistoryLoading = false; renderAiChat(); if (failed) messages.scrollTop = scroll; if (currentScreen === 'ai-chat') { const target=failed ? document.getElementById('ai-history-retry') : select; target.focus({preventScroll:true}); target.scrollIntoView({block:'nearest'}); } } }
 +}
 +
-@@ -2335,16 +2376,3 @@
+@@ -2335,16 +2374,3 @@
 -document.getElementById('ai-history-select')?.addEventListener('change', async event => {
 -  if (aiPending) return;
 -  const id = event.target.value, request = ++aiScreenRequest, generation = Storage._generation;
@@ -89,13 +89,60 @@
 +document.getElementById('ai-history-select')?.addEventListener('change', event => { void loadAiConversation(event.target.value); });
 +
 +function aiContextReady() { return !aiHistoryLoading && (!!aiSessionId || aiContext.mode === 'none' || (!!aiContext.preview && aiContext.reviewed)); }
-@@ -2359,0 +2388 @@
+@@ -2359,0 +2386 @@
 +  syncAiHistoryControls();
 --- a/app/css/ux-personal.css
 +++ b/app/css/ux-personal.css
-@@ -90,0 +91,5 @@
+@@ -90,0 +91,12 @@
 +
 +/* J-APP-167: history status and retry within the established disclosure. */
 +#screen-ai-chat .ai-history-status{font:400 13px/1.55 var(--font-body);color:var(--color-action);margin:10px 0;padding-top:10px;border-top:1px solid var(--color-line);overflow-wrap:anywhere}
-+#screen-ai-chat #ai-history-retry{min-height:44px;margin:0 0 8px;font-size:13px}
-+#screen-ai-chat #ai-history-select:focus-visible,#screen-ai-chat #ai-history-retry:focus-visible{outline:2px solid var(--color-action);outline-offset:3px}
++#screen-ai-chat #ai-history-retry{display:block;box-sizing:border-box;width:auto;max-width:100%;min-height:44px;height:auto;margin:0 0 8px;padding:10px 16px;border:0;border-radius:12px;background:var(--color-sage);color:var(--color-action);font:500 14px/1.5 var(--font-body);white-space:normal;overflow-wrap:normal;text-align:center}
++#screen-ai-chat #ai-history-select:focus-visible{outline:2px solid var(--color-action);outline-offset:3px}
++#screen-ai-chat #ai-history-retry:focus-visible{outline:2px solid var(--color-action);outline-offset:-3px}
++
++/* Owner revision: full reading width; hide scrollbar tracks without disabling scroll. */
++html,body,*{scrollbar-width:none!important}
++*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
++#screen-ai-chat .ai-msg--assistant{margin-inline:0}
++#screen-ai-chat .ai-msg--assistant .ai-msg-text{box-sizing:border-box;width:100%;max-width:100%}
+--- a/app/index.html
++++ b/app/index.html
+@@ -476 +475,0 @@
+-      <button id="ai-access-refresh" type="button" class="btn btn--ghost btn--sm">Обновить доступ и историю</button>
+@@ -483 +482 @@
+-      <textarea class="ai-input" id="ai-input" placeholder="Что вы хотите обсудить?" aria-label="Сообщение AI-ассистенту" aria-describedby="ai-message-limit ai-draft-status" rows="1"></textarea>
++      <textarea class="ai-input" id="ai-input" placeholder="Что вы хотите обсудить?" aria-label="Сообщение AI-ассистенту" aria-describedby="ai-draft-status" rows="1"></textarea>
+@@ -489 +487,0 @@
+-      <p id="ai-message-limit">0 / 1000 символов</p>
+--- a/app/js/ai-delivery.js
++++ b/app/js/ai-delivery.js
+@@ -17,7 +17,5 @@
+-    const input = document.getElementById('ai-input'), limit = document.getElementById('ai-message-limit');
+-    if (!input || !limit) return;
+-    const length = count(input.value), over = length > 1000, op = record();
+-    limit.textContent = `${length} / 1000 символов` + (over ? '. Сократите сообщение: текст сохранён целиком.' : '');
+-    limit.setAttribute('role', over ? 'alert' : 'status');
+-    input.setAttribute('aria-invalid', String(over));
+-    document.getElementById('ai-send-btn').disabled = aiPending || !!op || !length || over || aiAccessGranted !== true || !aiContextReady();
++    const input = document.getElementById('ai-input');
++    if (!input) return;
++    const length = count(input.value), op = record();
++    input.removeAttribute('aria-invalid');
++    document.getElementById('ai-send-btn').disabled = aiPending || !!op || !length || aiAccessGranted !== true || !aiContextReady();
+@@ -89 +87 @@
+-      if (op || !count(rawText) || count(rawText) > 1000 || !aiContextReady()) { render(); return; }
++      if (op || !count(rawText) || !aiContextReady()) { render(); return; }
+@@ -115 +113 @@
+-      else if (mode !== 'check' && [400,403,404,409,422].includes(error.status)) {
++      else if (mode !== 'check' && [400,403,404,409,413,422].includes(error.status)) {
+@@ -117 +115 @@
+-        persist(null); aiSendError = (error.message || 'Сообщение не отправлено.') + ' Текст сохранён.';
++        persist(null); aiSendError = error.status === 413 ? 'Сообщение слишком большое для одной отправки. Разделите его на части. Текст сохранён.' : (error.message || 'Сообщение не отправлено.') + ' Текст сохранён.';
+@@ -135 +132,0 @@
+-    const limit = document.getElementById('ai-message-limit'); if (limit) limit.textContent = '0 / 1000 символов';
+--- a/backend/src/routes/ai.js
++++ b/backend/src/routes/ai.js
+@@ -147 +147 @@
+-    message: { type: 'string', minLength: 1, maxLength: 1000 }, sessionId: { type: 'string', minLength: 1, maxLength: 128 },
++    message: { type: 'string', minLength: 1 }, sessionId: { type: 'string', minLength: 1, maxLength: 128 },

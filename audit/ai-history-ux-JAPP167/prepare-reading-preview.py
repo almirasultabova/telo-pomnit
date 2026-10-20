@@ -1,0 +1,2 @@
+from pathlib import Path
+H=Path(__file__).parent;p=H/'preview.py';s=p.read_text(encoding='utf-8');a=s.index('input.value=new');b=s.index(';input.dispatchEvent',a);s=s[:a]+"input.value=new URLSearchParams(location.search).get('mode')==='reading' ? ('Учебный длинный черновик. '+String.fromCharCode(10)+('Подробное описание ситуации.'+String.fromCharCode(10)).repeat(80)+'Конец.') : 'Учебный черновик первого разговора'"+s[b:];p.write_text(s,encoding='utf-8')

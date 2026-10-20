@@ -2,17 +2,23 @@
   "passed": true,
   "sourceChanges": [
     "app/css/ux-personal.css",
-    "app/js/app.js"
+    "app/index.html",
+    "app/js/ai-delivery.js",
+    "app/js/app.js",
+    "backend/src/routes/ai.js"
   ],
-  "otherRootSourcesUnchanged": 345,
+  "otherRootSourcesUnchanged": 342,
   "publicChanges": [
     "css/ux-personal.css",
     "index.html",
+    "js/ai-delivery.js",
     "js/app.js",
     "screen-review.html"
   ],
   "publicFiles": 98,
-  "apiChanged": false,
-  "backendChanged": false,
-  "published": false
+  "apiChanged": true,
+  "backendChanged": true,
+  "published": false,
+  "controlsRevisionPassed": true,
+  "readingRevisionPassed": true
 }

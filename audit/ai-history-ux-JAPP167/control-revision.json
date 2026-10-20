@@ -1,0 +1,11 @@
+{
+  "sources": [
+    "app/js/app.js",
+    "app/css/ux-personal.css",
+    "app/index.html"
+  ],
+  "publicChanged": 4,
+  "published": false,
+  "approval": "Owner questioned need for two buttons; keep one error-only retry",
+  "rootIndexPreservedExceptExactButtonRemoval": true
+}

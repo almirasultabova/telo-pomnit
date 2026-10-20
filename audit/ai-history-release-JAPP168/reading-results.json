@@ -1,0 +1,92 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "groups": [
+      "assistant full reading width and user compact",
+      "long draft accepted without counter or truncation",
+      "hidden scrollbar keeps keyboard text scrolling",
+      "hidden scrollbar keeps message wheel scrolling",
+      "413 is rejected before generation and whole draft retained"
+    ],
+    "boxes": {
+      "available": 288,
+      "assistant": 288,
+      "user": 209.90625
+    },
+    "longTextLength": 4325,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "assistant full reading width and user compact",
+      "long draft accepted without counter or truncation",
+      "hidden scrollbar keeps keyboard text scrolling",
+      "hidden scrollbar keeps message wheel scrolling",
+      "413 is rejected before generation and whole draft retained"
+    ],
+    "boxes": {
+      "available": 350,
+      "assistant": 350,
+      "user": 239.03125
+    },
+    "longTextLength": 4325,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "groups": [
+      "assistant full reading width and user compact",
+      "long draft accepted without counter or truncation",
+      "hidden scrollbar keeps keyboard text scrolling",
+      "hidden scrollbar keeps message wheel scrolling",
+      "413 is rejected before generation and whole draft retained"
+    ],
+    "boxes": {
+      "available": 558,
+      "assistant": 558,
+      "user": 239.03125
+    },
+    "longTextLength": 4325,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "groups": [
+      "assistant full reading width and user compact",
+      "long draft accepted without counter or truncation",
+      "hidden scrollbar keeps keyboard text scrolling",
+      "hidden scrollbar keeps message wheel scrolling",
+      "413 is rejected before generation and whole draft retained"
+    ],
+    "boxes": {
+      "available": 288,
+      "assistant": 288,
+      "user": 209.90625
+    },
+    "longTextLength": 4325,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "groups": [
+      "assistant full reading width and user compact",
+      "long draft accepted without counter or truncation",
+      "hidden scrollbar keeps keyboard text scrolling",
+      "hidden scrollbar keeps message wheel scrolling",
+      "413 is rejected before generation and whole draft retained"
+    ],
+    "boxes": {
+      "available": 350,
+      "assistant": 350,
+      "user": 239.03125
+    },
+    "longTextLength": 4325,
+    "pageErrors": []
+  }
+]

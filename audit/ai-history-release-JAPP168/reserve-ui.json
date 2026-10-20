@@ -1,0 +1,18 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "conversation opens and owns its draft",
+      "loading visible and no send to old conversation",
+      "error keeps actual conversation selection and draft",
+      "explicit retry opens requested conversation",
+      "drafts remain separate and never auto-send",
+      "list error explicit retry restores history focus",
+      "long messages literal and readable",
+      "layout and no provider calls or page errors"
+    ],
+    "providerCalls": 0,
+    "pageErrors": []
+  }
+]

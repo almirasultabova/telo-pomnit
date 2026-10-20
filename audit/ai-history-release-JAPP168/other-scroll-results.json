@@ -1,0 +1,14 @@
+[
+  {
+    "engine": "chromium",
+    "feedbackTextareaScrollPreserved": true,
+    "copyPreviewKeyboardScrollPreserved": true,
+    "textUnchanged": true
+  },
+  {
+    "engine": "webkit",
+    "feedbackTextareaScrollPreserved": true,
+    "copyPreviewKeyboardScrollPreserved": true,
+    "textUnchanged": true
+  }
+]

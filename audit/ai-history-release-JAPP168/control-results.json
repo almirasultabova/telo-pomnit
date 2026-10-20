@@ -1,0 +1,30 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "singleErrorOnlyAction": true,
+    "textFitsAt26px": true,
+    "singleFocusContour": true
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "singleErrorOnlyAction": true,
+    "textFitsAt26px": true,
+    "singleFocusContour": true
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "singleErrorOnlyAction": true,
+    "textFitsAt26px": true,
+    "singleFocusContour": true
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "singleErrorOnlyAction": true,
+    "textFitsAt26px": true,
+    "singleFocusContour": true
+  }
+]

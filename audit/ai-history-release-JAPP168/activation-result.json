@@ -1,0 +1,23 @@
+{
+  "backup": "/root/telo-backups/ui-JAPP168-2026-10-20T140132852Z",
+  "backupHashesVerifiedBeforeActivation": 11,
+  "publicFiles": 98,
+  "changedPublic": [
+    "css/ux-personal.css",
+    "js/ai-delivery.js",
+    "js/app.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": true,
+  "backendChange": "Remove only message maxLength:1000",
+  "backendRestarted": true,
+  "modelAndPromptUnchanged": true,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}

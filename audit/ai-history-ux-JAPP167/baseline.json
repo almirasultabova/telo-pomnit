@@ -2,8 +2,11 @@
   "baseCommit": "3593e4903ad0c2cdf11c275c9cc04f4ae2d045e0",
   "sourceChanges": [
     "app/css/ux-personal.css",
-    "app/js/app.js"
+    "app/index.html",
+    "app/js/ai-delivery.js",
+    "app/js/app.js",
+    "backend/src/routes/ai.js"
   ],
-  "backendChanged": false,
+  "backendChanged": true,
   "providerChanged": false
 }

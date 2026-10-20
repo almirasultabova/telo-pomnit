@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "cases": 28,
+  "longMessagesPassed": [
+    1001,
+    "1001 Unicode symbols",
+    "~100000 Cyrillic characters"
+  ],
+  "fullProviderPayloadAndStoredHistory": true,
+  "idempotency": true,
+  "existingTransportBoundary413BeforeProvider": true,
+  "realProviderRequests": 0,
+  "database": "in-memory fixture",
+  "modelAndPromptUnchanged": true
+}

@@ -1,0 +1,70 @@
+{
+  "checks": [
+    {
+      "origin": "https://api.telo-pomnit.ru",
+      "characters": 1900,
+      "status": 401,
+      "expected": 401,
+      "proxyMayRejectLargeBody": false
+    },
+    {
+      "origin": "https://api.telo-pomnit.ru",
+      "characters": 1001,
+      "status": 401,
+      "expected": 401,
+      "proxyMayRejectLargeBody": false
+    },
+    {
+      "origin": "https://api.telo-pomnit.ru",
+      "characters": 2097152,
+      "status": 413,
+      "expected": 413,
+      "proxyMayRejectLargeBody": false
+    },
+    {
+      "origin": "https://tg-app-telo-pomnit.vercel.app/api",
+      "characters": 1900,
+      "status": 401,
+      "expected": 401,
+      "proxyMayRejectLargeBody": false
+    },
+    {
+      "origin": "https://tg-app-telo-pomnit.vercel.app/api",
+      "characters": 1001,
+      "status": 401,
+      "expected": 401,
+      "proxyMayRejectLargeBody": false
+    },
+    {
+      "origin": "https://tg-app-telo-pomnit.vercel.app/api",
+      "characters": 2097152,
+      "status": 502,
+      "expected": 413,
+      "proxyMayRejectLargeBody": true
+    },
+    {
+      "origin": "https://app.telo-pomnit.ru/api",
+      "characters": 1900,
+      "status": 401,
+      "expected": 401,
+      "proxyMayRejectLargeBody": false
+    },
+    {
+      "origin": "https://app.telo-pomnit.ru/api",
+      "characters": 1001,
+      "status": 401,
+      "expected": 401,
+      "proxyMayRejectLargeBody": false
+    },
+    {
+      "origin": "https://app.telo-pomnit.ru/api",
+      "characters": 2097152,
+      "status": 413,
+      "expected": 413,
+      "proxyMayRejectLargeBody": false
+    }
+  ],
+  "authNotBypassed": true,
+  "realProviderRequests": 0,
+  "participantWrites": 0
+}

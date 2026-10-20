@@ -8,7 +8,7 @@
       "error keeps actual conversation selection and draft",
       "explicit retry opens requested conversation",
       "drafts remain separate and never auto-send",
-      "list error explicit retry restores refresh focus",
+      "list error explicit retry restores history focus",
       "long messages literal and readable",
       "layout and no provider calls or page errors"
     ],
@@ -24,7 +24,7 @@
       "error keeps actual conversation selection and draft",
       "explicit retry opens requested conversation",
       "drafts remain separate and never auto-send",
-      "list error explicit retry restores refresh focus",
+      "list error explicit retry restores history focus",
       "long messages literal and readable",
       "layout and no provider calls or page errors"
     ],
@@ -40,7 +40,7 @@
       "error keeps actual conversation selection and draft",
       "explicit retry opens requested conversation",
       "drafts remain separate and never auto-send",
-      "list error explicit retry restores refresh focus",
+      "list error explicit retry restores history focus",
       "long messages literal and readable",
       "layout and no provider calls or page errors"
     ],
@@ -56,7 +56,7 @@
       "error keeps actual conversation selection and draft",
       "explicit retry opens requested conversation",
       "drafts remain separate and never auto-send",
-      "list error explicit retry restores refresh focus",
+      "list error explicit retry restores history focus",
       "long messages literal and readable",
       "layout and no provider calls or page errors"
     ],
@@ -72,7 +72,7 @@
       "error keeps actual conversation selection and draft",
       "explicit retry opens requested conversation",
       "drafts remain separate and never auto-send",
-      "list error explicit retry restores refresh focus",
+      "list error explicit retry restores history focus",
       "long messages literal and readable",
       "layout and no provider calls or page errors"
     ],

@@ -1,0 +1,22 @@
+[
+  {
+    "engine": "chromium",
+    "groups": [
+      "first load failure has no false loading state and retry works",
+      "both empty tabs remain understandable",
+      "busy state blocks duplicate save and native back",
+      "late save response does not move current screen focus"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "groups": [
+      "first load failure has no false loading state and retry works",
+      "both empty tabs remain understandable",
+      "busy state blocks duplicate save and native back",
+      "late save response does not move current screen focus"
+    ],
+    "realWrites": 0
+  }
+]

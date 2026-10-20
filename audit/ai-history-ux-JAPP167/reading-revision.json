@@ -1,0 +1,15 @@
+{
+  "runtimeSources": [
+    "app/js/app.js",
+    "app/css/ux-personal.css",
+    "app/index.html",
+    "app/js/ai-delivery.js",
+    "backend/src/routes/ai.js"
+  ],
+  "published": false,
+  "backendChanged": true,
+  "backendChange": "Remove only message maxLength:1000",
+  "promptAndProviderConfigUnchanged": true,
+  "inputNotTruncated": true,
+  "existingTransportSizeBoundaryRetained": true
+}
