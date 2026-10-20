@@ -473,20 +473,18 @@
       <p class="ai-history-purpose">Здесь можно вернуться к прежнему разговору.</p>
       <label class="ai-history-label" for="ai-history-select">Ваши диалоги</label>
       <select id="ai-history-select" aria-label="Ваши сохранённые диалоги"><option value="">Новый диалог</option></select>
-      <button id="ai-access-refresh" type="button" class="btn btn--ghost btn--sm">Обновить доступ и историю</button>
       </details>
     </div>
     <div class="screen-scroll screen-scroll--no-bottom" id="ai-messages" style="padding-bottom: 72px">
       <!-- Рендерится в app.js -->
     </div>
     <div class="ai-input-bar" id="ai-input-bar">
-      <textarea class="ai-input" id="ai-input" placeholder="Что вы хотите обсудить?" aria-label="Сообщение AI-ассистенту" aria-describedby="ai-message-limit ai-draft-status" rows="1"></textarea>
+      <textarea class="ai-input" id="ai-input" placeholder="Что вы хотите обсудить?" aria-label="Сообщение AI-ассистенту" aria-describedby="ai-draft-status" rows="1"></textarea>
       <button class="ai-send-btn" id="ai-send-btn" aria-label="Отправить сообщение">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
           <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
         </svg>
       </button>
-      <p id="ai-message-limit">0 / 1000 символов</p>
     </div>
   </div>
 

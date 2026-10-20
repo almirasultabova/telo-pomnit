@@ -144,7 +144,7 @@ async function aiRoutes(app) {
   })
   app.post('/ai/chat', { preHandler: requireAuth, schema: { body: { type: 'object', required: ['message', 'operationId'], properties: {
     operationId: { type: 'string', pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$' },
-    message: { type: 'string', minLength: 1, maxLength: 1000 }, sessionId: { type: 'string', minLength: 1, maxLength: 128 },
+    message: { type: 'string', minLength: 1 }, sessionId: { type: 'string', minLength: 1, maxLength: 128 },
     contextMode: { type: 'string', enum: ['none','selected'] }, diaryEntryIds: selectionSchema,
     contextVersion: { type: 'string', maxLength: 80 }, contextPreviewHash: { type: 'string', pattern: '^[a-f0-9]{64}$' }
   } } } }, async (request, reply) => {

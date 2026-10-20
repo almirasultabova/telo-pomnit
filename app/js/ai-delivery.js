@@ -14,13 +14,11 @@ window.AiDelivery = (() => {
   }
   function label(session) { return (session.title || 'Диалог без сообщений') + ' · ' + accessDate(session.createdAt || new Date().toISOString()); }
   function render() {
-    const input = document.getElementById('ai-input'), limit = document.getElementById('ai-message-limit');
-    if (!input || !limit) return;
-    const length = count(input.value), over = length > 1000, op = record();
-    limit.textContent = `${length} / 1000 символов` + (over ? '. Сократите сообщение: текст сохранён целиком.' : '');
-    limit.setAttribute('role', over ? 'alert' : 'status');
-    input.setAttribute('aria-invalid', String(over));
-    document.getElementById('ai-send-btn').disabled = aiPending || !!op || !length || over || aiAccessGranted !== true || !aiContextReady();
+    const input = document.getElementById('ai-input');
+    if (!input) return;
+    const length = count(input.value), op = record();
+    input.removeAttribute('aria-invalid');
+    document.getElementById('ai-send-btn').disabled = aiPending || !!op || !length || aiAccessGranted !== true || !aiContextReady();
     let actions = document.getElementById('ai-delivery-actions');
     if (!actions) { actions = document.createElement('div'); actions.id = 'ai-delivery-actions'; document.getElementById('ai-input-bar').append(actions); }
     const focused = actions.contains(document.activeElement) ? document.activeElement.id : null;
@@ -86,7 +84,7 @@ window.AiDelivery = (() => {
     let op = record();
     if (mode === 'send') {
       const input = document.getElementById('ai-input'), rawText = input.value;
-      if (op || !count(rawText) || count(rawText) > 1000 || !aiContextReady()) { render(); return; }
+      if (op || !count(rawText) || !aiContextReady()) { render(); return; }
       saveCurrentAiDraft();
       op = { operationId: crypto.randomUUID(), owner, rawText, message: rawText.trim(), sessionId: aiSessionId,
         context: { contextMode: aiContext.mode, diaryEntryIds: [...aiContext.ids], contextPreviewHash: aiContext.preview?.contextHash }, state: 'pending' };
@@ -112,9 +110,9 @@ window.AiDelivery = (() => {
     } catch (error) {
       if (!current()) return;
       if (mode === 'check' && error.code === 'AI_OPERATION_NOT_FOUND') { op.state = 'not-found'; op.durable = persist(op); }
-      else if (mode !== 'check' && [400,403,404,409,422].includes(error.status)) {
+      else if (mode !== 'check' && [400,403,404,409,413,422].includes(error.status)) {
         // These route rejections happen before a claim. Do not discard ambiguous transport errors.
-        persist(null); aiSendError = (error.message || 'Сообщение не отправлено.') + ' Текст сохранён.';
+        persist(null); aiSendError = error.status === 413 ? 'Сообщение слишком большое для одной отправки. Разделите его на части. Текст сохранён.' : (error.message || 'Сообщение не отправлено.') + ' Текст сохранён.';
         if (error.code === 'CONTEXT_CHANGED') { aiContext.preview = null; aiContext.reviewed = false; }
       } else aiSendError = 'Не удалось получить результат. Проверьте отправку; текст сохранён.';
     } finally {
@@ -132,7 +130,6 @@ window.AiDelivery = (() => {
     document.getElementById('ai-messages')?.replaceChildren();
     document.getElementById('ai-delivery-actions')?.remove();
     const status = document.getElementById('ai-draft-status'); if (status) { status.textContent = ''; status.hidden = true; }
-    const limit = document.getElementById('ai-message-limit'); if (limit) limit.textContent = '0 / 1000 символов';
   }
   return { send: () => run('send'), render, label, count, invalidate };
 })();
