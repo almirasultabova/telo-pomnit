@@ -1,0 +1,9 @@
+{
+  "baseCommit": "ca1e3ff115dcb566330c9773fce329eee7f0a5c8",
+  "sourceChanges": [
+    "app/css/ux-diary-path.css",
+    "app/js/app.js"
+  ],
+  "backendChanged": false,
+  "scoringChanged": false
+}

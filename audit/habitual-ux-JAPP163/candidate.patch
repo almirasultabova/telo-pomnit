@@ -1,0 +1,163 @@
+--- a/app/js/app.js
++++ b/app/js/app.js
+@@ -41,6 +41,7 @@
+  * back=true — анимация «назад» (возврат).
+  */
+ let habitualView = 'summary';
++let habitualAnswersReturn = null;
+ const screenFocus = new Map();
+ let accessibleScreen = null;
+ function syncScreenAccessibility() {
+@@ -97,7 +98,8 @@
+   if (currentScreen === 'data-rights') { closeDataRights(); return; }
+   if (Api.clubBlocked) { screenStack.length = 0; updateBackBtn(); return; }
+   if (currentScreen === 'home' && activeTab === 'diag' && habitualView !== 'summary') {
+-    if (habitualView === 'quiz' && diag.current > 0) habitualPrevious();
++    if (habitualView === 'answers') returnHabitualResult();
++    else if (habitualView === 'quiz' && diag.current > 0) habitualPrevious();
+     else renderMyPathTab();
+     return;
+   }
+@@ -286,7 +288,7 @@
+     if (currentScreen === 'checkin') renderCheckinSyncStatus();
+     if (currentScreen === 'checkin-history') renderCheckinHistory();
+     if (currentScreen === 'trigger-history') renderTriggerHistory();
+-    if (activeTab === 'diag') renderMyPathTab();
++    if (activeTab === 'diag') renderMyPathTab({ background: true });
+     if (activeTab === 'profile') renderStats();
+   });
+   window.addEventListener('online', () => { Storage.flushPending(); Storage.flushCheckinsPending(); Storage.flushTriggersPending(); });
+@@ -351,7 +353,7 @@
+       void Storage.initFromApi({ recentCheckins: true, recentDiary: true }).then(() => {
+         if (Api.userId !== owner || Api._authGeneration !== generation || Api.clubBlocked) return;
+         renderMainTab(); renderDiaryTab();
+-        if (activeTab === 'diag') renderMyPathTab();
++        if (activeTab === 'diag') renderMyPathTab({ background: true });
+       }).catch(() => {});
+       try {
+         const [access] = await Promise.allSettled([Api.getAccess()]);
+@@ -1108,7 +1110,9 @@
+ // ВКЛАДКА: МОЙ ПУТЬ
+ // ─────────────────────────────────────────────────────────────────────────
+ 
+-function renderMyPathTab() {
++function renderMyPathTab({ background = false } = {}) {
++  // Loading other data must not replace the question or answer list being read.
++  if (background && habitualView !== 'summary') return;
+   const container = document.getElementById('diag-tab-content');
+   if (!container) return;
+ 
+@@ -1178,7 +1182,7 @@
+     <p class="habitual-note">Опрос помогает наблюдать за привычными реакциями. Он не устанавливает диагноз и не объясняет причины телесных симптомов.</p>
+     <p role="status">${result.syncStatus === 'synced' ? 'Ответы сохранены в вашем аккаунте.' : habitualDurable() ? 'Ответы сохранены на устройстве. Сервер ещё не подтвердил сохранение.' : 'Сервер ещё не подтвердил сохранение. Ответы доступны в этом открытом приложении; после закрытия они могут потеряться.'}</p>
+     ${result.syncStatus !== 'synced' ? '<button class="diag-result-retry" onclick="retryHabitualSave(this)">Повторить сохранение</button>' : ''}
+-    <button class="diag-result-retry" onclick="showHabitualAnswers()">Посмотреть свои ответы</button>
++    <button id="habitual-show-answers" class="diag-result-retry" onclick="showHabitualAnswers()">Посмотреть свои ответы</button>
+     ${result.state === 'incomplete' ? '<button class="diag-result-retry" onclick="startDiag(true)">Вернуться к вопросам</button>' : ''}
+     ${draft ? '<button class="diag-result-retry" onclick="startDiag()">Продолжить начатый опрос</button>' : ''}
+     <button class="diag-result-retry" onclick="startDiag(false, true)">Пройти заново</button></details></div>${habitualLegacyHTML()}`;
+@@ -1191,22 +1195,25 @@
+   diag.owner = Storage._userId; diag.generation = Storage._generation;
+   Storage.saveHabitualDraft(diag.answers); showDiagQuestion();
+ }
+-function showDiagQuestion() {
++function showDiagQuestion(focusChoice = null) {
+   const container = document.getElementById('diag-tab-content');
+   if (!container || !habitualOwnerCurrent()) return;
++  const scroll = container.scrollTop;
+   habitualView = 'quiz'; updateBackBtn();
+   const q = Habitual.items[diag.current], selected = diag.answers[diag.current];
+-  container.innerHTML = `<div class="diag-quiz"><div class="diag-quiz-header"><div class="diag-quiz-counter">Утверждение ${diag.current + 1} из 16</div>
++  container.innerHTML = `<div class="diag-quiz"><div class="diag-quiz-header"><div class="diag-quiz-counter" id="habitual-question-step">Утверждение ${diag.current + 1} из 16</div>
+     <div class="diag-quiz-bar"><div class="diag-quiz-fill" style="width:${diag.current / 16 * 100}%"></div></div></div>
+-    <p>Как часто вы замечаете это у себя?</p><div class="diag-quiz-q">${escapeAccessText(q.text)}</div>
++    <p>Как часто вы замечаете это у себя?</p><h2 class="diag-quiz-q" id="habitual-question" tabindex="-1" aria-describedby="habitual-question-step">${escapeAccessText(q.text)}</h2>
+     <div class="diag-quiz-options">${Habitual.choices.map((text, i) => `<button class="diag-quiz-option ${selected === i ? 'habitual-selected' : ''}" aria-pressed="${selected === i}" onclick="pickDiagAnswer(${i},${diag.current})">${escapeAccessText(text)}</button>`).join('')}</div>
+     <div class="habitual-controls">${diag.current ? '<button class="diag-result-retry" onclick="habitualPrevious()">Предыдущее утверждение</button>' : ''}
+     <button class="btn btn--primary" onclick="habitualNext(${diag.current})" ${selected === null ? 'disabled' : ''}>${diag.current === 15 ? 'Посмотреть результат' : 'Далее'}</button>
+     <button class="diag-result-retry" onclick="renderMyPathTab()">Продолжить позже</button></div></div>`;
++  container.scrollTop = focusChoice === null ? 0 : scroll;
++  (focusChoice === null ? container.querySelector('#habitual-question') : container.querySelectorAll('.diag-quiz-option')[focusChoice])?.focus({ preventScroll: true });
+ }
+ function pickDiagAnswer(value, index) {
+   if (!habitualOwnerCurrent() || index !== diag.current || !Number.isInteger(value) || value < 0 || value > 6) return;
+-  diag.answers[index] = value; Storage.saveHabitualDraft(diag.answers); showDiagQuestion();
++  diag.answers[index] = value; Storage.saveHabitualDraft(diag.answers); showDiagQuestion(value);
+ }
+ function habitualPrevious() { if (habitualOwnerCurrent() && diag.current > 0) { diag.current--; showDiagQuestion(); } }
+ async function habitualNext(index) {
+@@ -1218,18 +1225,28 @@
+   const pending = Storage.saveHabitualResult(diag.answers.slice());
+   renderMyPathTab();
+   await pending;
+-  if (owner === Storage._userId && generation === Storage._generation && activeTab === 'diag' && !Storage.getHabitualDraft()) renderMyPathTab();
++  if (owner === Storage._userId && generation === Storage._generation && activeTab === 'diag' && habitualView === 'summary' && !Storage.getHabitualDraft()) renderMyPathTab();
+ }
+ async function retryHabitualSave(button) {
+   button.disabled = true;
+   const owner = Storage._userId, generation = Storage._generation;
+   await Storage.flushHabitualResult();
+-  if (owner === Storage._userId && generation === Storage._generation && activeTab === 'diag') renderMyPathTab();
++  if (owner === Storage._userId && generation === Storage._generation && activeTab === 'diag' && habitualView === 'summary') renderMyPathTab();
+ }
+ function showHabitualAnswers() {
+-  const r = Storage.getHabitualResult(); if (!r) return;
++  const r = Storage.getHabitualResult(), container = document.getElementById('diag-tab-content'); if (!r || !container) return;
++  habitualAnswersReturn = { owner: Storage._userId, generation: Storage._generation, scroll: container.scrollTop, open: !!container.querySelector('.habitual-result-disclosure')?.open };
+   habitualView = 'answers'; updateBackBtn();
+-  document.getElementById('diag-tab-content').innerHTML = `<div class="diag-result-card"><div class="diag-result-name">Ваши ответы</div><ol class="habitual-answers">${Habitual.items.map((q, i) => `<li><p>${escapeAccessText(q.text)}</p><strong>${escapeAccessText(Habitual.choices[r.answers[i]])}</strong></li>`).join('')}</ol><button class="btn btn--primary" onclick="renderMyPathTab()">К результату</button></div>`;
++  container.innerHTML = `<div class="diag-result-card habitual-answer-review"><button class="diag-result-retry habitual-return-top" onclick="returnHabitualResult()">← К результату</button><h2 class="diag-result-name" id="habitual-answers-title" tabindex="-1">Ваши ответы</h2><ol class="habitual-answers">${Habitual.items.map((q, i) => `<li><p>${escapeAccessText(q.text)}</p><strong>${escapeAccessText(Habitual.choices[r.answers[i]])}</strong></li>`).join('')}</ol><button class="btn btn--primary" onclick="returnHabitualResult()">К результату</button></div>`;
++  container.scrollTop = 0; container.querySelector('#habitual-answers-title').focus({ preventScroll: true });
++}
++function returnHabitualResult() {
++  const restore = habitualAnswersReturn; habitualAnswersReturn = null;
++  if (!restore || restore.owner !== Storage._userId || restore.generation !== Storage._generation) return;
++  renderMyPathTab();
++  const container = document.getElementById('diag-tab-content'), details = container?.querySelector('.habitual-result-disclosure');
++  if (details) details.open = restore.open;
++  if (container) { container.scrollTop = restore.scroll; container.querySelector('#habitual-show-answers')?.focus({ preventScroll: true }); }
+ }
+ 
+ // ─── Зеркало ──────────────────────────────────────────────────────────────
+@@ -1644,7 +1661,7 @@
+   heatmapWeek = 0;
+   renderAccessNotice();
+   renderMainTab();
+-  if (activeTab === 'diag') { void Storage.ensurePathPeriod(pathPeriodScope()); renderMyPathTab(); }
++  if (activeTab === 'diag') { void Storage.ensurePathPeriod(pathPeriodScope()); renderMyPathTab({ background: true }); }
+   checkAndShowQuestionnaire(selectedProgramId);
+   window.MeetingPanel?.sync();
+ }
+@@ -1789,7 +1806,7 @@
+   haptic(wasAdded ? 'medium' : 'light');
+   if (wasAdded) hapticNotify('success');
+   renderSchedule();
+-  if (activeTab === 'diag') renderMyPathTab();
++  if (activeTab === 'diag') renderMyPathTab({ background: true });
+ }
+ 
+ function showMeetingDetail(id) {
+@@ -2243,6 +2260,7 @@
+   window.AiDelivery?.render();
+ }
+ function clearPrivateConversationState() {
++  habitualAnswersReturn = null; habitualView = 'summary';
+   window.FormMessages?.clearAll();
+   window.MeetingPanel?.invalidate();
+   window.SaveStatus?.invalidate();
+--- a/app/css/ux-diary-path.css
++++ b/app/css/ux-diary-path.css
+@@ -73,3 +73,13 @@
+ #tab-diag .mypath-empty-sub{max-width:78%;font:400 15px/1.6 var(--font-body);color:var(--color-action);margin-bottom:24px}
+ #tab-diag .mypath-empty .btn,#path-first-checkin{min-height:48px;width:auto;max-width:100%;font:500 15px/1.4 var(--font-body)}
+ .profile-streak-note{grid-column:1/-1;margin:12px 0 0;font:400 12px/1.6 var(--font-body);color:var(--color-action)}
++
++/* J-APP-163: preserve survey reading and keyboard position. */
++#tab-diag .diag-quiz-q{margin:0 0 20px}
++#tab-diag .habitual-return-top{display:flex;align-items:center;min-height:48px;margin:0 0 12px;padding:0;background:transparent;color:var(--color-action);border:0}
++#tab-diag .habitual-answers{padding-left:24px;margin:20px 0}
++#tab-diag .habitual-answers li{padding:0 0 16px;margin:0 0 16px;border-bottom:1px solid var(--color-line)}
++#tab-diag .habitual-answers li p{margin:0 0 7px;font:400 14px/1.6 var(--font-body)}
++#tab-diag .habitual-answers li strong{font:600 14px/1.6 var(--font-body);color:var(--color-action)}
++#tab-diag .habitual-return-top:focus-visible,#tab-diag #habitual-show-answers:focus-visible{outline:2px solid var(--color-action);outline-offset:3px}
++#tab-diag #habitual-question:focus,#tab-diag #habitual-answers-title:focus{outline:none}

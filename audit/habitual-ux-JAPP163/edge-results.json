@@ -1,0 +1,24 @@
+[
+  {
+    "engine": "chromium",
+    "groups": [
+      "draft survives reload",
+      "choice preserves long-page position",
+      "late save preserves open answer list",
+      "old owner cannot restore private view",
+      "logout clears return state"
+    ],
+    "errors": []
+  },
+  {
+    "engine": "webkit",
+    "groups": [
+      "draft survives reload",
+      "choice preserves long-page position",
+      "late save preserves open answer list",
+      "old owner cannot restore private view",
+      "logout clears return state"
+    ],
+    "errors": []
+  }
+]

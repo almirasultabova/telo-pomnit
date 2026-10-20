@@ -1,0 +1,92 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "groups": [
+      "keyboard choice and selected state",
+      "background data preserves quiz",
+      "next and previous keep answer",
+      "draft continues at unanswered question",
+      "all 16 unchanged answers pending and retry",
+      "16 full answers and top return restores place",
+      "bottom and native return restore place",
+      "zero low tie unknown result review unchanged",
+      "layout and captured mobile desktop views",
+      "stale owner cannot change quiz"
+    ],
+    "syntheticPosts": 2,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "keyboard choice and selected state",
+      "background data preserves quiz",
+      "next and previous keep answer",
+      "draft continues at unanswered question",
+      "all 16 unchanged answers pending and retry",
+      "16 full answers and top return restores place",
+      "bottom and native return restore place",
+      "zero low tie unknown result review unchanged",
+      "layout and captured mobile desktop views",
+      "stale owner cannot change quiz"
+    ],
+    "syntheticPosts": 2,
+    "pageErrors": []
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "groups": [
+      "keyboard choice and selected state",
+      "background data preserves quiz",
+      "next and previous keep answer",
+      "draft continues at unanswered question",
+      "all 16 unchanged answers pending and retry",
+      "16 full answers and top return restores place",
+      "bottom and native return restore place",
+      "zero low tie unknown result review unchanged",
+      "layout and captured mobile desktop views",
+      "stale owner cannot change quiz"
+    ],
+    "syntheticPosts": 2,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "groups": [
+      "keyboard choice and selected state",
+      "background data preserves quiz",
+      "next and previous keep answer",
+      "draft continues at unanswered question",
+      "all 16 unchanged answers pending and retry",
+      "16 full answers and top return restores place",
+      "bottom and native return restore place",
+      "zero low tie unknown result review unchanged",
+      "layout and captured mobile desktop views",
+      "stale owner cannot change quiz"
+    ],
+    "syntheticPosts": 2,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "groups": [
+      "keyboard choice and selected state",
+      "background data preserves quiz",
+      "next and previous keep answer",
+      "draft continues at unanswered question",
+      "all 16 unchanged answers pending and retry",
+      "16 full answers and top return restores place",
+      "bottom and native return restore place",
+      "zero low tie unknown result review unchanged",
+      "layout and captured mobile desktop views",
+      "stale owner cannot change quiz"
+    ],
+    "syntheticPosts": 2,
+    "pageErrors": []
+  }
+]

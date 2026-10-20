@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "sourceChanges": [
+    "app/css/ux-diary-path.css",
+    "app/js/app.js"
+  ],
+  "otherRootSourcesUnchanged": 345,
+  "publicChanges": [
+    "css/ux-diary-path.css",
+    "index.html",
+    "js/app.js",
+    "screen-review.html"
+  ],
+  "publicFiles": 98,
+  "apiChanged": false,
+  "backendChanged": false,
+  "published": false
+}

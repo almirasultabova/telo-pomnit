@@ -1,0 +1,39 @@
+{
+  "ui": [
+    {
+      "engine": "chromium",
+      "width": 390,
+      "passed": true,
+      "groups": [
+        "long-selection-has-compact-status-and-explicit-preview",
+        "full-fragment-accessible-with-bounded-reading-area",
+        "back-keeps-loaded-pages-scroll-focus-without-refetch",
+        "exact-selection-copied-and-editable-separately",
+        "editor-return-keeps-question-and-excerpt-draft",
+        "reload-restores-own-copy-draft",
+        "failure-retry-same-payload-and-original-unchanged",
+        "saved-note-moves-to-discussed",
+        "whole-note-fallback-and-remove-source",
+        "short-window-selection-action-reachable",
+        "larger-text-no-overflow-or-js-errors"
+      ],
+      "originalUnchanged": true,
+      "realWrites": 0
+    }
+  ],
+  "edges": [
+    {
+      "engine": "chromium",
+      "passed": true,
+      "groups": [
+        "long-literal-fragment-and-larger-text-safe",
+        "over-limit-copy-never-truncated-original-unchanged",
+        "cleared-range-disables-selection-action",
+        "source-read-error-keeps-list-and-retry",
+        "cached-return-cannot-show-previous-owners-notes",
+        "late-source-read-after-logout-does-not-reopen-note"
+      ],
+      "realWrites": 0
+    }
+  ]
+}

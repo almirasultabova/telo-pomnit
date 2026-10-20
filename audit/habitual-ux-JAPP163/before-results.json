@@ -1,0 +1,16 @@
+[
+  {
+    "engine": "chromium",
+    "focusAfterAnswer": "BODY",
+    "answerRows": 16,
+    "returnButtonY": 1962.75,
+    "realPosts": 0
+  },
+  {
+    "engine": "webkit",
+    "focusAfterAnswer": "BODY",
+    "answerRows": 16,
+    "returnButtonY": 1956.5,
+    "realPosts": 0
+  }
+]
