@@ -2070,7 +2070,7 @@ function ensureDataRightsScreen() {
   }, 'Дневник подготовлен в PDF. Ещё не отправленные записи устройства в него не входят.', { button: 'data-export-pdf', label: 'Готовим PDF…' });
   document.getElementById('data-export-local').onclick = () => performRightsAction(async () => downloadPrivateFile(JSON.stringify(Storage.exportPendingForUser(DataRightsApi.userId), null, 2), 'application/json', 'telo-local-pending.json', { title: 'Неотправленные записи', caption: 'Здесь записи, ожидающие отправки, и сохранённые черновики с этого устройства. Сохранение файла ничего не отправляет.', returnId: 'data-export-local' }), 'Копия подготовлена. Сохраните файл на открывшемся экране.', { button: 'data-export-local', label: 'Готовим копию…' });
   document.getElementById('data-delete-start').onclick = () => { document.getElementById('data-delete-confirm').hidden = false; document.getElementById('data-delete-phrase').focus(); };
-  document.getElementById('data-delete-cancel').onclick = resetDeleteConfirmation;
+  document.getElementById('data-delete-cancel').onclick = () => { resetDeleteConfirmation(); const start = document.getElementById('data-delete-start'); start.focus({ preventScroll: true }); start.scrollIntoView({ block: 'nearest' }); };
   document.getElementById('data-delete-phrase').oninput = event => { document.getElementById('data-delete-submit').disabled = event.target.value !== 'УДАЛИТЬ МОИ ДАННЫЕ'; };
   document.getElementById('data-delete-submit').onclick = deletePersonalData;
 }
@@ -2154,7 +2154,7 @@ async function deletePersonalData() {
     // Financial export will obtain a fresh limited token without reopening club.
     DataRightsApi.clear(); DataRightsApi.userId = userId;
     resetDeleteConfirmation(); rightsReturnBlocked = true; lastDeniedCode = 'ACCOUNT_DELETED';
-  }, 'Аккаунт приложения и личные записи удалены. Сведения об оплатах и отметка о закрытом аккаунте остаются; резервные копии очищаются отдельно.');
+  }, 'Аккаунт приложения и личные записи удалены. Сведения об оплатах и отметка о закрытом аккаунте остаются; резервные копии очищаются отдельно.', { button: 'data-delete-submit', label: 'Удаляем данные…' });
 }
 function closePrivatePreview() {
   const preview=document.getElementById('screen-data-export-preview'), restore=privatePreviewReturn; privatePreviewReturn=null;
