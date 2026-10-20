@@ -1,0 +1,19 @@
+{
+  "backup": "/root/telo-backups/ui-JAPP154-2026-10-20T111759594Z",
+  "publicFiles": 97,
+  "changedPublic": [
+    "css/after-meeting.css",
+    "js/after-meeting.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}

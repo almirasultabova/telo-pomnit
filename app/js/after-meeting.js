@@ -152,6 +152,11 @@
   let stepScreen=null,currentStepId=null,stepSaving=false,stepLoadSequence=0,replyDraft=null,stepDisabled=[];
   const dateLabel=d=>new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',year:'numeric',timeZone:'Europe/Moscow'}).format(new Date(d.length===10?d+'T12:00:00Z':d));
   const stepRow=()=>records.find(r=>r.id===currentStepId);
+  const editScope=id=>'step-edit-v1:'+id;
+  function editDraft(row){
+    const value=Storage.getFormDraft(editScope(row.id));
+    return value?.version===1&&value.id===row.id&&typeof value.text==='string'&&typeof value.baseText==='string'&&Number.isInteger(value.baseRevision)?value:null;
+  }
   function stepMount(){
     if(stepScreen)return;
     stepScreen=make('section','screen');stepScreen.id='screen-after-step';
@@ -182,6 +187,8 @@
     const row=stepRow();if(!current()||!row||stepSaving)return;const s=stepSession(),scroll=document.getElementById('ps-content').scrollTop;stepBusy(true);
     try{const result=await Api.updateAfterMeetingStep(row.id,{...data,revision:row.revision});if(!stepCurrent(s))return;
       if(!validRow(result)||result.id!==row.id||data.stepText!==undefined&&result.stepText!==data.stepText||data.stepPaused!==undefined&&result.stepPaused!==data.stepPaused)throw Error('INVALID_STEP_ACK');
+      const savedEdit=editDraft(row);
+      if(data.stepText!==undefined&&savedEdit?.text.trim()===data.stepText&&savedEdit.baseRevision===row.revision&&savedEdit.baseText===row.stepText)Storage.saveFormDraft(editScope(row.id),null);
       setRow(result);stepBusy(false);if(currentScreen==='after-step'&&currentStepId===s.id){drawStep('Изменения сохранены.');document.getElementById('ps-content').scrollTop=scroll;}
     }catch(e){if(stepCurrent(s)){stepBusy(false);stepError(e,s);}}
     finally{if(stepCurrent(s))stepSaving=false;}
@@ -191,14 +198,32 @@
     document.getElementById('ps-context').textContent=(row.kind==='analysis'?'После разбора':'После практики')+' · '+dateLabel(row.meetingDate);
     const source=make('details','ps-source'),summary=make('summary','', 'Моя заметка после встречи');summary.insertAdjacentHTML('beforeend','<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m6 9 6 6 6-6"/></svg>');source.append(summary,make('p','',row.text));content.append(source);
     const step=make('section','ps-current');step.append(make('h2','',row.stepText?'Хочу попробовать':'Мой личный шаг'));
-    const edit=make('div','ps-step-editor');edit.hidden=Boolean(row.stepText);
-    const label=make('label','', 'Что хочется попробовать?');label.htmlFor='ps-edit-text';const input=make('textarea');input.id='ps-edit-text';input.rows=3;input.maxLength=1200;input.value=row.stepText||'';input.placeholder='Один небольшой шаг для себя…';
-    const saveEdit=action('Сохранить шаг',()=>updateStep({stepText:input.value.trim()}),'ps-button');saveEdit.id='ps-edit-save';saveEdit.disabled=!input.value.trim();input.oninput=()=>{saveEdit.disabled=!input.value.trim();};
-    const cancel=action('Отменить',()=>{edit.hidden=true;read.hidden=false;});cancel.hidden=!row.stepText;
-    edit.append(label,input,saveEdit,cancel);
-    const read=make('div');read.hidden=!row.stepText;read.append(make('p','ps-step-copy',row.stepText));
+    let localEdit=editDraft(row),reviewed=!localEdit||localEdit.baseRevision===row.revision&&localEdit.baseText===row.stepText;
+    const edit=make('div','ps-step-editor');edit.hidden=Boolean(row.stepText)&&!localEdit;
+    const label=make('label','', 'Что хочется попробовать?');label.htmlFor='ps-edit-text';const input=make('textarea');input.id='ps-edit-text';input.rows=3;input.maxLength=1200;input.value=localEdit?.text??row.stepText??'';input.placeholder='Один небольшой шаг для себя…';
+    const editStatus=make('p','ps-draft');editStatus.id='ps-edit-draft';editStatus.setAttribute('role','status');input.setAttribute('aria-describedby','ps-edit-draft');
+    const saveEdit=action('Сохранить шаг',()=>updateStep({stepText:input.value.trim()}),'ps-button');saveEdit.id='ps-edit-save';
+    const syncEdit=()=>{saveEdit.disabled=!reviewed||!input.value.trim();};
+    const persistEdit=()=>{
+      if(!current()||stepSaving)return;
+      localEdit={version:1,id:row.id,baseRevision:localEdit?.baseRevision??row.revision,baseText:localEdit?.baseText??row.stepText,text:input.value};
+      const kept=Storage.saveFormDraft(editScope(row.id),localEdit);
+      editStatus.textContent=!reviewed?'Сохранённый шаг изменился. Правка осталась черновиком. Сравните тексты перед сохранением.':kept?'Правка сохранена на этом устройстве. Сам шаг изменится после нажатия «Сохранить шаг».':'Правка пока только в открытом приложении. Не закрывайте его до сохранения.';
+      syncEdit();
+    };
+    input.oninput=persistEdit;
+    const cancel=action('Убрать правку',()=>{const kept=Storage.saveFormDraft(editScope(row.id),null);drawStep(kept?'Правка убрана. Сохранённый шаг не изменился.':'Правка убрана в этом окне. Устройство пока не даёт обновить сохранённый черновик.');(stepScreen.querySelector('.ps-step-actions button')||document.getElementById('ps-edit-text'))?.focus();});cancel.id='ps-edit-discard';
+    edit.append(label,input,editStatus);
+    if(!reviewed){
+      const comparison=make('div','ps-edit-comparison');comparison.append(make('p','ps-help','Сейчас сохранённый шаг:'),make('p','ps-step-copy',row.stepText));
+      saveEdit.hidden=true;
+      const accept=action('Продолжить с этим текстом',()=>{reviewed=true;localEdit={...localEdit,baseRevision:row.revision,baseText:row.stepText};persistEdit();saveEdit.hidden=false;comparison.remove();input.focus();},'ps-button');accept.id='ps-edit-continue';comparison.append(accept);edit.append(comparison);
+    }
+    edit.append(saveEdit,cancel);
+    const read=make('div');read.hidden=!edit.hidden;read.append(make('p','ps-step-copy',row.stepText));
     const controls=make('div','ps-step-actions');controls.append(action('Изменить',()=>{read.hidden=true;edit.hidden=false;input.focus();}),action(row.stepPaused?'Вернуться к шагу':'Отложить',()=>updateStep({stepPaused:!row.stepPaused})));read.append(controls);
     if(row.stepPaused)read.append(make('p','ps-paused','Шаг отложен. Можно вернуться, когда захочется.'));
+    if(localEdit)persistEdit();else syncEdit();
     step.append(read,edit);content.append(step);
     const notice=make('p','ps-message',message);notice.id='ps-message';notice.setAttribute('role','status');content.append(notice);
     if(!row.stepText)content.append(make('p','ps-optional','Шаг необязательный. Можно оставить только заметку после встречи.'));
