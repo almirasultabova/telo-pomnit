@@ -1,0 +1,114 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "groups": [
+      "mobile Enter inserts a newline without sending",
+      "new/A/B drafts remain separate and are never sent by switching",
+      "restored multi-line draft expands to existing field height cap",
+      "same conversation reading position survives redraw and refresh",
+      "Diary and back preserve draft and reading position",
+      "history error/retry keeps current conversation and input",
+      "explicit reviewed context only; in-flight new draft retained on reply",
+      "503 result check never resends; explicit retry uses identical operation ID",
+      "revoked write access keeps readable history and draft",
+      "short viewport input and send visible; no JS error or horizontal overflow"
+    ],
+    "realAICalls": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "mobile Enter inserts a newline without sending",
+      "new/A/B drafts remain separate and are never sent by switching",
+      "restored multi-line draft expands to existing field height cap",
+      "same conversation reading position survives redraw and refresh",
+      "Diary and back preserve draft and reading position",
+      "history error/retry keeps current conversation and input",
+      "explicit reviewed context only; in-flight new draft retained on reply",
+      "503 result check never resends; explicit retry uses identical operation ID",
+      "revoked write access keeps readable history and draft",
+      "short viewport input and send visible; no JS error or horizontal overflow"
+    ],
+    "realAICalls": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "groups": [
+      "mobile Enter inserts a newline without sending",
+      "new/A/B drafts remain separate and are never sent by switching",
+      "restored multi-line draft expands to existing field height cap",
+      "same conversation reading position survives redraw and refresh",
+      "Diary and back preserve draft and reading position",
+      "history error/retry keeps current conversation and input",
+      "explicit reviewed context only; in-flight new draft retained on reply",
+      "503 result check never resends; explicit retry uses identical operation ID",
+      "revoked write access keeps readable history and draft",
+      "short viewport input and send visible; no JS error or horizontal overflow"
+    ],
+    "realAICalls": 0
+  },
+  {
+    "engine": "chromium",
+    "keyboard": "tdesktop",
+    "IME": true,
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "keyboard": "android",
+    "IME": true,
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "reload": "draft-kept/no-auto-send",
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "isolation": "late response ignored after generation changes",
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "groups": [
+      "mobile Enter inserts a newline without sending",
+      "new/A/B drafts remain separate and are never sent by switching",
+      "restored multi-line draft expands to existing field height cap",
+      "same conversation reading position survives redraw and refresh",
+      "Diary and back preserve draft and reading position",
+      "history error/retry keeps current conversation and input",
+      "explicit reviewed context only; in-flight new draft retained on reply",
+      "503 result check never resends; explicit retry uses identical operation ID",
+      "revoked write access keeps readable history and draft",
+      "short viewport input and send visible; no JS error or horizontal overflow"
+    ],
+    "realAICalls": 0
+  },
+  {
+    "engine": "webkit",
+    "keyboard": "tdesktop",
+    "IME": true,
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "keyboard": "android",
+    "IME": true,
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "reload": "draft-kept/no-auto-send",
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "isolation": "late response ignored after generation changes",
+    "ok": true
+  }
+]

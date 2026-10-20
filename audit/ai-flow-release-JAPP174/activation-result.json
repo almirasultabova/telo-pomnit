@@ -1,0 +1,19 @@
+{
+  "backup": "/root/telo-backups/ui-JAPP174-2026-10-20T200824855Z",
+  "publicFiles": 100,
+  "changedPublic": [
+    "js/ai-delivery.js",
+    "js/app.js",
+    "index.html",
+    "screen-review.html"
+  ],
+  "roots": [
+    "/var/www/telo-app",
+    "/var/www/telo-app/recovery/j293"
+  ],
+  "backendChanged": false,
+  "backendRestarted": false,
+  "migrations": 0,
+  "protectedFilesUnchanged": true,
+  "realMessagesSent": 0
+}
