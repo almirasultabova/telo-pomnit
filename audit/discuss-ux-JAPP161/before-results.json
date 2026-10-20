@@ -1,0 +1,20 @@
+[
+  {
+    "engine": "chromium",
+    "selectionStatusCharacters": 2020,
+    "useButtonY": 1284.5625,
+    "visibleHeight": 844,
+    "rowsAfterBack": 10,
+    "rowsBeforeBack": 13,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "selectionStatusCharacters": 2020,
+    "useButtonY": 1284.5625,
+    "visibleHeight": 844,
+    "rowsAfterBack": 10,
+    "rowsBeforeBack": 13,
+    "realWrites": 0
+  }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "passed": true,
+    "groups": [
+      "long-selection-has-compact-status-and-explicit-preview",
+      "full-fragment-accessible-with-bounded-reading-area",
+      "back-keeps-loaded-pages-scroll-focus-without-refetch",
+      "exact-selection-copied-and-editable-separately",
+      "editor-return-keeps-question-and-excerpt-draft",
+      "reload-restores-own-copy-draft",
+      "failure-retry-same-payload-and-original-unchanged",
+      "saved-note-moves-to-discussed",
+      "whole-note-fallback-and-remove-source",
+      "short-window-selection-action-reachable",
+      "larger-text-no-overflow-or-js-errors"
+    ],
+    "originalUnchanged": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "long-selection-has-compact-status-and-explicit-preview",
+      "full-fragment-accessible-with-bounded-reading-area",
+      "back-keeps-loaded-pages-scroll-focus-without-refetch",
+      "exact-selection-copied-and-editable-separately",
+      "editor-return-keeps-question-and-excerpt-draft",
+      "reload-restores-own-copy-draft",
+      "failure-retry-same-payload-and-original-unchanged",
+      "saved-note-moves-to-discussed",
+      "whole-note-fallback-and-remove-source",
+      "short-window-selection-action-reachable",
+      "larger-text-no-overflow-or-js-errors"
+    ],
+    "originalUnchanged": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "passed": true,
+    "groups": [
+      "long-selection-has-compact-status-and-explicit-preview",
+      "full-fragment-accessible-with-bounded-reading-area",
+      "back-keeps-loaded-pages-scroll-focus-without-refetch",
+      "exact-selection-copied-and-editable-separately",
+      "editor-return-keeps-question-and-excerpt-draft",
+      "reload-restores-own-copy-draft",
+      "failure-retry-same-payload-and-original-unchanged",
+      "saved-note-moves-to-discussed",
+      "whole-note-fallback-and-remove-source",
+      "short-window-selection-action-reachable",
+      "larger-text-no-overflow-or-js-errors"
+    ],
+    "originalUnchanged": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "passed": true,
+    "groups": [
+      "long-selection-has-compact-status-and-explicit-preview",
+      "full-fragment-accessible-with-bounded-reading-area",
+      "back-keeps-loaded-pages-scroll-focus-without-refetch",
+      "exact-selection-copied-and-editable-separately",
+      "editor-return-keeps-question-and-excerpt-draft",
+      "reload-restores-own-copy-draft",
+      "failure-retry-same-payload-and-original-unchanged",
+      "saved-note-moves-to-discussed",
+      "whole-note-fallback-and-remove-source",
+      "short-window-selection-action-reachable",
+      "larger-text-no-overflow-or-js-errors"
+    ],
+    "originalUnchanged": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "long-selection-has-compact-status-and-explicit-preview",
+      "full-fragment-accessible-with-bounded-reading-area",
+      "back-keeps-loaded-pages-scroll-focus-without-refetch",
+      "exact-selection-copied-and-editable-separately",
+      "editor-return-keeps-question-and-excerpt-draft",
+      "reload-restores-own-copy-draft",
+      "failure-retry-same-payload-and-original-unchanged",
+      "saved-note-moves-to-discussed",
+      "whole-note-fallback-and-remove-source",
+      "short-window-selection-action-reachable",
+      "larger-text-no-overflow-or-js-errors"
+    ],
+    "originalUnchanged": true,
+    "realWrites": 0
+  }
+]

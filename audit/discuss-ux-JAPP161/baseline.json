@@ -1,0 +1,9 @@
+{
+  "baseCommit": "e13d46045202445ebbc30acc2e7434122350f68d",
+  "sourceChanges": [
+    "app/css/discussion-notes.css",
+    "app/js/discussion-notes.js"
+  ],
+  "backendChanged": false,
+  "apiChanged": false
+}

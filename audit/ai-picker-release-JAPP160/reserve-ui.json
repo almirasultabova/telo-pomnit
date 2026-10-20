@@ -1,0 +1,37 @@
+{
+  "ui": [
+    {
+      "engine": "chromium",
+      "width": 390,
+      "passed": true,
+      "groups": [
+        "clear-selected-state-count-keyboard-focus",
+        "list-scroll-and-focus-survive-selection",
+        "five-limit-clear-reason-and-replace-selection",
+        "full-preview-focused-and-separate-permission",
+        "changed-selection-requires-new-preview-permission",
+        "draft-and-no-automatic-ai-send",
+        "preview-failure-retains-selection-and-retry",
+        "without-diary-clears-selection-approval",
+        "empty-data-is-explicit",
+        "load-failure-and-explicit-recovery",
+        "short-window-preview-permission-input-reachable"
+      ],
+      "pageErrors": [],
+      "realSends": 0
+    }
+  ],
+  "edges": [
+    {
+      "engine": "chromium",
+      "passed": true,
+      "groups": [
+        "long-literal-text-larger-type-no-script-overflow",
+        "late-preview-does-not-replace-new-selection-or-focus",
+        "late-preview-does-not-focus-hidden-ai-screen",
+        "late-preview-does-not-enter-another-account"
+      ],
+      "realSends": 0
+    }
+  ]
+}
