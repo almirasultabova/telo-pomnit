@@ -2017,6 +2017,7 @@ function closeOfferModal() {
 // ─────────────────────────────────────────────────────────────────────────
 // Личные данные: отдельная проверка личности не открывает закрытый клуб.
 let rightsRequest = 0;
+let privatePreviewReturn = null;
 let rightsReturnBlocked = false;
 let rightsReturnScreen = 'home';
 let rightsReturnStack = [];
@@ -2024,7 +2025,7 @@ let rightsReturnOwner = null;
 let rightsReturnGeneration = null;
 function closeDataRights() {
   if (document.getElementById('data-rights-close')?.disabled) return;
-  rightsRequest++; clearPreparedDiaryPdf(); DataRightsApi.clear();
+  rightsRequest++; privatePreviewReturn = null; clearPreparedDiaryPdf(); DataRightsApi.clear();
   screenStack.length = 0;
   if (rightsReturnBlocked || Api.clubBlocked) {
     showAccessDenied(lastDeniedCode || 'SESSION_EXPIRED');
@@ -2057,15 +2058,16 @@ function ensureDataRightsScreen() {
   document.getElementById('data-rights-retry').onclick = openDataRights;
   document.getElementById('data-export-json').onclick = () => performRightsAction(async ({ owner, request, storageGeneration }) => {
     const data = await DataRightsApi.exportAll();
-    if (request === rightsRequest && owner === DataRightsApi.userId && storageGeneration === Storage._generation) downloadPrivateFile(JSON.stringify(data, null, 2), 'application/json', 'telo-server-data.json');
-  }, 'Серверная выгрузка подготовлена.');
+    if (request === rightsRequest && owner === DataRightsApi.userId && storageGeneration === Storage._generation) downloadPrivateFile(JSON.stringify(data, null, 2), 'application/json', 'telo-server-data.json', { title: 'Полная копия данных', caption: 'Это копия данных, сохранённых в вашем аккаунте. Сохраните файл, если он вам нужен.', returnId: 'data-export-json' });
+  }, 'Копия подготовлена. Сохраните файл на открывшемся экране.', { button: 'data-export-json', label: 'Готовим копию…' });
   document.getElementById('data-export-pdf').onclick = () => performRightsAction(async ({ owner, request, storageGeneration }) => {
+    clearPreparedDiaryPdf();
     const pdf = await DataRightsApi.downloadDiaryPdf();
     if (request === rightsRequest && owner === DataRightsApi.userId && storageGeneration === Storage._generation) {
       offerPreparedDiaryPdf(pdf, owner, document.querySelector('#screen-data-rights .screen-scroll'));
     }
-  }, 'Дневник подготовлен в PDF. Ещё не отправленные записи устройства в него не входят.');
-  document.getElementById('data-export-local').onclick = () => performRightsAction(async () => downloadPrivateFile(JSON.stringify(Storage.exportPendingForUser(DataRightsApi.userId), null, 2), 'application/json', 'telo-local-pending.json'), 'Выгрузка неподтверждённых записей подготовлена.');
+  }, 'Дневник подготовлен в PDF. Ещё не отправленные записи устройства в него не входят.', { button: 'data-export-pdf', label: 'Готовим PDF…' });
+  document.getElementById('data-export-local').onclick = () => performRightsAction(async () => downloadPrivateFile(JSON.stringify(Storage.exportPendingForUser(DataRightsApi.userId), null, 2), 'application/json', 'telo-local-pending.json', { title: 'Неотправленные записи', caption: 'Здесь записи, ожидающие отправки, и сохранённые черновики с этого устройства. Сохранение файла ничего не отправляет.', returnId: 'data-export-local' }), 'Копия подготовлена. Сохраните файл на открывшемся экране.', { button: 'data-export-local', label: 'Готовим копию…' });
   document.getElementById('data-delete-start').onclick = () => { document.getElementById('data-delete-confirm').hidden = false; document.getElementById('data-delete-phrase').focus(); };
   document.getElementById('data-delete-cancel').onclick = resetDeleteConfirmation;
   document.getElementById('data-delete-phrase').oninput = event => { document.getElementById('data-delete-submit').disabled = event.target.value !== 'УДАЛИТЬ МОИ ДАННЫЕ'; };
@@ -2102,8 +2104,10 @@ async function openDataRights() {
   } catch { if (request === rightsRequest) {retry.hidden=false;status.textContent = 'Не удалось загрузить данные. Откройте приложение через Telegram-бота и повторите.';} }
   finally { if (request === rightsRequest) retry.disabled = false; }
 }
-async function performRightsAction(action, successText) {
+async function performRightsAction(action, successText, progress = null) {
   const owner = DataRightsApi.userId, request = rightsRequest, storageGeneration = Storage._generation;
+  const progressButton = document.getElementById(progress?.button), progressLabel = progressButton?.textContent;
+  if (progressButton) { progressButton.textContent = progress.label; progressButton.setAttribute('aria-busy', 'true'); document.getElementById('data-rights-status').textContent = progress.label; }
   const buttons = document.querySelectorAll('#data-rights-actions button'); buttons.forEach(button => button.disabled = true);
   document.getElementById('data-rights-close').disabled = true;
   document.getElementById('data-rights-retry').disabled = true;
@@ -2112,15 +2116,19 @@ async function performRightsAction(action, successText) {
     if (Date.now() >= DataRightsApi.expiresAt) await DataRightsApi.auth();
     if (owner !== DataRightsApi.userId || request !== rightsRequest || storageGeneration !== Storage._generation) throw new Error('Владелец данных изменился. Откройте раздел заново.');
     await action({ owner, request, storageGeneration });
-    if (request === rightsRequest) document.getElementById('data-rights-status').textContent = successText;
+    if (request === rightsRequest) {
+      document.getElementById('data-rights-status').textContent = successText;
+      if (progress?.button === 'data-export-pdf' && currentScreen === 'data-rights') { const save=document.querySelector('.pdf-ready-panel button'); save?.focus({preventScroll:true}); save?.scrollIntoView({block:'nearest'}); }
+    }
   } catch (error) {
     if (request === rightsRequest) {
       document.getElementById('data-rights-status').textContent = error.message || 'Действие не выполнено. Можно повторить.';
       document.getElementById('data-rights-retry').hidden=false;
+      if (progress && currentScreen === 'data-rights') { const status = document.getElementById('data-rights-status'); status.tabIndex = -1; status.focus({ preventScroll: true }); status.scrollIntoView({ block: 'nearest' }); }
       if (owner !== DataRightsApi.userId) { resetDeleteConfirmation(); document.getElementById('data-rights-actions').hidden = true; DataRightsApi.clear(); }
     }
   }
-  finally { if (request === rightsRequest) { buttons.forEach(button => button.disabled = false); document.getElementById('data-rights-close').disabled = false; document.getElementById('data-rights-retry').disabled = false; document.getElementById('data-delete-submit').disabled = document.getElementById('data-delete-phrase').value !== 'УДАЛИТЬ МОИ ДАННЫЕ'; } }
+  finally { if (request === rightsRequest) { if (progressButton) { progressButton.textContent = progressLabel; progressButton.removeAttribute('aria-busy'); } buttons.forEach(button => button.disabled = false); document.getElementById('data-rights-close').disabled = false; document.getElementById('data-rights-retry').disabled = false; document.getElementById('data-delete-submit').disabled = document.getElementById('data-delete-phrase').value !== 'УДАЛИТЬ МОИ ДАННЫЕ'; } }
 }
 async function deletePersonalData() {
   if (document.getElementById('data-delete-phrase').value !== 'УДАЛИТЬ МОИ ДАННЫЕ') return;
@@ -2148,21 +2156,25 @@ async function deletePersonalData() {
   }, 'Аккаунт приложения и личные записи удалены. Сведения об оплатах и отметка о закрытом аккаунте остаются; резервные копии очищаются отдельно.');
 }
 function closePrivatePreview() {
-  const preview=document.getElementById('screen-data-export-preview');
+  const preview=document.getElementById('screen-data-export-preview'), restore=privatePreviewReturn; privatePreviewReturn=null;
   if(screenStack[screenStack.length-1]==='data-rights') screenStack.pop();
   if(Api.clubBlocked) {document.querySelectorAll('.screen').forEach(el=>el.classList.remove('screen--active','screen--enter','screen--exit'));document.getElementById('screen-data-rights').classList.add('screen--active');currentScreen='data-rights';syncTelegramBackNavigation();}
   else goTo('data-rights',true); preview?.remove();
+  if (restore && restore.owner === DataRightsApi.userId && restore.generation === Storage._generation && restore.request === rightsRequest) { const body=document.querySelector('#screen-data-rights .screen-scroll'); if(body) { body.scrollTop=restore.scroll; document.getElementById(restore.returnId)?.focus({preventScroll:true}); } }
 }
 function savePrivateFile(contents,type,filename) {
   const url=URL.createObjectURL(new Blob([contents],{type}));
   const link=document.createElement('a');link.href=url;link.download=filename;link.rel='noopener noreferrer';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
 }
-function downloadPrivateFile(contents,type,filename) {
+function downloadPrivateFile(contents,type,filename,options = {}) {
   if(type!=='application/json') {savePrivateFile(contents,type,filename);return;}
   document.getElementById('screen-data-export-preview')?.remove();
+  privatePreviewReturn={ owner:DataRightsApi.userId,generation:Storage._generation,request:rightsRequest,scroll:document.querySelector('#screen-data-rights .screen-scroll')?.scrollTop||0,returnId:options.returnId };
   const screen=document.createElement('div');screen.id='screen-data-export-preview';screen.className='screen';
   screen.innerHTML='<div class="screen-header"><div class="screen-title">Копия данных</div><button class="screen-header-btn" id="private-preview-close">Назад</button></div><div class="screen-scroll"><p>Это ваша личная копия. Сохраните файл, если он вам нужен.</p><button id="private-preview-save" class="btn btn--primary btn--full">Сохранить файл</button><details class="data-additional"><summary>Посмотреть содержимое</summary><pre class="private-preview-content"></pre></details></div>';
-  screen.querySelector('pre').textContent=contents; document.body.append(screen);
+  screen.querySelector('.screen-title').textContent=options.title||'Копия данных';
+  if(options.caption)screen.querySelector('.screen-scroll>p').textContent=options.caption;
+  screen.querySelector('pre').textContent=contents; screen.querySelector('pre').tabIndex=0; screen.querySelector('pre').setAttribute('role','region'); screen.querySelector('pre').setAttribute('aria-label','Содержимое файла'); document.body.append(screen);
   const owner=DataRightsApi.userId,generation=Storage._generation;
   screen.querySelector('#private-preview-close').onclick=closePrivatePreview;
   screen.querySelector('#private-preview-save').onclick=()=>{if(owner===DataRightsApi.userId&&generation===Storage._generation)savePrivateFile(contents,type,filename);};
@@ -2199,7 +2211,9 @@ function offerPreparedDiaryPdf(pdf, owner, container) {
     };
     panel.append(save);
   }
-  container.prepend(panel);
+  const caption=container.closest('#screen-data-rights')?.querySelector('.data-export-caption');
+  if(caption)caption.after(panel);else container.prepend(panel);
+  const save=panel.querySelector('button');save.focus({preventScroll:true});save.scrollIntoView({block:'nearest'});
 }
 window.addEventListener('pagehide', clearPreparedDiaryPdf);
 
@@ -2210,6 +2224,7 @@ async function exportDiaryPdf() {
   try {
     await DataRightsApi.auth();
     if (DataRightsApi.userId !== owner) throw new Error('Не удалось подтвердить владельца дневника.');
+    clearPreparedDiaryPdf();
     const pdf = await DataRightsApi.downloadDiaryPdf();
     if (Storage._generation !== generation || Api.clubBlocked) return;
     offerPreparedDiaryPdf(pdf, owner, document.getElementById('history-list'));
@@ -2260,6 +2275,7 @@ function renderAiDraftStatus() {
   window.AiDelivery?.render();
 }
 function clearPrivateConversationState() {
+  privatePreviewReturn = null;
   habitualAnswersReturn = null; habitualView = 'summary';
   window.FormMessages?.clearAll();
   window.MeetingPanel?.invalidate();
