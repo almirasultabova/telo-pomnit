@@ -82,21 +82,25 @@
     try{const data=await Api.searchDiaryHistory({period:'all',kind:'all',limit:10,offset:sourceOffset});if(!valid(s))return;if(!Array.isArray(data.entries))throw Error('Invalid history');sourceRows=append?[...sourceRows,...data.entries]:data.entries;sourceOffset=sourceRows.length;sourceMore=data.hasMore;drawSources();}
     catch{if(valid(s)){body.querySelector('#dq-status')?.remove();status('Не удалось загрузить заметки. Ваш черновик остался у вас.',true);body.append(button('Повторить загрузку',()=>pickSources(append),'dq-link'));}}finally{if(valid(s))lockUI(false);}
   }
-  function drawSources(){
+  function drawSources(scroll=0,returnKey=null){
+    if(!ownerNow()||ownerNow()!==owner)return;
     view('Из заметки',()=>editor(editing,true));body.append(el('p','dq-intro','Выберите запись, затем оставьте только то, к чему хочется вернуться.'));
     const textRows=sourceRows.filter(r=>typeof r.text==='string'&&r.text.trim());
-    for(const row of textRows){const card=el('article','dq-source-record');card.append(el('p','dq-meta',row.title+' · '+dateLabel(row.day+'T12:00:00+03:00')),el('p','dq-source-copy',row.text));card.append(button('Выбрать фрагмент',()=>openSource(row),'dq-link'));body.append(card);}
+    for(const row of textRows){const card=el('article','dq-source-record');card.append(el('p','dq-meta',row.title+' · '+dateLabel(row.day+'T12:00:00+03:00')),el('p','dq-source-copy',row.text));const choose=button('Выбрать фрагмент',()=>openSource(row),'dq-link');choose.dataset.sourceKey=row.source+':'+row.id;card.append(choose);body.append(card);}
     if(!textRows.length)body.append(el('p','dq-intro',sourceMore?'На этой странице нет записей с текстом. Можно посмотреть следующие.':'Пока нет заметок с текстом. Можно написать отдельно.'));
     if(sourceMore)body.append(button('Показать ещё',()=>pickSources(true),'dq-link'));body.append(button('Написать отдельно',()=>editor(editing,true),'dq-link'));
+    body.scrollTop=scroll;if(returnKey)[...body.querySelectorAll('[data-source-key]')].find(item=>item.dataset.sourceKey===returnKey)?.focus({preventScroll:true});
   }
   async function openSource(row){
-    if(busy)return;const s=session();lockUI(true);
-    try{const full=await Api.getDiaryHistoryRecord(row.source,row.id);if(!valid(s))return;if(!full?.text?.trim())throw Error('Empty source');lockUI(false);selectFragment({...full,type:full.source,label:full.title});}
+    if(busy)return;const s=session(),returnTo={scroll:body.scrollTop,key:row.source+':'+row.id};lockUI(true);
+    try{const full=await Api.getDiaryHistoryRecord(row.source,row.id);if(!valid(s))return;if(!full?.text?.trim())throw Error('Empty source');lockUI(false);selectFragment({...full,type:full.source,label:full.title},returnTo);}
     catch{if(valid(s))status('Не удалось открыть заметку. Выберите другую запись или попробуйте ещё раз.',true);}finally{if(valid(s))lockUI(false);}
   }
-  function selectFragment(row){
-    selectedSource=row;lastSelection='';view('Выбрать фрагмент',()=>pickSources());body.append(el('p','dq-meta',row.label+' · '+sourceDate(row)));const label=el('label','dq-label','Что взять из этой записи?');label.htmlFor='dq-source-text';body.append(label,el('p','dq-help','Выделите нужные слова в тексте. Или возьмите всю запись и сократите её на следующем экране.'));const field=el('textarea','dq-field dq-selection');field.id='dq-source-text';field.readOnly=true;field.value=row.text;field.rows=8;body.append(field);const selected=el('p','dq-selection-status','Фрагмент пока не выделен.');selected.setAttribute('role','status');body.append(selected);const use=button('Взять выделенное',()=>attach(lastSelection),'dq-button dq-primary');use.id='dq-use-selection';use.disabled=true;
-    const selection=()=>{lastSelection=field.value.slice(field.selectionStart,field.selectionEnd).trim();use.disabled=!lastSelection;selected.textContent=lastSelection?'Выбранный фрагмент: '+lastSelection:'Фрагмент пока не выделен.';};field.onselect=selection;field.onkeyup=selection;field.onpointerup=selection;body.append(use,button('Взять всю запись',()=>attach(row.text),'dq-button dq-secondary dq-all-text'));
+  function selectFragment(row,returnTo){
+    selectedSource=row;lastSelection='';view('Выбрать фрагмент',()=>drawSources(returnTo.scroll,returnTo.key));body.append(el('p','dq-meta',row.label+' · '+sourceDate(row)));const label=el('label','dq-label','Что взять из этой записи?');label.htmlFor='dq-source-text';body.append(label,el('p','dq-help','Выделите нужные слова в тексте. Или возьмите всю запись и сократите её на следующем экране.'));const field=el('textarea','dq-field dq-selection');field.id='dq-source-text';field.readOnly=true;field.value=row.text;field.rows=8;body.append(field);const selected=el('p','dq-selection-status','Фрагмент пока не выделен.');selected.setAttribute('role','status');body.append(selected);const use=button('Взять выделенное',()=>attach(lastSelection),'dq-button dq-primary');use.id='dq-use-selection';use.disabled=true;
+    const preview=el('details','dq-fragment-preview');preview.hidden=true;preview.append(el('summary','','Посмотреть выделенный фрагмент'));const quote=el('blockquote','');quote.tabIndex=0;quote.setAttribute('role','region');quote.setAttribute('aria-label','Выделенный фрагмент');preview.append(quote);body.append(preview);
+    const selection=()=>{lastSelection=field.value.slice(field.selectionStart,field.selectionEnd).trim();use.disabled=!lastSelection;selected.textContent=lastSelection?'Выделено: '+lastSelection.length+' симв.'+(lastSelection.length>6000?' Для сохранения сократите копию до 6000 символов на следующем экране.':''):'Фрагмент пока не выделен.';preview.hidden=!lastSelection;quote.textContent=lastSelection;};field.onselect=selection;field.onkeyup=selection;field.onpointerup=selection;
+    const actions=el('div','dq-fragment-actions');actions.append(use,button('Взять всю запись',()=>attach(row.text),'dq-button dq-secondary dq-all-text'));body.append(actions);
   }
   function attach(text){if(!text.trim())return;draft.source={type:selectedSource.type,id:selectedSource.id,label:selectedSource.label,day:selectedSource.day,excerpt:text.trim()};keepDraft();editor(editing,true);}
   function detail(id,message=''){

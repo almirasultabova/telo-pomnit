@@ -35,3 +35,13 @@
 .dq-source-copy{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}.dq-open{min-height:44px}#screen-discuss button:disabled{cursor:default}
 #app:has(>#screen-discuss.screen--active) #screen-home .bottom-nav{visibility:hidden;pointer-events:none}
 body:has(#screen-discuss.screen--active) #q-invite-sheet:not(.active){visibility:hidden;pointer-events:none}
+
+/* J-APP-161: concise selection status; full excerpt remains available explicitly. */
+.dq-fragment-preview {margin:0 0 16px;border-bottom:1px solid var(--color-line)}
+.dq-fragment-preview[hidden] {display:none}
+.dq-fragment-preview summary {min-height:44px;display:flex;align-items:center;cursor:pointer;font:500 13px/1.5 var(--font-body);color:var(--color-action);text-decoration:underline;text-underline-offset:3px}
+.dq-fragment-preview blockquote {max-height:160px;overflow-y:auto;margin:0 0 12px;padding:12px;border-radius:12px;background:var(--color-sage);color:var(--color-text);font:400 14px/1.65 var(--font-body);white-space:pre-wrap;overflow-wrap:anywhere}
+.dq-fragment-preview blockquote:focus-visible {outline:2px solid var(--color-action);outline-offset:2px}
+.dq-fragment-actions {display:grid;gap:8px}
+.dq-fragment-actions .dq-all-text {margin:0}
+.dq-fragment-actions .dq-button {min-height:52px;border-radius:var(--control-radius,16px);font-size:15px}
