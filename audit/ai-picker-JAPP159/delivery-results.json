@@ -1,0 +1,56 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": true,
+    "cases": [
+      "overlimit retained after reload and never posted",
+      "1000 Unicode characters accepted",
+      "lost response recovered after reload without generation or duplicate",
+      "not-found retry freezes same identifier/payload and preserves edited draft",
+      "late ACK retains next draft",
+      "pending check only reads and keeps send locked",
+      "uncertain outcome offers explicit separate dialog and fits viewport",
+      "owner separation and explicit new dialog retain unconfirmed text for export",
+      "explicit rejection retains text and unlocks deliberate resend",
+      "logout removes private DOM and late response cannot populate another owner",
+      "blocked storage discloses memory-only delivery identity",
+      "separate dialog under blocked storage keeps memory export and warns before close"
+    ],
+    "source": "current-local-app",
+    "providerRequests": 0,
+    "sourceHashes": {
+      "app/index.html": "7f6175d65cf523aa0366b269ed80468a75cebd1c9e420122ac26b7d45f46686b",
+      "app/js/app.js": "a29a6ec6618689fc82e4e38183b00f8f811e9617263de145c2b458481ad68e95",
+      "app/js/api.js": "598a015be581c4a55e4dde025854a5cbc03a01901ac60d2ebff89446f9e292da",
+      "app/js/ai-delivery.js": "f9496f3e38447ea796f6bc3fb2b0465c1736fd2baa5c78fbbfebecf4796b2d85"
+    }
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "passed": true,
+    "cases": [
+      "overlimit retained after reload and never posted",
+      "1000 Unicode characters accepted",
+      "lost response recovered after reload without generation or duplicate",
+      "not-found retry freezes same identifier/payload and preserves edited draft",
+      "late ACK retains next draft",
+      "pending check only reads and keeps send locked",
+      "uncertain outcome offers explicit separate dialog and fits viewport",
+      "owner separation and explicit new dialog retain unconfirmed text for export",
+      "explicit rejection retains text and unlocks deliberate resend",
+      "logout removes private DOM and late response cannot populate another owner",
+      "blocked storage discloses memory-only delivery identity",
+      "separate dialog under blocked storage keeps memory export and warns before close"
+    ],
+    "source": "current-local-app",
+    "providerRequests": 0,
+    "sourceHashes": {
+      "app/index.html": "7f6175d65cf523aa0366b269ed80468a75cebd1c9e420122ac26b7d45f46686b",
+      "app/js/app.js": "a29a6ec6618689fc82e4e38183b00f8f811e9617263de145c2b458481ad68e95",
+      "app/js/api.js": "598a015be581c4a55e4dde025854a5cbc03a01901ac60d2ebff89446f9e292da",
+      "app/js/ai-delivery.js": "f9496f3e38447ea796f6bc3fb2b0465c1736fd2baa5c78fbbfebecf4796b2d85"
+    }
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "engine": "chromium",
+    "activeElement": "BODY",
+    "selected": 1,
+    "hasCount": 0,
+    "realSends": 0
+  },
+  {
+    "engine": "webkit",
+    "activeElement": "BODY",
+    "selected": 1,
+    "hasCount": 0,
+    "realSends": 0
+  }
+]

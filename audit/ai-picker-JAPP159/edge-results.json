@@ -1,0 +1,24 @@
+[
+  {
+    "engine": "chromium",
+    "passed": true,
+    "groups": [
+      "long-literal-text-larger-type-no-script-overflow",
+      "late-preview-does-not-replace-new-selection-or-focus",
+      "late-preview-does-not-focus-hidden-ai-screen",
+      "late-preview-does-not-enter-another-account"
+    ],
+    "realSends": 0
+  },
+  {
+    "engine": "webkit",
+    "passed": true,
+    "groups": [
+      "long-literal-text-larger-type-no-script-overflow",
+      "late-preview-does-not-replace-new-selection-or-focus",
+      "late-preview-does-not-focus-hidden-ai-screen",
+      "late-preview-does-not-enter-another-account"
+    ],
+    "realSends": 0
+  }
+]

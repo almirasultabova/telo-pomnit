@@ -1,0 +1,30 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "pre-ten-values-touch-geometry",
+      "pre-keyboard-select-and-remove",
+      "pre-return-keeps-own-answer",
+      "pre-reload-keeps-own-answer",
+      "pre-short-window-selection-and-footer",
+      "post-ten-values-touch-geometry",
+      "post-selection-remove-and-unknown",
+      "post-block-return-keeps-own-answer",
+      "larger-text-no-overflow-no-auto-send"
+    ],
+    "pre": {
+      "minWidth": 64.390625,
+      "height": 48,
+      "rows": 2
+    },
+    "post": {
+      "minWidth": 64.390625,
+      "height": 48,
+      "rows": 2
+    },
+    "pageErrors": [],
+    "realWrites": 0
+  }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "passed": true,
+    "groups": [
+      "clear-selected-state-count-keyboard-focus",
+      "list-scroll-and-focus-survive-selection",
+      "five-limit-clear-reason-and-replace-selection",
+      "full-preview-focused-and-separate-permission",
+      "changed-selection-requires-new-preview-permission",
+      "draft-and-no-automatic-ai-send",
+      "preview-failure-retains-selection-and-retry",
+      "without-diary-clears-selection-approval",
+      "empty-data-is-explicit",
+      "load-failure-and-explicit-recovery",
+      "short-window-preview-permission-input-reachable"
+    ],
+    "pageErrors": [],
+    "realSends": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "clear-selected-state-count-keyboard-focus",
+      "list-scroll-and-focus-survive-selection",
+      "five-limit-clear-reason-and-replace-selection",
+      "full-preview-focused-and-separate-permission",
+      "changed-selection-requires-new-preview-permission",
+      "draft-and-no-automatic-ai-send",
+      "preview-failure-retains-selection-and-retry",
+      "without-diary-clears-selection-approval",
+      "empty-data-is-explicit",
+      "load-failure-and-explicit-recovery",
+      "short-window-preview-permission-input-reachable"
+    ],
+    "pageErrors": [],
+    "realSends": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "passed": true,
+    "groups": [
+      "clear-selected-state-count-keyboard-focus",
+      "list-scroll-and-focus-survive-selection",
+      "five-limit-clear-reason-and-replace-selection",
+      "full-preview-focused-and-separate-permission",
+      "changed-selection-requires-new-preview-permission",
+      "draft-and-no-automatic-ai-send",
+      "preview-failure-retains-selection-and-retry",
+      "without-diary-clears-selection-approval",
+      "empty-data-is-explicit",
+      "load-failure-and-explicit-recovery",
+      "short-window-preview-permission-input-reachable"
+    ],
+    "pageErrors": [],
+    "realSends": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 320,
+    "passed": true,
+    "groups": [
+      "clear-selected-state-count-keyboard-focus",
+      "list-scroll-and-focus-survive-selection",
+      "five-limit-clear-reason-and-replace-selection",
+      "full-preview-focused-and-separate-permission",
+      "changed-selection-requires-new-preview-permission",
+      "draft-and-no-automatic-ai-send",
+      "preview-failure-retains-selection-and-retry",
+      "without-diary-clears-selection-approval",
+      "empty-data-is-explicit",
+      "load-failure-and-explicit-recovery",
+      "short-window-preview-permission-input-reachable"
+    ],
+    "pageErrors": [],
+    "realSends": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "clear-selected-state-count-keyboard-focus",
+      "list-scroll-and-focus-survive-selection",
+      "five-limit-clear-reason-and-replace-selection",
+      "full-preview-focused-and-separate-permission",
+      "changed-selection-requires-new-preview-permission",
+      "draft-and-no-automatic-ai-send",
+      "preview-failure-retains-selection-and-retry",
+      "without-diary-clears-selection-approval",
+      "empty-data-is-explicit",
+      "load-failure-and-explicit-recovery",
+      "short-window-preview-permission-input-reachable"
+    ],
+    "pageErrors": [],
+    "realSends": 0
+  }
+]
