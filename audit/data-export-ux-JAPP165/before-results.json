@@ -1,0 +1,24 @@
+[
+  {
+    "engine": "chromium",
+    "pending": {
+      "label": "Скачать дневник",
+      "busy": null,
+      "status": "Ваши данные доступны только вам."
+    },
+    "readyFocus": "",
+    "localCopyTitle": "Копия данных",
+    "focusAfterReturn": "screen-data-rights"
+  },
+  {
+    "engine": "webkit",
+    "pending": {
+      "label": "Скачать дневник",
+      "busy": null,
+      "status": "Ваши данные доступны только вам."
+    },
+    "readyFocus": "screen-data-rights",
+    "localCopyTitle": "Копия данных",
+    "focusAfterReturn": "screen-data-rights"
+  }
+]

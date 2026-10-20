@@ -1,0 +1,20 @@
+from fixture import boot,PDF
+from playwright.async_api import async_playwright,expect
+from pathlib import Path
+import asyncio,json
+H=Path(__file__).parent;ORIGIN='http://127.0.0.1:15365/'
+async def main():
+ results=[]
+ async with async_playwright()as pw:
+  for engine in['chromium','webkit']:
+   b=await getattr(pw,engine).launch();groups=[]
+   p=await boot(b,ORIGIN);downloads=[];p.on('download',lambda d:downloads.append(d));await p.evaluate("Object.defineProperty(navigator,'canShare',{configurable:true,value:()=>true});Object.defineProperty(navigator,'share',{configurable:true,value:async data=>{window.sharedPdf={name:data.files[0].name,size:data.files[0].size}}})");await p.locator('#data-export-pdf').click();await expect(p.locator('#pdf-share-file')).to_be_focused();assert await p.evaluate('window.sharedPdf===undefined');await p.locator('#pdf-share-file').click();assert await p.evaluate('window.sharedPdf')=={'name':'dnevnik-tela.pdf','size':len(PDF)};assert not downloads;groups.append('native save only after explicit click')
+   await p.evaluate('preparedDiaryPdf.expiresAt=0');await p.locator('#pdf-share-file').click();await expect(p.locator('.pdf-ready-panel')).to_have_count(0);assert not downloads;groups.append('expired prepared PDF cannot be saved')
+   await p.evaluate("DataRightsApi.expiresAt=Date.now()+60000;document.querySelector('.data-additional').open=true");await p.locator('#data-export-json').click();await p.locator('#private-preview-save').wait_for();await p.evaluate('Storage._generation++');await p.locator('#private-preview-save').click();assert not downloads;groups.append('stale owner cannot save private copy');await p.close()
+   p=await boot(b,ORIGIN);p.rights_gate=asyncio.Event();await p.locator('.data-additional summary').click();await p.locator('#data-export-json').click();await p.wait_for_function("document.querySelector('#data-export-json').disabled");await p.evaluate('DataRightsApi.clear();Storage._generation++');p.rights_gate.set();await p.wait_for_function("!document.querySelector('#data-export-json').disabled");await expect(p.locator('#screen-data-export-preview')).to_have_count(0);await expect(p.locator('#data-rights-actions')).to_be_hidden();groups.append('late export does not open old private content');await p.close()
+   p=await boot(b,ORIGIN);await p.evaluate("Api.clubBlocked=true;void openDataRights()");await p.wait_for_function("DataRightsApi.userId==='ui-consistency-preview'&&!document.querySelector('#data-rights-actions').hidden");await p.locator('.data-additional summary').click();await p.locator('#data-export-json').click();await expect(p.locator('#screen-data-export-preview')).to_have_class('screen screen--active');await p.evaluate('goBack()');await expect(p.locator('#data-export-json')).to_be_focused();assert await p.evaluate('Api.clubBlocked');groups.append('restricted account export return preserves club boundary');await p.close()
+   p=await boot(b,ORIGIN);await p.set_viewport_size({'width':390,'height':430});await p.locator('#data-export-pdf').click();await expect(p.locator('#pdf-download-file')).to_be_focused();box=await p.locator('#pdf-download-file').bounding_box();assert box['y']>=0 and box['y']+box['height']<=430;groups.append('short window keeps prepared save visible');await p.close()
+   p=await boot(b,ORIGIN);await p.locator('#data-rights-close').click();await p.evaluate("switchTab('diary');document.getElementById('diary-history-btn').click()");await p.locator('#export-pdf-btn').click();await expect(p.locator('#pdf-download-file')).to_be_focused();assert await p.locator('.pdf-ready-panel').evaluate("x=>x.parentElement.id==='history-list'");groups.append('history PDF route still prepares explicit save');assert not p.fixture_errors,p.fixture_errors;await p.close()
+   results.append({'engine':engine,'groups':groups});print(engine,'PASS',len(groups),'edges',flush=True);await b.close()
+ (H/'edge-results.json').write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')
+asyncio.run(main())

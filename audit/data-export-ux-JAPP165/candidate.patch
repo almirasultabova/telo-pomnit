@@ -1,0 +1,74 @@
+--- a/app/js/app.js
++++ b/app/js/app.js
+@@ -2019,0 +2020 @@
++let privatePreviewReturn = null;
+@@ -2027 +2028 @@
+-  rightsRequest++; clearPreparedDiaryPdf(); DataRightsApi.clear();
++  rightsRequest++; privatePreviewReturn = null; clearPreparedDiaryPdf(); DataRightsApi.clear();
+@@ -2060,2 +2061,2 @@
+-    if (request === rightsRequest && owner === DataRightsApi.userId && storageGeneration === Storage._generation) downloadPrivateFile(JSON.stringify(data, null, 2), 'application/json', 'telo-server-data.json');
+-  }, 'Серверная выгрузка подготовлена.');
++    if (request === rightsRequest && owner === DataRightsApi.userId && storageGeneration === Storage._generation) downloadPrivateFile(JSON.stringify(data, null, 2), 'application/json', 'telo-server-data.json', { title: 'Полная копия данных', caption: 'Это копия данных, сохранённых в вашем аккаунте. Сохраните файл, если он вам нужен.', returnId: 'data-export-json' });
++  }, 'Копия подготовлена. Сохраните файл на открывшемся экране.', { button: 'data-export-json', label: 'Готовим копию…' });
+@@ -2062,0 +2064 @@
++    clearPreparedDiaryPdf();
+@@ -2067,2 +2069,2 @@
+-  }, 'Дневник подготовлен в PDF. Ещё не отправленные записи устройства в него не входят.');
+-  document.getElementById('data-export-local').onclick = () => performRightsAction(async () => downloadPrivateFile(JSON.stringify(Storage.exportPendingForUser(DataRightsApi.userId), null, 2), 'application/json', 'telo-local-pending.json'), 'Выгрузка неподтверждённых записей подготовлена.');
++  }, 'Дневник подготовлен в PDF. Ещё не отправленные записи устройства в него не входят.', { button: 'data-export-pdf', label: 'Готовим PDF…' });
++  document.getElementById('data-export-local').onclick = () => performRightsAction(async () => downloadPrivateFile(JSON.stringify(Storage.exportPendingForUser(DataRightsApi.userId), null, 2), 'application/json', 'telo-local-pending.json', { title: 'Неотправленные записи', caption: 'Здесь записи, ожидающие отправки, и сохранённые черновики с этого устройства. Сохранение файла ничего не отправляет.', returnId: 'data-export-local' }), 'Копия подготовлена. Сохраните файл на открывшемся экране.', { button: 'data-export-local', label: 'Готовим копию…' });
+@@ -2105 +2107 @@
+-async function performRightsAction(action, successText) {
++async function performRightsAction(action, successText, progress = null) {
+@@ -2106,0 +2109,2 @@
++  const progressButton = document.getElementById(progress?.button), progressLabel = progressButton?.textContent;
++  if (progressButton) { progressButton.textContent = progress.label; progressButton.setAttribute('aria-busy', 'true'); document.getElementById('data-rights-status').textContent = progress.label; }
+@@ -2115 +2119,4 @@
+-    if (request === rightsRequest) document.getElementById('data-rights-status').textContent = successText;
++    if (request === rightsRequest) {
++      document.getElementById('data-rights-status').textContent = successText;
++      if (progress?.button === 'data-export-pdf' && currentScreen === 'data-rights') { const save=document.querySelector('.pdf-ready-panel button'); save?.focus({preventScroll:true}); save?.scrollIntoView({block:'nearest'}); }
++    }
+@@ -2119,0 +2127 @@
++      if (progress && currentScreen === 'data-rights') { const status = document.getElementById('data-rights-status'); status.tabIndex = -1; status.focus({ preventScroll: true }); status.scrollIntoView({ block: 'nearest' }); }
+@@ -2123 +2131 @@
+-  finally { if (request === rightsRequest) { buttons.forEach(button => button.disabled = false); document.getElementById('data-rights-close').disabled = false; document.getElementById('data-rights-retry').disabled = false; document.getElementById('data-delete-submit').disabled = document.getElementById('data-delete-phrase').value !== 'УДАЛИТЬ МОИ ДАННЫЕ'; } }
++  finally { if (request === rightsRequest) { if (progressButton) { progressButton.textContent = progressLabel; progressButton.removeAttribute('aria-busy'); } buttons.forEach(button => button.disabled = false); document.getElementById('data-rights-close').disabled = false; document.getElementById('data-rights-retry').disabled = false; document.getElementById('data-delete-submit').disabled = document.getElementById('data-delete-phrase').value !== 'УДАЛИТЬ МОИ ДАННЫЕ'; } }
+@@ -2151 +2159 @@
+-  const preview=document.getElementById('screen-data-export-preview');
++  const preview=document.getElementById('screen-data-export-preview'), restore=privatePreviewReturn; privatePreviewReturn=null;
+@@ -2154,0 +2163 @@
++  if (restore && restore.owner === DataRightsApi.userId && restore.generation === Storage._generation && restore.request === rightsRequest) { const body=document.querySelector('#screen-data-rights .screen-scroll'); if(body) { body.scrollTop=restore.scroll; document.getElementById(restore.returnId)?.focus({preventScroll:true}); } }
+@@ -2160 +2169 @@
+-function downloadPrivateFile(contents,type,filename) {
++function downloadPrivateFile(contents,type,filename,options = {}) {
+@@ -2162,0 +2172 @@
++  privatePreviewReturn={ owner:DataRightsApi.userId,generation:Storage._generation,request:rightsRequest,scroll:document.querySelector('#screen-data-rights .screen-scroll')?.scrollTop||0,returnId:options.returnId };
+@@ -2165 +2175,3 @@
+-  screen.querySelector('pre').textContent=contents; document.body.append(screen);
++  screen.querySelector('.screen-title').textContent=options.title||'Копия данных';
++  if(options.caption)screen.querySelector('.screen-scroll>p').textContent=options.caption;
++  screen.querySelector('pre').textContent=contents; screen.querySelector('pre').tabIndex=0; screen.querySelector('pre').setAttribute('role','region'); screen.querySelector('pre').setAttribute('aria-label','Содержимое файла'); document.body.append(screen);
+@@ -2202 +2214,3 @@
+-  container.prepend(panel);
++  const caption=container.closest('#screen-data-rights')?.querySelector('.data-export-caption');
++  if(caption)caption.after(panel);else container.prepend(panel);
++  const save=panel.querySelector('button');save.focus({preventScroll:true});save.scrollIntoView({block:'nearest'});
+@@ -2212,0 +2227 @@
++    clearPreparedDiaryPdf();
+@@ -2262,0 +2278 @@
++  privatePreviewReturn = null;
+--- a/app/css/ux-personal.css
++++ b/app/css/ux-personal.css
+@@ -79,0 +80,11 @@
++
++/* J-APP-165: prepared files and readable copy previews, scoped to export. */
++#screen-data-rights .pdf-ready-panel{padding:16px 0;margin:12px 0 20px;border:0;border-top:1px solid var(--color-line);border-radius:0;background:transparent;color:var(--color-text)}
++#screen-history .pdf-ready-panel{padding:16px;margin:12px 0 20px;border:1px solid var(--color-line);border-radius:var(--control-radius,16px);background:var(--color-paper);color:var(--color-text)}
++.pdf-ready-panel p{margin:0 0 12px;font:400 14px/1.6 var(--font-body)}
++#screen-data-rights button:focus-visible,#screen-data-export-preview button:focus-visible,.pdf-ready-panel button:focus-visible{outline:2px solid var(--color-action);outline-offset:3px}
++#screen-data-export-preview .private-preview-content{max-height:240px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;border-radius:12px}
++#screen-data-rights #data-rights-status:focus{outline:none}
++
++#screen-data-export-preview .private-preview-content:focus-visible{outline:2px solid var(--color-action);outline-offset:3px}
++.pdf-ready-panel button{scroll-margin-block:16px}

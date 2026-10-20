@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "httpOnlySyntheticApi": true,
+  "comparisonModes": [
+    "pdf",
+    "local-copy"
+  ],
+  "errors": []
+}
