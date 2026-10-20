@@ -1,0 +1,98 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "groups": [
+      "four-tabs-compact-title-hierarchy",
+      "main-action-selection-validation-and-input-focus",
+      "long-note-within-screen",
+      "consistent-fields-block-labels-and-short-window-retry",
+      "five-scales-independent-values-and-sticky-save",
+      "body-map-selection-and-sensation-transition",
+      "history-empty-state-and-keyboard-focus"
+    ],
+    "passed": true,
+    "pageErrors": [],
+    "syntheticPosts": 2
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "four-tabs-compact-title-hierarchy",
+      "main-action-selection-validation-and-input-focus",
+      "long-note-within-screen",
+      "consistent-fields-block-labels-and-short-window-retry",
+      "five-scales-independent-values-and-sticky-save",
+      "body-map-selection-and-sensation-transition",
+      "history-empty-state-and-keyboard-focus"
+    ],
+    "passed": true,
+    "pageErrors": [],
+    "syntheticPosts": 2
+  },
+  {
+    "engine": "chromium",
+    "width": 768,
+    "groups": [
+      "four-tabs-compact-title-hierarchy",
+      "main-action-selection-validation-and-input-focus",
+      "long-note-within-screen",
+      "consistent-fields-block-labels-and-short-window-retry",
+      "five-scales-independent-values-and-sticky-save",
+      "body-map-selection-and-sensation-transition",
+      "history-empty-state-and-keyboard-focus"
+    ],
+    "passed": true,
+    "pageErrors": [],
+    "syntheticPosts": 2
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "groups": [
+      "four-tabs-compact-title-hierarchy",
+      "main-action-selection-validation-and-input-focus",
+      "long-note-within-screen",
+      "consistent-fields-block-labels-and-short-window-retry",
+      "five-scales-independent-values-and-sticky-save",
+      "body-map-selection-and-sensation-transition",
+      "history-empty-state-and-keyboard-focus"
+    ],
+    "passed": true,
+    "pageErrors": [],
+    "syntheticPosts": 2
+  },
+  {
+    "engine": "chromium",
+    "passed": true,
+    "edgeGroups": [
+      "long-names-and-defensive-overflow",
+      "enlarged-labels-heading-and-retry"
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "groups": [
+      "four-tabs-compact-title-hierarchy",
+      "main-action-selection-validation-and-input-focus",
+      "long-note-within-screen",
+      "consistent-fields-block-labels-and-short-window-retry",
+      "five-scales-independent-values-and-sticky-save",
+      "body-map-selection-and-sensation-transition",
+      "history-empty-state-and-keyboard-focus"
+    ],
+    "passed": true,
+    "pageErrors": [],
+    "syntheticPosts": 2
+  },
+  {
+    "engine": "webkit",
+    "passed": true,
+    "edgeGroups": [
+      "long-names-and-defensive-overflow",
+      "enlarged-labels-heading-and-retry"
+    ]
+  }
+]

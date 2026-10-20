@@ -1,0 +1,24 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "reaction-copy-and-existing-selection",
+      "optional-rating-reset-and-draft",
+      "feedback-failure-preserves-input-and-inline-recovery",
+      "feedback-retry-same-operation",
+      "edited-message-new-operation-and-success",
+      "late-failure-does-not-cover-new-draft",
+      "late-failure-does-not-cover-reopened-form",
+      "questionnaire-inline-failure-preserves-answers",
+      "short-viewport-footer-accessible",
+      "questionnaire-navigation-clears-old-error",
+      "questionnaire-retry-identical-data-and-success",
+      "frequency-summary-label"
+    ],
+    "pageErrors": [],
+    "nativeDialogs": [],
+    "postsIntercepted": 8
+  }
+]

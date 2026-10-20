@@ -1,0 +1,182 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "reduced": false,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0.22s",
+      "name": "slideInRight",
+      "transform": "matrix(1, 0, 0, 1, 24, 0)",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 179,
+      "active": true,
+      "enter": true,
+      "transform": "matrix(1, 0, 0, 1, 0.0500542, 0)"
+    }
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "reduced": false,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0.22s",
+      "name": "slideInRight",
+      "transform": "matrix(1, 0, 0, 1, 14.3832, 0)",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 172.5,
+      "active": true,
+      "enter": true,
+      "transform": "matrix(1, 0, 0, 1, 0.12676, 0)"
+    }
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "reduced": false,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0.22s",
+      "name": "slideInRight",
+      "transform": "matrix(1, 0, 0, 1, 14.3768, 0)",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 173.79999999981374,
+      "active": true,
+      "enter": true,
+      "transform": "matrix(1, 0, 0, 1, 0.0500542, 0)"
+    }
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "reduced": true,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0s",
+      "name": "none",
+      "transform": "none",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 177.79999999981374,
+      "active": true,
+      "enter": false,
+      "transform": "none"
+    }
+  },
+  {
+    "engine": "chromium",
+    "baselineOldCleanupReproduced": true,
+    "race": {
+      "elapsed": 175.59999999962747,
+      "active": true,
+      "enter": false,
+      "transform": "none"
+    }
+  },
+  {
+    "comparisonReadyAndControls": true,
+    "pageErrors": []
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "reduced": false,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0.22s",
+      "name": "slideInRight",
+      "transform": "matrix(1, 0, 0, 1, 13.372225, 0)",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 177,
+      "active": true,
+      "enter": true,
+      "transform": "matrix(1, 0, 0, 1, 0.079149, 0)"
+    }
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "reduced": true,
+    "groups": [
+      "bounded-entry-and-no-permanent-layer-hint",
+      "back-restores-field-focus-and-existing-draft",
+      "return-before-old-timeout-keeps-current-entry",
+      "last-of-many-actions-is-active-accessible-and-usable",
+      "reduce-motion-can-change-during-navigation",
+      "missing-motion-helper-keeps-route-usable"
+    ],
+    "passed": true,
+    "entry": {
+      "duration": "0s",
+      "name": "none",
+      "transform": "none",
+      "willChange": "auto"
+    },
+    "race": {
+      "elapsed": 186.9999999999991,
+      "active": true,
+      "enter": false,
+      "transform": "none"
+    }
+  },
+  {
+    "engine": "webkit",
+    "baselineOldCleanupReproduced": true,
+    "race": {
+      "elapsed": 175,
+      "active": true,
+      "enter": false,
+      "transform": "none"
+    }
+  }
+]

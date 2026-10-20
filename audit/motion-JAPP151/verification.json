@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "changedSources": [
+    "app/index.html",
+    "app/css/styles.css",
+    "app/js/app.js"
+  ],
+  "addedSources": [
+    "app/js/screen-motion.js"
+  ],
+  "unchangedLaunchFiles": 13,
+  "publicFiles": 97,
+  "motionGroups": 36,
+  "regressionGroups": 105,
+  "startupScenarios": 18,
+  "oldRaceReproducedIn": [
+    "chromium",
+    "webkit"
+  ],
+  "published": false,
+  "otherRootFilesUnchanged": 502,
+  "rootRuntimeChanged": [
+    "app/index.html",
+    "app/js/app.js",
+    "app/css/styles.css"
+  ],
+  "rootDocumentationChanged": [
+    "app/PRODUCT.md",
+    "app/DESIGN.md",
+    "app/CLAUDE.md"
+  ]
+}

@@ -1,0 +1,120 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "passed": true,
+    "groups": [
+      "reaction-copy-and-existing-selection",
+      "optional-rating-reset-and-draft",
+      "feedback-failure-preserves-input-and-inline-recovery",
+      "feedback-retry-same-operation",
+      "edited-message-new-operation-and-success",
+      "late-failure-does-not-cover-new-draft",
+      "late-failure-does-not-cover-reopened-form",
+      "questionnaire-inline-failure-preserves-answers",
+      "short-viewport-footer-accessible",
+      "questionnaire-navigation-clears-old-error",
+      "questionnaire-retry-identical-data-and-success",
+      "frequency-summary-label"
+    ],
+    "pageErrors": [],
+    "nativeDialogs": [],
+    "postsIntercepted": 8
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "reaction-copy-and-existing-selection",
+      "optional-rating-reset-and-draft",
+      "feedback-failure-preserves-input-and-inline-recovery",
+      "feedback-retry-same-operation",
+      "edited-message-new-operation-and-success",
+      "late-failure-does-not-cover-new-draft",
+      "late-failure-does-not-cover-reopened-form",
+      "questionnaire-inline-failure-preserves-answers",
+      "short-viewport-footer-accessible",
+      "questionnaire-navigation-clears-old-error",
+      "questionnaire-retry-identical-data-and-success",
+      "frequency-summary-label"
+    ],
+    "pageErrors": [],
+    "nativeDialogs": [],
+    "postsIntercepted": 8
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "passed": true,
+    "groups": [
+      "reaction-copy-and-existing-selection",
+      "optional-rating-reset-and-draft",
+      "feedback-failure-preserves-input-and-inline-recovery",
+      "feedback-retry-same-operation",
+      "edited-message-new-operation-and-success",
+      "late-failure-does-not-cover-new-draft",
+      "late-failure-does-not-cover-reopened-form",
+      "questionnaire-inline-failure-preserves-answers",
+      "short-viewport-footer-accessible",
+      "questionnaire-navigation-clears-old-error",
+      "questionnaire-retry-identical-data-and-success",
+      "frequency-summary-label"
+    ],
+    "pageErrors": [],
+    "nativeDialogs": [],
+    "postsIntercepted": 8
+  },
+  {
+    "engine": "chromium",
+    "passed": true,
+    "extra": [
+      "double-size-message-and-button-text",
+      "logout-clears-error"
+    ]
+  },
+  {
+    "engine": "chromium",
+    "passed": true,
+    "extra": [
+      "late-questionnaire-failure-keeps-current-screen"
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "passed": true,
+    "groups": [
+      "reaction-copy-and-existing-selection",
+      "optional-rating-reset-and-draft",
+      "feedback-failure-preserves-input-and-inline-recovery",
+      "feedback-retry-same-operation",
+      "edited-message-new-operation-and-success",
+      "late-failure-does-not-cover-new-draft",
+      "late-failure-does-not-cover-reopened-form",
+      "questionnaire-inline-failure-preserves-answers",
+      "short-viewport-footer-accessible",
+      "questionnaire-navigation-clears-old-error",
+      "questionnaire-retry-identical-data-and-success",
+      "frequency-summary-label"
+    ],
+    "pageErrors": [],
+    "nativeDialogs": [],
+    "postsIntercepted": 8
+  },
+  {
+    "engine": "webkit",
+    "passed": true,
+    "extra": [
+      "double-size-message-and-button-text",
+      "logout-clears-error"
+    ]
+  },
+  {
+    "engine": "webkit",
+    "passed": true,
+    "extra": [
+      "late-questionnaire-failure-keeps-current-screen"
+    ]
+  }
+]

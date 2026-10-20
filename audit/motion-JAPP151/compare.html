@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>J-APP-151 · Сравнение переходов</title>
+<link rel="stylesheet" href="/css/fonts.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f4ef;color:#2a4a38;font:15px/1.55 Manrope,sans-serif}main{max-width:1060px;margin:28px auto;padding:0 20px}h1{font:500 36px/1.1 'Cormorant Garamond',serif;margin:0 0 12px}p{max-width:70ch;margin:8px 0 18px}.controls{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}button,a{font:inherit}button{border:1px solid #2a4a38;border-radius:14px;background:transparent;color:#2a4a38;min-height:44px;padding:10px 16px;cursor:pointer}button:first-child{background:#2a4a38;color:#fcfaf6}button:disabled{opacity:.55;cursor:default}button:focus-visible,a:focus-visible{outline:2px solid #2a4a38;outline-offset:3px}.phones{display:grid;grid-template-columns:repeat(2,minmax(0,390px));gap:28px;align-items:start}h2{font-size:16px;font-weight:600;margin:0 0 6px}.caption{color:#675f56;font-size:13px;min-height:40px;margin-bottom:10px}iframe{width:100%;height:740px;border:1px solid #d6cfc3;border-radius:22px;background:#f7f4ef;display:block}a{color:inherit;text-underline-offset:4px}.status{font-size:13px;min-height:22px}small{display:block;color:#675f56;margin-top:20px}@media(max-width:650px){main{padding:0 14px}.phones{gap:12px}iframe{height:620px;border-radius:14px}.caption{font-size:12px}h1{font-size:30px}button{font-size:13px;padding:10px 12px}}
+</style>
+<main>
+<h1>Переходы: до и после</h1>
+<p>Нажми «Открыть форму» и посмотри, как появляется экран. Слева он проезжает всю ширину, справа — сдвигается совсем немного. Затем сравни возврат.</p>
+<div class="controls"><button id="open" disabled>Открыть форму</button><button id="back" disabled>Вернуться</button><button id="quick" disabled>Быстро туда-обратно</button></div>
+<p class="status" role="status" id="status">Готовим два учебных просмотра…</p>
+<div class="phones">
+<section><h2>До · опубликованный J-APP-149</h2><p class="caption">Длинное движение экрана, прежняя очистка переходов.</p><iframe title="До изменений" id="before" src="/before/index.html?view=home"></iframe></section>
+<section><h2>После · локальный J-APP-151</h2><p class="caption">Короткое движение, более быстрый уход и защита частых переключений.</p><iframe title="После изменений" id="after" src="/index.html?view=home"></iframe></section>
+</div>
+<p><a href="/index.html?view=home">Открыть новый вариант отдельно на всю ширину</a></p>
+<small>Учебные данные. J-APP-151 ещё не опубликован. Заставка с цветком и её длительность сохранены.</small>
+</main>
+<script>
+const frames=[document.getElementById('before'),document.getElementById('after')];
+const buttons=[...document.querySelectorAll('button')];let generation=0;
+function each(action){frames.forEach(frame=>action(frame.contentWindow))}
+function home(w){w.goTo('home');w.switchTab('main')}
+const check=setInterval(()=>{try{if(!frames.every(f=>f.contentWindow.eval('typeof currentScreen!=="undefined" && currentScreen==="home" && typeof qStatusVerified!=="undefined" && qStatusVerified')))return;clearInterval(check);buttons.forEach(b=>b.disabled=false);document.getElementById('status').textContent='Готово. Сравни открытие и возврат.';}catch{}},100);
+document.getElementById('open').onclick=()=>{generation++;each(w=>w.document.getElementById('stop-reaction-btn').click());document.getElementById('status').textContent='Открыта форма реакции. Теперь нажми «Вернуться».'};
+document.getElementById('back').onclick=()=>{generation++;each(home);document.getElementById('status').textContent='Возврат на Главную.'};
+document.getElementById('quick').onclick=()=>{const own=++generation;[w=>w.document.getElementById('stop-reaction-btn').click(),home,w=>w.document.getElementById('checkin-btn').click(),home,w=>w.document.getElementById('stop-reaction-btn').click()].forEach((action,index)=>setTimeout(()=>{if(own!==generation)return;each(action);if(index===4)document.getElementById('status').textContent='Остаёмся в последней открытой форме. Можно продолжать.'},index*80));};
+</script>
+</html>
