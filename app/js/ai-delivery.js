@@ -72,7 +72,7 @@ window.AiDelivery = (() => {
       let option = Array.from(select.options).find(row => row.value === session.sessionId);
       if (!option) { option = new Option('', session.sessionId); select.add(option); }
       option.textContent = label(session); select.value = session.sessionId;
-      input.style.height = 'auto'; hapticNotify('success');
+      resizeAiInput(); hapticNotify('success');
     } else if (result.state === 'failed') {
       persist(null); aiSendError = result.code === 'AI_RATE_LIMITED' ? 'AI сейчас занят. Сообщение отклонено; текст сохранён. Попробуйте позже.'
         : 'AI не принял сообщение. Текст сохранён; можно отправить его позже.';

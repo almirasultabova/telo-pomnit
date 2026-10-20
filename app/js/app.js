@@ -2253,6 +2253,7 @@ let aiContextLoadRequest = 0;
 let aiDraftScope = null;
 let aiDraftDurable = true;
 let aiSendError = '';
+let aiRenderedConversation = null, aiRenderedMessageCount = 0;
 function ensureAiDraftScope() {
   const scope = Storage._userId ? Storage._userId + ':' + (aiSessionId || 'new') : null;
   if (scope === aiDraftScope) return;
@@ -2297,10 +2298,17 @@ function clearPrivateConversationState() {
   const input = document.getElementById('ai-input'); if (input) input.value = '';
   document.getElementById('ai-messages')?.replaceChildren();
 }
+function resizeAiInput() {
+  const input = document.getElementById('ai-input');
+  if (!input || !input.getClientRects().length) return;
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+}
 function syncAiViewport() {
   const viewport=window.visualViewport;
   document.documentElement.style.setProperty('--ai-viewport-height',(viewport?.height || window.innerHeight)+'px');
   document.documentElement.style.setProperty('--ai-viewport-top',(viewport?.offsetTop || 0)+'px');
+  resizeAiInput();
 }
 function initAiChat() {
   window.visualViewport?.addEventListener('resize',syncAiViewport);
@@ -2308,8 +2316,14 @@ function initAiChat() {
   window.addEventListener('resize',syncAiViewport); syncAiViewport();
   document.getElementById('ai-send-btn')?.addEventListener('click', sendAiMessage);
   const input = document.getElementById('ai-input');
-  input?.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendAiMessage(); } });
-  input?.addEventListener('input', () => { aiSendError = ''; input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 100) + 'px'; saveCurrentAiDraft(); });
+  const mobileKeyboard = ['ios','android'].includes(tg?.platform) || window.matchMedia('(pointer: coarse)').matches;
+  input?.setAttribute('enterkeyhint', mobileKeyboard ? 'enter' : 'send');
+  input?.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey && !event.isComposing && !mobileKeyboard) {
+      event.preventDefault(); sendAiMessage();
+    }
+  });
+  input?.addEventListener('input', () => { aiSendError = ''; resizeAiInput(); saveCurrentAiDraft(); });
 }
 function setAiHistoryStatus(text, retry = null) {
   const details = document.querySelector('.ai-history-disclosure'); if (!details) return;
@@ -2483,11 +2497,15 @@ function renderAiContext(container) {
 }
 function renderAiMessages() {
   const container = document.getElementById('ai-messages'); if (!container) return; syncAiViewport();
-  const previousScroll = container.scrollTop; container.replaceChildren();
+  const previousScroll = container.scrollTop;
+  const conversation = Storage._userId + ':' + Storage._generation + ':' + (aiSessionId || 'new');
+  const showLatest = aiSessionId && (conversation !== aiRenderedConversation || aiMessages.length !== aiRenderedMessageCount);
+  container.replaceChildren();
   if (programAccess?.ai?.reason !== 'questionnaire_required' || aiSessionId) renderAiContext(container);
   if (!aiMessages.length && programAccess?.ai?.reason !== 'questionnaire_required') { const welcome = document.createElement('p'); welcome.className = 'ai-welcome-text'; welcome.textContent = aiAccessGranted === true ? 'Можно начать с того, что вы сейчас замечаете в теле, чувствах или мыслях. Что хочется обсудить?' : 'Здесь можно читать сохранённые диалоги. Для нового сообщения нужен действующий доступ к AI.'; container.append(welcome); }
   aiMessages.forEach(message => { const row = document.createElement('div'); row.className = 'ai-msg ai-msg--' + (message.role === 'user' ? 'user' : 'assistant'); const text = document.createElement('div'); text.className = 'ai-msg-text'; text.textContent = String(message.content || ''); row.append(text); container.append(row); });
-  container.scrollTop = aiSessionId ? container.scrollHeight : previousScroll;
+  container.scrollTop = showLatest ? container.scrollHeight : previousScroll;
+  aiRenderedConversation = conversation; aiRenderedMessageCount = aiMessages.length;
 }
 async function sendAiMessage() { return window.AiDelivery.send(); }
 
