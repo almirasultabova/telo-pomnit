@@ -10,4 +10,4 @@ def check(task):
  if Path(f).suffix in['.html','.css','.js']:data=data.replace(b'\r\n',b'\n')
  return {'origin':base,'file':f,'ok':status==200 and hashlib.sha256(data).hexdigest()==m['publicAfter'][f]}
 with ThreadPoolExecutor(max_workers=6)as pool:results=list(pool.map(check,[(base,f)for base in origins for f in names]))
-(H/'final-https.json').write_text(json.dumps(results,indent=2),encoding='utf-8');assert all(x['ok']for x in results);print('PASS final 15 HTTPS hashes; approved J169 live, next runtime absent')
+(H/'final-https.json').write_text(json.dumps(results,indent=2),encoding='utf-8');assert all(x['ok']for x in results);print(f'PASS final {len(results)} HTTPS hashes; approved Profile J171 live as release J172')
