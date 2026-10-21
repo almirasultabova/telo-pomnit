@@ -1,6 +1,6 @@
 'use strict';
 const $=id=>document.getElementById(id);
-let store={mode:"loading",requestFilter:"waiting",ownerFilter:"all",kindFilter:"all"},returnFocus=null,summary=null,session=null,loadId=0;
+let store={mode:"loading",requestFilter:"waiting",ownerFilter:"all",kindFilter:"all"},returnFocus=null,returnPosition=0,summary=null,session=null,loadId=0;
 const api={permitted:()=>Boolean(session&&store.data),visibleRequests:(s,m)=>m.requests.filter(r=>(s.requestFilter==='all'||(s.requestFilter==='waiting'?r.needsReply&&['new','in-progress'].includes(r.status):r.status==='answered'))&&(s.ownerFilter==='all'||(s.ownerFilter==='mine'?r.assignee===s.actor:s.ownerFilter==='assigned'?Boolean(r.assignee):!r.assignee))&&(s.kindFilter==='all'||r.kind===s.kindFilter))};
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=(x,month='long')=>new Date(x).toLocaleDateString('ru-RU',{day:'numeric',month,timeZone:'Europe/Moscow'});
@@ -11,7 +11,7 @@ const kinds={technical:'Приложение и доступ',programme:'Про�
 const statuses={new:'Новое','in-progress':'В работе',answered:'Ответили','no-reply':'Ответ не требуется'};
 function age(x){const h=Math.floor((Date.parse(store.data.asOf)-Date.parse(x))/3600000),d=Math.floor(h/24);if(d===0)return h?`${h} ч`:'Менее часа';return d+' '+({one:'день',few:'дня',many:'дней',other:'дня'}[new Intl.PluralRules('ru').select(d)]);}
 function toast(text){$('toast').textContent=text;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').textContent='',4500);}
-function show(title,context,html){const wasOpen=$('detail').open;if(!wasOpen)returnFocus=document.activeElement;$('detail-title').textContent=title;$('detail-context').textContent=context;$('detail-content').innerHTML=html;if(!wasOpen)$('detail').showModal();else $('close-detail').focus();}
+function show(title,context,html){const wasOpen=$('detail').open;if(!wasOpen){returnFocus=document.activeElement;returnPosition=window.scrollY;}$('detail-title').textContent=title;$('detail-context').textContent=context;$('detail-content').innerHTML=html;if(!wasOpen)$('detail').showModal();else $('close-detail').focus();}
 function close(){ $('detail').close();if(returnFocus?.isConnected)returnFocus.focus();}
 $('close-detail').onclick=close;
 $('detail').addEventListener('click',e=>{if(e.target!==$('detail'))return;const r=$('detail').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)close();});
@@ -80,11 +80,44 @@ function requestDetail(id){
   $('detail-content').dataset.requestId=id;
 }
 $('detail-content').addEventListener('click',e=>{if(e.target.id==='back-to-request')requestDetail($('detail-content').dataset.requestId);});
-async function saveAction(id,body){document.querySelectorAll('.dialog-actions button').forEach(b=>b.disabled=true);try{await request('/requests/'+encodeURIComponent(id),'POST',body);close();await loadFlow(store.data.id);toast('Отметка сохранена для команды.');}catch(e){close();await loadFlow($('stream').value);toast(e.status===409?'Обращение уже изменилось. Откройте обновлённую карточку.':e.message);}}
+async function saveAction(id,body){
+ const version=loadId,stream=store.data?.id,content=$('detail-content');
+ const position=returnPosition,originIndex=[...$('request-list').querySelectorAll('[data-request]')].findIndex(button=>button.dataset.request===id);
+ const controls=[...content.querySelectorAll('.dialog-actions button,input,select')].map(button=>({button,disabled:button.disabled}));
+ let status=$('request-action-status');
+ if(!status){status=document.createElement('p');status.id='request-action-status';status.className='body-note';content.append(status);}
+ status.setAttribute('role','status');status.textContent='Сохраняем отметку…';
+ controls.forEach(({button})=>{button.disabled=true;button.setAttribute('aria-busy','true');});
+ $('detail').scrollTop=$('detail').scrollHeight;
+ const current=()=>version===loadId&&store.data?.id===stream&&$('detail').open&&content.dataset.requestId===id&&status.isConnected;
+ try{
+  await request('/requests/'+encodeURIComponent(id),'POST',body);
+  if(!current())return;
+  controls.forEach(({button})=>button.removeAttribute('aria-busy'));
+  close();await loadFlow(stream);
+  if(loadId===version+1&&store.data?.id===stream){
+   const rows=[...$('request-list').querySelectorAll('[data-request]')];
+   const target=rows.find(button=>button.dataset.request===id)||(originIndex<0?$("open-legacy"):rows[Math.min(originIndex,rows.length-1)]);
+   if(target){window.scrollTo({top:position,behavior:"instant"});target.focus({preventScroll:true});}else focusQueue();
+  }
+  toast('Отметка сохранена для команды.');
+ }catch(e){
+  if(!current())return;
+  if([401,403,404,409].includes(e.status)){
+   close();await loadFlow($('stream').value);toast(e.status===409?'Обращение уже изменилось. Откройте обновлённую карточку.':e.message);return;
+  }
+  controls.forEach(({button,disabled})=>{button.disabled=disabled;button.removeAttribute('aria-busy');});
+  status.setAttribute('role','alert');status.tabIndex=-1;
+  status.textContent='Не удалось подтвердить сохранение отметки. Проверьте связь и попробуйте ещё раз.';
+  status.focus({preventScroll:true});$('detail').scrollTop=$('detail').scrollHeight;
+ }
+}
+
 function legacyDetail(r){
   if(!store.policy[store.actor].triage)return;
   const revision=r.revision;
   show('Уточнить прежнее сообщение','Разбор прежних сообщений · владелец',`<blockquote>${esc(r.text)}</blockquote><p>У сообщения нет подтверждённого потока и запроса на ответ. Старое уведомление не показывает, ответила ли команда.</p><label for="legacy-intent">Нужен ли ответ</label><select id="legacy-intent"><option value="">Выберите после проверки</option><option value="yes">Да, ответ ещё нужен</option><option value="no">Ответ не требуется</option></select><label for="legacy-kind">Тема</label><select id="legacy-kind">${Object.entries(kinds).map(([value,label])=>`<option value="${value}">${label}</option>`).join('')}</select><label class="confirm-label"><input type="checkbox" id="legacy-flow"> Подтверждаю связь с выбранным потоком</label><div class="dialog-actions"><button id="classify-legacy" disabled>Сохранить разбор</button></div>`);
+  $('detail-content').dataset.requestId=r.id;
   $('legacy-kind').value='unknown';
   function ready(){$('classify-legacy').disabled=!$('legacy-flow').checked||!$('legacy-intent').value;}
   $('legacy-flow').onchange=ready;$('legacy-intent').onchange=ready;
