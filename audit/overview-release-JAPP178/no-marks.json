@@ -1,0 +1,22 @@
+[
+  {
+    "origin": "https://tg-app-telo-pomnit.vercel.app",
+    "comparisonMarkers": false,
+    "style": {
+      "outlineColor": "rgb(83, 96, 79)",
+      "outlineWidth": "3px",
+      "borderWidth": "0px"
+    },
+    "pageErrors": []
+  },
+  {
+    "origin": "https://app.telo-pomnit.ru",
+    "comparisonMarkers": false,
+    "style": {
+      "outlineColor": "rgb(83, 96, 79)",
+      "outlineWidth": "3px",
+      "borderWidth": "0px"
+    },
+    "pageErrors": []
+  }
+]

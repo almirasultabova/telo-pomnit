@@ -1,0 +1,108 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "groups": [
+      "verified overview has requests and aggregate sections",
+      "pending status is visible and prevents duplicate mark",
+      "503 keeps same request/text/filter and focuses inline error",
+      "explicit retry keeps revision; success restores list position and action",
+      "answer confirmation and checkbox survive save failure",
+      "409 reloads current state and never blindly retries",
+      "revoked permission hides request and all loaded data"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "verified overview has requests and aggregate sections",
+      "pending status is visible and prevents duplicate mark",
+      "503 keeps same request/text/filter and focuses inline error",
+      "explicit retry keeps revision; success restores list position and action",
+      "answer confirmation and checkbox survive save failure",
+      "409 reloads current state and never blindly retries",
+      "revoked permission hides request and all loaded data"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "groups": [
+      "verified overview has requests and aggregate sections",
+      "pending status is visible and prevents duplicate mark",
+      "503 keeps same request/text/filter and focuses inline error",
+      "explicit retry keeps revision; success restores list position and action",
+      "answer confirmation and checkbox survive save failure",
+      "409 reloads current state and never blindly retries",
+      "revoked permission hides request and all loaded data"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "edge": "late error cannot overwrite another dialog",
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "edge": "late response cannot replace selected stream",
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "edge": "legacy owner classification preserves choices after failure",
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "edge": "legacy classification succeeds and reloads once",
+    "ok": true
+  },
+  {
+    "engine": "chromium",
+    "edge": "direct URL without parent token shows no private overview",
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "groups": [
+      "verified overview has requests and aggregate sections",
+      "pending status is visible and prevents duplicate mark",
+      "503 keeps same request/text/filter and focuses inline error",
+      "explicit retry keeps revision; success restores list position and action",
+      "answer confirmation and checkbox survive save failure",
+      "409 reloads current state and never blindly retries",
+      "revoked permission hides request and all loaded data"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "edge": "late error cannot overwrite another dialog",
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "edge": "late response cannot replace selected stream",
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "edge": "legacy owner classification preserves choices after failure",
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "edge": "legacy classification succeeds and reloads once",
+    "ok": true
+  },
+  {
+    "engine": "webkit",
+    "edge": "direct URL without parent token shows no private overview",
+    "ok": true
+  }
+]

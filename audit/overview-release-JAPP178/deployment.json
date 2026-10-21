@@ -1,0 +1,21 @@
+{
+  "id": "dpl_2uJhnaRvYbn2iePcTv4SdUwcBhSB",
+  "name": "telo-pomnit-t6my",
+  "url": "telo-pomnit-t6my-lymdm5om9-almirasultabovas-projects.vercel.app",
+  "created": 1792558262255,
+  "state": "READY",
+  "target": "production",
+  "creator": {
+    "uid": "RtPUdfWc4Z1RX7kqZLXb4jgI",
+    "username": "almirasultabova"
+  },
+  "meta": {
+    "githubCommitRef": "main",
+    "githubCommitSha": "390fb4c59b76178b3092144d4368f42aea55dab6",
+    "githubCommitMessage": "fix: сохранить обращение и место в списке после отметки",
+    "githubRepo": "telo-pomnit",
+    "githubOrg": "almirasultabova"
+  },
+  "inspectorUrl": "https://vercel.com/almirasultabovas-projects/telo-pomnit-t6my/2uJhnaRvYbn2iePcTv4SdUwcBhSB",
+  "isRollbackCandidate": true
+}
