@@ -1,0 +1,21 @@
+{
+  "id": "dpl_BNt356tyegZzS7tkmFkrak3Dz6bw",
+  "name": "telo-pomnit-t6my",
+  "url": "telo-pomnit-t6my-j84drmh78-almirasultabovas-projects.vercel.app",
+  "created": 1792668917687,
+  "state": "READY",
+  "target": "production",
+  "creator": {
+    "uid": "RtPUdfWc4Z1RX7kqZLXb4jgI",
+    "username": "almirasultabova"
+  },
+  "meta": {
+    "githubCommitRef": "main",
+    "githubCommitSha": "e0871b5fdaebb698b91b37e2472e3ae2ec41a701",
+    "githubCommitMessage": "fix: сохранить выбор и очередь при приёме участницы",
+    "githubRepo": "telo-pomnit",
+    "githubOrg": "almirasultabova"
+  },
+  "inspectorUrl": "https://vercel.com/almirasultabovas-projects/telo-pomnit-t6my/BNt356tyegZzS7tkmFkrak3Dz6bw",
+  "isRollbackCandidate": true
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "url": "https://api.telo-pomnit.ru/stream-overview/session",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://api.telo-pomnit.ru/me",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://api.telo-pomnit.ru/me/enrollment/access",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://api.telo-pomnit.ru/diary/days",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://api.telo-pomnit.ru/checkins?limit=201",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://api.telo-pomnit.ru/checkins?from=2025-06-09T21%3A00%3A00.000Z&to=2025-07-14T20%3A59%3A59.999Z&limit=200",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/api/stream-overview/session",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/api/me",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/api/me/enrollment/access",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/api/diary/days",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/api/checkins?limit=201",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://tg-app-telo-pomnit.vercel.app/api/checkins?from=2025-06-09T21%3A00%3A00.000Z&to=2025-07-14T20%3A59%3A59.999Z&limit=200",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/api/stream-overview/session",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/api/me",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/api/me/enrollment/access",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/api/diary/days",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/api/checkins?limit=201",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "url": "https://app.telo-pomnit.ru/api/checkins?from=2025-06-09T21%3A00%3A00.000Z&to=2025-07-14T20%3A59%3A59.999Z&limit=200",
+    "unauthenticatedStatus": 401
+  },
+  {
+    "source": "backend/src/routes/diary.js",
+    "installedHashMatches": true
+  },
+  {
+    "source": "backend/src/routes/checkins.js",
+    "installedHashMatches": true
+  }
+]
