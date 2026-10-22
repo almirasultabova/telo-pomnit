@@ -1,0 +1,16 @@
+{
+  "pendingStats": {
+    "activeTab": "true",
+    "previousPeopleStillVisible": 30,
+    "notice": "Загружаем…"
+  },
+  "refreshStreams": {
+    "rendered": 1,
+    "apiCount": 1,
+    "actualAvailable": 2
+  },
+  "emptyStreams": {
+    "text": "",
+    "rows": 0
+  }
+}

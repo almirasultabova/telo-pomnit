@@ -1,0 +1,134 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "groups": [
+      "pending indicators show no previous people or false zero counts",
+      "history loads independently and preserves escaped names and cash meaning",
+      "stream refresh reads current list and preserves available selected stream",
+      "stream-to-people transition keeps correct cohort scope",
+      "read-only workflow has no mutations, script errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "pending indicators show no previous people or false zero counts",
+      "history loads independently and preserves escaped names and cash meaning",
+      "stream refresh reads current list and preserves available selected stream",
+      "stream-to-people transition keeps correct cohort scope",
+      "read-only workflow has no mutations, script errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "groups": [
+      "pending indicators show no previous people or false zero counts",
+      "history loads independently and preserves escaped names and cash meaning",
+      "stream refresh reads current list and preserves available selected stream",
+      "stream-to-people transition keeps correct cohort scope",
+      "read-only workflow has no mutations, script errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "genuine empty streams are explained and refresh can reveal a new stream",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "empty history and actual zero indicators retain correct existing meaning",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "streams failure is distinct from empty data and explicit retry succeeds",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "audit failure is distinct from empty data and explicit retry succeeds",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "stats failure is distinct from empty data and explicit retry succeeds",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "late stream read cannot overwrite indicators or shared filter choices",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "access revocation hides loaded private data",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "groups": [
+      "pending indicators show no previous people or false zero counts",
+      "history loads independently and preserves escaped names and cash meaning",
+      "stream refresh reads current list and preserves available selected stream",
+      "stream-to-people transition keeps correct cohort scope",
+      "read-only workflow has no mutations, script errors or horizontal overflow"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "genuine empty streams are explained and refresh can reveal a new stream",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "empty history and actual zero indicators retain correct existing meaning",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "streams failure is distinct from empty data and explicit retry succeeds",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "audit failure is distinct from empty data and explicit retry succeeds",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "stats failure is distinct from empty data and explicit retry succeeds",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "late stream read cannot overwrite indicators or shared filter choices",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "access revocation hides loaded private data",
+    "passed": true,
+    "realWrites": 0
+  }
+]

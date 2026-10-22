@@ -1,0 +1,11 @@
+{
+  "findings": 13,
+  "categories": {
+    "design-system-color": 11,
+    "design-system-font": 1,
+    "cream-palette": 1
+  },
+  "baselineCssMatchesCandidate": true,
+  "baselineCssSHA256": "eba853c1115fdf48d25e32bc9062b52730623fdc3e3f7ef13c8160b50ad73df3",
+  "resolution": "Inherited palette/font declarations in exact unchanged CSS. Preserve approved appearance; no detector exceptions or design-system repair."
+}

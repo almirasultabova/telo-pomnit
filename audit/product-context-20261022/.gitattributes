@@ -1,0 +1,2 @@
+# Preserve the exact pre-migration document bytes used by checks.json.
+PRODUCT-before.md -text

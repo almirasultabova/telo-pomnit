@@ -1,0 +1,21 @@
+{
+  "source": "app/PRODUCT.md",
+  "schema": 1,
+  "beforeSHA256": "808093abcc488c0bd728da43b4c02c02f42b35d1540d5b015de631518d567971",
+  "snapshotByteIdentical": true,
+  "sections": [
+    "Platform",
+    "Users",
+    "Product Purpose",
+    "Positioning",
+    "Operating Context",
+    "Capabilities and Constraints",
+    "Brand Commitments",
+    "Evidence on Hand",
+    "Product Principles"
+  ],
+  "runtimeFilesChangedByMigration": 0,
+  "designFileChanged": false,
+  "newProductDecisions": 0,
+  "globalWorkflowSettingsChanged": false
+}

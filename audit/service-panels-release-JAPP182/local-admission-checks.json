@@ -1,0 +1,206 @@
+[
+  {
+    "engine": "chromium",
+    "width": 320,
+    "groups": [
+      "empty search is distinct from no remaining requests",
+      "search and filters match actual pending request list",
+      "invalid basis explains problem without creating an action",
+      "pending check freezes the submitted choice and requires explicit confirmation",
+      "changing a reviewed choice requires a new review",
+      "lost confirmation keeps same reviewed decision and visible recovery",
+      "retry uses same action; success restores list position and next row",
+      "admitted participant retains cash status and People filter survives switching"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "groups": [
+      "empty search is distinct from no remaining requests",
+      "search and filters match actual pending request list",
+      "invalid basis explains problem without creating an action",
+      "pending check freezes the submitted choice and requires explicit confirmation",
+      "changing a reviewed choice requires a new review",
+      "lost confirmation keeps same reviewed decision and visible recovery",
+      "retry uses same action; success restores list position and next row",
+      "admitted participant retains cash status and People filter survives switching"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "groups": [
+      "empty search is distinct from no remaining requests",
+      "search and filters match actual pending request list",
+      "invalid basis explains problem without creating an action",
+      "pending check freezes the submitted choice and requires explicit confirmation",
+      "changing a reviewed choice requires a new review",
+      "lost confirmation keeps same reviewed decision and visible recovery",
+      "retry uses same action; success restores list position and next row",
+      "admitted participant retains cash status and People filter survives switching"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "late open cannot overwrite another participant card",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "late patch cannot overwrite another participant card",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "late confirm cannot overwrite another participant card",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "last-page admission returns to remaining requests instead of false empty state",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "lost success then 409 refreshes result without a second admission",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "rejected confirmation clears stale preview and permits correction",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "revoked access hides private list and states why",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "admission success and failed list refresh remain distinct",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "admin role visibility and rejected-access preview preserve current rules",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "genuine empty queue after final admission remains clear and focusable",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "late refresh cannot replace the state after leaving and returning to requests",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "chromium",
+    "check": "standalone URL without Telegram does not open private panel",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "groups": [
+      "empty search is distinct from no remaining requests",
+      "search and filters match actual pending request list",
+      "invalid basis explains problem without creating an action",
+      "pending check freezes the submitted choice and requires explicit confirmation",
+      "changing a reviewed choice requires a new review",
+      "lost confirmation keeps same reviewed decision and visible recovery",
+      "retry uses same action; success restores list position and next row",
+      "admitted participant retains cash status and People filter survives switching"
+    ],
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "late open cannot overwrite another participant card",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "late patch cannot overwrite another participant card",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "late confirm cannot overwrite another participant card",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "last-page admission returns to remaining requests instead of false empty state",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "lost success then 409 refreshes result without a second admission",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "rejected confirmation clears stale preview and permits correction",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "revoked access hides private list and states why",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "admission success and failed list refresh remain distinct",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "admin role visibility and rejected-access preview preserve current rules",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "genuine empty queue after final admission remains clear and focusable",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "late refresh cannot replace the state after leaving and returning to requests",
+    "passed": true,
+    "realWrites": 0
+  },
+  {
+    "engine": "webkit",
+    "check": "standalone URL without Telegram does not open private panel",
+    "passed": true,
+    "realWrites": 0
+  }
+]
