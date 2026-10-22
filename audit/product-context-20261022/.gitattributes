@@ -1,2 +1,2 @@
 # Preserve the exact pre-migration document bytes used by checks.json.
-PRODUCT-before.md -text
+PRODUCT-before.md -text whitespace=trailing-space,space-before-tab,cr-at-eol
